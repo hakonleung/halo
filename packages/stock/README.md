@@ -49,7 +49,7 @@ npm run install:python
 ### 在Node.js中使用
 
 ```typescript
-import StockAPI from "@halo/stock";
+import StockAPI from '@halo/stock';
 
 // 获取所有A股股票信息
 async function getAllStocks() {
@@ -58,40 +58,36 @@ async function getAllStocks() {
     console.log(`总共找到 ${result.total} 只股票`);
     console.log(result.data);
   } else {
-    console.error("获取股票信息失败:", result.error);
+    console.error('获取股票信息失败:', result.error);
   }
 }
 
 // 获取股票历史数据
 async function getStockHistory() {
   // 查询所有历史数据
-  const allHistory = await StockAPI.getStockHistory("000001");
+  const allHistory = await StockAPI.getStockHistory('000001');
 
   // 按时间区间查询
-  const rangeHistory = await StockAPI.getStockHistory(
-    "000001",
-    "2024-01-01",
-    "2024-01-31"
-  );
+  const rangeHistory = await StockAPI.getStockHistory('000001', '2024-01-01', '2024-01-31');
 
   if (allHistory.success) {
-    console.log("历史数据:", allHistory.data);
+    console.log('历史数据:', allHistory.data);
   }
 }
 
 // 获取股票实时数据
 async function getRealtimeData() {
-  const result = await StockAPI.getStockRealtime("000001");
+  const result = await StockAPI.getStockRealtime('000001');
   if (result.success) {
-    console.log("实时数据:", result.data);
+    console.log('实时数据:', result.data);
   }
 }
 
 // 获取个股基本信息
 async function getStockBasicInfo() {
-  const result = await StockAPI.getStockIndividualBasicInfoXq("000001");
+  const result = await StockAPI.getStockIndividualBasicInfoXq('000001');
   if (result.success) {
-    console.log("基本信息:", result.data);
+    console.log('基本信息:', result.data);
   }
 }
 ```
@@ -165,14 +161,10 @@ Promise<ApiResponse<KlineData[]>>;
 
 ```typescript
 // 获取所有历史数据
-const allHistory = await StockAPI.getStockHistory("000001");
+const allHistory = await StockAPI.getStockHistory('000001');
 
 // 获取指定时间范围的数据
-const rangeHistory = await StockAPI.getStockHistory(
-  "000001",
-  "2024-01-01",
-  "2024-01-31"
-);
+const rangeHistory = await StockAPI.getStockHistory('000001', '2024-01-01', '2024-01-31');
 ```
 
 ### StockAPI.getStockRealtime(symbol)
@@ -207,11 +199,11 @@ Promise<ApiResponse<StockIndividualBasicInfo>>;
 **示例:**
 
 ```typescript
-const result = await StockAPI.getStockIndividualBasicInfoXq("000001");
+const result = await StockAPI.getStockIndividualBasicInfoXq('000001');
 if (result.success) {
-  console.log("股票名称:", result.data.name);
-  console.log("所属行业:", result.data.industry);
-  console.log("总市值:", result.data.market_cap);
+  console.log('股票名称:', result.data.name);
+  console.log('所属行业:', result.data.industry);
+  console.log('总市值:', result.data.market_cap);
 }
 ```
 

@@ -3,12 +3,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 
 // 导入类型定义
-import type {
-  PythonBridgeConfig,
-  PythonFunctionCall,
-  StockSymbol,
-  DateString
-} from './types/index.js';
+import type { PythonBridgeConfig, StockSymbol, DateString } from './types/index.js';
 
 // 导入枚举（作为值）
 import { PythonFunction } from './types/index.js';
@@ -26,10 +21,10 @@ export class SimplePythonBridge {
     this.config = {
       pythonPath: 'python3',
       timeout: 60000,
-      ...config
+      ...config,
     };
     this.pythonPath = this.config.pythonPath!;
-    
+
     // 获取正确的Python包路径
     const currentDir = path.dirname(fileURLToPath(import.meta.url));
     const srcDir = currentDir.includes('dist') ? path.join(currentDir, '..', 'src') : currentDir;
@@ -42,7 +37,7 @@ export class SimplePythonBridge {
    * @param args - 函数参数
    * @returns Promise<string> - JSON字符串结果
    */
-  async executePythonFunction(functionName: string, args: any[] = []): Promise<string> {
+  async executePythonFunction(functionName: string, args: unknown[] = []): Promise<string> {
     return new Promise((resolve, reject) => {
       // 使用绝对路径和更健壮的Python命令
       const srcDir = path.dirname(this.pyPackagePath);
@@ -74,8 +69,8 @@ except Exception as e:
         env: {
           ...process.env,
           PYTHONPATH: srcDir,
-          PYTHONIOENCODING: 'utf-8'
-        }
+          PYTHONIOENCODING: 'utf-8',
+        },
       });
 
       let stdout = '';
@@ -87,15 +82,15 @@ except Exception as e:
         reject(new Error(`Python执行超时 (${this.config.timeout}ms)`));
       }, this.config.timeout);
 
-      pythonProcess.stdout.on('data', (data) => {
+      pythonProcess.stdout.on('data', data => {
         stdout += data.toString();
       });
 
-      pythonProcess.stderr.on('data', (data) => {
+      pythonProcess.stderr.on('data', data => {
         stderr += data.toString();
       });
 
-      pythonProcess.on('close', (code) => {
+      pythonProcess.on('close', code => {
         clearTimeout(timeout);
         if (code === 0) {
           resolve(stdout.trim());
@@ -104,7 +99,7 @@ except Exception as e:
         }
       });
 
-      pythonProcess.on('error', (error) => {
+      pythonProcess.on('error', error => {
         clearTimeout(timeout);
         reject(new Error(`启动Python进程失败: ${error.message}`));
       });
@@ -127,11 +122,11 @@ except Exception as e:
    * @returns Promise<string> - JSON字符串
    */
   async getStockHistory(
-    symbol: StockSymbol, 
-    startDate: DateString | null = null, 
+    symbol: StockSymbol,
+    startDate: DateString | null = null,
     endDate: DateString | null = null
   ): Promise<string> {
-    const args: any[] = [symbol];
+    const args: unknown[] = [symbol];
     if (startDate && endDate) {
       args.push(startDate, endDate);
     }
@@ -155,4 +150,4 @@ except Exception as e:
   async getStockIndividualBasicInfoXq(symbol: StockSymbol): Promise<string> {
     return this.executePythonFunction(PythonFunction.GET_STOCK_INDIVIDUAL_BASIC_INFO_XQ, [symbol]);
   }
-} 
+}

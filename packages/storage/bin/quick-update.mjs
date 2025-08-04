@@ -21,6 +21,15 @@ async function main() {
     console.log('  1. 设置环境变量: export POSTGRES_URL="postgresql://user:pass@localhost:5432/db"');
     console.log('  2. 或者作为参数传入: pnpm stock-quick-update "postgresql://user:pass@localhost:5432/db"');
     console.log('');
+    console.log('可选参数:');
+    console.log('  --batch-size <数量>        批次大小 (默认: 50)');
+    console.log('  --delay <毫秒>            批次间延迟 (默认: 1000)');
+    console.log('  --sync-basic-info         同步股票基本信息 (默认: false)');
+    console.log('  --no-sync-basic-info      不同步股票基本信息');
+    console.log('');
+    console.log('示例:');
+    console.log('  pnpm stock-quick-update --sync-basic-info --batch-size 100');
+    console.log('');
     process.exit(1);
   }
 
@@ -34,24 +43,28 @@ async function main() {
     options.batchSize = parseInt(args[batchSizeIndex + 1]);
   }
 
-  // 解析最大重试次数
-  const maxRetriesIndex = args.findIndex(arg => arg === '--max-retries');
-  if (maxRetriesIndex !== -1 && args[maxRetriesIndex + 1]) {
-    options.maxRetries = parseInt(args[maxRetriesIndex + 1]);
-  }
-
   // 解析批次间延迟
   const delayIndex = args.findIndex(arg => arg === '--delay');
   if (delayIndex !== -1 && args[delayIndex + 1]) {
     options.delayBetweenBatches = parseInt(args[delayIndex + 1]);
   }
 
+  // 解析是否同步股票基本信息
+  const syncBasicInfoIndex = args.findIndex(arg => arg === '--sync-basic-info');
+  const noSyncBasicInfoIndex = args.findIndex(arg => arg === '--no-sync-basic-info');
+  
+  if (syncBasicInfoIndex !== -1) {
+    options.syncBasicInfo = true;
+  } else if (noSyncBasicInfoIndex !== -1) {
+    options.syncBasicInfo = false;
+  }
+
   // 显示配置信息
   console.log('📋 同步配置:');
   console.log(`   数据库: ${postgresUrl.replace(/(:\/\/[^:]+:)[^@]+(@)/, '$1***$2')}`);
   console.log(`   批次大小: ${options.batchSize || 50}`);
-  console.log(`   最大重试: ${options.maxRetries || 3}`);
   console.log(`   批次延迟: ${options.delayBetweenBatches || 1000}ms`);
+  console.log(`   同步基本信息: ${options.syncBasicInfo !== undefined ? (options.syncBasicInfo ? '是' : '否') : '否 (默认)'}`);
   console.log('');
 
   try {

@@ -13,5 +13,5 @@ export type {
   StockHistoryResponse,
   StockRealtimeResponse,
   StockInfoResponse,
-  StockBasicInfoResponse
-} from './types/index.js'; 
+  StockBasicInfoResponse,
+} from './types/index.js';

@@ -92,9 +92,9 @@ stock-demo --stock 000001 --start 2024-01-01 --end 2024-01-31
 
 ```javascript
 const DEMO_CONFIG = {
-  stockSymbol: "000001", // 默认股票代码
-  startDate: "2024-01-01", // 默认开始日期
-  endDate: "2024-01-31", // 默认结束日期
+  stockSymbol: '000001', // 默认股票代码
+  startDate: '2024-01-01', // 默认开始日期
+  endDate: '2024-01-31', // 默认结束日期
   delay: 2000, // API调用间隔(毫秒)
 };
 ```

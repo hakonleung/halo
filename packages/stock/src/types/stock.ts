@@ -58,4 +58,4 @@ export interface StockIndividualBasicInfo {
   list_date: string;
   total_shares: string;
   circulating_shares: string;
-} 
+}

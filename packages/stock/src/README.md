@@ -89,40 +89,32 @@ src/
 ### 基本用法（具名导入）
 
 ```typescript
-import { StockAPI } from "./src/index.js";
+import { StockAPI } from './src/index.js';
 
 // 获取所有股票信息
 const stocksInfo = await StockAPI.getAllStocksInfo();
 
 // 获取股票历史数据
-const history = await StockAPI.getStockHistory(
-  "000001",
-  "2024-01-01",
-  "2024-01-31"
-);
+const history = await StockAPI.getStockHistory('000001', '2024-01-01', '2024-01-31');
 
 // 获取实时数据
-const realtime = await StockAPI.getStockRealtime("000001");
+const realtime = await StockAPI.getStockRealtime('000001');
 
 // 获取基本信息
-const basicInfo = await StockAPI.getStockIndividualBasicInfoXq("000001");
+const basicInfo = await StockAPI.getStockIndividualBasicInfoXq('000001');
 ```
 
 ### 类型导入（具名导入）
 
 ```typescript
-import type {
-  StockInfo,
-  KlineData,
-  StockHistoryResponse,
-} from "./src/types/index.js";
+import type { StockInfo, KlineData, StockHistoryResponse } from './src/types/index.js';
 ```
 
 ### 直接使用Python桥接器
 
 ```typescript
 // 通过桥接器直接调用
-import { SimplePythonBridge } from "./src/simple_bridge.js";
+import { SimplePythonBridge } from './src/simple_bridge.js';
 
 const bridge = new SimplePythonBridge();
 const result = await bridge.getAllStocksInfo();
@@ -132,11 +124,11 @@ const result = await bridge.getAllStocksInfo();
 
 ```typescript
 // 只导入需要的类
-import { StockAPI } from "./src/stock-api.js";
-import { SimplePythonBridge } from "./src/simple_bridge.js";
+import { StockAPI } from './src/stock-api.js';
+import { SimplePythonBridge } from './src/simple_bridge.js';
 
 // 只导入需要的类型
-import type { StockInfo, ApiResponse } from "./src/types/index.js";
+import type { StockInfo, ApiResponse } from './src/types/index.js';
 ```
 
 ## 🔧 配置选项
@@ -144,12 +136,12 @@ import type { StockInfo, ApiResponse } from "./src/types/index.js";
 ### Python桥接配置
 
 ```typescript
-import { SimplePythonBridge } from "./src/simple_bridge.js";
+import { SimplePythonBridge } from './src/simple_bridge.js';
 
 const bridge = new SimplePythonBridge({
-  pythonPath: "python3", // Python解释器路径
+  pythonPath: 'python3', // Python解释器路径
   timeout: 30000, // 超时时间(毫秒)
-  workingDirectory: "./py", // 工作目录
+  workingDirectory: './py', // 工作目录
 });
 ```
 
@@ -198,7 +190,7 @@ export type { StockInfo } from './types/index.js';
 export default StockAPI; // ❌ 已移除
 
 // 不使用默认导入
-import StockAPI from "./stock-api.js"; // ❌ 已改为具名导入
+import StockAPI from './stock-api.js'; // ❌ 已改为具名导入
 ```
 
 ## 🔍 测试策略

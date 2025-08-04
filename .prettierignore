@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build/
+coverage/
+.next/
+.turbo/
+*.log
+.DS_Store
+pnpm-lock.yaml
+*.min.js
+*.min.css
+packages/*/dist/
+packages/storage/drizzle/
+packages/storage/src/db/postgres/pgdata/ 

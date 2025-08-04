@@ -80,45 +80,41 @@ stock-quick-update --since 7d --include-info
 ### 方式一：统一存储类（向后兼容）
 
 ```typescript
-import { StockStorage } from "@halo/storage";
+import { StockStorage } from '@halo/storage';
 
 // 创建存储实例
 const storage = new StockStorage({
-  dataDir: "./data", // 数据存储目录，默认为 './data'
+  dataDir: './data', // 数据存储目录，默认为 './data'
   debug: true, // 是否启用调试日志，默认为 false
 });
 
 // 使用统一接口
 const stocks = await storage.getAllStocks();
-const history = await storage.getStockHistory("000001");
+const history = await storage.getStockHistory('000001');
 ```
 
 ### 方式二：模块化API（推荐）
 
 ```typescript
-import {
-  StockListStorage,
-  StockHistoryStorage,
-  StockInfoStorage,
-} from "@halo/storage";
+import { StockListStorage, StockHistoryStorage, StockInfoStorage } from '@halo/storage';
 
 // 创建独立的存储管理器
-const stockListStorage = new StockListStorage({ dataDir: "./data" });
-const stockHistoryStorage = new StockHistoryStorage({ dataDir: "./data" });
-const stockInfoStorage = new StockInfoStorage({ dataDir: "./data" });
+const stockListStorage = new StockListStorage({ dataDir: './data' });
+const stockHistoryStorage = new StockHistoryStorage({ dataDir: './data' });
+const stockInfoStorage = new StockInfoStorage({ dataDir: './data' });
 
 // 使用专门的API
 const stocks = await stockListStorage.getAllStocks();
-const history = await stockHistoryStorage.getStockHistory("000001");
-const info = await stockInfoStorage.getStockBasicInfo("000001");
+const history = await stockHistoryStorage.getStockHistory('000001');
+const info = await stockInfoStorage.getStockBasicInfo('000001');
 ```
 
 ### 方式三：组合使用
 
 ```typescript
-import { StockStorage } from "@halo/storage";
+import { StockStorage } from '@halo/storage';
 
-const storage = new StockStorage({ dataDir: "./data", debug: true });
+const storage = new StockStorage({ dataDir: './data', debug: true });
 
 // 通过子模块访问专门功能
 const stocks = await storage.stockList.getAllStocks();
@@ -126,7 +122,7 @@ const cacheInfo = await storage.stockList.getCacheInfo();
 
 // 获取缓存概览
 const overview = await storage.getCacheOverview();
-console.log("缓存状态:", overview);
+console.log('缓存状态:', overview);
 ```
 
 ### 获取全量股票数据
@@ -142,7 +138,7 @@ const stocksResponse = await storage.getAllStocks({
 
 if (stocksResponse.success) {
   console.log(`获取到 ${stocksResponse.data.length} 只股票`);
-  console.log(`数据来源: ${stocksResponse.fromCache ? "缓存" : "API"}`);
+  console.log(`数据来源: ${stocksResponse.fromCache ? '缓存' : 'API'}`);
 }
 ```
 
@@ -150,15 +146,15 @@ if (stocksResponse.success) {
 
 ```typescript
 // 获取股票历史数据
-const historyResponse = await storage.getStockHistory("000001");
+const historyResponse = await storage.getStockHistory('000001');
 
 // 增量更新（从指定日期开始获取新数据）
-const historyResponse = await storage.getStockHistory("000001", {
+const historyResponse = await storage.getStockHistory('000001', {
   startDate: Date.now() - 30 * 24 * 60 * 60 * 1000, // 最近30天
 });
 
 // 强制全量更新
-const historyResponse = await storage.getStockHistory("000001", {
+const historyResponse = await storage.getStockHistory('000001', {
   forceUpdate: true,
 });
 ```
@@ -167,10 +163,10 @@ const historyResponse = await storage.getStockHistory("000001", {
 
 ```typescript
 // 获取股票基本信息
-const infoResponse = await storage.getStockBasicInfo("000001");
+const infoResponse = await storage.getStockBasicInfo('000001');
 
 // 强制更新
-const infoResponse = await storage.getStockBasicInfo("000001", {
+const infoResponse = await storage.getStockBasicInfo('000001', {
   forceUpdate: true,
 });
 ```
@@ -179,14 +175,12 @@ const infoResponse = await storage.getStockBasicInfo("000001", {
 
 ```typescript
 // 批量更新多只股票的历史数据
-const symbols = ["000001", "000002", "600000"];
+const symbols = ['000001', '000002', '600000'];
 const batchResult = await storage.batchUpdateStockHistory(symbols, {
   startDate: Date.now() - 7 * 24 * 60 * 60 * 1000, // 最近7天
 });
 
-console.log(
-  `批量更新结果: 成功 ${batchResult.success}，失败 ${batchResult.failed}`
-);
+console.log(`批量更新结果: 成功 ${batchResult.success}，失败 ${batchResult.failed}`);
 ```
 
 ### 全量数据更新（新功能）
@@ -204,15 +198,13 @@ const updateResult = await storage.updateAllData({
     startDate: Date.now() - 30 * 24 * 60 * 60 * 1000, // 最近30天
     limitCount: 100, // 限制更新100只股票（可选）
   },
-  onProgress: (progress) => {
-    console.log(
-      `${progress.stageDescription}: ${progress.totalProgress.toFixed(1)}%`
-    );
+  onProgress: progress => {
+    console.log(`${progress.stageDescription}: ${progress.totalProgress.toFixed(1)}%`);
     console.log(`成功: ${progress.successCount}, 失败: ${progress.errorCount}`);
   },
 });
 
-console.log(`更新完成: ${updateResult.success ? "成功" : "失败"}`);
+console.log(`更新完成: ${updateResult.success ? '成功' : '失败'}`);
 console.log(`耗时: ${(updateResult.duration / 1000).toFixed(2)} 秒`);
 console.log(`成功率: ${updateResult.summary.successRate.toFixed(2)}%`);
 ```
@@ -224,7 +216,7 @@ console.log(`成功率: ${updateResult.summary.successRate.toFixed(2)}%`);
 const quickResult = await storage.quickUpdate({
   since: Date.now() - 7 * 24 * 60 * 60 * 1000, // 最近7天
   includeInfo: false, // 不更新基本信息
-  onProgress: (progress) => {
+  onProgress: progress => {
     console.log(`快速更新: ${progress.processed}/${progress.total}`);
   },
 });
@@ -234,13 +226,13 @@ const quickResult = await storage.quickUpdate({
 
 ```typescript
 // 清除所有缓存
-await storage.clearCache("all");
+await storage.clearCache('all');
 
 // 只清除股票列表缓存
-await storage.clearCache("stocks");
+await storage.clearCache('stocks');
 
 // 只清除历史数据缓存
-await storage.clearCache("daily");
+await storage.clearCache('daily');
 ```
 
 ## 数据库支持
@@ -264,7 +256,7 @@ DATABASE_URL=postgres://username:password@localhost:5432/stock_data
 ### 使用数据库服务
 
 ```typescript
-import { SimpleStockDatabaseService } from "@halo/storage";
+import { SimpleStockDatabaseService } from '@halo/storage';
 
 const dbService = new SimpleStockDatabaseService();
 
@@ -284,16 +276,14 @@ const stocks = await dbService.getStockList();
 const priceData = [
   /* 价格数据 */
 ];
-await dbService.saveStockPrices("000001", priceData);
+await dbService.saveStockPrices('000001', priceData);
 
 // 获取价格数据
-const prices = await dbService.getStockPrices("000001", new Date("2024-01-01"));
+const prices = await dbService.getStockPrices('000001', new Date('2024-01-01'));
 
 // 获取统计信息
 const stats = await dbService.getStats();
-console.log(
-  `总股票数: ${stats.totalStocks}, 价格记录数: ${stats.totalPriceRecords}`
-);
+console.log(`总股票数: ${stats.totalStocks}, 价格记录数: ${stats.totalPriceRecords}`);
 
 // 关闭连接
 await dbService.close();

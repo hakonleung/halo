@@ -25,7 +25,7 @@ export interface PythonExecutionResult {
  */
 export interface PythonFunctionCall {
   functionName: string;
-  args: any[];
+  args: unknown[];
   module?: string;
 }
 
@@ -36,5 +36,5 @@ export enum PythonFunction {
   GET_ALL_STOCKS_INFO = 'get_all_stocks_info',
   GET_STOCK_HISTORY = 'get_stock_history',
   GET_STOCK_REALTIME = 'get_stock_realtime',
-  GET_STOCK_INDIVIDUAL_BASIC_INFO_XQ = 'get_stock_individual_basic_info_xq'
-} 
+  GET_STOCK_INDIVIDUAL_BASIC_INFO_XQ = 'get_stock_individual_basic_info_xq',
+}

@@ -6,7 +6,7 @@ import type {
   StockHistoryResponse,
   StockRealtimeResponse,
   StockInfoResponse,
-  StockBasicInfoResponse
+  StockBasicInfoResponse,
 } from './types/index.js';
 
 /**
@@ -28,7 +28,7 @@ export class StockAPI {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
@@ -41,12 +41,13 @@ export class StockAPI {
    * @returns Promise<StockHistoryResponse>
    */
   static async getStockHistory(
-    symbol: string, 
-    startDate?: number, 
+    symbol: string,
+    startDate?: number,
     endDate?: number
   ): Promise<StockHistoryResponse> {
     try {
-      const result = await this.pythonBridge.getStockHistory(symbol,
+      const result = await this.pythonBridge.getStockHistory(
+        symbol,
         toDateString(startDate),
         toDateString(endDate)
       );
@@ -56,7 +57,7 @@ export class StockAPI {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         symbol,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
@@ -75,7 +76,7 @@ export class StockAPI {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         symbol,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
@@ -95,7 +96,7 @@ export class StockAPI {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         symbol,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
@@ -107,6 +108,6 @@ const toDateString = (timestamp?: number) => {
   return [
     date.getFullYear().toString().padStart(4, '0'),
     (date.getMonth() + 1).toString().padStart(2, '0'),
-    date.getDate().toString().padStart(2, '0')
-  ].join('')
-}
+    date.getDate().toString().padStart(2, '0'),
+  ].join('');
+};

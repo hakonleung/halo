@@ -47,25 +47,20 @@ types/
 ### 1. 导入单个类型
 
 ```typescript
-import type { StockInfo, KlineData } from "./types/stock.js";
-import type { ApiResponse } from "./types/api.js";
+import type { StockInfo, KlineData } from './types/stock.js';
+import type { ApiResponse } from './types/api.js';
 ```
 
 ### 2. 从统一入口导入
 
 ```typescript
-import type {
-  StockInfo,
-  KlineData,
-  ApiResponse,
-  StockHistoryResponse,
-} from "./types/index.js";
+import type { StockInfo, KlineData, ApiResponse, StockHistoryResponse } from './types/index.js';
 ```
 
 ### 3. 导入枚举（作为值）
 
 ```typescript
-import { PythonFunction } from "./types/index.js";
+import { PythonFunction } from './types/index.js';
 ```
 
 ### 4. 使用预定义的组合类型
@@ -76,7 +71,7 @@ import type {
   StockRealtimeResponse, // ApiResponse<RealtimeData>
   StockInfoResponse, // ApiResponse<StockInfo[]>
   StockBasicInfoResponse, // ApiResponse<StockIndividualBasicInfo>
-} from "./types/index.js";
+} from './types/index.js';
 ```
 
 ## 类型组合

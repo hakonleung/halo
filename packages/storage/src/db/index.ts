@@ -1,2 +1,1 @@
-
-export { getPool, getDb } from './getDb'
+export { getPool, getDb } from './getDb';

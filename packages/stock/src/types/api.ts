@@ -16,7 +16,7 @@ export interface ApiResponse<T> {
 /**
  * 函数参数类型
  */
-export type FunctionArgs = any[];
+export type FunctionArgs = unknown[];
 
 /**
  * 日期字符串类型
@@ -26,4 +26,4 @@ export type DateString = string;
 /**
  * 股票代码类型
  */
-export type StockSymbol = string; 
+export type StockSymbol = string;

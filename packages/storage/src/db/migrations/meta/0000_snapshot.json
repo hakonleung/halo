@@ -248,9 +248,7 @@
         "stocks_symbol_unique": {
           "name": "stocks_symbol_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "symbol"
-          ]
+          "columns": ["symbol"]
         }
       },
       "policies": {},

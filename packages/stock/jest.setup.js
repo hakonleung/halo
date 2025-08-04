@@ -1,3 +1,5 @@
+/* eslint-env jest, node */
+/* eslint-disable no-undef */
 // Jest setup file
 
 // 设置测试超时时间
@@ -12,4 +14,4 @@ global.console = {
   info: jest.fn(),
   warn: jest.fn(),
   error: jest.fn(),
-}; 
+};
