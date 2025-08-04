@@ -1,0 +1,40 @@
+{
+  "name": "@halo/stock",
+  "version": "1.0.0",
+  "description": "A股数据查询Python库，基于akshare，可供Node.js调用",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "stock-demo": "./bin/stock-demo.mjs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "install:python": "pip install -r requirements.txt",
+    "test:python": "python test_python.py",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.0",
+    "ts-jest": "^29.1.0"
+  },
+  "keywords": [
+    "stock",
+    "akshare",
+    "a股",
+    "python",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT"
+}

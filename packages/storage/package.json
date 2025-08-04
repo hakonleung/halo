@@ -1,0 +1,50 @@
+{
+  "name": "@halo/storage",
+  "version": "0.0.1",
+  "description": "Stock data storage and caching package",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "db:dev": "cd src/db/postgres && docker-compose up",
+    "db:init": "pnpm db:generate && pnpm db:migrate",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:drop": "drizzle-kit drop",
+    "db:reset": "pnpm db:drop && pnpm db:generate && pnpm db:migrate"
+  },
+  "bin": {
+    "quick-update": "./bin/quick-update.mjs"
+  },
+  "dependencies": {
+    "@halo/stock": "workspace:*",
+    "drizzle-orm": "^0.39.1",
+    "dotenv": "^16.3.1",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20.0.0",
+    "drizzle-kit": "^0.30.4",
+    "tsup": "^8.0.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.0.0",
+    "@types/pg": "^8.11.11"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/**"
+  ]
+} 

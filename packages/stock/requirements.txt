@@ -1,0 +1,7 @@
+akshare>=1.12.0
+pandas>=2.0.0
+numpy>=1.24.0
+requests>=2.31.0
+pybind11>=2.11.0
+setuptools>=68.0.0
+wheel>=0.41.0 
