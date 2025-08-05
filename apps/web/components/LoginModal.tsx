@@ -28,7 +28,6 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
     username: '',
-    email: '',
     password: '',
     confirmPassword: '',
   });
@@ -61,7 +60,7 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
 
         if (result.success && result.user) {
           onLoginSuccess(result.user);
-          setFormData({ username: '', email: '', password: '', confirmPassword: '' });
+          setFormData({ username: '', password: '', confirmPassword: '' });
         } else {
           setError(result.error || '登录失败');
         }
@@ -79,7 +78,6 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
           },
           body: JSON.stringify({
             username: formData.username,
-            email: formData.email,
             password: formData.password,
           }),
         });
@@ -103,7 +101,7 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
           const loginResult: LoginResponse = await loginResponse.json();
           if (loginResult.success && loginResult.user) {
             onLoginSuccess(loginResult.user);
-            setFormData({ username: '', email: '', password: '', confirmPassword: '' });
+            setFormData({ username: '', password: '', confirmPassword: '' });
           }
         } else {
           setError(result.error || '注册失败');
@@ -168,21 +166,6 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
                 required
               />
             </div>
-
-            {!isLoginMode && (
-              <div className="form-group">
-                <label className="form-label">邮箱</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="form-input"
-                  placeholder="请输入邮箱"
-                  required
-                />
-              </div>
-            )}
 
             <div className="form-group">
               <label className="form-label">密码</label>

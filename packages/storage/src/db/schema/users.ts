@@ -7,7 +7,6 @@ export const users = pgTable(
   'users',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    email: varchar('email', { length: 255 }).notNull().unique(),
     username: varchar('username', { length: 50 }).notNull().unique(),
     passwordHash: text('password_hash').notNull(),
     displayName: varchar('display_name', { length: 100 }),
@@ -21,9 +20,7 @@ export const users = pgTable(
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },
   table => ({
-    emailIdx: index('users_email_idx').on(table.email),
     usernameIdx: index('users_username_idx').on(table.username),
-
     passwordResetTokenIdx: index('users_password_reset_token_idx').on(table.passwordResetToken),
   })
 );

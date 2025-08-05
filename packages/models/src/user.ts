@@ -8,7 +8,6 @@
  */
 export interface User {
   id: string;
-  email: string;
   username: string;
   displayName: string | null;
   avatar: string | null;
@@ -22,7 +21,6 @@ export interface User {
  * 创建用户数据接口
  */
 export interface NewUser {
-  email: string;
   username: string;
   passwordHash: string;
   displayName?: string | null;

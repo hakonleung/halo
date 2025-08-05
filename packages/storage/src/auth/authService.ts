@@ -1,6 +1,6 @@
 import type { User, NewUser } from '@halo/models';
 import { hash, compare } from 'bcryptjs';
-import { eq, and, or } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 import { getDb } from '../db/index';
 import { users } from '../db/schema/users';
@@ -19,24 +19,12 @@ export class AuthService {
    * 创建用户
    */
   async createUser(userData: {
-    email: string;
     username: string;
     password: string;
     displayName?: string;
   }): Promise<{ success: boolean; user?: User; error?: string }> {
     try {
       const db = await this.dbPromise;
-
-      // 检查邮箱是否已存在
-      const existingEmailUser = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, userData.email))
-        .limit(1);
-
-      if (existingEmailUser.length > 0) {
-        return { success: false, error: '邮箱已被使用' };
-      }
 
       // 检查用户名是否已存在
       const existingUsernameUser = await db
@@ -54,7 +42,6 @@ export class AuthService {
 
       // 创建用户
       const newUser: NewUser = {
-        email: userData.email,
         username: userData.username,
         passwordHash,
         displayName: userData.displayName ?? userData.username,
@@ -81,7 +68,7 @@ export class AuthService {
    * 验证用户登录
    */
   async authenticateUser(
-    emailOrUsername: string,
+    username: string,
     password: string
   ): Promise<{ success: boolean; user?: User; error?: string }> {
     try {
@@ -91,12 +78,7 @@ export class AuthService {
       const user = await db
         .select()
         .from(users)
-        .where(
-          and(
-            or(eq(users.email, emailOrUsername), eq(users.username, emailOrUsername)),
-            eq(users.isActive, true)
-          )
-        )
+        .where(and(eq(users.username, username), eq(users.isActive, true)))
         .limit(1);
 
       const foundUser = user[0];

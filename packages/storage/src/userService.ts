@@ -19,7 +19,6 @@ export class UserService {
    * 创建用户
    */
   async createUser(userData: {
-    email: string;
     username: string;
     password: string;
     displayName?: string;
@@ -31,10 +30,10 @@ export class UserService {
    * 验证用户登录
    */
   async authenticateUser(
-    emailOrUsername: string,
+    username: string,
     password: string
   ): Promise<{ success: boolean; user?: User; error?: string }> {
-    return this.authService.authenticateUser(emailOrUsername, password);
+    return this.authService.authenticateUser(username, password);
   }
 
   /**

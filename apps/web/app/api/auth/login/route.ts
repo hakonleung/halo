@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 // 登录请求验证schema
 const loginSchema = z.object({
-  emailOrUsername: z.string().min(1, '请输入邮箱或用户名'),
+  username: z.string().min(1, '请输入用户名'),
   password: z.string().min(1, '请输入密码'),
 });
 
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { emailOrUsername, password } = validationResult.data;
+    const { username, password } = validationResult.data;
 
     // 获取配置
     const postgresUrl = process.env.POSTGRES_URL;
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const userService = await createUserService(postgresUrl);
 
     // 验证用户
-    const authResult = await userService.authenticateUser(emailOrUsername, password);
+    const authResult = await userService.authenticateUser(username, password);
     if (!authResult.success) {
       return NextResponse.json({ success: false, error: authResult.error }, { status: 401 });
     }
@@ -82,7 +82,6 @@ export async function POST(request: NextRequest) {
       message: '登录成功',
       user: {
         id: user.id,
-        email: user.email,
         username: user.username,
         displayName: user.displayName,
         avatar: user.avatar,
