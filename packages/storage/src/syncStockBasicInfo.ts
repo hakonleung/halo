@@ -1,5 +1,6 @@
-import { stocks } from './db/schema/stocks.js';
 import { StockAPI } from '@halo/stock';
+
+import { stocks } from './db/schema/stocks.js';
 import { delay } from './utils/delay.js';
 
 /**

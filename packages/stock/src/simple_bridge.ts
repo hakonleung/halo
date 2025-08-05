@@ -2,11 +2,8 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-// 导入类型定义
-import type { PythonBridgeConfig, StockSymbol, DateString } from './types/index.js';
-
-// 导入枚举（作为值）
 import { PythonFunction } from './types/index.js';
+import type { PythonBridgeConfig, StockSymbol, DateString } from './types/index.js';
 
 /**
  * Python桥接类

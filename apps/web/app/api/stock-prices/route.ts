@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { getDb, stockPrices, eq, and, gte, lte, inArray, desc } from '@halo/storage';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {

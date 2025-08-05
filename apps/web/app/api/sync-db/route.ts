@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { syncDb, type SyncOptions } from '@halo/storage';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,6 +1,7 @@
+import { eq } from 'drizzle-orm';
+
 import { getDb } from './db/index.js';
 import { syncRecords } from './db/schema/stocks.js';
-import { eq } from 'drizzle-orm';
 import { syncStockBasicInfo } from './syncStockBasicInfo.js';
 import { syncStockPricesHistory } from './syncStockPricesHistory.js';
 

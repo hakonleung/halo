@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import type { StockPricesResponse, StockPricesParams } from '../types/stock';
+
 import { apiRequest, buildQueryString } from '../api/client';
+import type { StockPricesResponse, StockPricesParams } from '../types/stock';
 
 /**
  * 获取股票价格数据的fetcher函数

@@ -1,7 +1,4 @@
-// 导入Python桥接
 import { SimplePythonBridge } from './simple_bridge.js';
-
-// 导入类型定义
 import type {
   StockHistoryResponse,
   StockRealtimeResponse,

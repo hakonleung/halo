@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import type { StocksResponse } from '../types/stock';
+
 import { apiRequest } from '../api/client';
+import type { StocksResponse } from '../types/stock';
 
 /**
  * 获取股票基本信息的fetcher函数

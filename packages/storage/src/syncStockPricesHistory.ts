@@ -1,7 +1,8 @@
-import { stocks, stockPrices } from './db/schema/stocks.js';
 import { StockAPI } from '@halo/stock';
-import { eq, desc } from 'drizzle-orm';
 import type { KlineData } from '@halo/stock';
+import { eq, desc } from 'drizzle-orm';
+
+import { stocks, stockPrices } from './db/schema/stocks.js';
 import { delay } from './utils/delay.js';
 
 /**
