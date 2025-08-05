@@ -38,6 +38,9 @@
     ],
     "**/*.{json,md,yml,yaml}": [
       "prettier --write"
+    ],
+    "**/*.{ts,tsx}": [
+      "bash -c 'pnpm type-check'"
     ]
   }
 }

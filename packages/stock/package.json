@@ -4,13 +4,20 @@
   "description": "A股数据查询Python库，基于akshare，可供Node.js调用",
   "type": "module",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "bin": {
     "stock-demo": "./bin/stock-demo.mjs"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "type-check": "tsc --noEmit",
@@ -33,6 +40,7 @@
     "globals": "^16.3.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.0.0"
   },
   "keywords": [
