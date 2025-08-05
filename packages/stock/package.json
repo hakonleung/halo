@@ -13,6 +13,7 @@
     "dev": "tsc --watch",
     "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0 --fix",
+    "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
     "install:python": "pip install -r requirements.txt",
     "test:python": "python test_python.py",
@@ -21,6 +22,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@halo/models": "workspace:*",
     "node-addon-api": "^7.0.0"
   },
   "devDependencies": {

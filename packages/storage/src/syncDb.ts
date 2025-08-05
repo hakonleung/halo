@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm';
 
-import { getDb } from './db/index.js';
-import { syncRecords } from './db/schema/stocks.js';
-import { syncStockBasicInfo } from './syncStockBasicInfo.js';
-import { syncStockPricesHistory } from './syncStockPricesHistory.js';
+import { getDb } from './db/index';
+import { syncRecords } from './db/schema/stocks';
+import { syncStockBasicInfo } from './syncStockBasicInfo';
+import { syncStockPricesHistory } from './syncStockPricesHistory';
 
 export interface SyncOptions {
   batchSize?: number;

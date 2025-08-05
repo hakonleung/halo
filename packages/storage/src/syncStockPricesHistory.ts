@@ -1,9 +1,9 @@
+import type { KlineData } from '@halo/models';
 import { StockAPI } from '@halo/stock';
-import type { KlineData } from '@halo/stock';
 import { eq, desc } from 'drizzle-orm';
 
-import { stocks, stockPrices } from './db/schema/stocks.js';
-import { delay } from './utils/delay.js';
+import { stocks, stockPrices } from './db/schema/stocks';
+import { delay } from './utils/delay';
 
 /**
  * 同步股票价格历史数据的结果

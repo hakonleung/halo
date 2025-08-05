@@ -2,8 +2,8 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
-import { PythonFunction } from './types/index.js';
-import type { PythonBridgeConfig, StockSymbol, DateString } from './types/index.js';
+import { PythonFunction } from '@halo/models';
+import type { PythonBridgeConfig, StockSymbol, DateString } from '@halo/models';
 
 /**
  * Python桥接类

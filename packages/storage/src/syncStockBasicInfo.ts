@@ -1,7 +1,7 @@
 import { StockAPI } from '@halo/stock';
 
-import { stocks } from './db/schema/stocks.js';
-import { delay } from './utils/delay.js';
+import { stocks } from './db/schema/stocks';
+import { delay } from './utils/delay';
 
 /**
  * 同步股票基本信息的结果

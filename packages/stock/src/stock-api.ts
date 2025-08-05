@@ -1,10 +1,11 @@
-import { SimplePythonBridge } from './simple_bridge.js';
 import type {
   StockHistoryResponse,
   StockRealtimeResponse,
   StockInfoResponse,
   StockBasicInfoResponse,
-} from './types/index.js';
+} from '@halo/models';
+
+import { SimplePythonBridge } from './simple_bridge';
 
 /**
  * 股票数据API类

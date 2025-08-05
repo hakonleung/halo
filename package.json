@@ -8,7 +8,7 @@
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
-    "check-types": "turbo run check-types",
+    "type-check": "turbo run type-check",
     "prepare": "husky",
     "db:dev": "pnpm --filter @halo/storage db:dev",
     "db:generate": "pnpm --filter @halo/storage db:generate",
