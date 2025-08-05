@@ -52,22 +52,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-export async function GET() {
-  return NextResponse.json(
-    {
-      success: false,
-      error: '请使用 POST 方法调用此接口',
-      usage: {
-        method: 'POST',
-        endpoint: '/api/sync-db',
-        body: {
-          batchSize: '可选，批次大小，默认为 1',
-          delayBetweenBatches: '可选，批次间延迟毫秒数，默认为 200',
-          syncBasicInfo: '可选，是否同步股票基本信息，默认为 false',
-        },
-      },
-    },
-    { status: 405 }
-  );
-}
