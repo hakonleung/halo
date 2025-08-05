@@ -1,91 +1,98 @@
-import { Button } from '@repo/ui/button';
-import Image, { type ImageProps } from 'next/image';
-
-import styles from './page.module.css';
-
-type Props = Omit<ImageProps, 'src'> & {
-  srcLight: string;
-  srcDark: string;
-};
-
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
-
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
+import { Navbar } from '../components/Navbar';
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <Navbar />
+      <div className="main-content">
+        <main
+          style={{
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '40px 20px',
+            background: 'linear-gradient(135deg, #131722 0%, #1e222d 100%)',
+            color: 'white',
+          }}
+        >
+          <div style={{ textAlign: 'center', maxWidth: '800px' }}>
+            <h1
+              style={{
+                fontSize: '3rem',
+                fontWeight: 'bold',
+                marginBottom: '1rem',
+                background: 'linear-gradient(135deg, #2196f3, #21cbf3)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              Halo 股票分析平台
+            </h1>
+            <p
+              style={{
+                fontSize: '1.25rem',
+                color: '#9598a1',
+                marginBottom: '2rem',
+                lineHeight: '1.6',
+              }}
+            >
+              专业的A股数据分析工具，为投资者提供实时行情、技术分析和智能决策支持
+            </p>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turborepo.com/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/window.svg" alt="Window icon" width={16} height={16} />
-          Examples
-        </a>
-        <a
-          href="https://turborepo.com?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
-          Go to turborepo.com →
-        </a>
-      </footer>
-    </div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                gap: '2rem',
+                marginTop: '3rem',
+              }}
+            >
+              <div
+                style={{
+                  background: 'rgba(33, 150, 243, 0.1)',
+                  padding: '2rem',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(33, 150, 243, 0.2)',
+                }}
+              >
+                <h3 style={{ color: '#2196f3', marginBottom: '1rem' }}>实时行情</h3>
+                <p style={{ color: '#d1d4dc' }}>获取A股市场实时股价、成交量等关键数据</p>
+              </div>
+
+              <div
+                style={{
+                  background: 'rgba(76, 175, 80, 0.1)',
+                  padding: '2rem',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(76, 175, 80, 0.2)',
+                }}
+              >
+                <h3 style={{ color: '#4caf50', marginBottom: '1rem' }}>技术分析</h3>
+                <p style={{ color: '#d1d4dc' }}>专业的K线图表和技术指标分析工具</p>
+              </div>
+
+              <div
+                style={{
+                  background: 'rgba(255, 152, 0, 0.1)',
+                  padding: '2rem',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255, 152, 0, 0.2)',
+                }}
+              >
+                <h3 style={{ color: '#ff9800', marginBottom: '1rem' }}>智能推荐</h3>
+                <p style={{ color: '#d1d4dc' }}>基于大数据分析的投资建议和风险提示</p>
+              </div>
+            </div>
+
+            <div style={{ marginTop: '3rem', color: '#9598a1' }}>
+              <p>立即登录开始您的投资分析之旅</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </>
   );
 }
