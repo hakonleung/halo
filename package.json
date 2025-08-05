@@ -16,8 +16,7 @@
     "db:push": "pnpm --filter @halo/storage db:push",
     "db:studio": "pnpm --filter @halo/storage db:studio",
     "db:init": "pnpm --filter @halo/storage db:init",
-    "db:reset": "pnpm --filter @halo/storage db:reset",
-    "db:import": "pnpm --filter @halo/storage db:import"
+    "db:reset": "pnpm --filter @halo/storage db:reset"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
