@@ -19,6 +19,15 @@ export const config = [
     },
     rules: {
       'turbo/no-undeclared-env-vars': 'warn',
+      // 限制每个文件最多250行
+      'max-lines': [
+        'error',
+        {
+          max: 250,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
     },
   },
   {

@@ -1,7 +1,91 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cursor.general.disableHttp2": true,
+  "files.associations": {
+    "*.json": "jsonc",
+    "*.css": "tailwindcss"
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "json", "jsonc", "json5", "yaml", "toml"],
+  "cSpell.words": [
+    "bignumber",
+    "bugsnag",
+    "calldatas",
+    "Chakra",
+    "Cronos",
+    "defi",
+    "defiwallet",
+    "Ebisu",
+    "ebisusbay",
+    "ethersproject",
+    "Fulcrom",
+    "galxe",
+    "gitbook",
+    "hexlify",
+    "hosthog",
+    "Innerworks",
+    "lcro",
+    "leaderboard",
+    "leth",
+    "merkle",
+    "Moonlander",
+    "partialize",
+    "pnpm",
+    "posthog",
+    "Puush",
+    "receival",
+    "SEPOLIA",
+    "tanstack",
+    "Topup",
+    "typechain",
+    "unbond",
+    "unbonded",
+    "unbonding",
+    "Veno",
+    "Vusd",
+    "WCRO",
+    "Wolfswap",
+    "zkcro",
+    "zkevm",
+    "zustand",
+    "ferro",
+    "aprs",
+    "kode",
+    "shadcn",
+    "sonner",
+    "agentfun"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "tailwindCSS.experimental.classRegex": [
+    ["cva([\\s\\S]+)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "[tailwindcss]": {
+    "editor.quickSuggestions": {
+      "strings": "on"
     }
-  ]
+  },
+  "workbench.editorAssociations": { "*.svg": "default" },
+
+  "i18n-ally.localesPaths": ["ui/src/locales"],
+  "i18n-ally.enabledParsers": ["js", "ts", "json"],
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.pathMatcher": "{locale}/{namespaces}.json",
+  "i18n-ally.namespace": true,
+  "i18n-ally.extract.parsers.html": {
+    "attributes": ["text", "title", "alt", "placeholder", "label", "aria-label"],
+    "ignoredTags": ["script", "style"],
+    "inlineText": true
+  },
+  "i18n-ally.regex.key": "[\\w\\d\\. \\-\\[\\]']*?",
+  "i18n-ally.displayLanguage": "en",
+  "references.preferredLocation": "view"
 }
