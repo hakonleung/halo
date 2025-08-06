@@ -1,7 +1,7 @@
 'use client';
 
 import type { User } from '@halo/models';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -34,59 +34,16 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  if (!isOpen) return null;
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsLoading(true);
+      setError('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    try {
-      if (isLoginMode) {
-        // 登录逻辑
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            username: formData.username,
-            password: formData.password,
-          }),
-        });
-
-        const result: LoginResponse = await response.json();
-
-        if (result.success && result.user) {
-          onLoginSuccess(result.user);
-          setFormData({ username: '', password: '', confirmPassword: '' });
-        } else {
-          setError(result.error || '登录失败');
-        }
-      } else {
-        // 注册逻辑
-        if (formData.password !== formData.confirmPassword) {
-          setError('两次输入的密码不匹配');
-          return;
-        }
-
-        const response = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: formData.username,
-            password: formData.password,
-          }),
-        });
-
-        const result: RegisterResponse = await response.json();
-
-        if (result.success && result.user) {
-          // 注册成功后自动登录
-          const loginResponse = await fetch('/api/auth/login', {
+      try {
+        if (isLoginMode) {
+          // 登录逻辑
+          const response = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -98,28 +55,77 @@ export function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
             }),
           });
 
-          const loginResult: LoginResponse = await loginResponse.json();
-          if (loginResult.success && loginResult.user) {
-            onLoginSuccess(loginResult.user);
+          const result: LoginResponse = await response.json();
+
+          if (result.success && result.user) {
+            onLoginSuccess(result.user);
             setFormData({ username: '', password: '', confirmPassword: '' });
+          } else {
+            setError(result.error || '登录失败');
           }
         } else {
-          setError(result.error || '注册失败');
-        }
-      }
-    } catch {
-      setError('网络错误，请稍后重试');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+          // 注册逻辑
+          if (formData.password !== formData.confirmPassword) {
+            setError('两次输入的密码不匹配');
+            return;
+          }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+          const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              username: formData.username,
+              password: formData.password,
+            }),
+          });
+
+          const result: RegisterResponse = await response.json();
+
+          if (result.success && result.user) {
+            // 注册成功后自动登录
+            const loginResponse = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                username: formData.username,
+                password: formData.password,
+              }),
+            });
+
+            const loginResult: LoginResponse = await loginResponse.json();
+            if (loginResult.success && loginResult.user) {
+              onLoginSuccess(loginResult.user);
+              setFormData({ username: '', password: '', confirmPassword: '' });
+            }
+          } else {
+            setError(result.error || '注册失败');
+          }
+        }
+      } catch {
+        setError('网络错误，请稍后重试');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formData.confirmPassword, formData.password, formData.username, isLoginMode, onLoginSuccess]
+  );
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    },
+    [formData]
+  );
+
+  if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>

@@ -32,15 +32,13 @@
     "node": ">=18"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx}": [
+    "**/*.{ts,tsx}": [
       "eslint --fix --max-warnings 0",
-      "prettier --write"
+      "prettier --write",
+      "bash -c 'pnpm type-check'"
     ],
     "**/*.{json,md,yml,yaml}": [
       "prettier --write"
-    ],
-    "**/*.{ts,tsx}": [
-      "bash -c 'pnpm type-check'"
     ]
   }
 }

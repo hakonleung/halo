@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jsonwebtoken": "^9.0.2",
+    "klinecharts": "10.0.0-alpha5",
     "next": "^15.4.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -31,11 +32,15 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.11",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.31.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11",
     "typescript": "5.8.2"
   }
 }

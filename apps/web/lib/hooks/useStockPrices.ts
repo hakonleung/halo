@@ -57,7 +57,7 @@ export function useStockPrices(
   return useSWR(url, fetchStockPrices, {
     // 默认配置
     revalidateOnFocus: false,
-    revalidateOnReconnect: true,
+    revalidateOnReconnect: false,
     refreshInterval: 0,
     // 用户自定义配置
     ...options,
@@ -91,7 +91,7 @@ export function useStockPricesRealtime(
 
   const swrOptions = useMemo(
     () => ({
-      refreshInterval: options?.refreshInterval || 10000, // 默认10秒刷新
+      refreshInterval: options?.refreshInterval, // 默认10秒刷新
       revalidateOnFocus: true,
       revalidateOnReconnect: true,
       enabled: options?.enabled,

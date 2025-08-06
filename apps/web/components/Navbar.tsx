@@ -1,7 +1,7 @@
 'use client';
 
 import type { User } from '@halo/models';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { LoginModal } from './LoginModal';
 import { Button } from './ui/button';
@@ -11,11 +11,7 @@ export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/me', {
         credentials: 'include',
@@ -32,9 +28,13 @@ export function Navbar() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const handleLogout = async () => {
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  const handleLogout = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
@@ -48,12 +48,12 @@ export function Navbar() {
     } catch (error) {
       console.error('登出失败:', error);
     }
-  };
+  }, []);
 
-  const handleLoginSuccess = (userData: User) => {
+  const handleLoginSuccess = useCallback((userData: User) => {
     setUser(userData);
     setIsLoginModalOpen(false);
-  };
+  }, []);
 
   return (
     <>
