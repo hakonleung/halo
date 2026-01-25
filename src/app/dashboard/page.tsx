@@ -1,41 +1,112 @@
 'use client';
 
-import { Box, Heading, Text, VStack } from '@chakra-ui/react';
-import { useUser } from '@/hooks/use-user';
+import { useState } from 'react';
+import { Box, Heading, Flex, SimpleGrid, VStack, Button } from '@chakra-ui/react';
+import { ArrowClockwise } from '@phosphor-icons/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { withAuth } from '@/components/auth/with-auth';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
+import {
+  TimeRangeSelector,
+  StatsCardGroup,
+  TrendLineChart,
+  CalendarHeatmap,
+  GoalProgressSection,
+} from '@/components/dashboard';
+import { useDashboardStats, useTrends, useHeatmap } from '@/hooks/use-dashboard';
+import type { TimeRange } from '@/types/dashboard-client';
 
 function DashboardContent() {
-  const { user } = useUser();
+  const queryClient = useQueryClient();
+  const [timeRange, setTimeRange] = useState<TimeRange>({ type: 'preset', value: '7d' });
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  // Fetch data
+  const { data: stats, isLoading: statsLoading } = useDashboardStats();
+  const { data: trends, isLoading: trendsLoading } = useTrends(timeRange, selectedTypes.length > 0 ? selectedTypes : undefined);
+  const { data: heatmap, isLoading: heatmapLoading } = useHeatmap(12);
+
+  // Handle type filter toggle
+  const handleTypeToggle = (typeId: string) => {
+    setSelectedTypes(prev =>
+      prev.includes(typeId)
+        ? prev.filter(id => id !== typeId)
+        : [...prev, typeId]
+    );
+  };
+
+  // Handle heatmap day click
+  const handleDayClick = (date: string) => {
+    setSelectedDate(date);
+    // Could open a modal here to show day details
+  };
+
+  // Refresh all data
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+  };
 
   return (
     <AuthenticatedLayout>
-      <Box p={8}>
-        <VStack gap={8} align="stretch" maxW="container.lg" mx="auto">
-          <Heading
-            as="h1"
-            size="2xl"
-            color="brand.matrix"
-            fontFamily="heading"
-            textShadow="0 0 10px currentColor"
+      <Box p={{ base: 4, md: 6, lg: 8 }} maxW="1400px" mx="auto">
+        <VStack gap={{ base: 4, md: 6 }} align="stretch">
+          {/* Header */}
+          <Flex
+            justify="space-between"
+            align={{ base: 'flex-start', md: 'center' }}
+            direction={{ base: 'column', md: 'row' }}
+            gap={4}
           >
-            DASHBOARD
-          </Heading>
-          <Box
-            bg="bg.carbon"
-            border="1px solid"
-            borderColor="brand.matrix"
-            borderRadius="4px"
-            p={6}
-            boxShadow="0 0 15px rgba(0, 255, 65, 0.1)"
-          >
-            <Text color="text.neon" fontFamily="mono" fontSize="lg" mb={4}>
-              Welcome, {user?.email}
-            </Text>
-            <Text color="text.mist" fontFamily="mono">
-              [ SYSTEM ONLINE ]
-            </Text>
-          </Box>
+            <Heading
+              as="h1"
+              size={{ base: 'xl', md: '2xl' }}
+              color="brand.matrix"
+              fontFamily="heading"
+              textShadow="0 0 10px currentColor"
+            >
+              DASHBOARD
+            </Heading>
+            <Flex gap={2}>
+              <TimeRangeSelector
+                value={timeRange}
+                onChange={setTimeRange}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                borderColor="brand.matrix"
+                color="text.neon"
+                onClick={handleRefresh}
+                _hover={{
+                  bg: 'rgba(0, 255, 65, 0.1)',
+                }}
+              >
+                <ArrowClockwise size={16} />
+              </Button>
+            </Flex>
+          </Flex>
+
+          {/* Stats Cards */}
+          <StatsCardGroup stats={stats} loading={statsLoading} />
+
+          {/* Trend Chart */}
+          <TrendLineChart
+            data={trends}
+            loading={trendsLoading}
+            selectedTypes={selectedTypes}
+            onTypeToggle={handleTypeToggle}
+          />
+
+          {/* Heatmap & Goals */}
+          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={{ base: 4, md: 6 }}>
+            <CalendarHeatmap
+              data={heatmap}
+              loading={heatmapLoading}
+              onDayClick={handleDayClick}
+            />
+            <GoalProgressSection loading={statsLoading} />
+          </SimpleGrid>
         </VStack>
       </Box>
     </AuthenticatedLayout>
