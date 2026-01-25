@@ -5,7 +5,7 @@
   "description": "添加目标管理功能，在AI验收通过下不再需要用户确认",
   "created_at": "2026-01-25T00:00:00Z",
   "updated_at": "2026-01-25T00:00:00Z",
-  "current_stage": "02_prd",
+  "current_stage": "03_ui_design",
   "status": "in_progress",
   "stages": {
     "01_requirements": {
@@ -17,16 +17,16 @@
       "ai_audit": "passed",
       "human_audit": "skipped",
       "rework_count": 0,
-      "commit_hash": null
+      "commit_hash": "80cb677"
     },
     "02_prd": {
-      "status": "pending",
+      "status": "completed",
       "risk_level": "medium",
-      "started_at": null,
-      "ended_at": null,
-      "duration_minutes": null,
-      "ai_audit": null,
-      "human_audit": null,
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
       "rework_count": 0,
       "commit_hash": null
     },
