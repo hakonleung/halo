@@ -1,0 +1,265 @@
+# 工作流指令
+
+> 执行 AI Coding 工作流，管理需求开发全流程。
+
+## 触发指令
+
+| 指令 | 说明 |
+|------|------|
+| `/flow-start [需求]` | 初始化流程：生成单号 `PRD_XXX`，创建分支，创建目录，开始执行 |
+| `/flow-status` | 查看当前状态 |
+| `/flow-list` | 列出所有工作流 |
+| `/flow-continue` | 继续暂停的工作流 |
+
+## 流程总览
+
+```mermaid
+flowchart TB
+    subgraph INIT["初始化"]
+        START["/flow-start [需求]"]
+        START --> GIT["创建分支 feat/PRD_XXX"]
+        GIT --> DIR["创建工作目录"]
+        DIR --> OV["初始化 overview.json"]
+    end
+
+    OV --> S01
+
+    subgraph STAGES["开发阶段"]
+        S01["01 需求澄清"] --> S02["02 PRD"] --> S03["03 UI设计"]
+        S03 --> S04["04 技术设计"] --> S05A["05a 前置"]
+        S05A --> S05B["05b 后端"] & S05C["05c 前端"]
+        S05B --> S06["06 验证"]
+        S05C --> S06
+        S06 --> S07["07 部署"]
+    end
+
+    subgraph LOOP["每阶段循环"]
+        AI["AI 执行"] --> AI_AUDIT{"AI 自验收"}
+        AI_AUDIT -->|"失败"| AI
+        AI_AUDIT -->|"通过"| HUMAN{"人类验收"}
+        HUMAN -->|"返工"| AI
+        HUMAN -->|"通过"| COMMIT["Git Commit"]
+    end
+
+    S07 --> DONE["完成"]
+```
+
+## 阶段定义
+
+| 步骤 | 文档 | 风险 | 人类介入 | 并行 |
+|------|------|------|---------|------|
+| 01-需求澄清 | [01-requirements.md](./workflow/01-requirements.md) | 高 | 必须 | - |
+| 02-PRD | [02-prd.md](./workflow/02-prd.md) | 中 | 可选 | 与03 |
+| 03-UI设计 | [03-ui-design.md](./workflow/03-ui-design.md) | 中 | 可选 | 与02 |
+| 04-技术设计 | [04-tech-design.md](./workflow/04-tech-design.md) | 高 | 必须 | - |
+| 05a-前置 | [05a-implementation-prep.md](./workflow/05a-implementation-prep.md) | 低 | 自动 | - |
+| 05b-后端 | [05b-implementation-backend.md](./workflow/05b-implementation-backend.md) | 中 | 可选 | 与05c |
+| 05c-前端 | [05c-implementation-frontend.md](./workflow/05c-implementation-frontend.md) | 中 | 可选 | 与05b |
+| 06-验证 | [06-validation.md](./workflow/06-validation.md) | 高 | 必须 | - |
+| 07-部署 | [07-deploy.md](./workflow/07-deploy.md) | 高 | 必须 | - |
+
+## 测试左移策略
+
+将测试活动前移，更早发现问题。
+
+| 阶段 | 测试活动 | 产出 |
+|------|---------|------|
+| 04 技术设计 | 测试用例草案 | `test-plan.md` |
+| 05a 前置 | 类型测试 | `types/__tests__/*.test.ts` |
+| 05b 后端 | 同步编写单元测试 | `lib/__tests__/*.test.ts` |
+| 05c 前端 | 同步编写组件测试 | `components/**/__tests__/*.test.tsx` |
+| 06 验证 | E2E + 回归测试 | `e2e/*.spec.ts` |
+
+**原则**: 先草案后实现、同步编写、测试未通过禁止继续、覆盖率门槛
+
+## 文档代码同步机制
+
+### 同步检查矩阵
+
+| 文档 | 检查项 | 代码对应 |
+|------|--------|---------|
+| api-spec.md | API 端点 | `src/app/api/**` |
+| tech-design.md | 数据模型 | `src/db/schema.ts` |
+| ui-design.md | 组件清单 | `src/components/**` |
+
+### 检查触发时机
+
+- 05 阶段完成后（自动）
+- 06 验证阶段（自动）
+- 07 部署前（自动）
+- 任意时刻：`/flow-sync-check`
+- 推荐脚本：`bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-coding/works/PRD_XXX`
+
+### 同步率门槛
+
+| 阶段 | 最低同步率 | 不达标处理 |
+|------|----------|-----------|
+| 05 完成 | ≥ 90% | 补充实现或更新文档 |
+| 06 验证 | ≥ 95% | 必须修复后继续 |
+| 07 部署 | = 100% | 阻塞部署 |
+
+## 执行模式
+
+AI **自动连续执行**，根据风险等级决定暂停：
+
+| 风险 | 人类介入 | 阶段 |
+|------|---------|------|
+| 高 | **必须** | 01、04、06、07 |
+| 中 | 可选 | 02、03、05b、05c |
+| 低 | 自动 | 05a |
+
+### 自动通过条件
+
+**可选** 阶段满足以下条件时自动通过：
+
+1. AI 自验收全部通过
+2. 验证脚本通过（详见 [validation-scripts.md](./shared/validation-scripts.md)，推荐 `flow-stage-validate.sh`）
+3. 无新增 TODO/FIXME
+
+### AI 交叉验证
+
+| 阶段 | 验证方式 |
+|------|---------|
+| 02-PRD | 反向推导：用 PRD 反推原始需求 |
+| 03-UI | 故事覆盖：每个 US 有对应 UI |
+| 04-技术 | 数据流模拟：模拟 API 调用链 |
+| 05a | 类型一致性：Client ↔ Server ↔ Schema |
+| 05b | API 契约：实现与 api-spec.md 一致 |
+| 05c | UI 还原：组件与 03 设计一致 |
+| 06 | 验收覆盖：每个 AC 有测试用例 |
+
+## 自动提交
+
+每阶段人类验收通过后自动 Git Commit：
+
+```bash
+git add .
+git commit -m "<type>: [PRD_XXX_stage] <details>"
+```
+
+**Commit 格式**: `docs/feat/fix/test: [PRD_XXX_XX] description`
+
+## 工作目录结构
+
+```
+ai-coding/works/PRD_001/
+├── overview.json
+├── snapshots/
+├── 01_requirements/  (requirements.md, journey.md, summary.md, history.json)
+├── 02_prd/           (prd.md, flow.md, summary.md, history.json)
+├── 03_ui_design/     (ui-design.md, layouts/, components/, preview/, summary.md, history.json)
+├── 04_tech_design/   (tech-design.md, architecture.md, api-spec.md, test-plan.md, summary.md, history.json)
+├── 05a_prep/         (prep.md, summary.md, history.json)
+├── 05b_backend/      (implementation.md, summary.md, history.json)
+├── 05c_frontend/     (implementation.md, summary.md, history.json)
+├── 06_validation/    (report.md, history.json)
+└── 07_deploy/        (history.json, quality-report.md)
+```
+
+> **数据格式**: `overview.json` 和各阶段 `history.json` 的结构定义见 [shared/data-structures.md](./shared/data-structures.md)
+
+## Context 缓存机制
+
+### 读取规则
+
+| 文件 | 首次读取时机 | 缓存范围 |
+|------|-------------|---------|
+| project.md | 01 阶段开始 | 整个流程 |
+| ui-config.md | 03 阶段开始 | 03, 05c, 06 |
+| tech-config.md | 04 阶段开始 | 04, 05a, 05b, 05c, 06 |
+
+**规范口径**: 技术规范以 `context/tech-config.md` 为唯一口径；如与阶段文档冲突，必须先修订再继续。
+
+### 阶段可用上下文
+
+| 阶段 | 可用缓存 | 阶段产出依赖 |
+|------|---------|-------------|
+| 01 | PROJECT | - |
+| 02 | PROJECT | 01/summary |
+| 03 | PROJECT, UI | 01/summary |
+| 04 | PROJECT, UI, TECH | 02/summary, 03/summary |
+| 05a | PROJECT, UI, TECH | 04/summary |
+| 05b | TECH | 05a/summary |
+| 05c | UI, TECH | 05a/summary, 03/summary |
+| 06 | UI, TECH | 02/prd, 05b/summary, 05c/summary |
+| 07 | - | 06/report |
+
+## Context 压缩机制
+
+每阶段完成后生成 `summary.md`（~50-100行），后续阶段优先读取摘要。
+
+### summary.md 格式
+
+```markdown
+# [阶段名] 摘要
+
+## 核心结论
+## 关键产出
+## 供后续阶段使用
+## 注意事项
+## 关键词索引
+<!-- 关键术语 → 原文位置映射 -->
+```
+
+### 按需读取
+
+当摘要不足时，通过关键词索引定位原文章节，或使用 `/read-full [阶段]`。
+
+## 快照机制
+
+### 触发时机
+
+| 触发事件 | 快照类型 |
+|---------|---------|
+| 阶段完成 | `stage_complete` |
+| 手动保存 | `manual` |
+| 长时间暂停 | `auto_pause` |
+| 返工开始 | `before_rework` |
+
+### 快照恢复 (/flow-continue)
+
+1. 读取 overview.json
+2. 查找最新快照
+3. 恢复 Context 缓存
+4. 切换 Git 分支
+5. 处理未提交变更
+6. 从暂停点继续
+
+## 数据结构
+
+详见 [shared/data-structures.md](./shared/data-structures.md)
+
+## 并行阶段协调
+
+### 同步检查点
+
+| 并行组 | 检查点 | 下一阶段 |
+|-------|-------|---------|
+| 02 & 03 | 用户故事覆盖、术语一致性 | 04 |
+| 05b & 05c | API 契约、类型一致性、文件冲突 | 06 |
+
+### 05b & 05c 职责边界
+
+| 资源类型 | 05b 后端 | 05c 前端 |
+|---------|---------|---------|
+| `src/types/*` | 只读 | 只读 |
+| `src/lib/*-service.ts` | 创建/修改 | - |
+| `src/app/api/**` | 创建/修改 | - |
+| `src/hooks/*` | - | 创建/修改 |
+| `src/components/**` | - | 创建/修改 |
+
+### 前端 Mock 策略
+
+05c 开发时可使用 Mock，后端完成后切换 `NEXT_PUBLIC_USE_MOCK=false` 联调。
+
+### 进入 06 前置条件
+
+1. 05b、05c 都已完成
+2. 同步检查点通过
+3. 合并分支（如使用独立分支）
+
+---
+
+## 验证脚本
+
+详见 [shared/validation-scripts.md](./shared/validation-scripts.md)

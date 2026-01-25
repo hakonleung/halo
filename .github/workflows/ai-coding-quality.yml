@@ -1,0 +1,53 @@
+name: ai-coding-quality
+
+on:
+  pull_request:
+    paths:
+      - 'ai-coding/**'
+      - 'src/**'
+      - 'e2e/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch:
+    inputs:
+      work_dir:
+        description: 'ai-coding/works/PRD_XXX (optional)'
+        required: false
+        default: ''
+      min_rate:
+        description: 'Sync rate threshold (0-1)'
+        required: false
+        default: '0.95'
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Stage validation
+        run: bash ai-coding/scripts/flow-stage-validate.sh --stage all --skip-tests
+
+      - name: Sync check
+        run: |
+          if [[ -n "${{ inputs.work_dir }}" ]]; then
+            bash ai-coding/scripts/flow-sync-check.sh \
+              --work-dir "${{ inputs.work_dir }}" \
+              --min-rate "${{ inputs.min_rate }}"
+          else
+            bash ai-coding/scripts/flow-sync-check.sh \
+              --min-rate "${{ inputs.min_rate }}"
+          fi
