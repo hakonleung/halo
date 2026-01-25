@@ -8,8 +8,8 @@
   "updated_at": "2026-01-25T00:00:00Z",
   "current_stage": "01_requirements",
   "stages": [
-    { "id": "01_requirements", "name": "需求澄清", "status": "in_progress", "risk": "high" },
-    { "id": "02_prd", "name": "PRD", "status": "pending", "risk": "medium" },
+    { "id": "01_requirements", "name": "需求澄清", "status": "completed", "risk": "high" },
+    { "id": "02_prd", "name": "PRD", "status": "in_progress", "risk": "medium" },
     { "id": "03_ui_design", "name": "UI设计", "status": "pending", "risk": "medium" },
     { "id": "04_tech_design", "name": "技术设计", "status": "pending", "risk": "high" },
     { "id": "05a_prep", "name": "实现前置", "status": "pending", "risk": "low" },
