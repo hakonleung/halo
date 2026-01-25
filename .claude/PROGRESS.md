@@ -40,6 +40,21 @@
   - 提供 `HistoryFilters`（类型、搜索、日期筛选）及 `HistoryList`（统一展示表格）。
   - 集成 `useHistory` 和 `useNotes` hooks。
 
+### 1.5 可视化模块 (Visualization Module) - PRD_001
+- **后端**:
+  - 实现了 `dashboard-service.ts`，提供统计、趋势、热力图数据聚合。
+  - 新增 `/api/dashboard/stats`、`/api/dashboard/trends`、`/api/dashboard/heatmap` 接口。
+- **前端**:
+  - 实现了 `TimeRangeSelector` 时间范围选择器。
+  - 实现了 `StatsCard` 和 `StatsCardGroup` 概览卡片组。
+  - 实现了 `TrendLineChart` 行为趋势折线图（使用 Recharts）。
+  - 实现了 `CalendarHeatmap` GitHub 风格活跃度热力图。
+  - 实现了 `GoalProgressRing` 和 `GoalProgressSection` 目标进度环。
+  - 重构了 `/dashboard` 页面，整合所有可视化组件。
+- **类型**:
+  - 新增 `dashboard-server.ts` 和 `dashboard-client.ts` 类型定义。
+  - 新增 `use-dashboard.ts` hooks（useDashboardStats, useTrends, useHeatmap）。
+
 ## 2. 技术规范与架构优化
 
 ### 2.1 数据库架构
@@ -61,11 +76,11 @@
 
 ## 3. 待办任务 (Next Steps)
 
-- [ ] **可视化模块 (Visualization Module)**: 实现 Dashboard 核心图表（趋势、热力图、目标进度）。
+- [x] **可视化模块 (Visualization Module)**: 实现 Dashboard 核心图表（趋势、热力图、目标进度）。✅ 已完成
 - [ ] **目标管理 (Goal Management)**: 完善目标的详情查看及编辑功能（目前仅有基础服务和列表显示）。
 - [ ] **动画增强**: 根据 PRD 进一步完善赛博朋克风格的故障效果、矩阵雨等特效。
 - [ ] **数据导入导出**: 实现设置中的数据管理功能。
 
 ---
-*更新日期: 2026-01-24*
+*更新日期: 2026-01-25*
 
