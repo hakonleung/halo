@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEO-LOG Dashboard Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-matrix: #00FF41;
+      --brand-alert: #FF6B35;
+      --brand-cyber: #00D4FF;
+      --bg-void: #0A0A0A;
+      --bg-carbon: #1A1A1A;
+      --bg-hover: #2A2A2A;
+      --text-neon: #E0E0E0;
+      --text-mist: #888888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-void);
+      color: var(--text-neon);
+      font-family: 'VT323', monospace;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .navbar {
+      height: 64px;
+      background: var(--bg-carbon);
+      border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+    }
+
+    .logo {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 14px;
+      color: var(--brand-matrix);
+      text-shadow: 0 0 10px var(--brand-matrix);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 24px;
+      color: var(--brand-matrix);
+      text-shadow: 0 0 10px var(--brand-matrix);
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .time-selector {
+      background: var(--bg-carbon);
+      border: 1px solid rgba(0, 255, 65, 0.3);
+      color: var(--text-neon);
+      padding: 8px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .time-selector:hover {
+      border-color: var(--brand-matrix);
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-carbon);
+      border: 1px solid rgba(0, 255, 65, 0.3);
+      border-radius: 4px;
+      padding: 16px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.15s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--brand-matrix);
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .stat-title {
+      font-size: 14px;
+      color: var(--text-mist);
+      margin-bottom: 12px;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 48px;
+      color: var(--brand-matrix);
+      text-shadow: 0 0 10px var(--brand-matrix);
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .stat-trend {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .trend-up {
+      color: var(--brand-matrix);
+    }
+
+    .trend-down {
+      color: var(--brand-alert);
+    }
+
+    /* Chart Section */
+    .chart-section {
+      background: var(--bg-carbon);
+      border: 1px solid rgba(0, 255, 65, 0.3);
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      color: var(--text-neon);
+      margin-bottom: 16px;
+    }
+
+    .chart-placeholder {
+      height: 280px;
+      border: 1px dashed rgba(0, 255, 65, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-mist);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Two Column */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Heatmap */
+    .heatmap-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      padding: 16px;
+    }
+
+    .heatmap-cell {
+      width: 12px;
+      height: 12px;
+      background: var(--bg-hover);
+      border-radius: 2px;
+      transition: all 0.15s ease;
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.3);
+      box-shadow: 0 0 8px var(--brand-matrix);
+    }
+
+    .heatmap-cell.level-1 { background: rgba(0, 255, 65, 0.2); }
+    .heatmap-cell.level-2 { background: rgba(0, 255, 65, 0.4); }
+    .heatmap-cell.level-3 { background: rgba(0, 255, 65, 0.6); }
+    .heatmap-cell.level-4 { background: rgba(0, 255, 65, 0.9); }
+
+    /* Progress Rings */
+    .progress-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .progress-ring {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ring-svg {
+      width: 100px;
+      height: 100px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: var(--bg-hover);
+      stroke-width: 8;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: var(--brand-matrix);
+      stroke-width: 8;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 4px var(--brand-matrix));
+      transition: stroke-dashoffset 0.8s ease-out;
+    }
+
+    .ring-label {
+      font-size: 14px;
+      color: var(--text-mist);
+    }
+
+    .ring-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      color: var(--brand-matrix);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 16px;
+      }
+      .page-title {
+        font-size: 16px;
+      }
+      .stat-value {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">NEO-LOG</div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="page-title">DASHBOARD</h1>
+      <div class="controls">
+        <select class="time-selector">
+          <option>最近 7 天</option>
+          <option>今日</option>
+          <option>最近 30 天</option>
+          <option>最近 90 天</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">今日记录</div>
+        <div class="stat-value">12</div>
+        <div class="stat-trend trend-up">▲ +3 vs 昨日</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">连续活跃</div>
+        <div class="stat-value">7</div>
+        <div class="stat-trend" style="color: var(--brand-cyber);">天 🔥</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">目标达成率</div>
+        <div class="stat-value">68%</div>
+        <div class="stat-trend trend-up">▲ +5% vs 上周</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">本周 vs 上周</div>
+        <div class="stat-value">+15%</div>
+        <div class="stat-trend trend-up">表现提升</div>
+      </div>
+    </section>
+
+    <!-- Trend Chart -->
+    <section class="chart-section">
+      <h2 class="chart-title">行为趋势</h2>
+      <div class="chart-placeholder">
+        [ 折线图区域 - 使用 Recharts/Nivo 实现 ]
+      </div>
+    </section>
+
+    <!-- Heatmap & Goals -->
+    <section class="two-col">
+      <div class="chart-section">
+        <h2 class="chart-title">活跃度热力图</h2>
+        <div class="heatmap-grid">
+          <!-- Generate sample heatmap cells -->
+          <script>
+            const levels = ['', 'level-1', 'level-2', 'level-3', 'level-4'];
+            for (let i = 0; i < 365; i++) {
+              const level = levels[Math.floor(Math.random() * 5)];
+              document.write(`<div class="heatmap-cell ${level}"></div>`);
+            }
+          </script>
+        </div>
+      </div>
+      <div class="chart-section">
+        <h2 class="chart-title">目标进度</h2>
+        <div class="progress-container">
+          <div class="progress-ring">
+            <svg class="ring-svg" viewBox="0 0 100 100">
+              <circle class="ring-bg" cx="50" cy="50" r="40"/>
+              <circle class="ring-progress" cx="50" cy="50" r="40"
+                stroke-dasharray="251.2" stroke-dashoffset="80"/>
+            </svg>
+            <div class="ring-value">68%</div>
+            <div class="ring-label">阅读目标</div>
+          </div>
+          <div class="progress-ring">
+            <svg class="ring-svg" viewBox="0 0 100 100">
+              <circle class="ring-bg" cx="50" cy="50" r="40"/>
+              <circle class="ring-progress" cx="50" cy="50" r="40"
+                stroke-dasharray="251.2" stroke-dashoffset="145"
+                style="stroke: var(--brand-cyber)"/>
+            </svg>
+            <div class="ring-value" style="color: var(--brand-cyber)">42%</div>
+            <div class="ring-label">运动目标</div>
+          </div>
+          <div class="progress-ring">
+            <svg class="ring-svg" viewBox="0 0 100 100">
+              <circle class="ring-bg" cx="50" cy="50" r="40"/>
+              <circle class="ring-progress" cx="50" cy="50" r="40"
+                stroke-dasharray="251.2" stroke-dashoffset="0"/>
+            </svg>
+            <div class="ring-value">100%</div>
+            <div class="ring-label">冥想目标 ✓</div>
+          </div>
+          <div class="progress-ring">
+            <svg class="ring-svg" viewBox="0 0 100 100">
+              <circle class="ring-bg" cx="50" cy="50" r="40"/>
+              <circle class="ring-progress" cx="50" cy="50" r="40"
+                stroke-dasharray="251.2" stroke-dashoffset="200"
+                style="stroke: var(--brand-alert)"/>
+            </svg>
+            <div class="ring-value" style="color: var(--brand-alert)">20%</div>
+            <div class="ring-label">写作目标</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
