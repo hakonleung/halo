@@ -4,10 +4,8 @@
 
 ## 依赖输入
 
-| 阶段产出 | 按需读取 |
-|---------|---------|
-| `05a_prep/summary.md` | `05a_prep/prep.md` |
-| `03_ui_design/summary.md` | `03_ui_design/ui-design.md`, `components/` |
+- **阶段产出**: `05a_prep/summary.md`, `03_ui_design/summary.md`
+- **按需读取**: `05a_prep/prep.md`, `03_ui_design/ui-design.md`, `components/`
 
 > Context 缓存: `UI_CONTEXT`, `TECH_CONTEXT`
 
@@ -56,19 +54,15 @@ return useQuery({ queryKey: ['xxx'], queryFn: fetcher });
 
 ### 测试覆盖要求
 
-| 类型 | 要求 |
-|------|------|
-| 组件渲染 | 每个组件至少 1 个 |
-| 交互行为 | 关键交互至少 1 个 |
-| 状态变体 | loading/error/empty |
+- **组件渲染**: 每个组件至少 1 个
+- **交互行为**: 关键交互至少 1 个
+- **状态变体**: loading/error/empty
 
 ## 产出物
 
-| 文件 | 路径 |
-|------|------|
-| 实现说明 | `05c_frontend/implementation.md` |
-| 阶段摘要 | `05c_frontend/summary.md` |
-| 操作历史 | `05c_frontend/history.json` |
+- **实现说明**: `05c_frontend/implementation.md`
+- **阶段摘要**: `05c_frontend/summary.md`
+- **操作历史**: `05c_frontend/history.json`
 
 **代码产出**:
 - `src/hooks/use-xxx.ts`
@@ -78,13 +72,11 @@ return useQuery({ queryKey: ['xxx'], queryFn: fetcher });
 
 ## AI 自验收
 
-| 检查项 | 通过标准 |
-|--------|---------|
-| Hooks | use-xxx.ts 存在 |
-| 组件 | components/xxx/ 存在 |
-| 页面 | app/xxx/page.tsx 存在 |
-| 测试 | 全部通过 |
-| 编译 | 无错误 |
+- **Hooks**: use-xxx.ts 存在
+- **组件**: components/xxx/ 存在
+- **页面**: app/xxx/page.tsx 存在
+- **测试**: 全部通过
+- **编译**: 无错误
 
 > 验证命令详见 [validation-scripts.md](../shared/validation-scripts.md)
 

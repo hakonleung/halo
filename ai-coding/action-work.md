@@ -4,12 +4,10 @@
 
 ## 触发指令
 
-| 指令 | 说明 |
-|------|------|
-| `/flow-start [需求]` | 初始化流程：生成单号 `PRD_XXX`，创建分支，创建目录，开始执行 |
-| `/flow-status` | 查看当前状态 |
-| `/flow-list` | 列出所有工作流 |
-| `/flow-continue` | 继续暂停的工作流 |
+- **`/flow-start [需求]`**: 初始化流程：生成单号 `PRD_XXX`，创建分支，创建目录，开始执行
+- **`/flow-status`**: 查看当前状态
+- **`/flow-list`**: 列出所有工作流
+- **`/flow-continue`**: 继续暂停的工作流
 
 ## 流程总览
 
@@ -46,29 +44,25 @@ flowchart TB
 
 ## 阶段定义
 
-| 步骤 | 文档 | 风险 | 人类介入 | 并行 |
-|------|------|------|---------|------|
-| 01-需求澄清 | [01-requirements.md](./workflow/01-requirements.md) | 高 | 必须 | - |
-| 02-PRD | [02-prd.md](./workflow/02-prd.md) | 中 | 可选 | 与03 |
-| 03-UI设计 | [03-ui-design.md](./workflow/03-ui-design.md) | 中 | 可选 | 与02 |
-| 04-技术设计 | [04-tech-design.md](./workflow/04-tech-design.md) | 高 | 必须 | - |
-| 05a-前置 | [05a-implementation-prep.md](./workflow/05a-implementation-prep.md) | 低 | 自动 | - |
-| 05b-后端 | [05b-implementation-backend.md](./workflow/05b-implementation-backend.md) | 中 | 可选 | 与05c |
-| 05c-前端 | [05c-implementation-frontend.md](./workflow/05c-implementation-frontend.md) | 中 | 可选 | 与05b |
-| 06-验证 | [06-validation.md](./workflow/06-validation.md) | 高 | 必须 | - |
-| 07-部署 | [07-deploy.md](./workflow/07-deploy.md) | 高 | 必须 | - |
+- **01-需求澄清**: [01-requirements.md](./workflow/01-requirements.md) - 风险: 高, 人类介入: 必须
+- **02-PRD**: [02-prd.md](./workflow/02-prd.md) - 风险: 中, 人类介入: 可选, 并行: 与03
+- **03-UI设计**: [03-ui-design.md](./workflow/03-ui-design.md) - 风险: 中, 人类介入: 可选, 并行: 与02
+- **04-技术设计**: [04-tech-design.md](./workflow/04-tech-design.md) - 风险: 高, 人类介入: 必须
+- **05a-前置**: [05a-implementation-prep.md](./workflow/05a-implementation-prep.md) - 风险: 低, 人类介入: 自动
+- **05b-后端**: [05b-implementation-backend.md](./workflow/05b-implementation-backend.md) - 风险: 中, 人类介入: 可选, 并行: 与05c
+- **05c-前端**: [05c-implementation-frontend.md](./workflow/05c-implementation-frontend.md) - 风险: 中, 人类介入: 可选, 并行: 与05b
+- **06-验证**: [06-validation.md](./workflow/06-validation.md) - 风险: 高, 人类介入: 必须
+- **07-部署**: [07-deploy.md](./workflow/07-deploy.md) - 风险: 高, 人类介入: 必须
 
 ## 测试左移策略
 
 将测试活动前移，更早发现问题。
 
-| 阶段 | 测试活动 | 产出 |
-|------|---------|------|
-| 04 技术设计 | 测试用例草案 | `test-plan.md` |
-| 05a 前置 | 类型测试 | `types/__tests__/*.test.ts` |
-| 05b 后端 | 同步编写单元测试 | `lib/__tests__/*.test.ts` |
-| 05c 前端 | 同步编写组件测试 | `components/**/__tests__/*.test.tsx` |
-| 06 验证 | E2E + 回归测试 | `e2e/*.spec.ts` |
+- **04 技术设计**: 测试用例草案 - `test-plan.md`
+- **05a 前置**: 类型测试 - `types/__tests__/*.test.ts`
+- **05b 后端**: 同步编写单元测试 - `lib/__tests__/*.test.ts`
+- **05c 前端**: 同步编写组件测试 - `components/**/__tests__/*.test.tsx`
+- **06 验证**: E2E + 回归测试 - `e2e/*.spec.ts`
 
 **原则**: 先草案后实现、同步编写、测试未通过禁止继续、覆盖率门槛
 
@@ -76,11 +70,9 @@ flowchart TB
 
 ### 同步检查矩阵
 
-| 文档 | 检查项 | 代码对应 |
-|------|--------|---------|
-| api-spec.md | API 端点 | `src/app/api/**` |
-| tech-design.md | 数据模型 | `src/db/schema.ts` |
-| ui-design.md | 组件清单 | `src/components/**` |
+- **api-spec.md**: API 端点 - `src/app/api/**`
+- **tech-design.md**: 数据模型 - `src/db/schema.ts`
+- **ui-design.md**: 组件清单 - `src/components/**`
 
 ### 检查触发时机
 
@@ -92,21 +84,17 @@ flowchart TB
 
 ### 同步率门槛
 
-| 阶段 | 最低同步率 | 不达标处理 |
-|------|----------|-----------|
-| 05 完成 | ≥ 90% | 补充实现或更新文档 |
-| 06 验证 | ≥ 95% | 必须修复后继续 |
-| 07 部署 | = 100% | 阻塞部署 |
+- **05 完成**: ≥ 90% - 不达标处理: 补充实现或更新文档
+- **06 验证**: ≥ 95% - 不达标处理: 必须修复后继续
+- **07 部署**: = 100% - 不达标处理: 阻塞部署
 
 ## 执行模式
 
 AI **自动连续执行**，根据风险等级决定暂停：
 
-| 风险 | 人类介入 | 阶段 |
-|------|---------|------|
-| 高 | **必须** | 01、04、06、07 |
-| 中 | 可选 | 02、03、05b、05c |
-| 低 | 自动 | 05a |
+- **高**: 人类介入必须 - 阶段: 01、04、06、07
+- **中**: 人类介入可选 - 阶段: 02、03、05b、05c
+- **低**: 人类介入自动 - 阶段: 05a
 
 ### 自动通过条件
 
@@ -118,15 +106,13 @@ AI **自动连续执行**，根据风险等级决定暂停：
 
 ### AI 交叉验证
 
-| 阶段 | 验证方式 |
-|------|---------|
-| 02-PRD | 反向推导：用 PRD 反推原始需求 |
-| 03-UI | 故事覆盖：每个 US 有对应 UI |
-| 04-技术 | 数据流模拟：模拟 API 调用链 |
-| 05a | 类型一致性：Client ↔ Server ↔ Schema |
-| 05b | API 契约：实现与 api-spec.md 一致 |
-| 05c | UI 还原：组件与 03 设计一致 |
-| 06 | 验收覆盖：每个 AC 有测试用例 |
+- **02-PRD**: 反向推导：用 PRD 反推原始需求
+- **03-UI**: 故事覆盖：每个 US 有对应 UI
+- **04-技术**: 数据流模拟：模拟 API 调用链
+- **05a**: 类型一致性：Client ↔ Server ↔ Schema
+- **05b**: API 契约：实现与 api-spec.md 一致
+- **05c**: UI 还原：组件与 03 设计一致
+- **06**: 验收覆盖：每个 AC 有测试用例
 
 ## 自动提交
 
@@ -162,27 +148,23 @@ ai-works/PRD_001/
 
 ### 读取规则
 
-| 文件 | 首次读取时机 | 缓存范围 |
-|------|-------------|---------|
-| project.md | 01 阶段开始 | 整个流程 |
-| ui-config.md | 03 阶段开始 | 03, 05c, 06 |
-| tech-config.md | 04 阶段开始 | 04, 05a, 05b, 05c, 06 |
+- **project.md**: 首次读取时机: 01 阶段开始, 缓存范围: 整个流程
+- **ui-config.md**: 首次读取时机: 03 阶段开始, 缓存范围: 03, 05c, 06
+- **tech-config.md**: 首次读取时机: 04 阶段开始, 缓存范围: 04, 05a, 05b, 05c, 06
 
 **规范口径**: 技术规范以 `context/tech-config.md` 为唯一口径；如与阶段文档冲突，必须先修订再继续。
 
 ### 阶段可用上下文
 
-| 阶段 | 可用缓存 | 阶段产出依赖 |
-|------|---------|-------------|
-| 01 | PROJECT | - |
-| 02 | PROJECT | 01/summary |
-| 03 | PROJECT, UI | 01/summary |
-| 04 | PROJECT, UI, TECH | 02/summary, 03/summary |
-| 05a | PROJECT, UI, TECH | 04/summary |
-| 05b | TECH | 05a/summary |
-| 05c | UI, TECH | 05a/summary, 03/summary |
-| 06 | UI, TECH | 02/prd, 05b/summary, 05c/summary |
-| 07 | - | 06/report |
+- **01**: 可用缓存: PROJECT, 阶段产出依赖: -
+- **02**: 可用缓存: PROJECT, 阶段产出依赖: 01/summary
+- **03**: 可用缓存: PROJECT, UI, 阶段产出依赖: 01/summary
+- **04**: 可用缓存: PROJECT, UI, TECH, 阶段产出依赖: 02/summary, 03/summary
+- **05a**: 可用缓存: PROJECT, UI, TECH, 阶段产出依赖: 04/summary
+- **05b**: 可用缓存: TECH, 阶段产出依赖: 05a/summary
+- **05c**: 可用缓存: UI, TECH, 阶段产出依赖: 05a/summary, 03/summary
+- **06**: 可用缓存: UI, TECH, 阶段产出依赖: 02/prd, 05b/summary, 05c/summary
+- **07**: 可用缓存: -, 阶段产出依赖: 06/report
 
 ## Context 压缩机制
 
@@ -209,12 +191,10 @@ ai-works/PRD_001/
 
 ### 触发时机
 
-| 触发事件 | 快照类型 |
-|---------|---------|
-| 阶段完成 | `stage_complete` |
-| 手动保存 | `manual` |
-| 长时间暂停 | `auto_pause` |
-| 返工开始 | `before_rework` |
+- **阶段完成**: `stage_complete`
+- **手动保存**: `manual`
+- **长时间暂停**: `auto_pause`
+- **返工开始**: `before_rework`
 
 ### 快照恢复 (/flow-continue)
 
@@ -233,20 +213,16 @@ ai-works/PRD_001/
 
 ### 同步检查点
 
-| 并行组 | 检查点 | 下一阶段 |
-|-------|-------|---------|
-| 02 & 03 | 用户故事覆盖、术语一致性 | 04 |
-| 05b & 05c | API 契约、类型一致性、文件冲突 | 06 |
+- **02 & 03**: 检查点: 用户故事覆盖、术语一致性, 下一阶段: 04
+- **05b & 05c**: 检查点: API 契约、类型一致性、文件冲突, 下一阶段: 06
 
 ### 05b & 05c 职责边界
 
-| 资源类型 | 05b 后端 | 05c 前端 |
-|---------|---------|---------|
-| `src/types/*` | 只读 | 只读 |
-| `src/lib/*-service.ts` | 创建/修改 | - |
-| `src/app/api/**` | 创建/修改 | - |
-| `src/hooks/*` | - | 创建/修改 |
-| `src/components/**` | - | 创建/修改 |
+- **`src/types/*`**: 05b 后端: 只读, 05c 前端: 只读
+- **`src/lib/*-service.ts`**: 05b 后端: 创建/修改, 05c 前端: -
+- **`src/app/api/**`**: 05b 后端: 创建/修改, 05c 前端: -
+- **`src/hooks/*`**: 05b 后端: -, 05c 前端: 创建/修改
+- **`src/components/**`**: 05b 后端: -, 05c 前端: 创建/修改
 
 ### 前端 Mock 策略
 
@@ -263,3 +239,7 @@ ai-works/PRD_001/
 ## 验证脚本
 
 详见 [shared/validation-scripts.md](./shared/validation-scripts.md)
+
+## Markdown 输出规范
+
+所有生成的 Markdown 文档必须遵循 [shared/markdown-style.md](./shared/markdown-style.md)

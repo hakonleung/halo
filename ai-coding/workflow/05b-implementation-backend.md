@@ -4,10 +4,8 @@
 
 ## 依赖输入
 
-| 阶段产出 | 按需读取 |
-|---------|---------|
-| `05a_prep/summary.md` | `05a_prep/prep.md` |
-| `04_tech_design/api-spec.md` | `04_tech_design/tech-design.md` |
+- **阶段产出**: `05a_prep/summary.md`, `04_tech_design/api-spec.md`
+- **按需读取**: `05a_prep/prep.md`, `04_tech_design/tech-design.md`
 
 > Context 缓存: `TECH_CONTEXT`
 
@@ -43,19 +41,15 @@ flowchart LR
 
 ### 测试覆盖要求
 
-| 类型 | 覆盖率要求 |
-|------|----------|
-| Service 方法 | 100% 方法覆盖 |
-| 正常路径 | 每个方法至少 1 个 |
-| 异常路径 | 每个方法至少 1 个 |
+- **Service 方法**: 100% 方法覆盖
+- **正常路径**: 每个方法至少 1 个
+- **异常路径**: 每个方法至少 1 个
 
 ## 产出物
 
-| 文件 | 路径 |
-|------|------|
-| 实现说明 | `05b_backend/implementation.md` |
-| 阶段摘要 | `05b_backend/summary.md` |
-| 操作历史 | `05b_backend/history.json` |
+- **实现说明**: `05b_backend/implementation.md`
+- **阶段摘要**: `05b_backend/summary.md`
+- **操作历史**: `05b_backend/history.json`
 
 **代码产出**:
 - `src/lib/xxx-service.ts`
@@ -65,12 +59,10 @@ flowchart LR
 
 ## AI 自验收
 
-| 检查项 | 通过标准 |
-|--------|---------|
-| Service | xxx-service.ts 存在 |
-| API | route.ts + [id]/route.ts 存在 |
-| 测试 | 全部通过 |
-| 编译 | 无错误 |
+- **Service**: xxx-service.ts 存在
+- **API**: route.ts + [id]/route.ts 存在
+- **测试**: 全部通过
+- **编译**: 无错误
 
 > 验证命令详见 [validation-scripts.md](../shared/validation-scripts.md)
 

@@ -4,9 +4,8 @@
 
 ## 依赖输入
 
-| 阶段产出 | 按需读取 |
-|---------|---------|
-| `01_requirements/summary.md` | `01_requirements/requirements.md` |
+- **阶段产出**: `01_requirements/summary.md`
+- **按需读取**: `01_requirements/requirements.md`
 
 > Context 缓存: `PROJECT_CONTEXT`
 >
@@ -36,12 +35,10 @@ flowchart LR
 
 ## 产出物
 
-| 文件 | 路径 |
-|------|------|
-| PRD文档 | `02_prd/prd.md` |
-| 流程图 | `02_prd/flow.md` |
-| 阶段摘要 | `02_prd/summary.md` |
-| 操作历史 | `02_prd/history.json` |
+- **PRD文档**: `02_prd/prd.md`
+- **流程图**: `02_prd/flow.md`
+- **阶段摘要**: `02_prd/summary.md`
+- **操作历史**: `02_prd/history.json`
 
 ### prd.md 结构
 
@@ -55,13 +52,11 @@ flowchart LR
 
 ## AI 自验收
 
-| 检查项 | 通过标准 |
-|--------|---------|
-| 故事格式 | 含 "作为.*我希望.*以便" |
-| 验收标准 | 每个 US 含 Given/When/Then |
-| 优先级 | 每个 US 含 P0/P1/P2 |
-| 需求覆盖 | 功能点 ≥ 需求文档功能点 |
-| **职责边界** | **不包含 TypeScript 类型、SQL 查询、API 详细规格、算法步骤** |
+- **故事格式**: 含 "作为.*我希望.*以便"
+- **验收标准**: 每个 US 含 Given/When/Then
+- **优先级**: 每个 US 含 P0/P1/P2
+- **需求覆盖**: 功能点 ≥ 需求文档功能点
+- **职责边界**: 不包含 TypeScript 类型、SQL 查询、API 详细规格、算法步骤
 
 ### 交叉验证: 反向推导
 
@@ -76,9 +71,7 @@ flowchart LR
 
 ## summary.md 关键词索引
 
-| 索引类型 | 示例 |
-|---------|------|
-| 用户故事ID | US-001, US-002 |
-| 验收标准ID | AC-001-1, AC-001-2 |
-| 功能模块 | 登录模块, 记录模块 |
-| 业务规则 | 密码重试限制, 会话超时 |
+- **用户故事ID**: US-001, US-002
+- **验收标准ID**: AC-001-1, AC-001-2
+- **功能模块**: 登录模块, 记录模块
+- **业务规则**: 密码重试限制, 会话超时

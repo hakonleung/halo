@@ -4,10 +4,8 @@
 
 ## 依赖输入
 
-| 阶段产出 | 按需读取 |
-|---------|---------|
-| `02_prd/summary.md` | `02_prd/prd.md` |
-| `03_ui_design/summary.md` | `03_ui_design/ui-design.md` |
+- **阶段产出**: `02_prd/summary.md`, `03_ui_design/summary.md`
+- **按需读取**: `02_prd/prd.md`, `03_ui_design/ui-design.md`
 
 > Context 缓存: `PROJECT_CONTEXT`, `UI_CONTEXT`, `TECH_CONTEXT`
 >
@@ -40,14 +38,12 @@ flowchart LR
 
 ## 产出物
 
-| 文件 | 路径 |
-|------|------|
-| 技术设计文档 | `04_tech_design/tech-design.md` |
-| 架构图 | `04_tech_design/architecture.md` |
-| API规格 | `04_tech_design/api-spec.md` |
-| 测试草案 | `04_tech_design/test-plan.md` |
-| 阶段摘要 | `04_tech_design/summary.md` |
-| 操作历史 | `04_tech_design/history.json` |
+- **技术设计文档**: `04_tech_design/tech-design.md`
+- **架构图**: `04_tech_design/architecture.md`
+- **API规格**: `04_tech_design/api-spec.md`
+- **测试草案**: `04_tech_design/test-plan.md`
+- **阶段摘要**: `04_tech_design/summary.md`
+- **操作历史**: `04_tech_design/history.json`
 
 ### tech-design.md 结构
 
@@ -60,13 +56,11 @@ flowchart LR
 
 ## AI 自验收
 
-| 检查项 | 通过标准 |
-|--------|---------|
-| 数据模型 | 含表结构定义、SQL 查询 |
-| API 完整 | 每个功能有详细规格（请求/响应/错误码） |
-| 类型定义 | 含 Server/Client 类型、TypeScript 接口 |
-| 任务拆分 | 含 05a/05b/05c 任务 |
-| **职责边界** | **包含所有技术实现细节，不包含用户故事和业务规则** |
+- **数据模型**: 含表结构定义、SQL 查询
+- **API 完整**: 每个功能有详细规格（请求/响应/错误码）
+- **类型定义**: 含 Server/Client 类型、TypeScript 接口
+- **任务拆分**: 含 05a/05b/05c 任务
+- **职责边界**: 包含所有技术实现细节，不包含用户故事和业务规则
 
 ### 交叉验证: 数据流模拟
 
@@ -81,9 +75,7 @@ flowchart LR
 
 ## summary.md 关键词索引
 
-| 索引类型 | 示例 |
-|---------|------|
-| 数据表名 | users, behaviors |
-| API端点 | POST /api/auth/login |
-| 类型名称 | UserModel, AuthRequest |
-| 任务分配 | 05b: auth-service.ts |
+- **数据表名**: users, behaviors
+- **API端点**: POST /api/auth/login
+- **类型名称**: UserModel, AuthRequest
+- **任务分配**: 05b: auth-service.ts

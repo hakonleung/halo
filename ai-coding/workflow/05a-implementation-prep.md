@@ -4,9 +4,8 @@
 
 ## 依赖输入
 
-| 阶段产出 | 按需读取 |
-|---------|---------|
-| `04_tech_design/summary.md` | `04_tech_design/tech-design.md`, `api-spec.md` |
+- **阶段产出**: `04_tech_design/summary.md`
+- **按需读取**: `04_tech_design/tech-design.md`, `api-spec.md`
 
 > Context 缓存: `TECH_CONTEXT`
 
@@ -44,11 +43,9 @@ flowchart LR
 
 ## 产出物
 
-| 文件 | 路径 |
-|------|------|
-| 前置说明 | `05a_prep/prep.md` |
-| 阶段摘要 | `05a_prep/summary.md` |
-| 操作历史 | `05a_prep/history.json` |
+- **前置说明**: `05a_prep/prep.md`
+- **阶段摘要**: `05a_prep/summary.md`
+- **操作历史**: `05a_prep/history.json`
 
 **代码产出**:
 - `src/types/xxx-server.ts`
@@ -59,13 +56,11 @@ flowchart LR
 
 ## AI 自验收
 
-| 检查项 | 通过标准 |
-|--------|---------|
-| 类型文件 | xxx-server.ts + xxx-client.ts 存在 |
-| Schema | schema.ts 已更新 |
-| 迁移 | 迁移文件已生成 |
-| 类型测试 | types/__tests__/ 存在且通过 |
-| 编译 | `pnpm tsc --noEmit` 无错误 |
+- **类型文件**: xxx-server.ts + xxx-client.ts 存在
+- **Schema**: schema.ts 已更新
+- **迁移**: 迁移文件已生成
+- **类型测试**: types/__tests__/ 存在且通过
+- **编译**: `pnpm tsc --noEmit` 无错误
 
 > 验证命令详见 [validation-scripts.md](../shared/validation-scripts.md)
 

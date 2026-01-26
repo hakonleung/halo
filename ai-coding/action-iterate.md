@@ -4,12 +4,10 @@
 
 ## 适用场景
 
-| 场景 | 示例 |
-|------|------|
-| 功能增强 | 给列表增加批量操作 |
-| 需求变更 | 修改验证规则 |
-| 版本迭代 | 登录模块 V2 |
-| 补充功能 | 补充数据导出功能 |
+- **功能增强**: 给列表增加批量操作
+- **需求变更**: 修改验证规则
+- **版本迭代**: 登录模块 V2
+- **补充功能**: 补充数据导出功能
 
 ## 触发指令
 
@@ -104,3 +102,7 @@ ai-works/ITR_XXX/
 ## 用户响应格式
 
 详见 [shared/response-format.md](./shared/response-format.md)
+
+## Markdown 输出规范
+
+所有生成的 Markdown 文档必须遵循 [shared/markdown-style.md](./shared/markdown-style.md)

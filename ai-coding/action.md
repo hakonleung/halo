@@ -48,31 +48,25 @@ flowchart TB
 
 ### 初始化指令
 
-| 指令 | 说明 | 详细文档 |
-|------|------|---------|
-| `/flow-create` | 新建项目，交互式生成配置 | [action-create.md](./action-create.md) |
-| `/flow-init` | 初始化已有项目，扫描并生成配置 | [action-init.md](./action-init.md) |
+- **`/flow-create`**: 新建项目，交互式生成配置 - [action-create.md](./action-create.md)
+- **`/flow-init`**: 初始化已有项目，扫描并生成配置 - [action-init.md](./action-init.md)
 
 ### 工作流指令
 
-| 指令 | 说明 | 详细文档 |
-|------|------|---------|
-| `/flow-start [需求]` | 完整工作流（7阶段） | [action-work.md](./action-work.md) |
-| `/flow-quick [需求]` | 轻量工作流（3阶段） | [action-quick.md](./action-quick.md) |
-| `/flow-iterate [PRD_XXX]` | 在已有 PRD 基础上迭代 | [action-iterate.md](./action-iterate.md) |
-| `/flow-refactor [范围]` | 纯技术重构 | [action-refactor.md](./action-refactor.md) |
+- **`/flow-start [需求]`**: 完整工作流（7阶段） - [action-work.md](./action-work.md)
+- **`/flow-quick [需求]`**: 轻量工作流（3阶段） - [action-quick.md](./action-quick.md)
+- **`/flow-iterate [PRD_XXX]`**: 在已有 PRD 基础上迭代 - [action-iterate.md](./action-iterate.md)
+- **`/flow-refactor [范围]`**: 纯技术重构 - [action-refactor.md](./action-refactor.md)
 
 ### 状态管理指令
 
-| 指令 | 说明 |
-|------|------|
-| `/flow-status` | 查看当前工作流状态 |
-| `/flow-list` | 列出所有工作流 |
-| `/flow-continue [单号]?` | 从快照恢复，继续工作流 |
-| `/flow-save [备注]?` | 手动保存当前进度快照 |
-| `/flow-rollback [快照ID]` | 回滚到指定快照 |
-| `/flow-sync-check [单号]?` | 检查文档与代码同步状态 |
-| `/read-full [阶段] [关键词]?` | 强制读取完整文档 |
+- **`/flow-status`**: 查看当前工作流状态
+- **`/flow-list`**: 列出所有工作流
+- **`/flow-continue [单号]?`**: 从快照恢复，继续工作流
+- **`/flow-save [备注]?`**: 手动保存当前进度快照
+- **`/flow-rollback [快照ID]`**: 回滚到指定快照
+- **`/flow-sync-check [单号]?`**: 检查文档与代码同步状态
+- **`/read-full [阶段] [关键词]?`**: 强制读取完整文档
 
 > 状态管理指令详情见 [action-work.md](./action-work.md)
 
@@ -119,3 +113,11 @@ ai-works/                  ← 工作记录（与 ai-coding 同级）
 ## 用户响应格式
 
 详见 [shared/response-format.md](./shared/response-format.md)
+
+## Markdown 输出规范
+
+所有工作流生成的 Markdown 文档必须遵循 [shared/markdown-style.md](./shared/markdown-style.md)：
+
+- 不使用 emoji
+- 不使用冗余的样式
+- 优先使用列表而非表格

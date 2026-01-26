@@ -4,10 +4,8 @@
 
 ## 依赖输入
 
-| 来源 | 说明 |
-|------|------|
-| 用户输入 | 本次需求描述 |
-| `PROJECT_CONTEXT` | 由 action-work 缓存提供 |
+- **用户输入**: 本次需求描述
+- **PROJECT_CONTEXT**: 由 action-work 缓存提供
 
 ## 流程
 
@@ -35,12 +33,10 @@ flowchart LR
 
 ## 产出物
 
-| 文件 | 路径 |
-|------|------|
-| 需求文档 | `01_requirements/requirements.md` |
-| 旅程图 | `01_requirements/journey.md` |
-| 阶段摘要 | `01_requirements/summary.md` |
-| 操作历史 | `01_requirements/history.json` |
+- **需求文档**: `01_requirements/requirements.md`
+- **旅程图**: `01_requirements/journey.md`
+- **阶段摘要**: `01_requirements/summary.md`
+- **操作历史**: `01_requirements/history.json`
 
 ### requirements.md 结构
 
@@ -54,12 +50,10 @@ flowchart LR
 
 ## AI 自验收
 
-| 检查项 | 通过标准 |
-|--------|---------|
-| 结构完整 | 包含全部 7 个章节 |
-| 用户完整 | 用户定义表格行数 ≥ 1 |
-| 范围明确 | 含 Must/Nice/不做 |
-| 指标可量化 | 含数值或百分比 |
+- **结构完整**: 包含全部 7 个章节
+- **用户完整**: 用户定义表格行数 ≥ 1
+- **范围明确**: 含 Must/Nice/不做
+- **指标可量化**: 含数值或百分比
 
 ## 人类验收要点
 
@@ -70,9 +64,7 @@ flowchart LR
 
 ## summary.md 关键词索引
 
-| 索引类型 | 示例 |
-|---------|------|
-| 用户角色 | 普通用户, 管理员 |
-| 核心功能 | 行为记录, 目标追踪 |
-| 使用场景 | 登录流程, 记录流程 |
-| 边界条件 | 密码强度, 频率限制 |
+- **用户角色**: 普通用户, 管理员
+- **核心功能**: 行为记录, 目标追踪
+- **使用场景**: 登录流程, 记录流程
+- **边界条件**: 密码强度, 频率限制

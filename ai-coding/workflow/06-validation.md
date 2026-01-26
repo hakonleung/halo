@@ -4,11 +4,8 @@
 
 ## 依赖输入
 
-| 阶段产出 | 按需读取 |
-|---------|---------|
-| `02_prd/prd.md` (验收标准) | - |
-| `05b_backend/summary.md` | `05b_backend/implementation.md` |
-| `05c_frontend/summary.md` | `05c_frontend/implementation.md` |
+- **阶段产出**: `02_prd/prd.md` (验收标准), `05b_backend/summary.md`, `05c_frontend/summary.md`
+- **按需读取**: `05b_backend/implementation.md`, `05c_frontend/implementation.md`
 
 > Context 缓存: `UI_CONTEXT`, `TECH_CONTEXT`
 
@@ -62,20 +59,16 @@ bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-works/PRD_XXX --min-rate
 
 ## AI 自验收
 
-| 检查项 | 通过标准 |
-|--------|---------|
-| 文档同步 | 同步率 ≥ 95% |
-| E2E 文件 | e2e/xxx.spec.ts 存在 |
-| E2E 覆盖 | 每个 AC 有测试用例 |
-| E2E 通过 | 全部通过 |
+- **文档同步**: 同步率 ≥ 95%
+- **E2E 文件**: e2e/xxx.spec.ts 存在
+- **E2E 覆盖**: 每个 AC 有测试用例
+- **E2E 通过**: 全部通过
 
 ### 交叉验证: 验收标准覆盖
 
-| 优先级 | 覆盖率要求 |
-|--------|----------|
-| P0 | 100% |
-| P1 | ≥ 90% |
-| P2 | ≥ 50% |
+- **P0**: 100%
+- **P1**: ≥ 90%
+- **P2**: ≥ 50%
 
 ## 人类验收要点
 
@@ -86,10 +79,8 @@ bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-works/PRD_XXX --min-rate
 
 ## 产出物
 
-| 文件 | 路径 |
-|------|------|
-| 验证报告 | `06_validation/report.md` |
-| 操作历史 | `06_validation/history.json` |
+- **验证报告**: `06_validation/report.md`
+- **操作历史**: `06_validation/history.json`
 
 **代码产出**:
 - `e2e/xxx.spec.ts`

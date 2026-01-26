@@ -4,9 +4,8 @@
 
 ## 依赖输入
 
-| 阶段产出 | 按需读取 |
-|---------|---------|
-| `01_requirements/summary.md` | `02_prd/summary.md` (若02先完成) |
+- **阶段产出**: `01_requirements/summary.md`
+- **按需读取**: `02_prd/summary.md` (若02先完成)
 
 > Context 缓存: `PROJECT_CONTEXT`, `UI_CONTEXT`
 >
@@ -39,14 +38,12 @@ flowchart LR
 
 ## 产出物
 
-| 文件 | 路径 |
-|------|------|
-| UI设计文档 | `03_ui_design/ui-design.md` |
-| 页面布局 | `03_ui_design/layouts/` |
-| 组件规格 | `03_ui_design/components/` |
-| HTML 预览 | `03_ui_design/preview/` |
-| 阶段摘要 | `03_ui_design/summary.md` |
-| 操作历史 | `03_ui_design/history.json` |
+- **UI设计文档**: `03_ui_design/ui-design.md`
+- **页面布局**: `03_ui_design/layouts/`
+- **组件规格**: `03_ui_design/components/`
+- **HTML 预览**: `03_ui_design/preview/`
+- **阶段摘要**: `03_ui_design/summary.md`
+- **操作历史**: `03_ui_design/history.json`
 
 ### ui-design.md 结构
 
@@ -58,14 +55,12 @@ flowchart LR
 
 ## AI 自验收
 
-| 检查项 | 通过标准 |
-|--------|---------|
-| 布局完整 | 每页含 desktop/mobile |
-| 组件定义 | 新组件含功能描述/状态变体 |
-| 设计变量 | 颜色/字体引用正确 |
-| 故事覆盖 | 每个 US 有对应页面 |
-| HTML 预览 | index.html + 各页面存在 |
-| **职责边界** | **不包含 TypeScript Props 定义、API 调用逻辑、数据流设计** |
+- **布局完整**: 每页含 desktop/mobile
+- **组件定义**: 新组件含功能描述/状态变体
+- **设计变量**: 颜色/字体引用正确
+- **故事覆盖**: 每个 US 有对应页面
+- **HTML 预览**: index.html + 各页面存在
+- **职责边界**: 不包含 TypeScript Props 定义、API 调用逻辑、数据流设计
 
 ## 人类验收要点
 
@@ -78,9 +73,7 @@ flowchart LR
 
 ## summary.md 关键词索引
 
-| 索引类型 | 示例 |
-|---------|------|
-| 页面名称 | /login, /dashboard |
-| 组件名称 | LoginForm, UserCard |
-| 设计变量 | colors.primary, fonts.heading |
-| 交互流程 | 表单提交, 加载状态 |
+- **页面名称**: /login, /dashboard
+- **组件名称**: LoginForm, UserCard
+- **设计变量**: colors.primary, fonts.heading
+- **交互流程**: 表单提交, 加载状态
