@@ -123,8 +123,8 @@ export function convertServerGoalToClient(serverGoal: ServerGoal): ClientGoal {
       description: c.description,
     })),
     status: serverGoal.status as 'active' | 'completed' | 'abandoned',
-    createdAt: serverGoal.created_at,
-    updatedAt: serverGoal.updated_at,
+    createdAt: serverGoal.created_at ?? new Date().toISOString(),
+    updatedAt: serverGoal.updated_at ?? new Date().toISOString(),
   };
 }
 

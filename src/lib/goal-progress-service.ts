@@ -12,22 +12,25 @@ function getDateRange(period: 'daily' | 'weekly' | 'monthly', startDate: string,
   let rangeEnd: Date = endDate ? new Date(endDate) : now;
 
   switch (period) {
-    case 'daily':
+    case 'daily': {
       rangeStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       rangeEnd = now;
       break;
-    case 'weekly':
+    }
+    case 'weekly': {
       const weekStart = new Date(now);
       weekStart.setDate(now.getDate() - now.getDay()); // Start of week (Sunday)
       weekStart.setHours(0, 0, 0, 0);
       rangeStart = weekStart;
       rangeEnd = now;
       break;
-    case 'monthly':
+    }
+    case 'monthly': {
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
       rangeStart = monthStart;
       rangeEnd = now;
       break;
+    }
     default:
       rangeStart = start;
       rangeEnd = endDate ? new Date(endDate) : now;
@@ -66,14 +69,15 @@ async function calculateMetric(
   switch (metric) {
     case 'count':
       return records.length;
-    case 'sum':
+    case 'sum': {
       // Sum numeric values from metadata
       return records.reduce((sum, record) => {
         const metadata = record.metadata as Record<string, unknown>;
         const values = Object.values(metadata).filter((v) => typeof v === 'number') as number[];
         return sum + values.reduce((a, b) => a + b, 0);
       }, 0);
-    case 'avg':
+    }
+    case 'avg': {
       // Average numeric values from metadata
       const numericValues: number[] = [];
       records.forEach((record) => {
@@ -83,6 +87,7 @@ async function calculateMetric(
       });
       if (numericValues.length === 0) return 0;
       return numericValues.reduce((a, b) => a + b, 0) / numericValues.length;
+    }
     default:
       return 0;
   }

@@ -10,6 +10,8 @@
 | `03_ui_design/summary.md` | `03_ui_design/ui-design.md` |
 
 > Context 缓存: `PROJECT_CONTEXT`, `UI_CONTEXT`, `TECH_CONTEXT`
+>
+> **职责边界**: 详见 [responsibility-boundaries.md](../shared/responsibility-boundaries.md)
 
 ## 流程
 
@@ -49,10 +51,10 @@ flowchart LR
 
 ### tech-design.md 结构
 
-1. 数据模型
-2. API 接口
-3. 类型定义 (Client/Server)
-4. 组件架构
+1. 数据模型（表结构、SQL 查询、计算逻辑，详见职责边界文档）
+2. API 接口（详细规格，详见职责边界文档）
+3. 类型定义 (Client/Server)（TypeScript 类型，详见职责边界文档）
+4. 组件架构（Props、Hooks、数据流，详见职责边界文档）
 5. 任务拆分
 6. 测试策略
 
@@ -60,10 +62,11 @@ flowchart LR
 
 | 检查项 | 通过标准 |
 |--------|---------|
-| 数据模型 | 含表结构定义 |
-| API 完整 | 每个功能有 CRUD |
-| 类型定义 | 含 Server/Client 类型 |
+| 数据模型 | 含表结构定义、SQL 查询 |
+| API 完整 | 每个功能有详细规格（请求/响应/错误码） |
+| 类型定义 | 含 Server/Client 类型、TypeScript 接口 |
 | 任务拆分 | 含 05a/05b/05c 任务 |
+| **职责边界** | **包含所有技术实现细节，不包含用户故事和业务规则** |
 
 ### 交叉验证: 数据流模拟
 

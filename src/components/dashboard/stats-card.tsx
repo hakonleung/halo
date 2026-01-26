@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Text, Skeleton, HStack, VStack } from '@chakra-ui/react';
-import { ArrowUp, ArrowDown, Minus } from '@phosphor-icons/react';
+import { ArrowUp, ArrowDown, Minus } from 'phosphor-react';
 
 interface StatsCardProps {
   title: string;

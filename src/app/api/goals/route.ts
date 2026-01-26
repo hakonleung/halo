@@ -108,8 +108,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ data: null, error: res.error }, { status: 500 });
     }
 
+    if (!res.data) {
+      return NextResponse.json({ data: null, error: 'Failed to create goal' }, { status: 500 });
+    }
+
     // Convert Server type to Client type
-    const clientGoal = convertServerGoalToClient(res.data!);
+    const clientGoal = convertServerGoalToClient(res.data);
 
     return NextResponse.json({ data: clientGoal, error: null }, { status: 201 });
   } catch (error: unknown) {

@@ -9,6 +9,8 @@
 | `01_requirements/summary.md` | `01_requirements/requirements.md` |
 
 > Context 缓存: `PROJECT_CONTEXT`
+>
+> **职责边界**: 详见 [responsibility-boundaries.md](../shared/responsibility-boundaries.md)
 
 ## 流程
 
@@ -45,10 +47,10 @@ flowchart LR
 
 1. 概述（背景、目标、成功指标）
 2. 用户故事（US-XXX 格式，含优先级和验收标准）
-3. 功能规格
-4. 非功能需求
-5. 约束与依赖
-6. 里程碑
+3. 功能规格（业务层面描述，详见职责边界文档）
+4. 非功能需求（指标层面，如性能指标、可用性要求）
+5. 约束与依赖（业务约束，如数据依赖、业务规则）
+6. 里程碑（阶段产出，如"API 接口"、"Dashboard 组件"）
 7. 开放问题
 
 ## AI 自验收
@@ -59,6 +61,7 @@ flowchart LR
 | 验收标准 | 每个 US 含 Given/When/Then |
 | 优先级 | 每个 US 含 P0/P1/P2 |
 | 需求覆盖 | 功能点 ≥ 需求文档功能点 |
+| **职责边界** | **不包含 TypeScript 类型、SQL 查询、API 详细规格、算法步骤** |
 
 ### 交叉验证: 反向推导
 

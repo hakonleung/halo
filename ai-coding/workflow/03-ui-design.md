@@ -11,6 +11,8 @@
 > Context 缓存: `PROJECT_CONTEXT`, `UI_CONTEXT`
 >
 > **并行模式**: 可与 02 并行执行，基于 01 产出即可开始。
+>
+> **职责边界**: 详见 [responsibility-boundaries.md](../shared/responsibility-boundaries.md)
 
 ## 流程
 
@@ -51,7 +53,7 @@ flowchart LR
 1. 设计变量（引用的 theme 变量）
 2. 组件复用分析
 3. 页面设计
-4. 组件规格
+4. 组件规格（外观和交互层面，详见职责边界文档）
 5. 交互流程
 
 ## AI 自验收
@@ -59,10 +61,11 @@ flowchart LR
 | 检查项 | 通过标准 |
 |--------|---------|
 | 布局完整 | 每页含 desktop/mobile |
-| 组件定义 | 新组件含 Props/States |
+| 组件定义 | 新组件含功能描述/状态变体 |
 | 设计变量 | 颜色/字体引用正确 |
 | 故事覆盖 | 每个 US 有对应页面 |
 | HTML 预览 | index.html + 各页面存在 |
+| **职责边界** | **不包含 TypeScript Props 定义、API 调用逻辑、数据流设计** |
 
 ## 人类验收要点
 

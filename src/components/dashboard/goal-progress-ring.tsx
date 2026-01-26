@@ -95,7 +95,7 @@ export function GoalProgressRing({ goal, size = 'md', onClick }: GoalProgressRin
         fontFamily="mono"
         textAlign="center"
         maxW={`${ring}px`}
-        noOfLines={1}
+        lineClamp={1}
       >
         {goal.name}
         {progress >= 100 && ' ✓'}

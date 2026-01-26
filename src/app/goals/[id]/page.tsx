@@ -17,6 +17,7 @@ import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
 import { GoalStatusBadge } from '@/components/goals';
 import { useGoal, useUpdateGoal, useDeleteGoal } from '@/hooks/use-goals';
 import type { GoalProgress as DashboardGoalProgress } from '@/types/dashboard-client';
+import type { Goal } from '@/types/goal-client';
 
 export default function GoalDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -97,15 +98,15 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
             <HStack gap={2}>
               {goal.status === 'active' && (
                 <>
-                  <Button size="sm" onClick={handleMarkComplete} isLoading={isUpdating}>
+                  <Button size="sm" onClick={handleMarkComplete} loading={isUpdating}>
                     标记为完成
                   </Button>
-                  <Button size="sm" variant="outline" onClick={handleAbandon} isLoading={isUpdating}>
+                  <Button size="sm" variant="outline" onClick={handleAbandon} loading={isUpdating}>
                     放弃目标
                   </Button>
                 </>
               )}
-              <Button size="sm" colorScheme="red" onClick={handleDelete} isLoading={isDeleting}>
+              <Button size="sm" colorScheme="red" onClick={handleDelete} loading={isDeleting}>
                 删除
               </Button>
             </HStack>

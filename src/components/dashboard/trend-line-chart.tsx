@@ -3,30 +3,34 @@
 import { Box, Text, Skeleton, HStack, Flex } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import type { TrendData } from '@/types/dashboard-client';
+import type { ComponentType } from 'react';
+
+// Recharts component props type
+type RechartsComponentProps = Record<string, unknown>;
 
 // Dynamic import for Recharts to avoid SSR issues
 const LineChart = dynamic(
-  () => import('recharts').then(mod => mod.LineChart),
+  () => import('recharts').then(mod => mod.LineChart) as Promise<ComponentType<RechartsComponentProps>>,
   { ssr: false }
 );
 const Line = dynamic(
-  () => import('recharts').then(mod => mod.Line),
+  () => import('recharts').then(mod => mod.Line) as Promise<ComponentType<RechartsComponentProps>>,
   { ssr: false }
 );
 const XAxis = dynamic(
-  () => import('recharts').then(mod => mod.XAxis),
+  () => import('recharts').then(mod => mod.XAxis) as Promise<ComponentType<RechartsComponentProps>>,
   { ssr: false }
 );
 const YAxis = dynamic(
-  () => import('recharts').then(mod => mod.YAxis),
+  () => import('recharts').then(mod => mod.YAxis) as Promise<ComponentType<RechartsComponentProps>>,
   { ssr: false }
 );
 const Tooltip = dynamic(
-  () => import('recharts').then(mod => mod.Tooltip),
+  () => import('recharts').then(mod => mod.Tooltip) as Promise<ComponentType<RechartsComponentProps>>,
   { ssr: false }
 );
 const ResponsiveContainer = dynamic(
-  () => import('recharts').then(mod => mod.ResponsiveContainer),
+  () => import('recharts').then(mod => mod.ResponsiveContainer) as Promise<ComponentType<RechartsComponentProps>>,
   { ssr: false }
 );
 
@@ -148,7 +152,10 @@ export function TrendLineChart({ data, loading, selectedTypes, onTypeToggle }: T
                 borderRadius: '4px',
                 fontFamily: 'JetBrains Mono',
               }}
-              labelFormatter={(label) => new Date(label).toLocaleDateString('zh-CN')}
+              labelFormatter={(label: string | number) => {
+                const date = typeof label === 'string' ? new Date(label) : new Date(label);
+                return date.toLocaleDateString('zh-CN');
+              }}
             />
             <Line
               type="monotone"

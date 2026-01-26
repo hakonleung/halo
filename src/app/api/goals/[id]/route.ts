@@ -29,11 +29,15 @@ export async function GET(
       return NextResponse.json({ data: null, error: res.error }, { status: 500 });
     }
 
+    if (!res.data) {
+      return NextResponse.json({ data: null, error: 'Goal not found' }, { status: 404 });
+    }
+
     // Calculate progress
-    const progress = await goalProgressService.calculateProgress(supabase, user.id, res.data!);
+    const progress = await goalProgressService.calculateProgress(supabase, user.id, res.data);
 
     // Convert Server types to Client types
-    const clientGoal = convertServerGoalToClient(res.data!);
+    const clientGoal = convertServerGoalToClient(res.data);
     const clientProgress: ClientGoalProgress = {
       current: progress.current,
       target: progress.target,
@@ -116,8 +120,12 @@ export async function PATCH(
       return NextResponse.json({ data: null, error: res.error }, { status: 500 });
     }
 
+    if (!res.data) {
+      return NextResponse.json({ data: null, error: 'Goal not found' }, { status: 404 });
+    }
+
     // Convert Server type to Client type
-    const clientGoal = convertServerGoalToClient(res.data!);
+    const clientGoal = convertServerGoalToClient(res.data);
 
     return NextResponse.json({ data: clientGoal, error: null });
   } catch (error: unknown) {
