@@ -4,11 +4,46 @@ import type {
   BehaviorDefinitionCreateRequest,
   BehaviorResponse,
 } from '@/types/behavior-client';
+import type {
+  BehaviorDefinition as ServerBehaviorDefinition,
+  BehaviorDefinitionCreateRequest as ServerBehaviorDefinitionCreateRequest,
+} from '@/types/behavior-server';
 import { createToaster } from '@chakra-ui/react';
 
 const toaster = createToaster({
   placement: 'bottom-end',
 });
+
+/**
+ * Convert server-side BehaviorDefinition to client-side format
+ */
+function convertToClientDefinition(serverDef: ServerBehaviorDefinition): BehaviorDefinition {
+  return {
+    id: serverDef.id,
+    userId: serverDef.user_id ?? null,
+    name: serverDef.name,
+    category: serverDef.category as BehaviorDefinition['category'],
+    icon: serverDef.icon ?? undefined,
+    metadataSchema: serverDef.metadata_schema,
+    usageCount: serverDef.usage_count ?? 0,
+    createdAt: serverDef.created_at ?? new Date().toISOString(),
+    updatedAt: serverDef.updated_at ?? new Date().toISOString(),
+  };
+}
+
+/**
+ * Convert client-side BehaviorDefinitionCreateRequest to server-side format
+ */
+function convertToServerRequest(
+  clientRequest: BehaviorDefinitionCreateRequest,
+): ServerBehaviorDefinitionCreateRequest {
+  return {
+    name: clientRequest.name,
+    category: clientRequest.category,
+    icon: clientRequest.icon,
+    metadata_schema: clientRequest.metadataSchema,
+  };
+}
 
 /**
  * Hook to get behavior definitions
@@ -25,15 +60,17 @@ export function useBehaviorDefinitions() {
       if (!res.ok) {
         throw new Error('Failed to fetch behavior definitions');
       }
-      return res.json() as Promise<BehaviorResponse<BehaviorDefinition[]>>;
+      const response = (await res.json()) as BehaviorResponse<ServerBehaviorDefinition[]>;
+      if (!response.data) throw response.error;
+      return response.data.map(convertToClientDefinition);
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   return {
-    definitions: definitionsData?.data ?? [],
+    definitions: definitionsData ?? [],
     isLoading,
-    error: error?.message ?? definitionsData?.error ?? null,
+    error: error?.message ?? null,
   };
 }
 
@@ -45,10 +82,11 @@ export function useCreateBehaviorDefinition() {
 
   const mutation = useMutation({
     mutationFn: async (definition: BehaviorDefinitionCreateRequest) => {
+      const serverRequest = convertToServerRequest(definition);
       const res = await fetch('/api/behaviors/definitions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(definition),
+        body: JSON.stringify(serverRequest),
       });
       if (!res.ok) {
         const error = await res
@@ -56,23 +94,17 @@ export function useCreateBehaviorDefinition() {
           .catch(() => ({ error: 'Failed to create behavior definition' }));
         throw new Error(error.error || 'Failed to create behavior definition');
       }
-      return res.json() as Promise<BehaviorResponse<BehaviorDefinition>>;
+      const response = (await res.json()) as BehaviorResponse<ServerBehaviorDefinition>;
+      if (!response.data) throw response.error;
+      return convertToClientDefinition(response.data);
     },
-    onSuccess: (res) => {
-      if (res.data) {
-        void queryClient.invalidateQueries({ queryKey: ['behavior-definitions'] });
-        toaster.create({
-          title: 'Success',
-          description: 'Behavior definition created successfully.',
-          type: 'success',
-        });
-      } else if (res.error) {
-        toaster.create({
-          title: 'Error',
-          description: res.error,
-          type: 'error',
-        });
-      }
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['behavior-definitions'] });
+      toaster.create({
+        title: 'Success',
+        description: 'Behavior definition created successfully.',
+        type: 'success',
+      });
     },
     onError: (error: Error) => {
       toaster.create({
@@ -86,6 +118,6 @@ export function useCreateBehaviorDefinition() {
   return {
     createDefinition: mutation.mutateAsync,
     isLoading: mutation.isPending,
-    error: mutation.error?.message ?? mutation.data?.error ?? null,
+    error: mutation.error?.message ?? null,
   };
 }

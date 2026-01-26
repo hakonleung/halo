@@ -17,7 +17,7 @@ const LEVEL_COLORS = [
   'rgba(0, 255, 65, 0.9)',
 ];
 
-const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapProps) {
   if (loading) {
@@ -97,12 +97,12 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
 
       <HStack gap={1} align="flex-start">
         {/* Weekday labels */}
-        <Box w="20px" flexShrink={0}>
+        <Box w="32px" flexShrink={0}>
           {WEEKDAYS.map((day, i) => (
             <Box
-              key={day}
+              key={i}
               h="14px"
-              fontSize="10px"
+              fontSize="9px"
               color="text.mist"
               fontFamily="mono"
               display={i % 2 === 1 ? 'block' : 'none'}

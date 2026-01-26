@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, IconButton, Drawer, Heading } from '@chakra-ui/react';
+import { Box, IconButton, Drawer } from '@chakra-ui/react';
 import { Plus } from 'lucide-react';
 import { RecordForm } from '@/components/behaviors/record-form';
 
@@ -37,15 +37,12 @@ export function ActionButton() {
             height="100vh"
           >
             <Drawer.Header borderBottom="1px solid" borderColor="rgba(0, 255, 65, 0.2)" py={6}>
-              <Drawer.Title>
-                <Heading
-                  size="lg"
-                  color="brand.matrix"
-                  fontFamily="heading"
-                  textShadow="0 0 8px currentColor"
-                >
-                  NEW RECORD
-                </Heading>
+              <Drawer.Title
+                color="brand.matrix"
+                fontFamily="heading"
+                textShadow="0 0 8px currentColor"
+              >
+                NEW RECORD
               </Drawer.Title>
             </Drawer.Header>
 
