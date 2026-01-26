@@ -5,8 +5,6 @@
 ## 触发指令
 
 - **`/flow-start [需求]`**: 初始化流程：生成单号 `PRD_XXX`，创建分支，创建目录，开始执行
-- **`/flow-status`**: 查看当前状态
-- **`/flow-list`**: 列出所有工作流
 
 ## 流程总览
 
@@ -74,8 +72,7 @@ flowchart TB
 - 05 阶段完成后（自动）
 - 06 验证阶段（自动）
 - 07 部署前（自动）
-- 任意时刻：`/flow-sync-check`
-- 推荐脚本：`bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-works/PRD_XXX`
+- 任意时刻：`/flow-sync-check`（详见 [action-status.md](./action-status.md)）
 
 ### 同步率门槛
 
@@ -144,7 +141,7 @@ AI **自动连续执行**，根据风险等级决定暂停：
 
 包含：核心结论、关键产出、供后续阶段使用、注意事项、关键词索引
 
-当摘要不足时，通过关键词索引定位原文章节，或使用 `/read-full [阶段]`。
+当摘要不足时，通过关键词索引定位原文章节，或使用 `/read-full [阶段]`（详见 [action-status.md](./action-status.md)）。
 
 ## 并行阶段协调
 

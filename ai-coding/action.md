@@ -17,10 +17,8 @@
 
 ### 状态管理指令
 
-- **`/flow-status`**: 查看当前工作流状态
-- **`/flow-list`**: 列出所有工作流
-- **`/flow-sync-check [单号]?`**: 检查文档与代码同步状态
-- **`/read-full [阶段] [关键词]?`**: 强制读取完整文档
+- **`/flow-status`**: 查看当前工作流状态 - [action-status.md](./action-status.md)
+- **`/flow-list`**: 列出所有工作流 - [action-status.md](./action-status.md)
+- **`/flow-sync-check [单号]?`**: 检查文档与代码同步状态 - [action-status.md](./action-status.md)
 
-> 状态管理指令详情见 [action-work.md](./action-work.md)
 
