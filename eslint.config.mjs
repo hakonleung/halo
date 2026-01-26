@@ -2,9 +2,12 @@ import js from '@eslint/js';
 import ts from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import globals from 'globals';
+import prettier from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   js.configs.recommended,
+  prettierConfig,
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -21,6 +24,7 @@ export default [
     },
     plugins: {
       '@typescript-eslint': ts,
+      prettier,
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
@@ -35,6 +39,7 @@ export default [
           fixStyle: 'separate-type-imports',
         },
       ],
+      'prettier/prettier': 'error',
     },
   },
   {
@@ -44,6 +49,12 @@ export default [
         ...globals.node,
         console: 'readonly',
       },
+    },
+    plugins: {
+      prettier,
+    },
+    rules: {
+      'prettier/prettier': 'error',
     },
   },
 ];
