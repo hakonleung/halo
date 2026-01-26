@@ -1,0 +1,26 @@
+{
+  "id": "PRD_001",
+  "title": "可视化模块 (Visualization Module)",
+  "type": "full",
+  "status": "in_progress",
+  "branch": "feat/PRD_001",
+  "created_at": "2026-01-25T00:00:00Z",
+  "updated_at": "2026-01-25T00:00:00Z",
+  "current_stage": "06_validation",
+  "stages": [
+    { "id": "01_requirements", "name": "需求澄清", "status": "completed", "risk": "high" },
+    { "id": "02_prd", "name": "PRD", "status": "completed", "risk": "medium" },
+    { "id": "03_ui_design", "name": "UI设计", "status": "completed", "risk": "medium" },
+    { "id": "04_tech_design", "name": "技术设计", "status": "completed", "risk": "high" },
+    { "id": "05a_prep", "name": "实现前置", "status": "completed", "risk": "low" },
+    { "id": "05b_backend", "name": "后端实现", "status": "completed", "risk": "medium" },
+    { "id": "05c_frontend", "name": "前端实现", "status": "completed", "risk": "medium" },
+    { "id": "06_validation", "name": "验证", "status": "in_progress", "risk": "high" },
+    { "id": "07_deploy", "name": "部署", "status": "pending", "risk": "high" }
+  ],
+  "context": {
+    "project_loaded": true,
+    "ui_config_loaded": true,
+    "tech_config_loaded": false
+  }
+}
