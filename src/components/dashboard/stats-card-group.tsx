@@ -12,20 +12,20 @@ interface StatsCardGroupProps {
 export function StatsCardGroup({ stats, loading }: StatsCardGroupProps) {
   return (
     <SimpleGrid columns={{ base: 2, lg: 4 }} gap={{ base: 2, md: 4 }}>
-      <StatsCard title="今日记录" value={stats?.today.total ?? 0} loading={loading} />
+      <StatsCard title="Today's Records" value={stats?.today.total ?? 0} loading={loading} />
       <StatsCard
-        title="连续活跃"
+        title="Active Streak"
         value={stats?.streak.current ?? 0}
-        suffix="天"
+        suffix="days"
         trend={
           stats?.streak.current && stats.streak.current >= 7
-            ? { direction: 'up', value: '🔥 保持中' }
+            ? { direction: 'up', value: '🔥 Keep Going' }
             : undefined
         }
         loading={loading}
       />
       <StatsCard
-        title="目标达成率"
+        title="Goal Completion Rate"
         value={stats?.goalRate.overall ?? 0}
         suffix="%"
         trend={
@@ -33,14 +33,14 @@ export function StatsCardGroup({ stats, loading }: StatsCardGroupProps) {
             ? {
                 direction:
                   stats.goalRate.change > 0 ? 'up' : stats.goalRate.change < 0 ? 'down' : 'neutral',
-                value: `${stats.goalRate.change > 0 ? '+' : ''}${stats.goalRate.change}% vs 上周`,
+                value: `${stats.goalRate.change > 0 ? '+' : ''}${stats.goalRate.change}% vs Last Week`,
               }
             : undefined
         }
         loading={loading}
       />
       <StatsCard
-        title="本周 vs 上周"
+        title="This Week vs Last Week"
         value={
           stats?.weekCompare.change
             ? `${stats.weekCompare.change > 0 ? '+' : ''}${stats.weekCompare.change}%`

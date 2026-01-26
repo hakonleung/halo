@@ -13,19 +13,19 @@ export function GoalStatusBadge({ status }: GoalStatusBadgeProps) {
       bg: 'rgba(0, 255, 65, 0.2)',
       color: '#00FF41',
       border: '#00FF41',
-      text: '进行中',
+      text: 'Active',
     },
     completed: {
       bg: 'rgba(0, 255, 65, 0.3)',
       color: '#00FF41',
       border: '#00FF41',
-      text: '已完成',
+      text: 'Completed',
     },
     abandoned: {
       bg: 'rgba(136, 136, 136, 0.2)',
       color: '#888888',
       border: '#888888',
-      text: '已放弃',
+      text: 'Abandoned',
     },
   };
 

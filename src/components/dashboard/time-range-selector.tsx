@@ -2,7 +2,8 @@
 
 import { Box, Button, Menu, Portal } from '@chakra-ui/react';
 import { CaretDown, Calendar } from 'phosphor-react';
-import type { TimeRange, TimeRangePreset } from '@/types/dashboard-client';
+import type { TimeRange } from '@/types/dashboard-client';
+import { TimeRangePreset } from '@/types/dashboard-client';
 
 interface TimeRangeSelectorProps {
   value: TimeRange;
@@ -11,15 +12,15 @@ interface TimeRangeSelectorProps {
 }
 
 const PRESET_OPTIONS: Array<{ value: TimeRangePreset; label: string }> = [
-  { value: 'today', label: '今日' },
-  { value: '7d', label: '最近 7 天' },
-  { value: '30d', label: '最近 30 天' },
-  { value: '90d', label: '最近 90 天' },
+  { value: TimeRangePreset.Today, label: 'Today' },
+  { value: TimeRangePreset.Last7Days, label: 'Last 7 Days' },
+  { value: TimeRangePreset.Last30Days, label: 'Last 30 Days' },
+  { value: TimeRangePreset.Last90Days, label: 'Last 90 Days' },
 ];
 
 function getDisplayLabel(range: TimeRange): string {
   if (range.type === 'preset') {
-    return PRESET_OPTIONS.find((o) => o.value === range.value)?.label || '选择时间';
+    return PRESET_OPTIONS.find((o) => o.value === range.value)?.label || 'Select Time';
   }
   return `${range.start} ~ ${range.end}`;
 }

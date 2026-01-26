@@ -37,10 +37,10 @@ export function GoalList({ goals, progressMap, isLoading, onGoalClick }: GoalLis
       >
         <VStack gap={2}>
           <Text color="text.mist" fontFamily="mono" fontSize="lg">
-            暂无目标
+            No Goals
           </Text>
           <Text color="brand.matrix" fontFamily="mono" fontSize="sm">
-            创建你的第一个目标
+            Create Your First Goal
           </Text>
         </VStack>
       </Box>

@@ -15,24 +15,25 @@ import type {
   GoalCreateRequest as ClientGoalCreateRequest,
   GoalProgress as ClientGoalProgress,
 } from '../goal-client';
+import { GoalMetric, GoalOperator, GoalPeriod, GoalStatus } from '../goal-client';
 
 // Test Server GoalCriteria structure
 const serverCriteria: ServerGoalCriteria = {
   behavior_id: 'test-behavior-id',
-  metric: 'count',
-  operator: '>=',
+  metric: GoalMetric.Count,
+  operator: GoalOperator.GreaterThanOrEqual,
   value: 100,
-  period: 'monthly',
+  period: GoalPeriod.Monthly,
   description: 'Test criteria',
 };
 
 // Test Client GoalCriteria structure
 const clientCriteria: ClientGoalCriteria = {
   behaviorId: 'test-behavior-id',
-  metric: 'count',
-  operator: '>=',
+  metric: GoalMetric.Count,
+  operator: GoalOperator.GreaterThanOrEqual,
   value: 100,
-  period: 'monthly',
+  period: GoalPeriod.Monthly,
   description: 'Test criteria',
 };
 
@@ -46,7 +47,7 @@ const serverGoal: ServerGoal = {
   start_date: '2026-01-01T00:00:00Z',
   end_date: '2026-12-31T23:59:59Z',
   criteria: [serverCriteria],
-  status: 'active',
+  status: GoalStatus.Active,
   created_at: '2026-01-01T00:00:00Z',
   updated_at: '2026-01-01T00:00:00Z',
 };
@@ -61,7 +62,7 @@ const clientGoal: ClientGoal = {
   startDate: '2026-01-01T00:00:00Z',
   endDate: '2026-12-31T23:59:59Z',
   criteria: [clientCriteria],
-  status: 'active',
+  status: GoalStatus.Active,
   createdAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:00:00Z',
 };
@@ -122,7 +123,7 @@ export function convertServerGoalToClient(serverGoal: ServerGoal): ClientGoal {
       period: c.period,
       description: c.description,
     })),
-    status: serverGoal.status as 'active' | 'completed' | 'abandoned',
+    status: (serverGoal.status as GoalStatus) ?? GoalStatus.Active,
     createdAt: serverGoal.created_at ?? new Date().toISOString(),
     updatedAt: serverGoal.updated_at ?? new Date().toISOString(),
   };

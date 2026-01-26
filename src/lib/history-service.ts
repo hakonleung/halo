@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import type { HistoryItem, HistoryListRequest, HistoryListResponse } from '@/types/history-server';
+import { HistoryItemType } from '@/types/history-server';
 import type { BehaviorRecordWithDefinition } from '@/types/behavior-server';
 import type { Goal } from '@/types/goal-server';
 import type { Note } from '@/types/note-server';
@@ -51,7 +52,7 @@ export const historyService = {
         data.forEach((record) => {
           items.push({
             id: record.id,
-            type: 'behavior',
+            type: HistoryItemType.Behavior,
             createdAt: record.created_at || '',
             updatedAt: record.created_at || '', // Behavior records don't have updated_at yet
             data: record as unknown as BehaviorRecordWithDefinition,
@@ -80,7 +81,7 @@ export const historyService = {
         data.forEach((goal) => {
           items.push({
             id: goal.id,
-            type: 'goal',
+            type: HistoryItemType.Goal,
             createdAt: goal.created_at || '',
             updatedAt: goal.updated_at || '',
             data: goal as Goal,
@@ -109,7 +110,7 @@ export const historyService = {
         data.forEach((note) => {
           items.push({
             id: note.id,
-            type: 'note',
+            type: HistoryItemType.Note,
             createdAt: note.created_at || '',
             updatedAt: note.updated_at || '',
             data: note as Note,

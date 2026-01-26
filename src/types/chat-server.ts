@@ -8,10 +8,19 @@ export type ChatMessage = InferSelectModel<typeof neologMessages> & {
   metadata: Record<string, unknown>;
 };
 
-export type ChatRole = 'user' | 'assistant' | 'system';
+export enum ChatRole {
+  User = 'user',
+  Assistant = 'assistant',
+  System = 'system',
+}
+
+export enum ChatAttachmentType {
+  Image = 'image',
+  Audio = 'audio',
+}
 
 export interface ChatAttachment {
-  type: 'image' | 'audio';
+  type: ChatAttachmentType;
   url: string;
   mimeType: string;
 }

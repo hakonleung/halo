@@ -5,6 +5,7 @@ import { createLLM } from '@/lib/agents/factory';
 import { createChatTools } from '@/lib/agents/tools';
 import { AIMessage, HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { ChatRole } from '@/types/chat-server';
 
 export async function POST(request: Request) {
   try {
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
     // 2. Save user message
     await chatService.saveMessage(supabase, user.id, {
       conversationId: currentConversationId,
-      role: 'user',
+      role: ChatRole.User,
       content,
     });
 
@@ -112,7 +113,7 @@ Current user ID: ${user.id}
           if (fullAiResponse) {
             await chatService.saveMessage(supabase, user.id, {
               conversationId: currentConversationId,
-              role: 'assistant',
+              role: ChatRole.Assistant,
               content: fullAiResponse,
             });
           }

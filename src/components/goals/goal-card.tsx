@@ -71,9 +71,9 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
       </HStack>
 
       <HStack gap={2} mb={3} fontSize="xs" color="text.mist" fontFamily="mono">
-        <Text>分类: {goal.category}</Text>
+        <Text>Category: {goal.category}</Text>
         <Text>|</Text>
-        <Text>开始: {new Date(goal.startDate).toLocaleDateString('zh-CN')}</Text>
+        <Text>Start: {new Date(goal.startDate).toLocaleDateString('en-US')}</Text>
       </HStack>
 
       <HStack align="center" gap={4}>
@@ -84,9 +84,9 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
           </Text>
           {goal.endDate && (
             <Text fontSize="xs" color="text.mist">
-              剩余:{' '}
+              Remaining:{' '}
               {Math.ceil((new Date(goal.endDate).getTime() - Date.now()) / (24 * 60 * 60 * 1000))}{' '}
-              天
+              days
             </Text>
           )}
         </VStack>

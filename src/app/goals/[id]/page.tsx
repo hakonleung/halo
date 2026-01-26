@@ -29,7 +29,7 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
 
   const handleDelete = async () => {
     if (!goal) return;
-    if (confirm('确定要删除这个目标吗？')) {
+    if (confirm('Are you sure you want to delete this goal?')) {
       await deleteGoal(goal.id);
       router.push('/goals');
     }
@@ -51,10 +51,10 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
         <Container maxW="1400px" py={6}>
           <Box textAlign="center" p={8}>
             <Text color="text.mist" fontFamily="mono">
-              {error || '目标不存在'}
+              {error || 'Goal Not Found'}
             </Text>
             <Button mt={4} onClick={() => router.push('/goals')}>
-              返回列表
+              Back to List
             </Button>
           </Box>
         </Container>
@@ -90,25 +90,25 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
           <HStack justify="space-between" align="center">
             <HStack gap={4}>
               <Button variant="ghost" onClick={() => router.push('/goals')}>
-                ← 返回
+                ← Back
               </Button>
               <Heading fontSize="24px" color="text.neon" fontFamily="mono">
-                目标详情
+                Goal Details
               </Heading>
             </HStack>
             <HStack gap={2}>
               {goal.status === 'active' && (
                 <>
                   <Button size="sm" onClick={handleMarkComplete} loading={isUpdating}>
-                    标记为完成
+                    Mark as Completed
                   </Button>
                   <Button size="sm" variant="outline" onClick={handleAbandon} loading={isUpdating}>
-                    放弃目标
+                    Abandon Goal
                   </Button>
                 </>
               )}
               <Button size="sm" colorScheme="red" onClick={handleDelete} loading={isDeleting}>
-                删除
+                Delete
               </Button>
             </HStack>
           </HStack>
@@ -132,13 +132,13 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
                 </HStack>
                 {goal.description && <Text color="text.mist">{goal.description}</Text>}
                 <HStack gap={4} fontSize="sm" color="text.mist" fontFamily="mono">
-                  <Text>分类: {goal.category}</Text>
+                  <Text>Category: {goal.category}</Text>
                   <Text>|</Text>
-                  <Text>开始: {new Date(goal.startDate).toLocaleDateString('zh-CN')}</Text>
+                  <Text>Start: {new Date(goal.startDate).toLocaleDateString('en-US')}</Text>
                   {goal.endDate && (
                     <>
                       <Text>|</Text>
-                      <Text>结束: {new Date(goal.endDate).toLocaleDateString('zh-CN')}</Text>
+                      <Text>End: {new Date(goal.endDate).toLocaleDateString('en-US')}</Text>
                     </>
                   )}
                 </HStack>
@@ -152,11 +152,11 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
                     {progress?.current ?? 0} / {progress?.target ?? 0}
                   </Text>
                   <Text fontSize="md" color="text.mist">
-                    进度: {progress?.progress ?? 0}%
+                    Progress: {progress?.progress ?? 0}%
                   </Text>
                   {progress?.remainingDays !== undefined && (
                     <Text fontSize="sm" color="text.mist">
-                      剩余: {progress.remainingDays} 天
+                      Remaining: {progress.remainingDays} days
                     </Text>
                   )}
                 </VStack>
@@ -166,17 +166,17 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
               {goal.criteria && goal.criteria.length > 0 && (
                 <VStack align="flex-start" gap={2}>
                   <Heading fontSize="md" color="text.neon" fontFamily="mono">
-                    达成条件
+                    Completion Criteria
                   </Heading>
                   <VStack align="flex-start" gap={2} w="full">
                     {goal.criteria.map((criterion, index) => (
                       <Box key={index} p={3} bg="bg.dark" borderRadius="4px" w="full">
                         <Text fontSize="sm" color="text.mist">
-                          {criterion.description || `条件 ${index + 1}`}
+                          {criterion.description || `Criterion ${index + 1}`}
                         </Text>
                         <Text fontSize="xs" color="text.dim" fontFamily="mono" mt={1}>
-                          行为: {criterion.behaviorId} | 指标: {criterion.metric} | 目标:{' '}
-                          {criterion.value} | 周期: {criterion.period}
+                          Behavior: {criterion.behaviorId} | Metric: {criterion.metric} | Target:{' '}
+                          {criterion.value} | Period: {criterion.period}
                         </Text>
                       </Box>
                     ))}

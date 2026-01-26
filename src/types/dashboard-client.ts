@@ -1,7 +1,12 @@
 // Client-side types for dashboard
 
 // Time range types
-export type TimeRangePreset = 'today' | '7d' | '30d' | '90d';
+export enum TimeRangePreset {
+  Today = 'today',
+  Last7Days = '7d',
+  Last30Days = '30d',
+  Last90Days = '90d',
+}
 
 export type TimeRange =
   | { type: 'preset'; value: TimeRangePreset }
@@ -74,6 +79,8 @@ export interface HeatmapData {
   level: HeatmapLevel;
 }
 
+import type { GoalStatus } from './goal-client';
+
 // Goal progress for dashboard
 export interface GoalProgress {
   id: string;
@@ -82,7 +89,13 @@ export interface GoalProgress {
   target: number;
   current: number;
   unit?: string;
-  status: 'active' | 'completed' | 'abandoned';
+  status: GoalStatus;
+}
+
+export enum TrendDirection {
+  Up = 'up',
+  Down = 'down',
+  Neutral = 'neutral',
 }
 
 // Stats card props
@@ -90,11 +103,14 @@ export interface StatsCardData {
   title: string;
   value: number | string;
   trend?: {
-    direction: 'up' | 'down' | 'neutral';
+    direction: TrendDirection;
     value: string;
   };
   icon?: string;
 }
 
 // Chart export format
-export type ExportFormat = 'png' | 'csv';
+export enum ExportFormat {
+  Png = 'png',
+  Csv = 'csv',
+}

@@ -10,7 +10,13 @@ export type BehaviorRecord = InferSelectModel<typeof neologBehaviorRecords> & {
   metadata: MetadataRecord;
 };
 
-export type BehaviorCategory = 'health' | 'expense' | 'income' | 'habit' | 'other';
+export enum BehaviorCategory {
+  Health = 'health',
+  Expense = 'expense',
+  Income = 'income',
+  Habit = 'habit',
+  Other = 'other',
+}
 
 export type MetadataValue = string | number | boolean | string[] | number[] | null;
 export type MetadataRecord = Record<string, MetadataValue>;

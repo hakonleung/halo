@@ -70,10 +70,10 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
         gap={2}
       >
         <Text color="text.mist" fontFamily="mono">
-          暂无进行中的目标
+          No Active Goals
         </Text>
         <Text color="brand.matrix" fontFamily="mono" fontSize="sm">
-          创建你的第一个目标
+          Create Your First Goal
         </Text>
       </Box>
     );
@@ -88,7 +88,7 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
       p={4}
     >
       <Text fontSize="md" color="text.neon" fontFamily="mono" mb={4}>
-        目标进度
+        Goal Progress
       </Text>
       <SimpleGrid columns={{ base: 2, md: 2 }} gap={4} justifyItems="center">
         {activeGoals.slice(0, 4).map((goal) => (

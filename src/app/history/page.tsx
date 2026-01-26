@@ -7,13 +7,14 @@ import { useState } from 'react';
 import type { HistoryListRequest } from '@/types/history-client';
 import { HistoryList } from '@/components/history/history-list';
 import { HistoryFilters } from '@/components/history/history-filters';
+import { SortOrder } from '@/types/history-server';
 
 export default function HistoryPage() {
   const [filters, setFilters] = useState<HistoryListRequest>({
     type: 'all',
     page: 1,
     pageSize: 20,
-    sortOrder: 'desc',
+    sortOrder: SortOrder.Desc,
   });
 
   const { data, isLoading, error } = useHistory(filters);

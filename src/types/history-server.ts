@@ -2,7 +2,11 @@ import type { BehaviorRecordWithDefinition } from './behavior-server';
 import type { Goal } from './goal-server';
 import type { Note } from './note-server';
 
-export type HistoryItemType = 'behavior' | 'goal' | 'note';
+export enum HistoryItemType {
+  Behavior = 'behavior',
+  Goal = 'goal',
+  Note = 'note',
+}
 
 export interface HistoryItem {
   id: string;
@@ -12,16 +16,32 @@ export interface HistoryItem {
   data: BehaviorRecordWithDefinition | Goal | Note;
 }
 
+export enum GoalStatus {
+  Active = 'active',
+  Completed = 'completed',
+  Abandoned = 'abandoned',
+}
+
+export enum HistorySortBy {
+  Time = 'time',
+  Type = 'type',
+}
+
+export enum SortOrder {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
 export interface HistoryListRequest {
   type?: HistoryItemType | 'all';
   startDate?: string;
   endDate?: string;
   behaviorCategory?: string;
-  goalStatus?: 'active' | 'completed' | 'abandoned';
+  goalStatus?: GoalStatus;
   noteTags?: string[];
   search?: string;
-  sortBy?: 'time' | 'type';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: HistorySortBy;
+  sortOrder?: SortOrder;
   page?: number;
   pageSize?: number;
 }

@@ -1,10 +1,36 @@
 // Client-side types for goals
+export enum GoalMetric {
+  Count = 'count',
+  Sum = 'sum',
+  Avg = 'avg',
+}
+
+export enum GoalOperator {
+  GreaterThan = '>',
+  GreaterThanOrEqual = '>=',
+  LessThan = '<',
+  LessThanOrEqual = '<=',
+  Equal = '==',
+}
+
+export enum GoalPeriod {
+  Daily = 'daily',
+  Weekly = 'weekly',
+  Monthly = 'monthly',
+}
+
+export enum GoalStatus {
+  Active = 'active',
+  Completed = 'completed',
+  Abandoned = 'abandoned',
+}
+
 export interface GoalCriteria {
   behaviorId: string;
-  metric: 'count' | 'sum' | 'avg';
-  operator: '>' | '>=' | '<' | '<=' | '==';
+  metric: GoalMetric;
+  operator: GoalOperator;
   value: number;
-  period: 'daily' | 'weekly' | 'monthly';
+  period: GoalPeriod;
   description: string;
 }
 
@@ -17,7 +43,7 @@ export interface Goal {
   startDate: string;
   endDate?: string;
   criteria: GoalCriteria[];
-  status: 'active' | 'completed' | 'abandoned';
+  status: GoalStatus;
   createdAt: string;
   updatedAt: string;
 }

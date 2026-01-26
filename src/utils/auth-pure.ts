@@ -4,7 +4,11 @@
  * Medium (yellow): 8+ characters with letters and numbers
  * Strong (green): 12+ characters with uppercase, lowercase, numbers, and special characters
  */
-export type PasswordStrength = 'weak' | 'medium' | 'strong';
+export enum PasswordStrength {
+  Weak = 'weak',
+  Medium = 'medium',
+  Strong = 'strong',
+}
 
 export function checkPasswordStrength(password: string): PasswordStrength {
   const hasLetter = /[a-zA-Z]/.test(password);
@@ -14,14 +18,14 @@ export function checkPasswordStrength(password: string): PasswordStrength {
   const hasLower = /[a-z]/.test(password);
 
   if (password.length >= 12 && hasUpper && hasLower && hasNumber && hasSpecial) {
-    return 'strong';
+    return PasswordStrength.Strong;
   }
 
   if (password.length >= 8 && hasLetter && hasNumber) {
-    return 'medium';
+    return PasswordStrength.Medium;
   }
 
-  return 'weak';
+  return PasswordStrength.Weak;
 }
 
 /**

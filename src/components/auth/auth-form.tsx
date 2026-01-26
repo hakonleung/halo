@@ -24,10 +24,13 @@ import { useLogin } from '@/hooks/use-login';
 import { useSignup } from '@/hooks/use-signup';
 import { useState } from 'react';
 
-type AuthMode = 'login' | 'signup';
+enum AuthMode {
+  Login = 'login',
+  Signup = 'signup',
+}
 
 export function AuthForm() {
-  const [mode, setMode] = useState<AuthMode>('login');
+  const [mode, setMode] = useState<AuthMode>(AuthMode.Login);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { login, isLoading: isLoginLoading, error: loginError } = useLogin();
@@ -44,7 +47,8 @@ export function AuthForm() {
     resolver: zodResolver(signupSchema),
   });
 
-  const password = mode === 'login' ? loginForm.watch('password') : signupForm.watch('password');
+  const password =
+    mode === AuthMode.Login ? loginForm.watch('password') : signupForm.watch('password');
   const passwordStrength = password ? checkPasswordStrength(password) : undefined;
 
   const onLogin = async (data: LoginFormData) => {
@@ -64,7 +68,7 @@ export function AuthForm() {
   };
 
   const onSubmit =
-    mode === 'login' ? loginForm.handleSubmit(onLogin) : signupForm.handleSubmit(onSignup);
+    mode === AuthMode.Login ? loginForm.handleSubmit(onLogin) : signupForm.handleSubmit(onSignup);
 
   const strengthConfig = {
     weak: { value: 33, color: 'red.500', label: 'Weak' },
@@ -126,38 +130,38 @@ export function AuthForm() {
               NEO-LOG
             </Heading>
             <Text color="text.mist" fontFamily="mono" fontSize="sm">
-              [ {mode === 'login' ? 'SYSTEM LOGIN' : 'SYSTEM REGISTER'} ]
+              [ {mode === AuthMode.Login ? 'SYSTEM LOGIN' : 'SYSTEM REGISTER'} ]
             </Text>
           </Box>
 
           <HStack gap={2} justify="center" mb={4}>
             <Button
-              variant={mode === 'login' ? 'solid' : 'outline'}
+              variant={mode === AuthMode.Login ? 'solid' : 'outline'}
               size="sm"
               onClick={() => {
-                setMode('login');
+                setMode(AuthMode.Login);
                 loginForm.reset();
                 signupForm.reset();
               }}
               borderColor="brand.matrix"
-              color={mode === 'login' ? 'bg.deep' : 'brand.matrix'}
-              bg={mode === 'login' ? 'brand.matrix' : 'transparent'}
-              _hover={{ bg: mode === 'login' ? 'brand.matrix' : 'rgba(0, 255, 65, 0.1)' }}
+              color={mode === AuthMode.Login ? 'bg.deep' : 'brand.matrix'}
+              bg={mode === AuthMode.Login ? 'brand.matrix' : 'transparent'}
+              _hover={{ bg: mode === AuthMode.Login ? 'brand.matrix' : 'rgba(0, 255, 65, 0.1)' }}
             >
               Sign In
             </Button>
             <Button
-              variant={mode === 'signup' ? 'solid' : 'outline'}
+              variant={mode === AuthMode.Signup ? 'solid' : 'outline'}
               size="sm"
               onClick={() => {
-                setMode('signup');
+                setMode(AuthMode.Signup);
                 loginForm.reset();
                 signupForm.reset();
               }}
               borderColor="brand.matrix"
-              color={mode === 'signup' ? 'bg.deep' : 'brand.matrix'}
-              bg={mode === 'signup' ? 'brand.matrix' : 'transparent'}
-              _hover={{ bg: mode === 'signup' ? 'brand.matrix' : 'rgba(0, 255, 65, 0.1)' }}
+              color={mode === AuthMode.Signup ? 'bg.deep' : 'brand.matrix'}
+              bg={mode === AuthMode.Signup ? 'brand.matrix' : 'transparent'}
+              _hover={{ bg: mode === AuthMode.Signup ? 'brand.matrix' : 'rgba(0, 255, 65, 0.1)' }}
             >
               Sign Up
             </Button>
@@ -167,7 +171,7 @@ export function AuthForm() {
             <VStack gap={4} align="stretch">
               <Field.Root
                 invalid={
-                  !!(mode === 'login'
+                  !!(mode === AuthMode.Login
                     ? loginForm.formState.errors.email
                     : signupForm.formState.errors.email)
                 }
@@ -179,13 +183,13 @@ export function AuthForm() {
                   id="email"
                   type="email"
                   placeholder="user@example.com"
-                  {...(mode === 'login'
+                  {...(mode === AuthMode.Login
                     ? loginForm.register('email')
                     : signupForm.register('email'))}
                 />
                 <Field.ErrorText mt={1} fontSize="xs" color="red.500" fontFamily="mono">
                   {
-                    (mode === 'login'
+                    (mode === AuthMode.Login
                       ? loginForm.formState.errors.email
                       : signupForm.formState.errors.email
                     )?.message
@@ -195,7 +199,7 @@ export function AuthForm() {
 
               <Field.Root
                 invalid={
-                  !!(mode === 'login'
+                  !!(mode === AuthMode.Login
                     ? loginForm.formState.errors.password
                     : signupForm.formState.errors.password)
                 }
@@ -207,13 +211,13 @@ export function AuthForm() {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  {...(mode === 'login'
+                  {...(mode === AuthMode.Login
                     ? loginForm.register('password')
                     : signupForm.register('password'))}
                 />
                 <Field.ErrorText mt={1} fontSize="xs" color="red.500" fontFamily="mono">
                   {
-                    (mode === 'login'
+                    (mode === AuthMode.Login
                       ? loginForm.formState.errors.password
                       : signupForm.formState.errors.password
                     )?.message
@@ -261,7 +265,7 @@ export function AuthForm() {
                 </HStack>
               </Field.Root>
 
-              {mode === 'signup' && (
+              {mode === AuthMode.Signup && (
                 <Field.Root invalid={!!signupForm.formState.errors.confirmPassword}>
                   <Field.Label color="text.mist" fontFamily="mono" fontSize="sm" mb={2}>
                     Confirm Password
@@ -307,7 +311,13 @@ export function AuthForm() {
               )}
 
               <Button type="submit" w="100%" disabled={isLoading}>
-                {isLoading ? <Spinner size="sm" /> : mode === 'login' ? 'Sign In' : 'Sign Up'}
+                {isLoading ? (
+                  <Spinner size="sm" />
+                ) : mode === AuthMode.Login ? (
+                  'Sign In'
+                ) : (
+                  'Sign Up'
+                )}
               </Button>
             </VStack>
           </Box>

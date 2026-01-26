@@ -20,28 +20,28 @@ import type { GetGoalsParams } from '@/hooks/use-goals';
 
 const statusOptions = createListCollection({
   items: [
-    { label: '全部状态', value: 'all' },
-    { label: '进行中', value: 'active' },
-    { label: '已完成', value: 'completed' },
-    { label: '已放弃', value: 'abandoned' },
+    { label: 'All Status', value: 'all' },
+    { label: 'Active', value: 'active' },
+    { label: 'Completed', value: 'completed' },
+    { label: 'Abandoned', value: 'abandoned' },
   ],
 });
 
 const categoryOptions = createListCollection({
   items: [
-    { label: '全部分类', value: 'all' },
-    { label: '健康', value: 'health' },
-    { label: '财务', value: 'finance' },
-    { label: '习惯', value: 'habit' },
-    { label: '学习', value: 'learning' },
-    { label: '其他', value: 'other' },
+    { label: 'All Categories', value: 'all' },
+    { label: 'Health', value: 'health' },
+    { label: 'Finance', value: 'finance' },
+    { label: 'Habit', value: 'habit' },
+    { label: 'Learning', value: 'learning' },
+    { label: 'Other', value: 'other' },
   ],
 });
 
 const sortOptions = createListCollection({
   items: [
-    { label: '创建时间', value: 'created_at' },
-    { label: '名称', value: 'name' },
+    { label: 'Created At', value: 'created_at' },
+    { label: 'Name', value: 'name' },
   ],
 });
 
@@ -79,10 +79,10 @@ export default function GoalsPage() {
           {/* Page Header */}
           <HStack justify="space-between" align="center">
             <Heading fontSize="32px" color="text.neon" fontFamily="mono">
-              目标管理
+              Goal Management
             </Heading>
             <Button colorScheme="green" onClick={() => router.push('/goals/new')}>
-              + 创建目标
+              + Create Goal
             </Button>
           </HStack>
 
@@ -102,7 +102,7 @@ export default function GoalsPage() {
                   onValueChange={(e) => handleFilterChange('status', e.value[0] as string)}
                 >
                   <Select.Trigger>
-                    <Select.ValueText placeholder="选择状态" />
+                    <Select.ValueText placeholder="Select Status" />
                   </Select.Trigger>
                   <Select.Content bg="bg.carbon" borderColor="brand.matrix">
                     {statusOptions.items.map((item) => (
@@ -121,7 +121,7 @@ export default function GoalsPage() {
                   onValueChange={(e) => handleFilterChange('category', e.value[0] as string)}
                 >
                   <Select.Trigger>
-                    <Select.ValueText placeholder="选择分类" />
+                    <Select.ValueText placeholder="Select Category" />
                   </Select.Trigger>
                   <Select.Content bg="bg.carbon" borderColor="brand.matrix">
                     {categoryOptions.items.map((item) => (
@@ -140,7 +140,7 @@ export default function GoalsPage() {
                   onValueChange={(e) => handleFilterChange('sort', e.value[0] as string)}
                 >
                   <Select.Trigger>
-                    <Select.ValueText placeholder="排序方式" />
+                    <Select.ValueText placeholder="Sort By" />
                   </Select.Trigger>
                   <Select.Content bg="bg.carbon" borderColor="brand.matrix">
                     {sortOptions.items.map((item) => (
@@ -153,7 +153,7 @@ export default function GoalsPage() {
               </Box>
 
               <Input
-                placeholder="搜索目标名称..."
+                placeholder="Search goal name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 maxW="300px"

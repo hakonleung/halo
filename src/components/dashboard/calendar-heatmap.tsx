@@ -17,7 +17,7 @@ const LEVEL_COLORS = [
   'rgba(0, 255, 65, 0.9)',
 ];
 
-const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
+const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapProps) {
   if (loading) {
@@ -49,7 +49,7 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
         justifyContent="center"
       >
         <Text color="text.mist" fontFamily="mono">
-          暂无活跃数据
+          No Activity Data
         </Text>
       </Box>
     );
@@ -92,7 +92,7 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
       overflowX="auto"
     >
       <Text fontSize="md" color="text.neon" fontFamily="mono" mb={4}>
-        活跃度热力图
+        Activity Heatmap
       </Text>
 
       <HStack gap={1} align="flex-start">
@@ -141,7 +141,7 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
                   {day.date && (
                     <Tooltip.Positioner>
                       <Tooltip.Content>
-                        {`${new Date(day.date).toLocaleDateString('zh-CN')} - ${day.count} 条记录`}
+                        {`${new Date(day.date).toLocaleDateString('en-US')} - ${day.count} records`}
                       </Tooltip.Content>
                     </Tooltip.Positioner>
                   )}
@@ -155,7 +155,7 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
       {/* Legend */}
       <HStack gap={2} mt={4} justify="flex-end">
         <Text fontSize="xs" color="text.mist" fontFamily="mono">
-          少
+          Less
         </Text>
         {LEVEL_COLORS.map((color, i) => (
           <Box
@@ -168,7 +168,7 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
           />
         ))}
         <Text fontSize="xs" color="text.mist" fontFamily="mono">
-          多
+          More
         </Text>
       </HStack>
     </Box>

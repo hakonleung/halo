@@ -86,7 +86,7 @@ export function TrendLineChart({
         justifyContent="center"
       >
         <Text color="text.mist" fontFamily="mono">
-          暂无趋势数据
+          No Trend Data
         </Text>
       </Box>
     );
@@ -114,7 +114,7 @@ export function TrendLineChart({
     >
       <Flex justify="space-between" align="center" mb={4}>
         <Text fontSize="md" color="text.neon" fontFamily="mono">
-          行为趋势
+          Behavior Trend
         </Text>
         {data.types.length > 0 && (
           <HStack gap={2} flexWrap="wrap">
@@ -167,7 +167,7 @@ export function TrendLineChart({
               }}
               labelFormatter={(label: string | number) => {
                 const date = typeof label === 'string' ? new Date(label) : new Date(label);
-                return date.toLocaleDateString('zh-CN');
+                return date.toLocaleDateString('en-US');
               }}
             />
             <Line

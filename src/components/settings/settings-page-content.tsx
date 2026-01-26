@@ -7,27 +7,32 @@ import { NotificationSettings } from './notification-settings';
 import { LocaleSettings } from './locale-settings';
 import { useState } from 'react';
 
-type SettingsTab = 'profile' | 'appearance' | 'notifications' | 'locale';
+enum SettingsTab {
+  Profile = 'profile',
+  Appearance = 'appearance',
+  Notifications = 'notifications',
+  Locale = 'locale',
+}
 
 export function SettingsPageContent() {
-  const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
+  const [activeTab, setActiveTab] = useState<SettingsTab>(SettingsTab.Profile);
 
   const tabs: Array<{ id: SettingsTab; label: string }> = [
-    { id: 'profile', label: 'Profile' },
-    { id: 'appearance', label: 'Appearance' },
-    { id: 'notifications', label: 'Notifications' },
-    { id: 'locale', label: 'Locale' },
+    { id: SettingsTab.Profile, label: 'Profile' },
+    { id: SettingsTab.Appearance, label: 'Appearance' },
+    { id: SettingsTab.Notifications, label: 'Notifications' },
+    { id: SettingsTab.Locale, label: 'Locale' },
   ];
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'profile':
+      case SettingsTab.Profile:
         return <ProfileSettings />;
-      case 'appearance':
+      case SettingsTab.Appearance:
         return <AppearanceSettings />;
-      case 'notifications':
+      case SettingsTab.Notifications:
         return <NotificationSettings />;
-      case 'locale':
+      case SettingsTab.Locale:
         return <LocaleSettings />;
       default:
         return <ProfileSettings />;

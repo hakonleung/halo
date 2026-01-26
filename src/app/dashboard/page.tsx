@@ -15,10 +15,14 @@ import {
 } from '@/components/dashboard';
 import { useDashboardStats, useTrends, useHeatmap } from '@/hooks/use-dashboard';
 import type { TimeRange } from '@/types/dashboard-client';
+import { TimeRangePreset } from '@/types/dashboard-client';
 
 function DashboardContent() {
   const queryClient = useQueryClient();
-  const [timeRange, setTimeRange] = useState<TimeRange>({ type: 'preset', value: '7d' });
+  const [timeRange, setTimeRange] = useState<TimeRange>({
+    type: 'preset',
+    value: TimeRangePreset.Last7Days,
+  });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
   // Fetch data
