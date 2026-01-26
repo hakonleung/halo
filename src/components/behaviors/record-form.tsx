@@ -70,7 +70,9 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
   return (
     <VStack gap={6} align="stretch" w="full">
       <Field.Root invalid={!selectedDefId}>
-        <Field.Label color="text.mist" mb={2}>Select Behavior</Field.Label>
+        <Field.Label color="text.mist" mb={2}>
+          Select Behavior
+        </Field.Label>
         <Select.Root
           collection={definitionCollection}
           value={[selectedDefId]}
@@ -92,10 +94,17 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
 
       {selectedDef && (
         <VStack gap={4} align="stretch">
-          <Text color="brand.matrix" fontSize="sm" fontFamily="mono" borderBottom="1px solid" borderColor="rgba(0, 255, 65, 0.2)" pb={2}>
+          <Text
+            color="brand.matrix"
+            fontSize="sm"
+            fontFamily="mono"
+            borderBottom="1px solid"
+            borderColor="rgba(0, 255, 65, 0.2)"
+            pb={2}
+          >
             METADATA FIELDS
           </Text>
-          
+
           {selectedDef.metadataSchema.map((field: MetadataField) => (
             <Field.Root key={field.key} required={field.required}>
               <Field.Label color="text.mist">{field.name}</Field.Label>
@@ -156,4 +165,3 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
     </VStack>
   );
 }
-

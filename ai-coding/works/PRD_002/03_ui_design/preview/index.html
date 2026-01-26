@@ -1,362 +1,375 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>目标管理 - UI 预览</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>目标管理 - UI 预览</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    body {
-      font-family: 'IBM Plex Mono', '思源黑体', monospace;
-      background: #0A0A0A;
-      color: #E0E0E0;
-      line-height: 1.6;
-    }
+      body {
+        font-family: 'IBM Plex Mono', '思源黑体', monospace;
+        background: #0a0a0a;
+        color: #e0e0e0;
+        line-height: 1.6;
+      }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      font-size: 32px;
-      color: #E0E0E0;
-      font-weight: bold;
-    }
-
-    .btn {
-      padding: 12px 24px;
-      border: 1px solid #00FF41;
-      background: linear-gradient(135deg, #00FF41, #00CC33);
-      color: #0A0A0A;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: inherit;
-      font-weight: bold;
-      transition: all 150ms ease-out;
-    }
-
-    .btn:hover {
-      background: linear-gradient(135deg, #00FF41, #00FF41);
-      box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: #00FF41;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(0, 255, 65, 0.1);
-    }
-
-    .filters {
-      background: #1A1A1A;
-      border: 1px solid rgba(0, 255, 65, 0.3);
-      border-radius: 4px;
-      padding: 16px;
-      margin-bottom: 24px;
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .filter-item {
-      min-width: 200px;
-    }
-
-    select, input {
-      width: 100%;
-      padding: 8px 12px;
-      background: #0A0A0A;
-      border: 1px solid #2A2A2A;
-      border-radius: 4px;
-      color: #E0E0E0;
-      font-family: inherit;
-    }
-
-    select:focus, input:focus {
-      outline: none;
-      border-color: #00FF41;
-      box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.2);
-    }
-
-    .goal-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-    }
-
-    .goal-card {
-      background: #1A1A1A;
-      border: 1px solid rgba(0, 255, 65, 0.3);
-      border-radius: 4px;
-      padding: 16px;
-      cursor: pointer;
-      transition: all 150ms ease-out;
-    }
-
-    .goal-card:hover {
-      border-color: rgba(0, 255, 65, 0.5);
-      box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-    }
-
-    .goal-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .goal-title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #E0E0E0;
-    }
-
-    .goal-status {
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      background: rgba(0, 255, 65, 0.2);
-      color: #00FF41;
-      border: 1px solid #00FF41;
-    }
-
-    .goal-description {
-      color: #888888;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-
-    .goal-meta {
-      display: flex;
-      gap: 8px;
-      color: #888888;
-      font-size: 12px;
-      margin-bottom: 16px;
-    }
-
-    .goal-progress {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .progress-ring {
-      width: 80px;
-      height: 80px;
-      position: relative;
-    }
-
-    .progress-ring svg {
-      transform: rotate(-90deg);
-    }
-
-    .progress-ring circle {
-      fill: none;
-      stroke-width: 8;
-    }
-
-    .progress-ring .bg {
-      stroke: rgba(0, 255, 65, 0.1);
-    }
-
-    .progress-ring .progress {
-      stroke: #00FF41;
-      stroke-dasharray: 226;
-      stroke-dashoffset: 56.5;
-      filter: drop-shadow(0 0 4px #00FF41);
-    }
-
-    .progress-text {
-      flex: 1;
-    }
-
-    .progress-value {
-      font-size: 18px;
-      font-weight: bold;
-      color: #E0E0E0;
-    }
-
-    .progress-days {
-      font-size: 12px;
-      color: #888888;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 64px 24px;
-      color: #888888;
-    }
-
-    .empty-state h2 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      color: #E0E0E0;
-    }
-
-    .empty-state p {
-      color: #888888;
-    }
-
-    @media (max-width: 640px) {
       .container {
-        padding: 16px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 24px;
       }
 
       .page-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
       }
 
-      .goal-grid {
-        grid-template-columns: 1fr;
+      h1 {
+        font-size: 32px;
+        color: #e0e0e0;
+        font-weight: bold;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: 1px solid #00ff41;
+        background: linear-gradient(135deg, #00ff41, #00cc33);
+        color: #0a0a0a;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        transition: all 150ms ease-out;
+      }
+
+      .btn:hover {
+        background: linear-gradient(135deg, #00ff41, #00ff41);
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: #00ff41;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(0, 255, 65, 0.1);
       }
 
       .filters {
-        flex-direction: column;
+        background: #1a1a1a;
+        border: 1px solid rgba(0, 255, 65, 0.3);
+        border-radius: 4px;
+        padding: 16px;
+        margin-bottom: 24px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
       }
 
       .filter-item {
-        min-width: 100%;
+        min-width: 200px;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <!-- 目标列表页面 -->
-    <div class="page-header">
-      <h1>目标管理</h1>
-      <button class="btn">+ 创建目标</button>
+
+      select,
+      input {
+        width: 100%;
+        padding: 8px 12px;
+        background: #0a0a0a;
+        border: 1px solid #2a2a2a;
+        border-radius: 4px;
+        color: #e0e0e0;
+        font-family: inherit;
+      }
+
+      select:focus,
+      input:focus {
+        outline: none;
+        border-color: #00ff41;
+        box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.2);
+      }
+
+      .goal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+      }
+
+      .goal-card {
+        background: #1a1a1a;
+        border: 1px solid rgba(0, 255, 65, 0.3);
+        border-radius: 4px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 150ms ease-out;
+      }
+
+      .goal-card:hover {
+        border-color: rgba(0, 255, 65, 0.5);
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+      }
+
+      .goal-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .goal-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #e0e0e0;
+      }
+
+      .goal-status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        background: rgba(0, 255, 65, 0.2);
+        color: #00ff41;
+        border: 1px solid #00ff41;
+      }
+
+      .goal-description {
+        color: #888888;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .goal-meta {
+        display: flex;
+        gap: 8px;
+        color: #888888;
+        font-size: 12px;
+        margin-bottom: 16px;
+      }
+
+      .goal-progress {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .progress-ring {
+        width: 80px;
+        height: 80px;
+        position: relative;
+      }
+
+      .progress-ring svg {
+        transform: rotate(-90deg);
+      }
+
+      .progress-ring circle {
+        fill: none;
+        stroke-width: 8;
+      }
+
+      .progress-ring .bg {
+        stroke: rgba(0, 255, 65, 0.1);
+      }
+
+      .progress-ring .progress {
+        stroke: #00ff41;
+        stroke-dasharray: 226;
+        stroke-dashoffset: 56.5;
+        filter: drop-shadow(0 0 4px #00ff41);
+      }
+
+      .progress-text {
+        flex: 1;
+      }
+
+      .progress-value {
+        font-size: 18px;
+        font-weight: bold;
+        color: #e0e0e0;
+      }
+
+      .progress-days {
+        font-size: 12px;
+        color: #888888;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 64px 24px;
+        color: #888888;
+      }
+
+      .empty-state h2 {
+        font-size: 24px;
+        margin-bottom: 8px;
+        color: #e0e0e0;
+      }
+
+      .empty-state p {
+        color: #888888;
+      }
+
+      @media (max-width: 640px) {
+        .container {
+          padding: 16px;
+        }
+
+        .page-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+
+        .goal-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filters {
+          flex-direction: column;
+        }
+
+        .filter-item {
+          min-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 目标列表页面 -->
+      <div class="page-header">
+        <h1>目标管理</h1>
+        <button class="btn">+ 创建目标</button>
+      </div>
+
+      <div class="filters">
+        <div class="filter-item">
+          <select>
+            <option>全部状态</option>
+            <option>进行中</option>
+            <option>已完成</option>
+            <option>已放弃</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <select>
+            <option>全部分类</option>
+            <option>健康</option>
+            <option>财务</option>
+            <option>习惯</option>
+            <option>学习</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <select>
+            <option>创建时间</option>
+            <option>进度</option>
+            <option>名称</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <input type="text" placeholder="搜索目标名称..." />
+        </div>
+      </div>
+
+      <div class="goal-grid">
+        <!-- 目标卡片 1 -->
+        <div class="goal-card">
+          <div class="goal-card-header">
+            <div class="goal-title">每日运动 30 分钟</div>
+            <span class="goal-status">进行中</span>
+          </div>
+          <div class="goal-description">坚持每天运动，保持身体健康</div>
+          <div class="goal-meta">
+            <span>分类: 健康</span>
+            <span>|</span>
+            <span>开始: 2026-01-01</span>
+          </div>
+          <div class="goal-progress">
+            <div class="progress-ring">
+              <svg width="80" height="80">
+                <circle class="bg" cx="40" cy="40" r="36"></circle>
+                <circle class="progress" cx="40" cy="40" r="36"></circle>
+              </svg>
+            </div>
+            <div class="progress-text">
+              <div class="progress-value">75 / 100</div>
+              <div class="progress-days">剩余: 30天</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 目标卡片 2 -->
+        <div class="goal-card">
+          <div class="goal-card-header">
+            <div class="goal-title">每月存钱 5000 元</div>
+            <span class="goal-status">进行中</span>
+          </div>
+          <div class="goal-description">财务规划，积累财富</div>
+          <div class="goal-meta">
+            <span>分类: 财务</span>
+            <span>|</span>
+            <span>开始: 2026-01-01</span>
+          </div>
+          <div class="goal-progress">
+            <div class="progress-ring">
+              <svg width="80" height="80">
+                <circle class="bg" cx="40" cy="40" r="36"></circle>
+                <circle
+                  class="progress"
+                  cx="40"
+                  cy="40"
+                  r="36"
+                  style="stroke-dashoffset: 113"
+                ></circle>
+              </svg>
+            </div>
+            <div class="progress-text">
+              <div class="progress-value">50 / 100</div>
+              <div class="progress-days">剩余: 15天</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 目标卡片 3 -->
+        <div class="goal-card">
+          <div class="goal-card-header">
+            <div class="goal-title">每天阅读 1 小时</div>
+            <span class="goal-status">已完成</span>
+          </div>
+          <div class="goal-description">提升知识水平</div>
+          <div class="goal-meta">
+            <span>分类: 学习</span>
+            <span>|</span>
+            <span>开始: 2025-12-01</span>
+          </div>
+          <div class="goal-progress">
+            <div class="progress-ring">
+              <svg width="80" height="80">
+                <circle class="bg" cx="40" cy="40" r="36"></circle>
+                <circle
+                  class="progress"
+                  cx="40"
+                  cy="40"
+                  r="36"
+                  style="stroke-dashoffset: 0"
+                ></circle>
+              </svg>
+            </div>
+            <div class="progress-text">
+              <div class="progress-value">100 / 100</div>
+              <div class="progress-days">已完成</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="filters">
-      <div class="filter-item">
-        <select>
-          <option>全部状态</option>
-          <option>进行中</option>
-          <option>已完成</option>
-          <option>已放弃</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <select>
-          <option>全部分类</option>
-          <option>健康</option>
-          <option>财务</option>
-          <option>习惯</option>
-          <option>学习</option>
-          <option>其他</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <select>
-          <option>创建时间</option>
-          <option>进度</option>
-          <option>名称</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <input type="text" placeholder="搜索目标名称...">
-      </div>
-    </div>
-
-    <div class="goal-grid">
-      <!-- 目标卡片 1 -->
-      <div class="goal-card">
-        <div class="goal-card-header">
-          <div class="goal-title">每日运动 30 分钟</div>
-          <span class="goal-status">进行中</span>
-        </div>
-        <div class="goal-description">坚持每天运动，保持身体健康</div>
-        <div class="goal-meta">
-          <span>分类: 健康</span>
-          <span>|</span>
-          <span>开始: 2026-01-01</span>
-        </div>
-        <div class="goal-progress">
-          <div class="progress-ring">
-            <svg width="80" height="80">
-              <circle class="bg" cx="40" cy="40" r="36"></circle>
-              <circle class="progress" cx="40" cy="40" r="36"></circle>
-            </svg>
-          </div>
-          <div class="progress-text">
-            <div class="progress-value">75 / 100</div>
-            <div class="progress-days">剩余: 30天</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 目标卡片 2 -->
-      <div class="goal-card">
-        <div class="goal-card-header">
-          <div class="goal-title">每月存钱 5000 元</div>
-          <span class="goal-status">进行中</span>
-        </div>
-        <div class="goal-description">财务规划，积累财富</div>
-        <div class="goal-meta">
-          <span>分类: 财务</span>
-          <span>|</span>
-          <span>开始: 2026-01-01</span>
-        </div>
-        <div class="goal-progress">
-          <div class="progress-ring">
-            <svg width="80" height="80">
-              <circle class="bg" cx="40" cy="40" r="36"></circle>
-              <circle class="progress" cx="40" cy="40" r="36" style="stroke-dashoffset: 113;"></circle>
-            </svg>
-          </div>
-          <div class="progress-text">
-            <div class="progress-value">50 / 100</div>
-            <div class="progress-days">剩余: 15天</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 目标卡片 3 -->
-      <div class="goal-card">
-        <div class="goal-card-header">
-          <div class="goal-title">每天阅读 1 小时</div>
-          <span class="goal-status">已完成</span>
-        </div>
-        <div class="goal-description">提升知识水平</div>
-        <div class="goal-meta">
-          <span>分类: 学习</span>
-          <span>|</span>
-          <span>开始: 2025-12-01</span>
-        </div>
-        <div class="goal-progress">
-          <div class="progress-ring">
-            <svg width="80" height="80">
-              <circle class="bg" cx="40" cy="40" r="36"></circle>
-              <circle class="progress" cx="40" cy="40" r="36" style="stroke-dashoffset: 0;"></circle>
-            </svg>
-          </div>
-          <div class="progress-text">
-            <div class="progress-value">100 / 100</div>
-            <div class="progress-days">已完成</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
+  </body>
 </html>
-

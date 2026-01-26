@@ -1,12 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Box,
-  IconButton,
-  Drawer,
-  Heading,
-} from '@chakra-ui/react';
+import { Box, IconButton, Drawer, Heading } from '@chakra-ui/react';
 import { Plus } from 'lucide-react';
 import { RecordForm } from '@/components/behaviors/record-form';
 
@@ -35,27 +30,34 @@ export function ActionButton() {
       <Drawer.Root open={isOpen} onOpenChange={(e) => setIsOpen(e.open)} placement="end">
         <Drawer.Backdrop />
         <Drawer.Positioner width={{ base: 'full', md: '420px' }}>
-          <Drawer.Content bg="bg.carbon" borderLeft="1px solid" borderColor="brand.matrix" height="100vh">
+          <Drawer.Content
+            bg="bg.carbon"
+            borderLeft="1px solid"
+            borderColor="brand.matrix"
+            height="100vh"
+          >
             <Drawer.Header borderBottom="1px solid" borderColor="rgba(0, 255, 65, 0.2)" py={6}>
               <Drawer.Title>
-                <Heading size="lg" color="brand.matrix" fontFamily="heading" textShadow="0 0 8px currentColor">
+                <Heading
+                  size="lg"
+                  color="brand.matrix"
+                  fontFamily="heading"
+                  textShadow="0 0 8px currentColor"
+                >
                   NEW RECORD
                 </Heading>
               </Drawer.Title>
             </Drawer.Header>
-            
+
             <Drawer.Body py={8}>
-              <RecordForm 
-                onSuccess={() => setIsOpen(false)} 
-                onCancel={() => setIsOpen(false)} 
-              />
+              <RecordForm onSuccess={() => setIsOpen(false)} onCancel={() => setIsOpen(false)} />
             </Drawer.Body>
 
-            <Drawer.CloseTrigger 
-              color="text.mist" 
-              _hover={{ color: 'brand.matrix' }} 
-              top={4} 
-              right={4} 
+            <Drawer.CloseTrigger
+              color="text.mist"
+              _hover={{ color: 'brand.matrix' }}
+              top={4}
+              right={4}
             />
           </Drawer.Content>
         </Drawer.Positioner>
@@ -63,4 +65,3 @@ export function ActionButton() {
     </>
   );
 }
-

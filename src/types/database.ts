@@ -1,5 +1,5 @@
-import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import * as schema from '@/db/schema';
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
+import type * as schema from '@/db/schema';
 
 type Simplify<T> = { [K in keyof T]: T[K] } & {};
 
@@ -24,11 +24,11 @@ export interface Database {
         Update: Simplify<Partial<InferInsertModel<typeof schema.neologBehaviorRecords>>>;
         Relationships: [
           {
-            foreignKeyName: "neolog_behavior_records_definition_id_neolog_behavior_definitions_id_fk";
-            columns: ["definition_id"];
-            referencedRelation: "neolog_behavior_definitions";
-            referencedColumns: ["id"];
-          }
+            foreignKeyName: 'neolog_behavior_records_definition_id_neolog_behavior_definitions_id_fk';
+            columns: ['definition_id'];
+            referencedRelation: 'neolog_behavior_definitions';
+            referencedColumns: ['id'];
+          },
         ];
       };
       neolog_goals: {
@@ -55,11 +55,11 @@ export interface Database {
         Update: Simplify<Partial<InferInsertModel<typeof schema.neologMessages>>>;
         Relationships: [
           {
-            foreignKeyName: "neolog_messages_conversation_id_neolog_conversations_id_fk";
-            columns: ["conversation_id"];
-            referencedRelation: "neolog_conversations";
-            referencedColumns: ["id"];
-          }
+            foreignKeyName: 'neolog_messages_conversation_id_neolog_conversations_id_fk';
+            columns: ['conversation_id'];
+            referencedRelation: 'neolog_conversations';
+            referencedColumns: ['id'];
+          },
         ];
       };
     };

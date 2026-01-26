@@ -5,10 +5,7 @@ import { goalProgressService } from '@/lib/goal-progress-service';
 import { convertServerGoalToClient } from '@/types/__tests__/goal.test';
 import type { GoalProgress as ClientGoalProgress } from '@/types/goal-client';
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
     const supabase = await getSupabaseClient();
     const {
@@ -59,10 +56,7 @@ export async function GET(
   }
 }
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
     const supabase = await getSupabaseClient();
     const {
@@ -80,7 +74,7 @@ export async function PATCH(
     if (body.name && body.name.length > 100) {
       return NextResponse.json(
         { data: null, error: 'Validation failed: name must be 100 characters or less' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -88,7 +82,7 @@ export async function PATCH(
     if (body.endDate && body.startDate && new Date(body.endDate) < new Date(body.startDate)) {
       return NextResponse.json(
         { data: null, error: 'Validation failed: endDate must be after startDate' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -134,10 +128,7 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
   try {
     const supabase = await getSupabaseClient();
     const {
@@ -164,4 +155,3 @@ export async function DELETE(
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
-

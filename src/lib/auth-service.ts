@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
 import type { AuthResponse } from '@/types/auth';
 import type { Settings } from '@/types/settings-client';
 
@@ -14,7 +14,7 @@ export const authService = {
   async signInWithEmail(
     supabase: SupabaseClient<Database>,
     email: string,
-    password: string
+    password: string,
   ): Promise<AuthResponse> {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -54,7 +54,7 @@ export const authService = {
     supabase: SupabaseClient<Database>,
     email: string,
     password: string,
-    fullName?: string
+    fullName?: string,
   ): Promise<AuthResponse> {
     const { data, error } = await supabase.auth.signUp({
       email,

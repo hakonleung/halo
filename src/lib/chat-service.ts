@@ -1,11 +1,6 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
-import type {
-  Conversation,
-  ChatMessage,
-  ChatRole,
-  ChatAttachment,
-} from '@/types/chat-server';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
+import type { Conversation, ChatMessage, ChatRole, ChatAttachment } from '@/types/chat-server';
 
 /**
  * Chat service - Logic for conversations and messages
@@ -84,7 +79,7 @@ export const chatService = {
       content: string;
       attachments?: ChatAttachment[];
       metadata?: Record<string, unknown>;
-    }
+    },
   ) {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
@@ -105,7 +100,9 @@ export const chatService = {
     // Update conversation timestamp
     await supabase
       .from('neolog_conversations')
-      .update({ updated_at: new Date().toISOString() } as Database['public']['Tables']['neolog_conversations']['Update'])
+      .update({
+        updated_at: new Date().toISOString(),
+      } as Database['public']['Tables']['neolog_conversations']['Update'])
       .eq('id', params.conversationId);
 
     return { data: data as ChatMessage, error: null };
@@ -114,9 +111,12 @@ export const chatService = {
   /**
    * Delete a conversation
    */
-  async deleteConversation(supabase: SupabaseClient<Database>, userId: string, conversationId: string) {
-    if (!userId || !conversationId)
-      return { error: 'User ID and Conversation ID are required' };
+  async deleteConversation(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+    conversationId: string,
+  ) {
+    if (!userId || !conversationId) return { error: 'User ID and Conversation ID are required' };
     const { error } = await supabase
       .from('neolog_conversations')
       .delete()
@@ -127,4 +127,3 @@ export const chatService = {
     return { error: null };
   },
 };
-

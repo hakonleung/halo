@@ -23,15 +23,16 @@ function DashboardContent() {
 
   // Fetch data
   const { data: stats, isLoading: statsLoading } = useDashboardStats();
-  const { data: trends, isLoading: trendsLoading } = useTrends(timeRange, selectedTypes.length > 0 ? selectedTypes : undefined);
+  const { data: trends, isLoading: trendsLoading } = useTrends(
+    timeRange,
+    selectedTypes.length > 0 ? selectedTypes : undefined,
+  );
   const { data: heatmap, isLoading: heatmapLoading } = useHeatmap(12);
 
   // Handle type filter toggle
   const handleTypeToggle = (typeId: string) => {
-    setSelectedTypes(prev =>
-      prev.includes(typeId)
-        ? prev.filter(id => id !== typeId)
-        : [...prev, typeId]
+    setSelectedTypes((prev) =>
+      prev.includes(typeId) ? prev.filter((id) => id !== typeId) : [...prev, typeId],
     );
   };
 
@@ -66,10 +67,7 @@ function DashboardContent() {
               DASHBOARD
             </Heading>
             <Flex gap={2}>
-              <TimeRangeSelector
-                value={timeRange}
-                onChange={setTimeRange}
-              />
+              <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
               <Button
                 variant="outline"
                 size="sm"
@@ -98,11 +96,7 @@ function DashboardContent() {
 
           {/* Heatmap & Goals */}
           <SimpleGrid columns={{ base: 1, lg: 2 }} gap={{ base: 4, md: 6 }}>
-            <CalendarHeatmap
-              data={heatmap}
-              loading={heatmapLoading}
-              onDayClick={handleDayClick}
-            />
+            <CalendarHeatmap data={heatmap} loading={heatmapLoading} onDayClick={handleDayClick} />
             <GoalProgressSection loading={statsLoading} />
           </SimpleGrid>
         </VStack>

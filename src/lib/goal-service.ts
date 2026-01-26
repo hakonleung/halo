@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
 import type { Goal, GoalCreateRequest } from '@/types/goal-server';
 
 /**
@@ -16,11 +16,7 @@ export const goalService = {
   /**
    * Get all goals for a user with optional filters and sorting
    */
-  async getGoals(
-    supabase: SupabaseClient<Database>,
-    userId: string,
-    params?: GetGoalsParams
-  ) {
+  async getGoals(supabase: SupabaseClient<Database>, userId: string, params?: GetGoalsParams) {
     if (!userId) return { data: null, error: 'User ID is required' };
 
     let query = supabase.from('neolog_goals').select('*').eq('user_id', userId);
@@ -69,11 +65,7 @@ export const goalService = {
   /**
    * Create a new goal
    */
-  async createGoal(
-    supabase: SupabaseClient<Database>,
-    userId: string,
-    goal: GoalCreateRequest
-  ) {
+  async createGoal(supabase: SupabaseClient<Database>, userId: string, goal: GoalCreateRequest) {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
       .from('neolog_goals')
@@ -96,7 +88,7 @@ export const goalService = {
     supabase: SupabaseClient<Database>,
     userId: string,
     goalId: string,
-    updates: Partial<GoalCreateRequest>
+    updates: Partial<GoalCreateRequest>,
   ) {
     if (!userId || !goalId) return { data: null, error: 'User ID and Goal ID are required' };
     const { data, error } = await supabase
@@ -129,4 +121,3 @@ export const goalService = {
     return { error: null };
   },
 };
-

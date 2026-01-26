@@ -81,10 +81,7 @@ export default function GoalsPage() {
             <Heading fontSize="32px" color="text.neon" fontFamily="mono">
               目标管理
             </Heading>
-            <Button
-              colorScheme="green"
-              onClick={() => router.push('/goals/new')}
-            >
+            <Button colorScheme="green" onClick={() => router.push('/goals/new')}>
               + 创建目标
             </Button>
           </HStack>
@@ -175,4 +172,3 @@ export default function GoalsPage() {
     </AuthenticatedLayout>
   );
 }
-

@@ -18,13 +18,13 @@ export function TopNavbar() {
   ];
 
   return (
-    <Box 
-      h="64px" 
-      bg="bg.deep" 
-      borderBottom="1px solid" 
-      borderColor="rgba(0, 255, 65, 0.2)" 
-      position="sticky" 
-      top={0} 
+    <Box
+      h="64px"
+      bg="bg.deep"
+      borderBottom="1px solid"
+      borderColor="rgba(0, 255, 65, 0.2)"
+      position="sticky"
+      top={0}
       zIndex={200}
       px={8}
     >
@@ -32,10 +32,10 @@ export function TopNavbar() {
         <HStack gap={8}>
           <Link asChild _hover={{ textDecoration: 'none' }}>
             <NextLink href="/dashboard">
-              <Text 
-                fontFamily="heading" 
-                color="brand.matrix" 
-                fontSize="xl" 
+              <Text
+                fontFamily="heading"
+                color="brand.matrix"
+                fontSize="xl"
                 textShadow="0 0 10px currentColor"
                 fontWeight="bold"
               >
@@ -54,16 +54,20 @@ export function TopNavbar() {
                     color={pathname === link.path ? 'brand.matrix' : 'text.mist'}
                     position="relative"
                     pb="2px"
-                    _after={pathname === link.path ? {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '2px',
-                      bg: 'brand.matrix',
-                      boxShadow: '0 0 5px #00FF41'
-                    } : {}}
+                    _after={
+                      pathname === link.path
+                        ? {
+                            content: '""',
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '2px',
+                            bg: 'brand.matrix',
+                            boxShadow: '0 0 5px #00FF41',
+                          }
+                        : {}
+                    }
                     _hover={{ color: 'brand.matrix' }}
                   >
                     {link.label}
@@ -74,11 +78,8 @@ export function TopNavbar() {
           </HStack>
         </HStack>
 
-        <HStack gap={4}>
-           {/* User profile / Logout placeholder */}
-        </HStack>
+        <HStack gap={4}>{/* User profile / Logout placeholder */}</HStack>
       </HStack>
     </Box>
   );
 }
-

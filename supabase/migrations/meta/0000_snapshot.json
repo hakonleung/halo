@@ -77,45 +77,35 @@
           "name": "System definitions are viewable by everyone.",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "user_id is null"
         },
         "Users can view their own definitions.": {
           "name": "Users can view their own definitions.",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can insert their own definitions.": {
           "name": "Users can insert their own definitions.",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "withCheck": "auth.uid() = user_id"
         },
         "Users can update their own definitions.": {
           "name": "Users can update their own definitions.",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can delete their own definitions.": {
           "name": "Users can delete their own definitions.",
           "as": "PERMISSIVE",
           "for": "DELETE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         }
       },
@@ -179,12 +169,8 @@
           "name": "neolog_behavior_records_definition_id_neolog_behavior_definitions_id_fk",
           "tableFrom": "neolog_behavior_records",
           "tableTo": "neolog_behavior_definitions",
-          "columnsFrom": [
-            "definition_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["definition_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -196,36 +182,28 @@
           "name": "Users can view their own records.",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can insert their own records.": {
           "name": "Users can insert their own records.",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "withCheck": "auth.uid() = user_id"
         },
         "Users can update their own records.": {
           "name": "Users can update their own records.",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can delete their own records.": {
           "name": "Users can delete their own records.",
           "as": "PERMISSIVE",
           "for": "DELETE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         }
       },
@@ -279,36 +257,28 @@
           "name": "Users can view their own conversations.",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can insert their own conversations.": {
           "name": "Users can insert their own conversations.",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "withCheck": "auth.uid() = user_id"
         },
         "Users can update their own conversations.": {
           "name": "Users can update their own conversations.",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can delete their own conversations.": {
           "name": "Users can delete their own conversations.",
           "as": "PERMISSIVE",
           "for": "DELETE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         }
       },
@@ -400,36 +370,28 @@
           "name": "Users can view their own goals.",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can insert their own goals.": {
           "name": "Users can insert their own goals.",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "withCheck": "auth.uid() = user_id"
         },
         "Users can update their own goals.": {
           "name": "Users can update their own goals.",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can delete their own goals.": {
           "name": "Users can delete their own goals.",
           "as": "PERMISSIVE",
           "for": "DELETE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         }
       },
@@ -499,12 +461,8 @@
           "name": "neolog_messages_conversation_id_neolog_conversations_id_fk",
           "tableFrom": "neolog_messages",
           "tableTo": "neolog_conversations",
-          "columnsFrom": [
-            "conversation_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["conversation_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -516,18 +474,14 @@
           "name": "Users can view their own messages.",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can insert their own messages.": {
           "name": "Users can insert their own messages.",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "withCheck": "auth.uid() = user_id"
         }
       },
@@ -594,36 +548,28 @@
           "name": "Users can view their own notes.",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can insert their own notes.": {
           "name": "Users can insert their own notes.",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "withCheck": "auth.uid() = user_id"
         },
         "Users can update their own notes.": {
           "name": "Users can update their own notes.",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         },
         "Users can delete their own notes.": {
           "name": "Users can delete their own notes.",
           "as": "PERMISSIVE",
           "for": "DELETE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = user_id"
         }
       },
@@ -817,9 +763,7 @@
         "neolog_user_settings_username_unique": {
           "name": "neolog_user_settings_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         }
       },
       "policies": {
@@ -827,27 +771,21 @@
           "name": "Public user settings are viewable by everyone.",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "true"
         },
         "Users can insert their own settings.": {
           "name": "Users can insert their own settings.",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "withCheck": "auth.uid() = id"
         },
         "Users can update their own settings.": {
           "name": "Users can update their own settings.",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "auth.uid() = id"
         }
       },

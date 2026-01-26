@@ -1,10 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type {
-  DashboardStats,
-  TrendData,
-  HeatmapData,
-  TimeRange,
-} from '@/types/dashboard-client';
+import type { DashboardStats, TrendData, HeatmapData, TimeRange } from '@/types/dashboard-client';
 
 /**
  * Fetch dashboard stats

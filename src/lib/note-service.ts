@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
 import type { Note, NoteCreateRequest } from '@/types/note-server';
 
 /**
@@ -24,11 +24,7 @@ export const noteService = {
   /**
    * Create a new note
    */
-  async createNote(
-    supabase: SupabaseClient<Database>,
-    userId: string,
-    note: NoteCreateRequest
-  ) {
+  async createNote(supabase: SupabaseClient<Database>, userId: string, note: NoteCreateRequest) {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
       .from('neolog_notes')
@@ -51,7 +47,7 @@ export const noteService = {
     supabase: SupabaseClient<Database>,
     userId: string,
     noteId: string,
-    updates: Partial<NoteCreateRequest>
+    updates: Partial<NoteCreateRequest>,
   ) {
     if (!userId || !noteId) return { data: null, error: 'User ID and Note ID are required' };
     const { data, error } = await supabase
@@ -84,4 +80,3 @@ export const noteService = {
     return { error: null };
   },
 };
-

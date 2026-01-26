@@ -39,11 +39,7 @@ export function GoalProgressRing({ goal, size = 'md', onClick }: GoalProgressRin
       _hover={onClick ? { transform: 'scale(1.05)' } : undefined}
     >
       <Box position="relative" w={`${ring}px`} h={`${ring}px`}>
-        <svg
-          width={ring}
-          height={ring}
-          style={{ transform: 'rotate(-90deg)' }}
-        >
+        <svg width={ring} height={ring} style={{ transform: 'rotate(-90deg)' }}>
           {/* Background circle */}
           <circle
             cx={ring / 2}

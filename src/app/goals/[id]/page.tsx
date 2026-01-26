@@ -2,16 +2,7 @@
 
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Box,
-  Container,
-  Heading,
-  Button,
-  HStack,
-  VStack,
-  Text,
-  Skeleton,
-} from '@chakra-ui/react';
+import { Box, Container, Heading, Button, HStack, VStack, Text, Skeleton } from '@chakra-ui/react';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
 import { GoalStatusBadge } from '@/components/goals';
@@ -71,7 +62,17 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
     );
   }
 
-  const progress = (goal as Goal & { progress?: { current: number; target: number; progress: number; isCompleted: boolean; remainingDays?: number } }).progress;
+  const progress = (
+    goal as Goal & {
+      progress?: {
+        current: number;
+        target: number;
+        progress: number;
+        isCompleted: boolean;
+        remainingDays?: number;
+      };
+    }
+  ).progress;
   const progressData: DashboardGoalProgress = {
     id: goal.id,
     name: goal.name,
@@ -129,9 +130,7 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
                   </Heading>
                   <GoalStatusBadge status={goal.status} />
                 </HStack>
-                {goal.description && (
-                  <Text color="text.mist">{goal.description}</Text>
-                )}
+                {goal.description && <Text color="text.mist">{goal.description}</Text>}
                 <HStack gap={4} fontSize="sm" color="text.mist" fontFamily="mono">
                   <Text>分类: {goal.category}</Text>
                   <Text>|</Text>
@@ -171,18 +170,13 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
                   </Heading>
                   <VStack align="flex-start" gap={2} w="full">
                     {goal.criteria.map((criterion, index) => (
-                      <Box
-                        key={index}
-                        p={3}
-                        bg="bg.dark"
-                        borderRadius="4px"
-                        w="full"
-                      >
+                      <Box key={index} p={3} bg="bg.dark" borderRadius="4px" w="full">
                         <Text fontSize="sm" color="text.mist">
                           {criterion.description || `条件 ${index + 1}`}
                         </Text>
                         <Text fontSize="xs" color="text.dim" fontFamily="mono" mt={1}>
-                          行为: {criterion.behaviorId} | 指标: {criterion.metric} | 目标: {criterion.value} | 周期: {criterion.period}
+                          行为: {criterion.behaviorId} | 指标: {criterion.metric} | 目标:{' '}
+                          {criterion.value} | 周期: {criterion.period}
                         </Text>
                       </Box>
                     ))}
@@ -196,4 +190,3 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
     </AuthenticatedLayout>
   );
 }
-

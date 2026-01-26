@@ -1,6 +1,6 @@
-import { BehaviorRecordWithDefinition } from './behavior-server';
-import { Goal } from './goal-server';
-import { Note } from './note-server';
+import type { BehaviorRecordWithDefinition } from './behavior-server';
+import type { Goal } from './goal-server';
+import type { Note } from './note-server';
 
 export type HistoryItemType = 'behavior' | 'goal' | 'note';
 
@@ -33,4 +33,3 @@ export interface HistoryListResponse {
   pageSize: number;
   hasMore: boolean;
 }
-

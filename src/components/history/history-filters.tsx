@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, HStack, Input, createListCollection, Select } from '@chakra-ui/react';
-import { HistoryListRequest, HistoryItemType } from '@/types/history-client';
+import type { HistoryListRequest, HistoryItemType } from '@/types/history-client';
 
 interface HistoryFiltersProps {
   filters: HistoryListRequest;
@@ -64,4 +64,3 @@ export function HistoryFilters({ filters, onFilterChange }: HistoryFiltersProps)
     </Box>
   );
 }
-

@@ -51,7 +51,9 @@ export function useCreateBehaviorDefinition() {
         body: JSON.stringify(definition),
       });
       if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'Failed to create behavior definition' }));
+        const error = await res
+          .json()
+          .catch(() => ({ error: 'Failed to create behavior definition' }));
         throw new Error(error.error || 'Failed to create behavior definition');
       }
       return res.json() as Promise<BehaviorResponse<BehaviorDefinition>>;
@@ -87,4 +89,3 @@ export function useCreateBehaviorDefinition() {
     error: mutation.error?.message ?? mutation.data?.error ?? null,
   };
 }
-

@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabase-server';
 import { chatService } from '@/lib/chat-service';
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = await params;
     const supabase = await getSupabaseClient();
@@ -25,4 +22,3 @@ export async function GET(
     return NextResponse.json({ data: null, error: message }, { status: 500 });
   }
 }
-

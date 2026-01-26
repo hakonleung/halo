@@ -6,7 +6,10 @@ import type { Goal } from '@/types/goal-client';
 
 interface GoalListProps {
   goals: Goal[];
-  progressMap?: Map<string, { current: number; target: number; progress: number; isCompleted: boolean }>;
+  progressMap?: Map<
+    string,
+    { current: number; target: number; progress: number; isCompleted: boolean }
+  >;
   isLoading?: boolean;
   onGoalClick?: (goalId: string) => void;
 }
@@ -60,4 +63,3 @@ export function GoalList({ goals, progressMap, isLoading, onGoalClick }: GoalLis
     </SimpleGrid>
   );
 }
-

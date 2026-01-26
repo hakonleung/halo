@@ -53,7 +53,16 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
             {goal.name}
           </Text>
           {goal.description && (
-            <Text fontSize="sm" color="text.mist" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            <Text
+              fontSize="sm"
+              color="text.mist"
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
               {goal.description}
             </Text>
           )}
@@ -75,7 +84,9 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
           </Text>
           {goal.endDate && (
             <Text fontSize="xs" color="text.mist">
-              剩余: {Math.ceil((new Date(goal.endDate).getTime() - Date.now()) / (24 * 60 * 60 * 1000))} 天
+              剩余:{' '}
+              {Math.ceil((new Date(goal.endDate).getTime() - Date.now()) / (24 * 60 * 60 * 1000))}{' '}
+              天
             </Text>
           )}
         </VStack>
@@ -83,4 +94,3 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
     </Box>
   );
 }
-

@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
 import type {
   UserSettings,
   SettingsUpdateRequest,
@@ -36,7 +36,7 @@ export const settingsService = {
   async updateSettings(
     supabase: SupabaseClient<Database>,
     userId: string,
-    updates: SettingsUpdateRequest
+    updates: SettingsUpdateRequest,
   ): Promise<SettingsResponse> {
     if (!userId) {
       return { settings: null, error: 'User ID is required' };

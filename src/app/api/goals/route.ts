@@ -62,10 +62,19 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Validate required fields
-    if (!body.name || !body.category || !body.startDate || !body.criteria || body.criteria.length === 0) {
+    if (
+      !body.name ||
+      !body.category ||
+      !body.startDate ||
+      !body.criteria ||
+      body.criteria.length === 0
+    ) {
       return NextResponse.json(
-        { data: null, error: 'Validation failed: name, category, startDate, and criteria are required' },
-        { status: 400 }
+        {
+          data: null,
+          error: 'Validation failed: name, category, startDate, and criteria are required',
+        },
+        { status: 400 },
       );
     }
 
@@ -73,7 +82,7 @@ export async function POST(request: Request) {
     if (body.name.length > 100) {
       return NextResponse.json(
         { data: null, error: 'Validation failed: name must be 100 characters or less' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -81,7 +90,7 @@ export async function POST(request: Request) {
     if (body.endDate && new Date(body.endDate) < new Date(body.startDate)) {
       return NextResponse.json(
         { data: null, error: 'Validation failed: endDate must be after startDate' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -121,4 +130,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ data: null, error: message }, { status: 500 });
   }
 }
-

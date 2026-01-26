@@ -52,7 +52,7 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
     );
   }
 
-  const activeGoals = goals?.filter(g => g.status === 'active') || [];
+  const activeGoals = goals?.filter((g) => g.status === 'active') || [];
 
   if (activeGoals.length === 0) {
     return (
@@ -91,12 +91,8 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
         目标进度
       </Text>
       <SimpleGrid columns={{ base: 2, md: 2 }} gap={4} justifyItems="center">
-        {activeGoals.slice(0, 4).map(goal => (
-          <GoalProgressRing
-            key={goal.id}
-            goal={goal}
-            size="md"
-          />
+        {activeGoals.slice(0, 4).map((goal) => (
+          <GoalProgressRing key={goal.id} goal={goal} size="md" />
         ))}
       </SimpleGrid>
     </Box>

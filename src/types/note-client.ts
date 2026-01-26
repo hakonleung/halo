@@ -14,4 +14,3 @@ export interface NoteCreateRequest {
   content: string;
   tags?: string[];
 }
-

@@ -1,5 +1,5 @@
-import { InferSelectModel } from 'drizzle-orm';
-import { neologConversations, neologMessages } from '@/db/schema';
+import type { InferSelectModel } from 'drizzle-orm';
+import type { neologConversations, neologMessages } from '@/db/schema';
 
 // Server-side types for chat (Inferred from Drizzle Entity)
 export type Conversation = InferSelectModel<typeof neologConversations>;
@@ -27,4 +27,3 @@ export interface ChatResponse {
   conversationId: string;
   error: string | null;
 }
-

@@ -10,28 +10,38 @@ type RechartsComponentProps = Record<string, unknown>;
 
 // Dynamic import for Recharts to avoid SSR issues
 const LineChart = dynamic(
-  () => import('recharts').then(mod => mod.LineChart) as Promise<ComponentType<RechartsComponentProps>>,
-  { ssr: false }
+  () =>
+    import('recharts').then((mod) => mod.LineChart) as Promise<
+      ComponentType<RechartsComponentProps>
+    >,
+  { ssr: false },
 );
 const Line = dynamic(
-  () => import('recharts').then(mod => mod.Line) as Promise<ComponentType<RechartsComponentProps>>,
-  { ssr: false }
+  () =>
+    import('recharts').then((mod) => mod.Line) as Promise<ComponentType<RechartsComponentProps>>,
+  { ssr: false },
 );
 const XAxis = dynamic(
-  () => import('recharts').then(mod => mod.XAxis) as Promise<ComponentType<RechartsComponentProps>>,
-  { ssr: false }
+  () =>
+    import('recharts').then((mod) => mod.XAxis) as Promise<ComponentType<RechartsComponentProps>>,
+  { ssr: false },
 );
 const YAxis = dynamic(
-  () => import('recharts').then(mod => mod.YAxis) as Promise<ComponentType<RechartsComponentProps>>,
-  { ssr: false }
+  () =>
+    import('recharts').then((mod) => mod.YAxis) as Promise<ComponentType<RechartsComponentProps>>,
+  { ssr: false },
 );
 const Tooltip = dynamic(
-  () => import('recharts').then(mod => mod.Tooltip) as Promise<ComponentType<RechartsComponentProps>>,
-  { ssr: false }
+  () =>
+    import('recharts').then((mod) => mod.Tooltip) as Promise<ComponentType<RechartsComponentProps>>,
+  { ssr: false },
 );
 const ResponsiveContainer = dynamic(
-  () => import('recharts').then(mod => mod.ResponsiveContainer) as Promise<ComponentType<RechartsComponentProps>>,
-  { ssr: false }
+  () =>
+    import('recharts').then((mod) => mod.ResponsiveContainer) as Promise<
+      ComponentType<RechartsComponentProps>
+    >,
+  { ssr: false },
 );
 
 interface TrendLineChartProps {
@@ -41,7 +51,12 @@ interface TrendLineChartProps {
   onTypeToggle?: (typeId: string) => void;
 }
 
-export function TrendLineChart({ data, loading, selectedTypes, onTypeToggle }: TrendLineChartProps) {
+export function TrendLineChart({
+  data,
+  loading,
+  selectedTypes,
+  onTypeToggle,
+}: TrendLineChartProps) {
   if (loading) {
     return (
       <Box
@@ -84,9 +99,10 @@ export function TrendLineChart({ data, loading, selectedTypes, onTypeToggle }: T
   };
 
   // Filter types to show
-  const visibleTypes = selectedTypes && selectedTypes.length > 0
-    ? data.types.filter(t => selectedTypes.includes(t.id))
-    : data.types;
+  const visibleTypes =
+    selectedTypes && selectedTypes.length > 0
+      ? data.types.filter((t) => selectedTypes.includes(t.id))
+      : data.types;
 
   return (
     <Box
@@ -102,8 +118,9 @@ export function TrendLineChart({ data, loading, selectedTypes, onTypeToggle }: T
         </Text>
         {data.types.length > 0 && (
           <HStack gap={2} flexWrap="wrap">
-            {data.types.map(type => {
-              const isActive = !selectedTypes || selectedTypes.length === 0 || selectedTypes.includes(type.id);
+            {data.types.map((type) => {
+              const isActive =
+                !selectedTypes || selectedTypes.length === 0 || selectedTypes.includes(type.id);
               return (
                 <Box
                   key={type.id}
@@ -140,11 +157,7 @@ export function TrendLineChart({ data, loading, selectedTypes, onTypeToggle }: T
               fontSize={12}
               fontFamily="JetBrains Mono"
             />
-            <YAxis
-              stroke="#555"
-              fontSize={12}
-              fontFamily="JetBrains Mono"
-            />
+            <YAxis stroke="#555" fontSize={12} fontFamily="JetBrains Mono" />
             <Tooltip
               contentStyle={{
                 background: '#1A1A1A',
@@ -165,7 +178,7 @@ export function TrendLineChart({ data, loading, selectedTypes, onTypeToggle }: T
               dot={{ fill: '#00FF41', r: 3 }}
               activeDot={{ r: 5, fill: '#00FF41' }}
             />
-            {visibleTypes.map(type => (
+            {visibleTypes.map((type) => (
               <Line
                 key={type.id}
                 type="monotone"

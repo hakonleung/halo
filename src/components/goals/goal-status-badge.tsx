@@ -47,4 +47,3 @@ export function GoalStatusBadge({ status }: GoalStatusBadgeProps) {
     </Box>
   );
 }
-

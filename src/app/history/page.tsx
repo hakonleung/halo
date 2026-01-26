@@ -4,7 +4,7 @@ import { Box, Heading, VStack, HStack, Text, Spinner } from '@chakra-ui/react';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import { useHistory } from '@/hooks/use-history';
 import { useState } from 'react';
-import { HistoryListRequest } from '@/types/history-client';
+import type { HistoryListRequest } from '@/types/history-client';
 import { HistoryList } from '@/components/history/history-list';
 import { HistoryFilters } from '@/components/history/history-filters';
 
@@ -47,7 +47,13 @@ export default function HistoryPage() {
             <Spinner size="xl" color="brand.matrix" />
           </HStack>
         ) : error ? (
-          <Box p={4} bg="rgba(255, 51, 102, 0.1)" border="1px solid" borderColor="red.500" borderRadius="4px">
+          <Box
+            p={4}
+            bg="rgba(255, 51, 102, 0.1)"
+            border="1px solid"
+            borderColor="red.500"
+            borderRadius="4px"
+          >
             <Text color="red.500" fontFamily="mono">
               Error: {(error as Error).message}
             </Text>
@@ -65,4 +71,3 @@ export default function HistoryPage() {
     </AuthenticatedLayout>
   );
 }
-

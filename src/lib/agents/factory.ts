@@ -1,14 +1,14 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
-import { UserSettings, AISettings } from '@/types/settings-server';
+import type { UserSettings, AISettings } from '@/types/settings-server';
 
 /**
  * Factory for creating LLM instances based on user settings
  */
 export async function createLLM(settings: UserSettings) {
   const ai = settings.ai_settings as AISettings;
-  
+
   // Use platform default if configured
   if (ai.useDefaultKey) {
     // For now, we use server-side environment variables if user doesn't provide their own
@@ -25,7 +25,7 @@ export async function createLLM(settings: UserSettings) {
   const provider = ai.selectedProvider;
   const model = ai.selectedModel;
   const keyObj = ai.customKeys.find((k) => k.provider === provider);
-  
+
   if (!keyObj || !keyObj.hasKey) {
     throw new Error(`API Key for ${provider} not found`);
   }
@@ -72,4 +72,3 @@ export async function createLLM(settings: UserSettings) {
       });
   }
 }
-

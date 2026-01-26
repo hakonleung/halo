@@ -13,25 +13,19 @@ export async function GET() {
     if (authError || !user) {
       return NextResponse.json(
         { error: 'UNAUTHORIZED', message: 'Authentication required' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     const { data, error } = await dashboardService.getStats(supabase, user.id);
 
     if (error) {
-      return NextResponse.json(
-        { error: 'INTERNAL_ERROR', message: error },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'INTERNAL_ERROR', message: error }, { status: 500 });
     }
 
     return NextResponse.json({ data });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json(
-      { error: 'INTERNAL_ERROR', message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'INTERNAL_ERROR', message }, { status: 500 });
   }
 }

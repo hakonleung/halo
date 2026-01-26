@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
 import type {
   DashboardStatsModel,
   TrendDataModel,
@@ -62,7 +62,10 @@ export const dashboardService = {
   /**
    * Get dashboard overview stats
    */
-  async getStats(supabase: SupabaseClient<Database>, userId: string): Promise<{ data: DashboardStatsModel | null; error: string | null }> {
+  async getStats(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+  ): Promise<{ data: DashboardStatsModel | null; error: string | null }> {
     if (!userId) return { data: null, error: 'User ID is required' };
 
     try {
@@ -83,7 +86,8 @@ export const dashboardService = {
       const typeCount: Record<string, { name: string; count: number }> = {};
       for (const record of todayRecords || []) {
         const defId = record.definition_id;
-        const defName = (record.neolog_behavior_definitions as { name: string } | null)?.name || 'Unknown';
+        const defName =
+          (record.neolog_behavior_definitions as { name: string } | null)?.name || 'Unknown';
         if (!typeCount[defId]) {
           typeCount[defId] = { name: defName, count: 0 };
         }
@@ -169,7 +173,9 @@ export const dashboardService = {
 
       // Simple goal rate calculation (percentage of active goals)
       const goalRate = {
-        overall: goals?.length ? Math.round((goals.filter(g => g.status === 'active').length / goals.length) * 100) : 0,
+        overall: goals?.length
+          ? Math.round((goals.filter((g) => g.status === 'active').length / goals.length) * 100)
+          : 0,
         change: 0, // Would need historical data to calculate
       };
 
@@ -194,7 +200,9 @@ export const dashboardService = {
       const weekCompare = {
         thisWeek: thisWeekCount || 0,
         lastWeek: lastWeekCount || 0,
-        change: lastWeekCount ? Math.round(((thisWeekCount || 0) - lastWeekCount) / lastWeekCount * 100) : 0,
+        change: lastWeekCount
+          ? Math.round((((thisWeekCount || 0) - lastWeekCount) / lastWeekCount) * 100)
+          : 0,
       };
 
       return {
@@ -217,7 +225,7 @@ export const dashboardService = {
   async getTrends(
     supabase: SupabaseClient<Database>,
     userId: string,
-    params: GetTrendsParams
+    params: GetTrendsParams,
   ): Promise<{ data: TrendDataModel | null; error: string | null }> {
     if (!userId) return { data: null, error: 'User ID is required' };
 
@@ -293,7 +301,7 @@ export const dashboardService = {
         data: {
           points,
           types: Array.from(usedTypes)
-            .map(id => typeMap.get(id))
+            .map((id) => typeMap.get(id))
             .filter((t): t is { id: string; name: string; color: string } => t !== undefined),
         },
         error: null,
@@ -309,7 +317,7 @@ export const dashboardService = {
   async getHeatmap(
     supabase: SupabaseClient<Database>,
     userId: string,
-    params: GetHeatmapParams = {}
+    params: GetHeatmapParams = {},
   ): Promise<{ data: HeatmapDataModel[] | null; error: string | null }> {
     if (!userId) return { data: null, error: 'User ID is required' };
 

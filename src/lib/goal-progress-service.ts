@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
 import type { Goal, GoalCriteria, GoalProgress } from '@/types/goal-server';
 
 /**
@@ -52,7 +52,7 @@ async function calculateMetric(
   behaviorId: string,
   metric: 'count' | 'sum' | 'avg',
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ): Promise<number> {
   const { data: records, error } = await supabase
     .from('neolog_behavior_records')
@@ -105,7 +105,7 @@ export const goalProgressService = {
   async calculateProgress(
     supabase: SupabaseClient<Database>,
     userId: string,
-    goal: Goal
+    goal: Goal,
   ): Promise<GoalProgress> {
     if (!goal.criteria || goal.criteria.length === 0) {
       return {
@@ -125,7 +125,7 @@ export const goalProgressService = {
       const { start, end } = getDateRange(
         criterion.period,
         goal.start_date,
-        goal.end_date ?? undefined
+        goal.end_date ?? undefined,
       );
 
       const currentValue = await calculateMetric(
@@ -134,7 +134,7 @@ export const goalProgressService = {
         criterion.behavior_id,
         criterion.metric,
         start,
-        end
+        end,
       );
 
       const targetValue = criterion.value;
@@ -177,7 +177,7 @@ export const goalProgressService = {
   async calculateBatchProgress(
     supabase: SupabaseClient<Database>,
     userId: string,
-    goals: Goal[]
+    goals: Goal[],
   ): Promise<Map<string, GoalProgress>> {
     const progressMap = new Map<string, GoalProgress>();
 
@@ -190,4 +190,3 @@ export const goalProgressService = {
     return progressMap;
   },
 };
-

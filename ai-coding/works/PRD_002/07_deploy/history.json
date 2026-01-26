@@ -8,10 +8,7 @@
       "summary": "生成质量报告和部署准备文档",
       "details": {
         "action": "generate_deploy_docs",
-        "files_affected": [
-          "quality-report.md",
-          "history.json"
-        ],
+        "files_affected": ["quality-report.md", "history.json"],
         "content_summary": "完成部署准备，生成质量报告，核心功能已就绪，部分功能待完善"
       }
     },
@@ -33,4 +30,3 @@
     }
   ]
 }
-

@@ -1,4 +1,8 @@
-import type { UserSettings, SettingsUpdateRequest as ServerUpdateRequest, AISettings } from './settings-server';
+import type {
+  UserSettings,
+  SettingsUpdateRequest as ServerUpdateRequest,
+  AISettings,
+} from './settings-server';
 
 export type Settings = UserSettings;
 export type SettingsUpdateRequest = ServerUpdateRequest;

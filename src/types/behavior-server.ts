@@ -1,5 +1,5 @@
-import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { neologBehaviorDefinitions, neologBehaviorRecords } from '@/db/schema';
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
+import type { neologBehaviorDefinitions, neologBehaviorRecords } from '@/db/schema';
 
 // Server-side types for behaviors (Inferred from Drizzle Entity)
 export type BehaviorDefinition = InferSelectModel<typeof neologBehaviorDefinitions> & {
@@ -98,11 +98,15 @@ export interface BehaviorRecordWithDefinition extends BehaviorRecord {
   behavior_definitions: BehaviorDefinition;
 }
 
-export type BehaviorDefinitionCreateRequest = Partial<InferInsertModel<typeof neologBehaviorDefinitions>> & {
+export type BehaviorDefinitionCreateRequest = Partial<
+  InferInsertModel<typeof neologBehaviorDefinitions>
+> & {
   metadata_schema?: MetadataField[];
 };
 
-export type BehaviorRecordCreateRequest = Partial<InferInsertModel<typeof neologBehaviorRecords>> & {
+export type BehaviorRecordCreateRequest = Partial<
+  InferInsertModel<typeof neologBehaviorRecords>
+> & {
   metadata: MetadataRecord;
 };
 

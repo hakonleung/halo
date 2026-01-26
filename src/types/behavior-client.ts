@@ -1,5 +1,10 @@
 // Client-side types for behaviors
-import type { BehaviorCategory, MetadataField, MetadataValue, MetadataRecord } from './behavior-server';
+import type {
+  BehaviorCategory,
+  MetadataField,
+  MetadataValue,
+  MetadataRecord,
+} from './behavior-server';
 export type { BehaviorCategory, MetadataField, MetadataValue, MetadataRecord };
 
 export interface BehaviorDefinition {

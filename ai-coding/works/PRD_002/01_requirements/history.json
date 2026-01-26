@@ -8,11 +8,7 @@
       "summary": "生成需求文档和用户旅程图",
       "details": {
         "action": "create_documents",
-        "files_affected": [
-          "requirements.md",
-          "journey.md",
-          "summary.md"
-        ],
+        "files_affected": ["requirements.md", "journey.md", "summary.md"],
         "content_summary": "完成需求澄清，包含7个章节的需求文档、用户旅程图和摘要"
       }
     },
@@ -35,4 +31,3 @@
     }
   ]
 }
-

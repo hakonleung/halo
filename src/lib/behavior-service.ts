@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
 import type {
   BehaviorDefinition,
   BehaviorRecord,
@@ -33,7 +33,7 @@ export const behaviorService = {
   async createDefinition(
     supabase: SupabaseClient<Database>,
     userId: string,
-    definition: BehaviorDefinitionCreateRequest
+    definition: BehaviorDefinitionCreateRequest,
   ) {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
@@ -72,7 +72,7 @@ export const behaviorService = {
   async createRecord(
     supabase: SupabaseClient<Database>,
     userId: string,
-    record: BehaviorRecordCreateRequest
+    record: BehaviorRecordCreateRequest,
   ) {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
@@ -109,4 +109,3 @@ export const behaviorService = {
     return { error: null };
   },
 };
-

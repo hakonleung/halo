@@ -22,4 +22,3 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
     </Box>
   );
 }
-

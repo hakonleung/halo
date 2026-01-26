@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Note, NoteCreateRequest } from '@/types/note-client';
+import type { Note, NoteCreateRequest } from '@/types/note-client';
 import { createToaster } from '@chakra-ui/react';
 
 const toaster = createToaster({
@@ -109,4 +109,3 @@ export function useDeleteNote() {
     },
   });
 }
-

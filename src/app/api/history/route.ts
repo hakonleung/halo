@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabase-server';
 import { historyService } from '@/lib/history-service';
-import { HistoryListRequest, type HistoryItemType } from '@/types/history-server';
+import type { HistoryListRequest } from '@/types/history-server';
+import type { HistoryItemType } from '@/types/history-server';
 
 export async function GET(request: Request) {
   try {
@@ -12,24 +13,30 @@ export async function GET(request: Request) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json({ items: [], total: 0, error: 'Not authenticated' }, { status: 401 });
+      return NextResponse.json(
+        { items: [], total: 0, error: 'Not authenticated' },
+        { status: 401 },
+      );
     }
 
     const { searchParams } = new URL(request.url);
     const typeParam = searchParams.get('type');
     const sortOrderParam = searchParams.get('sortOrder');
     const params: HistoryListRequest = {
-      type: (typeParam && (typeParam === 'all' || typeParam === 'behavior' || typeParam === 'goal' || typeParam === 'note'))
-        ? (typeParam as HistoryItemType | 'all')
-        : 'all',
+      type:
+        typeParam &&
+        (typeParam === 'all' ||
+          typeParam === 'behavior' ||
+          typeParam === 'goal' ||
+          typeParam === 'note')
+          ? (typeParam as HistoryItemType | 'all')
+          : 'all',
       startDate: searchParams.get('startDate') || undefined,
       endDate: searchParams.get('endDate') || undefined,
       search: searchParams.get('search') || undefined,
       page: parseInt(searchParams.get('page') || '1', 10),
       pageSize: parseInt(searchParams.get('pageSize') || '20', 10),
-      sortOrder: (sortOrderParam === 'asc' || sortOrderParam === 'desc')
-        ? sortOrderParam
-        : 'desc',
+      sortOrder: sortOrderParam === 'asc' || sortOrderParam === 'desc' ? sortOrderParam : 'desc',
     };
 
     const res = await historyService.getHistory(supabase, user.id, params);
@@ -39,4 +46,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ items: [], total: 0, error: message }, { status: 500 });
   }
 }
-

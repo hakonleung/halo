@@ -137,4 +137,3 @@ export function useDeleteBehaviorRecord() {
     isLoading: mutation.isPending,
   };
 }
-

@@ -19,7 +19,7 @@ const PRESET_OPTIONS: Array<{ value: TimeRangePreset; label: string }> = [
 
 function getDisplayLabel(range: TimeRange): string {
   if (range.type === 'preset') {
-    return PRESET_OPTIONS.find(o => o.value === range.value)?.label || '选择时间';
+    return PRESET_OPTIONS.find((o) => o.value === range.value)?.label || '选择时间';
   }
   return `${range.start} ~ ${range.end}`;
 }
@@ -54,12 +54,16 @@ export function TimeRangeSelector({ value, onChange, disabled }: TimeRangeSelect
             borderWidth="1px"
             boxShadow="0 0 20px rgba(0, 255, 65, 0.2)"
           >
-            {PRESET_OPTIONS.map(option => (
+            {PRESET_OPTIONS.map((option) => (
               <Menu.Item
                 key={option.value}
                 value={option.value}
                 onClick={() => onChange({ type: 'preset', value: option.value })}
-                color={value.type === 'preset' && value.value === option.value ? 'brand.matrix' : 'text.neon'}
+                color={
+                  value.type === 'preset' && value.value === option.value
+                    ? 'brand.matrix'
+                    : 'text.neon'
+                }
                 bg="transparent"
                 _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
               >

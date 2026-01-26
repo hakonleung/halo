@@ -12,11 +12,7 @@ interface StatsCardGroupProps {
 export function StatsCardGroup({ stats, loading }: StatsCardGroupProps) {
   return (
     <SimpleGrid columns={{ base: 2, lg: 4 }} gap={{ base: 2, md: 4 }}>
-      <StatsCard
-        title="今日记录"
-        value={stats?.today.total ?? 0}
-        loading={loading}
-      />
+      <StatsCard title="今日记录" value={stats?.today.total ?? 0} loading={loading} />
       <StatsCard
         title="连续活跃"
         value={stats?.streak.current ?? 0}
@@ -35,7 +31,8 @@ export function StatsCardGroup({ stats, loading }: StatsCardGroupProps) {
         trend={
           stats?.goalRate.change
             ? {
-                direction: stats.goalRate.change > 0 ? 'up' : stats.goalRate.change < 0 ? 'down' : 'neutral',
+                direction:
+                  stats.goalRate.change > 0 ? 'up' : stats.goalRate.change < 0 ? 'down' : 'neutral',
                 value: `${stats.goalRate.change > 0 ? '+' : ''}${stats.goalRate.change}% vs 上周`,
               }
             : undefined
@@ -44,11 +41,20 @@ export function StatsCardGroup({ stats, loading }: StatsCardGroupProps) {
       />
       <StatsCard
         title="本周 vs 上周"
-        value={stats?.weekCompare.change ? `${stats.weekCompare.change > 0 ? '+' : ''}${stats.weekCompare.change}%` : '0%'}
+        value={
+          stats?.weekCompare.change
+            ? `${stats.weekCompare.change > 0 ? '+' : ''}${stats.weekCompare.change}%`
+            : '0%'
+        }
         trend={
           stats?.weekCompare.change
             ? {
-                direction: stats.weekCompare.change > 0 ? 'up' : stats.weekCompare.change < 0 ? 'down' : 'neutral',
+                direction:
+                  stats.weekCompare.change > 0
+                    ? 'up'
+                    : stats.weekCompare.change < 0
+                      ? 'down'
+                      : 'neutral',
                 value: `${stats.weekCompare.thisWeek} / ${stats.weekCompare.lastWeek}`,
               }
             : undefined

@@ -1,6 +1,16 @@
 'use client';
 
-import { Box, VStack, Heading, Text, Button, Input, HStack, Spinner, Field } from '@chakra-ui/react';
+import {
+  Box,
+  VStack,
+  Heading,
+  Text,
+  Button,
+  Input,
+  HStack,
+  Spinner,
+  Field,
+} from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -155,13 +165,14 @@ export function AuthForm() {
 
           <Box as="form" onSubmit={onSubmit}>
             <VStack gap={4} align="stretch">
-              <Field.Root invalid={!!(mode === 'login' ? loginForm.formState.errors.email : signupForm.formState.errors.email)}>
-                <Field.Label
-                  color="text.mist"
-                  fontFamily="mono"
-                  fontSize="sm"
-                  mb={2}
-                >
+              <Field.Root
+                invalid={
+                  !!(mode === 'login'
+                    ? loginForm.formState.errors.email
+                    : signupForm.formState.errors.email)
+                }
+              >
+                <Field.Label color="text.mist" fontFamily="mono" fontSize="sm" mb={2}>
                   Email
                 </Field.Label>
                 <Input
@@ -182,13 +193,14 @@ export function AuthForm() {
                 </Field.ErrorText>
               </Field.Root>
 
-              <Field.Root invalid={!!(mode === 'login' ? loginForm.formState.errors.password : signupForm.formState.errors.password)}>
-                <Field.Label
-                  color="text.mist"
-                  fontFamily="mono"
-                  fontSize="sm"
-                  mb={2}
-                >
+              <Field.Root
+                invalid={
+                  !!(mode === 'login'
+                    ? loginForm.formState.errors.password
+                    : signupForm.formState.errors.password)
+                }
+              >
+                <Field.Label color="text.mist" fontFamily="mono" fontSize="sm" mb={2}>
                   Password
                 </Field.Label>
                 <Input
@@ -251,12 +263,7 @@ export function AuthForm() {
 
               {mode === 'signup' && (
                 <Field.Root invalid={!!signupForm.formState.errors.confirmPassword}>
-                  <Field.Label
-                    color="text.mist"
-                    fontFamily="mono"
-                    fontSize="sm"
-                    mb={2}
-                  >
+                  <Field.Label color="text.mist" fontFamily="mono" fontSize="sm" mb={2}>
                     Confirm Password
                   </Field.Label>
                   <Input

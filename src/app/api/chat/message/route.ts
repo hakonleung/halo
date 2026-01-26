@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     // 4. Initialize LLM and Tools
     const settingsRes = await settingsService.getSettings(supabase, user.id);
     if (!settingsRes.settings) throw new Error('Settings not found');
-    
+
     const llm = await createLLM(settingsRes.settings);
     const tools = createChatTools(supabase, user.id);
 
@@ -81,24 +81,30 @@ Current user ID: ${user.id}
           let fullAiResponse = '';
 
           // Execute agent with streaming
-          const agentStream = await agent.stream(
-            { messages },
-            { streamMode: 'messages' }
-          );
+          const agentStream = await agent.stream({ messages }, { streamMode: 'messages' });
 
           for await (const [message, metadata] of agentStream) {
             // Only stream back the assistant's tokens/messages
             if (message instanceof AIMessage && metadata.langgraph_node === 'agent') {
-              const content = typeof message.content === 'string' ? message.content : JSON.stringify(message.content);
-              
+              const content =
+                typeof message.content === 'string'
+                  ? message.content
+                  : JSON.stringify(message.content);
+
               // Only send if it's not empty (sometimes we get tool call messages)
               if (content && !message.tool_calls?.length) {
                 fullAiResponse += content;
-                controller.enqueue(encoder.encode(`event: token\ndata: ${JSON.stringify({ content })}\n\n`));
+                controller.enqueue(
+                  encoder.encode(`event: token\ndata: ${JSON.stringify({ content })}\n\n`),
+                );
               }
             } else if (metadata.langgraph_node === 'tools') {
               // Optionally send tool execution status
-              controller.enqueue(encoder.encode(`event: status\ndata: ${JSON.stringify({ status: 'Executing tool...' })}\n\n`));
+              controller.enqueue(
+                encoder.encode(
+                  `event: status\ndata: ${JSON.stringify({ status: 'Executing tool...' })}\n\n`,
+                ),
+              );
             }
           }
 
@@ -111,11 +117,18 @@ Current user ID: ${user.id}
             });
           }
 
-          controller.enqueue(encoder.encode(`event: done\ndata: ${JSON.stringify({ conversationId: currentConversationId })}\n\n`));
+          controller.enqueue(
+            encoder.encode(
+              `event: done\ndata: ${JSON.stringify({ conversationId: currentConversationId })}\n\n`,
+            ),
+          );
           controller.close();
         } catch (err: unknown) {
-          const errorMessage = err instanceof Error ? err.message : 'An error occurred during streaming';
-          controller.enqueue(encoder.encode(`event: error\ndata: ${JSON.stringify({ error: errorMessage })}\n\n`));
+          const errorMessage =
+            err instanceof Error ? err.message : 'An error occurred during streaming';
+          controller.enqueue(
+            encoder.encode(`event: error\ndata: ${JSON.stringify({ error: errorMessage })}\n\n`),
+          );
           controller.close();
         }
       },
@@ -125,7 +138,7 @@ Current user ID: ${user.id}
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
+        Connection: 'keep-alive',
       },
     });
   } catch (error: unknown) {
@@ -133,4 +146,3 @@ Current user ID: ${user.id}
     return new Response(JSON.stringify({ error: message }), { status: 500 });
   }
 }
-

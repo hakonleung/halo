@@ -38,4 +38,3 @@ export interface GoalProgress {
   isCompleted: boolean;
   remainingDays?: number;
 }
-

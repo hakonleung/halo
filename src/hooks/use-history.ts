@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { HistoryListRequest, HistoryListResponse } from '@/types/history-client';
+import type { HistoryListRequest, HistoryListResponse } from '@/types/history-client';
 
 export function useHistory(params: HistoryListRequest = {}) {
   return useQuery<HistoryListResponse>({
@@ -20,4 +20,3 @@ export function useHistory(params: HistoryListRequest = {}) {
     },
   });
 }
-

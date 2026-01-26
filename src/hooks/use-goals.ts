@@ -69,7 +69,19 @@ export function useGoal(goalId: string | null) {
       if (!res.ok) {
         throw new Error('Failed to fetch goal');
       }
-      return res.json() as Promise<GoalResponse & { data: Goal & { progress?: { current: number; target: number; progress: number; isCompleted: boolean; remainingDays?: number } } }>;
+      return res.json() as Promise<
+        GoalResponse & {
+          data: Goal & {
+            progress?: {
+              current: number;
+              target: number;
+              progress: number;
+              isCompleted: boolean;
+              remainingDays?: number;
+            };
+          };
+        }
+      >;
     },
     enabled: !!goalId,
     staleTime: 30 * 1000, // 30 seconds
@@ -140,7 +152,13 @@ export function useUpdateGoal() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: Partial<GoalCreateRequest> & { status?: 'active' | 'completed' | 'abandoned' } }) => {
+    mutationFn: async ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<GoalCreateRequest> & { status?: 'active' | 'completed' | 'abandoned' };
+    }) => {
       const res = await fetch(`/api/goals/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -231,4 +249,3 @@ export function useDeleteGoal() {
     isLoading: mutation.isPending,
   };
 }
-

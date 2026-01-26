@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     if (authError || !user) {
       return NextResponse.json(
         { error: 'UNAUTHORIZED', message: 'Authentication required' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -31,13 +31,13 @@ export async function GET(request: Request) {
       if (!start || !end) {
         return NextResponse.json(
           { error: 'INVALID_DATE_RANGE', message: 'Start and end dates required for custom range' },
-          { status: 400 }
+          { status: 400 },
         );
       }
       if (new Date(start) > new Date(end)) {
         return NextResponse.json(
           { error: 'INVALID_DATE_RANGE', message: 'Start date must be before end date' },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -50,18 +50,12 @@ export async function GET(request: Request) {
     });
 
     if (error) {
-      return NextResponse.json(
-        { error: 'INTERNAL_ERROR', message: error },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'INTERNAL_ERROR', message: error }, { status: 500 });
     }
 
     return NextResponse.json({ data });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json(
-      { error: 'INTERNAL_ERROR', message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'INTERNAL_ERROR', message }, { status: 500 });
   }
 }

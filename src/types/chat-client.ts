@@ -31,4 +31,3 @@ export interface ChatResponse {
   conversationId: string;
   error: string | null;
 }
-

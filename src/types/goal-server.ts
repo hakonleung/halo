@@ -1,5 +1,5 @@
-import { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import { neologGoals } from '@/db/schema';
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
+import type { neologGoals } from '@/db/schema';
 
 // Server-side types for goals (Inferred from Drizzle Entity)
 export type Goal = InferSelectModel<typeof neologGoals> & {
@@ -26,4 +26,3 @@ export interface GoalProgress {
   isCompleted: boolean;
   remainingDays?: number;
 }
-

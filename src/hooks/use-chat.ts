@@ -1,9 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type {
-  Conversation,
-  ChatMessage,
-} from '@/types/chat-client';
+import type { Conversation, ChatMessage } from '@/types/chat-client';
 
 /**
  * Hook for managing chat conversations
@@ -42,55 +39,58 @@ export function useChat(conversationId?: string) {
     enabled: !!conversationId,
   });
 
-  const sendMessage = useCallback(async (content: string) => {
-    setIsStreaming(true);
-    setStreamingContent('');
+  const sendMessage = useCallback(
+    async (content: string) => {
+      setIsStreaming(true);
+      setStreamingContent('');
 
-    try {
-      const response = await fetch('/api/chat/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, conversationId }),
-      });
+      try {
+        const response = await fetch('/api/chat/message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content, conversationId }),
+        });
 
-      if (!response.ok) throw new Error('Failed to send message');
+        if (!response.ok) throw new Error('Failed to send message');
 
-      const reader = response.body?.getReader();
-      
-      if (!reader) return;
+        const reader = response.body?.getReader();
 
-      let currentConversationId = conversationId;
+        if (!reader) return;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+        let currentConversationId = conversationId;
 
-        const chunk = new TextDecoder().decode(value);
-        const lines = chunk.split('\n');
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-        for (const line of lines) {
-          if (line.startsWith('event: token')) {
-            const data = JSON.parse(line.replace('event: token\ndata: ', ''));
-            setStreamingContent((prev) => prev + data.content);
-          } else if (line.startsWith('event: done')) {
-            const data = JSON.parse(line.replace('event: done\ndata: ', ''));
-            currentConversationId = data.conversationId;
-            // Invalidate queries to refresh history
-            void queryClient.invalidateQueries({ queryKey: ['messages', currentConversationId] });
-            void queryClient.invalidateQueries({ queryKey: ['conversations'] });
-          } else if (line.startsWith('event: error')) {
-            const data = JSON.parse(line.replace('event: error\ndata: ', ''));
-            throw new Error(data.error);
+          const chunk = new TextDecoder().decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('event: token')) {
+              const data = JSON.parse(line.replace('event: token\ndata: ', ''));
+              setStreamingContent((prev) => prev + data.content);
+            } else if (line.startsWith('event: done')) {
+              const data = JSON.parse(line.replace('event: done\ndata: ', ''));
+              currentConversationId = data.conversationId;
+              // Invalidate queries to refresh history
+              void queryClient.invalidateQueries({ queryKey: ['messages', currentConversationId] });
+              void queryClient.invalidateQueries({ queryKey: ['conversations'] });
+            } else if (line.startsWith('event: error')) {
+              const data = JSON.parse(line.replace('event: error\ndata: ', ''));
+              throw new Error(data.error);
+            }
           }
         }
+      } catch (err) {
+        console.error('Chat error:', err);
+      } finally {
+        setIsStreaming(false);
+        setStreamingContent('');
       }
-    } catch (err) {
-      console.error('Chat error:', err);
-    } finally {
-      setIsStreaming(false);
-      setStreamingContent('');
-    }
-  }, [conversationId, queryClient]);
+    },
+    [conversationId, queryClient],
+  );
 
   return {
     messages: messagesData?.data ?? [],
@@ -100,4 +100,3 @@ export function useChat(conversationId?: string) {
     streamingContent,
   };
 }
-

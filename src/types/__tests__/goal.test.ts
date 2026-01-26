@@ -130,7 +130,7 @@ export function convertServerGoalToClient(serverGoal: ServerGoal): ClientGoal {
 
 export function convertClientGoalToServer(
   clientGoal: ClientGoal,
-  userId: string
+  userId: string,
 ): Omit<ServerGoal, 'id' | 'created_at' | 'updated_at'> & {
   description: string | null;
   end_date: string | null;
@@ -155,7 +155,7 @@ export function convertClientGoalToServer(
 }
 
 export function convertServerCriteriaToClient(
-  serverCriteria: ServerGoalCriteria
+  serverCriteria: ServerGoalCriteria,
 ): ClientGoalCriteria {
   return {
     behaviorId: serverCriteria.behavior_id,
@@ -168,7 +168,7 @@ export function convertServerCriteriaToClient(
 }
 
 export function convertClientCriteriaToServer(
-  clientCriteria: ClientGoalCriteria
+  clientCriteria: ClientGoalCriteria,
 ): ServerGoalCriteria {
   return {
     behavior_id: clientCriteria.behaviorId,
@@ -191,4 +191,3 @@ export const typeTests = {
   serverProgress,
   clientProgress,
 } as const;
-

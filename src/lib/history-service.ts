@@ -1,9 +1,9 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
-import { HistoryItem, HistoryListRequest, HistoryListResponse } from '@/types/history-server';
-import { BehaviorRecordWithDefinition } from '@/types/behavior-server';
-import { Goal } from '@/types/goal-server';
-import { Note } from '@/types/note-server';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
+import type { HistoryItem, HistoryListRequest, HistoryListResponse } from '@/types/history-server';
+import type { BehaviorRecordWithDefinition } from '@/types/behavior-server';
+import type { Goal } from '@/types/goal-server';
+import type { Note } from '@/types/note-server';
 
 /**
  * History service - Aggregates behavior records, goals, and notes
@@ -15,7 +15,7 @@ export const historyService = {
   async getHistory(
     supabase: SupabaseClient<Database>,
     userId: string,
-    params: HistoryListRequest
+    params: HistoryListRequest,
   ): Promise<HistoryListResponse> {
     const {
       type = 'all',
@@ -138,4 +138,3 @@ export const historyService = {
     };
   },
 };
-

@@ -8,11 +8,7 @@
       "summary": "生成 PRD 文档和功能流程图",
       "details": {
         "action": "create_documents",
-        "files_affected": [
-          "prd.md",
-          "flow.md",
-          "summary.md"
-        ],
+        "files_affected": ["prd.md", "flow.md", "summary.md"],
         "content_summary": "完成 PRD 编写，包含10个用户故事、功能规格、流程图"
       }
     },
@@ -35,4 +31,3 @@
     }
   ]
 }
-

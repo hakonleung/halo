@@ -1,12 +1,12 @@
 'use client';
 
 import { Box, Table, Text, Badge, HStack, IconButton, Button, VStack } from '@chakra-ui/react';
-import { HistoryItem } from '@/types/history-client';
+import type { HistoryItem } from '@/types/history-client';
 import { formatDistanceToNow } from 'date-fns';
 import { LuPencil, LuTrash2 } from 'react-icons/lu';
-import { BehaviorRecordWithDefinition } from '@/types/behavior-server';
-import { Goal } from '@/types/goal-server';
-import { Note } from '@/types/note-server';
+import type { BehaviorRecordWithDefinition } from '@/types/behavior-server';
+import type { Goal } from '@/types/goal-server';
+import type { Note } from '@/types/note-server';
 
 interface HistoryListProps {
   items: HistoryItem[];
@@ -19,7 +19,13 @@ interface HistoryListProps {
 export function HistoryList({ items, total, page, pageSize, onPageChange }: HistoryListProps) {
   if (items.length === 0) {
     return (
-      <Box py={20} textAlign="center" border="1px dashed" borderColor="border.subtle" borderRadius="4px">
+      <Box
+        py={20}
+        textAlign="center"
+        border="1px dashed"
+        borderColor="border.subtle"
+        borderRadius="4px"
+      >
         <Text color="text.mist" fontFamily="mono">
           [ NO RECORDS FOUND ]
         </Text>
@@ -89,10 +95,18 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
         <Table.Root size="sm" variant="line">
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeader color="text.mist" fontFamily="mono">TIME</Table.ColumnHeader>
-              <Table.ColumnHeader color="text.mist" fontFamily="mono">TYPE</Table.ColumnHeader>
-              <Table.ColumnHeader color="text.mist" fontFamily="mono">DETAILS</Table.ColumnHeader>
-              <Table.ColumnHeader color="text.mist" fontFamily="mono" textAlign="right">ACTIONS</Table.ColumnHeader>
+              <Table.ColumnHeader color="text.mist" fontFamily="mono">
+                TIME
+              </Table.ColumnHeader>
+              <Table.ColumnHeader color="text.mist" fontFamily="mono">
+                TYPE
+              </Table.ColumnHeader>
+              <Table.ColumnHeader color="text.mist" fontFamily="mono">
+                DETAILS
+              </Table.ColumnHeader>
+              <Table.ColumnHeader color="text.mist" fontFamily="mono" textAlign="right">
+                ACTIONS
+              </Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -154,4 +168,3 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
     </VStack>
   );
 }
-

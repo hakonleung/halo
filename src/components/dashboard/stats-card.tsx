@@ -33,8 +33,14 @@ export function StatsCard({ title, value, trend, suffix, loading, onClick }: Sta
     );
   }
 
-  const TrendIcon = trend?.direction === 'up' ? ArrowUp : trend?.direction === 'down' ? ArrowDown : Minus;
-  const trendColor = trend?.direction === 'up' ? 'brand.matrix' : trend?.direction === 'down' ? 'brand.alert' : 'text.mist';
+  const TrendIcon =
+    trend?.direction === 'up' ? ArrowUp : trend?.direction === 'down' ? ArrowDown : Minus;
+  const trendColor =
+    trend?.direction === 'up'
+      ? 'brand.matrix'
+      : trend?.direction === 'down'
+        ? 'brand.alert'
+        : 'text.mist';
 
   return (
     <Box
@@ -46,11 +52,15 @@ export function StatsCard({ title, value, trend, suffix, loading, onClick }: Sta
       h="180px"
       cursor={onClick ? 'pointer' : 'default'}
       transition="all 0.15s ease"
-      _hover={onClick ? {
-        borderColor: 'brand.matrix',
-        boxShadow: '0 0 15px rgba(0, 255, 65, 0.2)',
-        transform: 'translateY(-2px)',
-      } : undefined}
+      _hover={
+        onClick
+          ? {
+              borderColor: 'brand.matrix',
+              boxShadow: '0 0 15px rgba(0, 255, 65, 0.2)',
+              transform: 'translateY(-2px)',
+            }
+          : undefined
+      }
       onClick={onClick}
     >
       <VStack align="stretch" h="full" gap={0}>
