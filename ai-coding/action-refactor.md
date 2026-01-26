@@ -51,7 +51,7 @@ flowchart TD
 3. 评估风险
 4. 制定重构计划（分解为小步骤）
 
-**输出**: `ai-coding/works/REF_XXX/r1_analysis/plan.md`
+**输出**: `ai-works/REF_XXX/r1_analysis/plan.md`
 
 ---
 
@@ -61,7 +61,7 @@ flowchart TD
 2. 补充测试（如覆盖不足）
 3. 运行基准测试
 
-**输出**: `ai-coding/works/REF_XXX/r2_safety/baseline.md`
+**输出**: `ai-works/REF_XXX/r2_safety/baseline.md`
 
 ---
 
@@ -81,14 +81,14 @@ flowchart TD
 2. 对比基准（测试数量、通过率、性能）
 3. 生成报告
 
-**输出**: `ai-coding/works/REF_XXX/r4_validation/report.md`
+**输出**: `ai-works/REF_XXX/r4_validation/report.md`
 
 ---
 
 ## 工作目录结构
 
 ```
-ai-coding/works/REF_XXX/
+ai-works/REF_XXX/
 ├── overview.json
 ├── r1_analysis/
 ├── r2_safety/

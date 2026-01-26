@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       work_dir:
-        description: 'ai-coding/works/PRD_XXX (optional)'
+        description: 'ai-works/PRD_XXX (optional)'
         required: false
         default: ''
       min_rate:

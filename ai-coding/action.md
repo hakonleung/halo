@@ -107,7 +107,7 @@ ai-coding/
 │   ├── 05c-implementation-frontend.md
 │   ├── 06-validation.md
 │   └── 07-deploy.md
-└── works/                 ← 工作记录
+ai-works/                  ← 工作记录（与 ai-coding 同级）
     └── PRD_XXX/
         ├── overview.json
         ├── snapshots/

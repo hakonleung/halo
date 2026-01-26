@@ -18,7 +18,7 @@ $ARGUMENTS
    - 技术优化 → `OPT_XXX`
    - UI 微调 → `UI_XXX`
 2. 创建 Git 分支
-3. 创建工作目录 `ai-coding/works/[单号]/`
+3. 创建工作目录 `ai-works/[单号]/`
 
 ### 2. 执行 3 阶段
 

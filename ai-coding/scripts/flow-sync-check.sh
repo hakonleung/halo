@@ -11,7 +11,7 @@ Usage:
 
 Examples:
   bash ai-coding/scripts/flow-sync-check.sh
-  bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-coding/works/PRD_001 --min-rate 0.95
+  bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-works/PRD_001 --min-rate 0.95
 EOF
 }
 
@@ -37,8 +37,8 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -z "$WORK_DIR" && -d "ai-coding/works" ]]; then
-  WORK_DIR="$(ls -dt ai-coding/works/* 2>/dev/null | head -1 || true)"
+if [[ -z "$WORK_DIR" && -d "ai-works" ]]; then
+  WORK_DIR="$(ls -dt ai-works/* 2>/dev/null | head -1 || true)"
 fi
 
 if [[ -z "$WORK_DIR" ]]; then

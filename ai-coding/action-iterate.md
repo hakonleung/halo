@@ -48,7 +48,7 @@ flowchart TD
 2. 对比分析：识别变更类型（新增/修改/删除）
 3. 影响范围分析
 
-**输出**: `ai-coding/works/ITR_XXX/i1_analysis/analysis.md`
+**输出**: `ai-works/ITR_XXX/i1_analysis/analysis.md`
 
 ---
 
@@ -58,7 +58,7 @@ flowchart TD
 
 **输出**:
 ```
-ai-coding/works/ITR_XXX/i2_design/
+ai-works/ITR_XXX/i2_design/
 ├── prd-patch.md       # PRD 补丁
 ├── ui-patch.md        # UI 设计补丁 (如涉及)
 └── tech-patch.md      # 技术设计补丁
@@ -70,7 +70,7 @@ ai-coding/works/ITR_XXX/i2_design/
 
 按补丁文档修改代码，遵循原代码风格。
 
-**输出**: `ai-coding/works/ITR_XXX/i3_implementation/changes.md`
+**输出**: `ai-works/ITR_XXX/i3_implementation/changes.md`
 
 ---
 
@@ -79,14 +79,14 @@ ai-coding/works/ITR_XXX/i2_design/
 1. 增量测试：为新增/修改的 AC 编写测试
 2. 回归测试：运行原 PRD 的测试用例
 
-**输出**: `ai-coding/works/ITR_XXX/i4_validation/report.md`
+**输出**: `ai-works/ITR_XXX/i4_validation/report.md`
 
 ---
 
 ## 工作目录结构
 
 ```
-ai-coding/works/ITR_XXX/
+ai-works/ITR_XXX/
 ├── overview.json
 ├── i1_analysis/
 ├── i2_design/

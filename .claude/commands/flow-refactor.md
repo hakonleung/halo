@@ -21,7 +21,7 @@ $ARGUMENTS
 1. 解析参数，获取重构范围和目标
 2. 生成重构单号 `REF_XXX`
 3. 创建 Git 分支 `refactor/REF_XXX`
-4. 创建工作目录 `ai-coding/works/REF_XXX/`
+4. 创建工作目录 `ai-works/REF_XXX/`
 
 ### 2. 执行 4 阶段
 

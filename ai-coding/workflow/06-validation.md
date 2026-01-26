@@ -33,7 +33,7 @@ flowchart LR
 
 推荐脚本：
 ```bash
-bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-coding/works/PRD_XXX --min-rate 0.95
+bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-works/PRD_XXX --min-rate 0.95
 ```
 
 > 详见 [action-work.md](../action-work.md#文档代码同步机制)

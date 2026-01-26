@@ -50,7 +50,7 @@ flowchart TD
 2. 定位相关代码
 3. 生成修改清单
 
-**输出**: `ai-coding/works/[单号]/quick-analysis.md`
+**输出**: `ai-works/[单号]/quick-analysis.md`
 
 ---
 
@@ -60,7 +60,7 @@ flowchart TD
 2. 每个文件修改后运行 `pnpm tsc --noEmit`
 3. 运行验证脚本
 
-**输出**: `ai-coding/works/[单号]/changes.md`
+**输出**: `ai-works/[单号]/changes.md`
 
 ---
 
@@ -86,7 +86,7 @@ flowchart TD
 ## 工作目录结构
 
 ```
-ai-coding/works/[单号]/
+ai-works/[单号]/
 ├── quick-analysis.md
 ├── changes.md
 └── history.json

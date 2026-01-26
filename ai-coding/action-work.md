@@ -88,7 +88,7 @@ flowchart TB
 - 06 验证阶段（自动）
 - 07 部署前（自动）
 - 任意时刻：`/flow-sync-check`
-- 推荐脚本：`bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-coding/works/PRD_XXX`
+- 推荐脚本：`bash ai-coding/scripts/flow-sync-check.sh --work-dir ai-works/PRD_XXX`
 
 ### 同步率门槛
 
@@ -142,7 +142,7 @@ git commit -m "<type>: [PRD_XXX_stage] <details>"
 ## 工作目录结构
 
 ```
-ai-coding/works/PRD_001/
+ai-works/PRD_001/
 ├── overview.json
 ├── snapshots/
 ├── 01_requirements/  (requirements.md, journey.md, summary.md, history.json)

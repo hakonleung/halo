@@ -19,7 +19,7 @@ $ARGUMENTS
 1. 解析参数，获取原 PRD 单号和迭代需求
 2. 生成迭代单号 `ITR_XXX`
 3. 创建 Git 分支 `feat/ITR_XXX`
-4. 创建工作目录 `ai-coding/works/ITR_XXX/`
+4. 创建工作目录 `ai-works/ITR_XXX/`
 5. 加载原 PRD 上下文
 
 ### 2. 执行 4 阶段
@@ -33,7 +33,7 @@ $ARGUMENTS
 
 ### 3. I1 增量需求分析
 
-1. 加载原 PRD 上下文（读取 `ai-coding/works/PRD_XXX/` 目录）
+1. 加载原 PRD 上下文（读取 `ai-works/PRD_XXX/` 目录）
 2. 对比分析：识别变更类型（新增/修改/删除）
 3. 影响范围分析
 

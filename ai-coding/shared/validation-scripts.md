@@ -28,7 +28,7 @@ pnpm test && pnpm lint && pnpm tsc --noEmit
 
 # 指定 PRD 目录，并设置门槛
 ./ai-coding/scripts/flow-sync-check.sh \
-  --work-dir ai-coding/works/PRD_XXX \
+  --work-dir ai-works/PRD_XXX \
   --min-rate 0.95
 ```
 
@@ -106,7 +106,7 @@ pnpm test:e2e
 ## 同步检查命令
 
 ```bash
-# (脚本等价) ./ai-coding/scripts/flow-sync-check.sh --work-dir ai-coding/works/PRD_XXX
+# (脚本等价) ./ai-coding/scripts/flow-sync-check.sh --work-dir ai-works/PRD_XXX
 
 # API 端点数量检查
 grep -c "^### \(GET\|POST\|PUT\|DELETE\)" api-spec.md
@@ -134,7 +134,7 @@ git diff --stat HEAD~1 | tail -1
 pnpm test:coverage | grep "All files"
 
 # 统计 Token (估算)
-wc -c ai-coding/works/PRD_XXX/**/*.md | tail -1 | awk '{print int($1/4)}'
+wc -c ai-works/PRD_XXX/**/*.md | tail -1 | awk '{print int($1/4)}'
 ```
 
 ## 自动通过条件

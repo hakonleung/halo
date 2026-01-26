@@ -12,9 +12,9 @@ $ARGUMENTS
 
 ### 1. 初始化
 
-1. 生成单号 `PRD_XXX`（读取 `ai-coding/works/` 目录确定下一个编号）
+1. 生成单号 `PRD_XXX`（读取 `ai-works/` 目录确定下一个编号）
 2. 创建 Git 分支 `feat/PRD_XXX`
-3. 创建工作目录 `ai-coding/works/PRD_XXX/`
+3. 创建工作目录 `ai-works/PRD_XXX/`
 4. 初始化 `overview.json`
 
 ### 2. 执行 7 阶段
