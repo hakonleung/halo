@@ -7,7 +7,6 @@
 - **`/flow-start [需求]`**: 初始化流程：生成单号 `PRD_XXX`，创建分支，创建目录，开始执行
 - **`/flow-status`**: 查看当前状态
 - **`/flow-list`**: 列出所有工作流
-- **`/flow-continue`**: 继续暂停的工作流
 
 ## 流程总览
 
@@ -130,7 +129,6 @@ git commit -m "<type>: [PRD_XXX_stage] <details>"
 ```
 ai-works/PRD_001/
 ├── overview.json
-├── snapshots/
 ├── 01_requirements/  (requirements.md, journey.md, summary.md, history.json)
 ├── 02_prd/           (prd.md, flow.md, summary.md, history.json)
 ├── 03_ui_design/     (ui-design.md, layouts/, components/, preview/, summary.md, history.json)
@@ -186,24 +184,6 @@ ai-works/PRD_001/
 ### 按需读取
 
 当摘要不足时，通过关键词索引定位原文章节，或使用 `/read-full [阶段]`。
-
-## 快照机制
-
-### 触发时机
-
-- **阶段完成**: `stage_complete`
-- **手动保存**: `manual`
-- **长时间暂停**: `auto_pause`
-- **返工开始**: `before_rework`
-
-### 快照恢复 (/flow-continue)
-
-1. 读取 overview.json
-2. 查找最新快照
-3. 恢复 Context 缓存
-4. 切换 Git 分支
-5. 处理未提交变更
-6. 从暂停点继续
 
 ## 数据结构
 

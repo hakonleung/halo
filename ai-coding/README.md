@@ -17,7 +17,7 @@ AI Coding 工作流：Audit, Auto, Revert, Code。
 - 重构：`/flow-refactor [范围] [目标]`
 
 **状态与恢复**
-- ` /flow-status` / `/flow-list` / `/flow-continue`
+- ` /flow-status` / `/flow-list`
 - ` /flow-sync-check`（同步率检查）
 
 **脚本与 CI**

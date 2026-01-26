@@ -62,9 +62,6 @@ flowchart TB
 
 - **`/flow-status`**: 查看当前工作流状态
 - **`/flow-list`**: 列出所有工作流
-- **`/flow-continue [单号]?`**: 从快照恢复，继续工作流
-- **`/flow-save [备注]?`**: 手动保存当前进度快照
-- **`/flow-rollback [快照ID]`**: 回滚到指定快照
 - **`/flow-sync-check [单号]?`**: 检查文档与代码同步状态
 - **`/read-full [阶段] [关键词]?`**: 强制读取完整文档
 
@@ -104,7 +101,6 @@ ai-coding/
 ai-works/                  ← 工作记录（与 ai-coding 同级）
     └── PRD_XXX/
         ├── overview.json
-        ├── snapshots/
         └── [阶段目录]/
 ```
 
