@@ -87,19 +87,6 @@ flowchart TD
   - 新建项目：按问题列表询问（提供可选项）→ 结合默认值生成
 - **额外**: 如启用 VSCode 自动格式化，生成 `.vscode/settings.json`
 
-## 完成提示
-
-```
-初始化完成！
-
-已生成配置文件：
-- ai-coding/context/project.md
-- ai-coding/context/ui-config.md
-- ai-coding/context/tech-config.md
-
-可以使用 /flow-start [需求] 开始工作流。
-```
-
 ## 字段映射说明
 
 问题回答会映射到 context 文件的对应字段，映射关系在每个问题的注释中说明（用 `→` 表示）。

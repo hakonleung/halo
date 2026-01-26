@@ -16,11 +16,7 @@
 /flow-refactor [范围] [目标]
 ```
 
-**示例**:
-```
-/flow-refactor src/lib/auth-service.ts 拆分为多个小文件
-/flow-refactor 全局 将所有 any 类型替换为具体类型
-```
+**示例**: `/flow-refactor src/lib/auth-service.ts 拆分为多个小文件`
 
 ## 重构原则
 
@@ -65,10 +61,9 @@ flowchart TD
 
 ## R3: 逐步重构
 
-**每步规则**:
 - 每次只做一件事
-- 每步都验证：`pnpm tsc --noEmit && pnpm lint && pnpm test`
-- 每步都提交：`refactor: [REF_XXX] step N - 具体操作`
+- 每步验证：`pnpm tsc --noEmit && pnpm lint && pnpm test`
+- 每步提交：`refactor: [REF_XXX] step N - 具体操作`
 - 失败就回滚
 
 ---
@@ -81,35 +76,7 @@ flowchart TD
 
 **输出**: `ai-works/REF_XXX/r4_validation/report.md`
 
----
-
-## 工作目录结构
-
-```
-ai-works/REF_XXX/
-├── overview.json
-├── r1_analysis/
-├── r2_safety/
-├── r3_refactor/
-└── r4_validation/
-```
-
 ## 单号规则
 
 - 重构单号: `REF_XXX`
 - Git 分支: `refactor/REF_XXX`
-
-## 常用重构模式
-
-- **提取函数**: 函数过长
-- **提取文件**: 文件过大
-- **内联变量**: 变量只用一次
-- **重命名**: 命名不清晰
-- **合并重复**: 重复代码
-- **简化条件**: 条件过复杂
-
----
-
-## Markdown 输出规范
-
-所有生成的 Markdown 文档必须遵循 [shared/markdown-style.md](./shared/markdown-style.md)

@@ -8,8 +8,6 @@
 - **按需读取**: `02_prd/prd.md`, `03_ui_design/ui-design.md`
 
 > Context 缓存: `PROJECT_CONTEXT`, `UI_CONTEXT`, `TECH_CONTEXT`
->
-> **职责边界**: 详见 [responsibility-boundaries.md](../shared/responsibility-boundaries.md)
 
 ## 流程
 
@@ -47,12 +45,27 @@ flowchart LR
 
 ### tech-design.md 结构
 
-1. 数据模型（表结构、SQL 查询、计算逻辑，详见职责边界文档）
-2. API 接口（详细规格，详见职责边界文档）
-3. 类型定义 (Client/Server)（TypeScript 类型，详见职责边界文档）
-4. 组件架构（Props、Hooks、数据流，详见职责边界文档）
+1. 数据模型（表结构、SQL 查询、计算逻辑）
+2. API 接口（详细规格）
+3. 类型定义 (Client/Server)（TypeScript 类型）
+4. 组件架构（Props、Hooks、数据流）
 5. 任务拆分
 6. 测试策略
+
+### 职责边界
+
+**应该包含**:
+- 数据模型：表结构、字段类型、索引、SQL 查询、计算逻辑
+- API 详细规格：请求/响应格式、TypeScript 类型、错误码、认证方式
+- TypeScript 类型定义：Client/Server 类型分离、接口定义、类型转换函数
+- 组件架构：Props 的 TypeScript 定义、Hooks 设计、数据流设计
+- 算法设计：详细的计算步骤、处理流程、性能优化方案
+- 任务拆分：05a/05b/05c 具体任务清单、文件路径、代码结构
+
+**不应该包含**:
+- 用户故事（业务需求）→ 应在 `02-prd/prd.md`
+- 业务规则（业务逻辑）→ 应在 `02-prd/prd.md`
+- UI 设计细节（页面布局、组件外观）→ 应在 `03-ui-design/ui-design.md`
 
 ## AI 自验收
 

@@ -8,8 +8,6 @@
 - **按需读取**: `01_requirements/requirements.md`
 
 > Context 缓存: `PROJECT_CONTEXT`
->
-> **职责边界**: 详见 [responsibility-boundaries.md](../shared/responsibility-boundaries.md)
 
 ## 流程
 
@@ -44,11 +42,26 @@ flowchart LR
 
 1. 概述（背景、目标、成功指标）
 2. 用户故事（US-XXX 格式，含优先级和验收标准）
-3. 功能规格（业务层面描述，详见职责边界文档）
+3. 功能规格（业务层面描述）
 4. 非功能需求（指标层面，如性能指标、可用性要求）
 5. 约束与依赖（业务约束，如数据依赖、业务规则）
 6. 里程碑（阶段产出，如"API 接口"、"Dashboard 组件"）
 7. 开放问题
+
+### 职责边界
+
+**应该包含**:
+- 用户故事：业务需求描述，格式"作为 [角色]，我希望 [操作]，以便 [目标]"
+- 验收标准：业务验证，格式 Given/When/Then
+- 功能规格：业务功能描述（如"支持获取目标列表，可按状态筛选"），不包含 API 请求/响应格式
+- 非功能需求：性能指标（如"加载时间 < 500ms"）、可用性要求
+- 约束与依赖：业务约束（如"最多 100 个目标"）、数据依赖（如"依赖 behavior_records 表"）
+
+**不应该包含**:
+- API 详细规格（请求/响应格式、TypeScript 类型、错误码）→ 应在 `04-tech-design/api-spec.md`
+- 数据库设计（SQL 查询、计算逻辑、表结构）→ 应在 `04-tech-design/tech-design.md`
+- 组件 Props 定义（TypeScript 接口）→ 应在 `04-tech-design/tech-design.md`
+- 算法详细步骤（技术实现流程）→ 应在 `04-tech-design/tech-design.md`
 
 ## AI 自验收
 

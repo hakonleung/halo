@@ -15,16 +15,9 @@
 /flow-iterate [PRD_XXX] [迭代需求]
 ```
 
-**示例**:
-```
-/flow-iterate PRD_001 给行为记录列表增加搜索和筛选功能
-```
+**示例**: `/flow-iterate PRD_001 给行为记录列表增加搜索和筛选功能`
 
-## 与完整模式对比
-
-迭代模式复用原 PRD 上下文，生成补丁文档而非完整文档，增加回归测试。
-
-详细流程对比见 [action-work.md](./action-work.md)
+迭代模式复用原 PRD 上下文，生成补丁文档而非完整文档。
 
 ## 流程详情
 
@@ -52,15 +45,9 @@ flowchart TD
 
 ## I2: 增量设计
 
-生成补丁文档而非重写：
+生成补丁文档而非重写：PRD 补丁、UI 设计补丁（如涉及）、技术设计补丁
 
-**输出**:
-```
-ai-works/ITR_XXX/i2_design/
-├── prd-patch.md       # PRD 补丁
-├── ui-patch.md        # UI 设计补丁 (如涉及)
-└── tech-patch.md      # 技术设计补丁
-```
+**输出**: `ai-works/ITR_XXX/i2_design/`
 
 ---
 
@@ -79,25 +66,11 @@ ai-works/ITR_XXX/i2_design/
 
 **输出**: `ai-works/ITR_XXX/i4_validation/report.md`
 
----
-
-## 工作目录结构
-
-```
-ai-works/ITR_XXX/
-├── overview.json
-├── i1_analysis/
-├── i2_design/
-├── i3_implementation/
-└── i4_validation/
-```
-
 ## 单号规则
 
 - 迭代单号: `ITR_XXX`
 - Git 分支: `feat/ITR_XXX` 或 `feat/PRD_XXX-v2`
 
----
 
 ## Markdown 输出规范
 

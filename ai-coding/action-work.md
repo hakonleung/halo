@@ -55,15 +55,11 @@ flowchart TB
 
 ## 测试左移策略
 
-将测试活动前移，更早发现问题。
-
-- **04 技术设计**: 测试用例草案 - `test-plan.md`
-- **05a 前置**: 类型测试 - `types/__tests__/*.test.ts`
-- **05b 后端**: 同步编写单元测试 - `lib/__tests__/*.test.ts`
-- **05c 前端**: 同步编写组件测试 - `components/**/__tests__/*.test.tsx`
-- **06 验证**: E2E + 回归测试 - `e2e/*.spec.ts`
-
-**原则**: 先草案后实现、同步编写、测试未通过禁止继续、覆盖率门槛
+- **04 技术设计**: 测试用例草案
+- **05a 前置**: 类型测试
+- **05b 后端**: 同步编写单元测试
+- **05c 前端**: 同步编写组件测试
+- **06 验证**: E2E + 回归测试
 
 ## 文档代码同步机制
 
@@ -83,9 +79,9 @@ flowchart TB
 
 ### 同步率门槛
 
-- **05 完成**: ≥ 90% - 不达标处理: 补充实现或更新文档
-- **06 验证**: ≥ 95% - 不达标处理: 必须修复后继续
-- **07 部署**: = 100% - 不达标处理: 阻塞部署
+- **05 完成**: ≥ 90%
+- **06 验证**: ≥ 95%
+- **07 部署**: = 100%
 
 ## 执行模式
 
@@ -97,8 +93,7 @@ AI **自动连续执行**，根据风险等级决定暂停：
 
 ### 自动通过条件
 
-**可选** 阶段满足以下条件时自动通过：
-
+可选阶段满足以下条件时自动通过：
 1. AI 自验收全部通过
 2. 验证脚本通过（详见 [validation-scripts.md](./shared/validation-scripts.md)，推荐 `flow-stage-validate.sh`）
 3. 无新增 TODO/FIXME
@@ -115,32 +110,9 @@ AI **自动连续执行**，根据风险等级决定暂停：
 
 ## 自动提交
 
-每阶段人类验收通过后自动 Git Commit：
+每阶段人类验收通过后自动 Git Commit，格式：`docs/feat/fix/test: [PRD_XXX_XX] description`
 
-```bash
-git add .
-git commit -m "<type>: [PRD_XXX_stage] <details>"
-```
-
-**Commit 格式**: `docs/feat/fix/test: [PRD_XXX_XX] description`
-
-## 工作目录结构
-
-```
-ai-works/PRD_001/
-├── overview.json
-├── 01_requirements/  (requirements.md, journey.md, summary.md, history.json)
-├── 02_prd/           (prd.md, flow.md, summary.md, history.json)
-├── 03_ui_design/     (ui-design.md, layouts/, components/, preview/, summary.md, history.json)
-├── 04_tech_design/   (tech-design.md, architecture.md, api-spec.md, test-plan.md, summary.md, history.json)
-├── 05a_prep/         (prep.md, summary.md, history.json)
-├── 05b_backend/      (implementation.md, summary.md, history.json)
-├── 05c_frontend/     (implementation.md, summary.md, history.json)
-├── 06_validation/    (report.md, history.json)
-└── 07_deploy/        (history.json, quality-report.md)
-```
-
-> **数据格式**: `overview.json` 和各阶段 `history.json` 的结构定义见 [shared/data-structures.md](./shared/data-structures.md)
+数据格式详见 [shared/data-structures.md](./shared/data-structures.md)
 
 ## Context 缓存机制
 
@@ -170,24 +142,9 @@ ai-works/PRD_001/
 
 ### summary.md 格式
 
-```markdown
-# [阶段名] 摘要
-
-## 核心结论
-## 关键产出
-## 供后续阶段使用
-## 注意事项
-## 关键词索引
-<!-- 关键术语 → 原文位置映射 -->
-```
-
-### 按需读取
+包含：核心结论、关键产出、供后续阶段使用、注意事项、关键词索引
 
 当摘要不足时，通过关键词索引定位原文章节，或使用 `/read-full [阶段]`。
-
-## 数据结构
-
-详见 [shared/data-structures.md](./shared/data-structures.md)
 
 ## 并行阶段协调
 
@@ -216,10 +173,8 @@ ai-works/PRD_001/
 
 ---
 
-## 验证脚本
-
-详见 [shared/validation-scripts.md](./shared/validation-scripts.md)
 
 ## Markdown 输出规范
 
 所有生成的 Markdown 文档必须遵循 [shared/markdown-style.md](./shared/markdown-style.md)
+

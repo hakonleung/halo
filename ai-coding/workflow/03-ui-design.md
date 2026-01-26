@@ -10,8 +10,6 @@
 > Context 缓存: `PROJECT_CONTEXT`, `UI_CONTEXT`
 >
 > **并行模式**: 可与 02 并行执行，基于 01 产出即可开始。
->
-> **职责边界**: 详见 [responsibility-boundaries.md](../shared/responsibility-boundaries.md)
 
 ## 流程
 
@@ -50,8 +48,23 @@ flowchart LR
 1. 设计变量（引用的 theme 变量）
 2. 组件复用分析
 3. 页面设计
-4. 组件规格（外观和交互层面，详见职责边界文档）
+4. 组件规格（外观和交互层面）
 5. 交互流程
+
+### 职责边界
+
+**应该包含**:
+- 页面布局：视觉结构，Desktop/Tablet/Mobile 布局，组件排列、间距、对齐
+- 组件外观：样式、颜色、字体、间距，Loading/Error/Empty 状态，响应式断点
+- 交互流程：用户操作（点击、悬停、输入），状态流转，反馈机制
+- 设计变量：主题变量引用（颜色、字体、间距）
+- 组件功能描述：业务层面描述（如"显示目标列表"、"接收目标列表"），不包含 TypeScript 类型定义
+
+**不应该包含**:
+- TypeScript Props 定义（TypeScript 接口、Props 类型）→ 应在 `04-tech-design/tech-design.md`
+- API 调用逻辑（数据获取方式、错误处理）→ 应在 `04-tech-design`
+- 数据流设计（数据流转、状态管理）→ 应在 `04-tech-design/architecture.md`
+- 算法设计（计算逻辑）→ 应在 `04-tech-design/tech-design.md`
 
 ## AI 自验收
 
