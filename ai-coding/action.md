@@ -7,6 +7,7 @@
 ### 初始化指令
 
 - **`/flow-init`**: 创建或初始化配置（可选择是否从现有项目扫描） - [action-init.md](./action-init.md)
+- **`/flow-setup [tool]`**: 初始化 AI coding tool 配置（如 Claude Code） - [action-setup.md](./action-setup.md)
 
 ### 工作流指令
 

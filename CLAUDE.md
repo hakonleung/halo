@@ -1,102 +1,66 @@
-# CLAUDE.md
+# NEO-LOG
 
-> NEO-LOG - AI 原生的个人生活追踪系统
+> AI 驱动的个人生活追踪与分析系统
 
 ## 项目概述
 
-| 属性 | 值 |
-|------|-----|
-| 名称 | NEO-LOG |
-| 定位 | AI 驱动的个人生活追踪与分析系统 |
-| 风格 | 赛博朋克 + 复古未来主义 + Matrix 数据流 |
+- **名称**: NEO-LOG
+- **定位**: AI 驱动的个人生活追踪与分析系统
+- **核心价值**: 个性化、智能化、可视化
+- **目标用户**: 希望追踪生活数据并获得智能洞察的个人用户
 
-## ARC 工作流
+### 解决的痛点
 
-本项目使用 **ARC (Audit-Revert-Code)** 工作流进行 AI 辅助开发。
-
-### 核心指令
-
-```
-# 初始化（二选一）
-/flow-create          # 新建项目
-/flow-init            # 初始化已有项目
-
-# 工作流（按需选择）
-/flow-start [需求]    # 完整模式（7阶段）
-/flow-quick [需求]    # 轻量模式（3阶段）
-/flow-iterate [PRD]   # 迭代已有功能
-/flow-refactor [范围] # 纯技术重构
-
-# 状态管理
-/flow-status          # 查看当前状态
-/flow-list            # 列出所有工作流
-/flow-continue        # 从快照恢复
-/flow-sync-check      # 检查文档代码同步
-```
-
-### 完整模式（7阶段）
-
-```
-01-需求澄清 → 02-PRD → 03-UI设计 → 04-技术设计 → 05-实现 → 06-验证 → 07-部署
-```
-
-高风险阶段（01、04、06、07）需人类审核确认。
-
-### 用户响应格式
-
-| 响应 | 说明 |
-|------|------|
-| `确认` / `通过` | 进入下一步 |
-| `修改 [内容]` | 修改指定内容 |
-| `返工: [原因]` | 当前阶段返工 |
-| `回退到 [阶段]` | 回退到指定阶段 |
-| `跳过` | 使用默认值跳过 |
-
-### 工作流文档
-
-详见 `ai-coding/` 目录：
-- `action.md` - 指令中心
-- `action-work.md` - 完整工作流
-- `action-quick.md` - 轻量工作流
-- `workflow/` - 各阶段详细定义
-
----
+1. 习惯/目标定义不够个性化，多场景需要多个 App
+2. 可视化依赖用户自身分析能力
+3. 未利用 AI 能力进行智能分析和建议
 
 ## 技术栈
 
-| 层次 | 技术 |
-|------|------|
-| 框架 | Next.js (App Router) |
-| UI | React + Chakra UI |
-| 数据库 | PostgreSQL + Supabase |
-| ORM | Drizzle |
-| 数据获取 | TanStack Query |
-| 状态管理 | Zustand |
-| AI | LangChain + LangGraph |
-| 部署 | Vercel |
+- **框架**: Next.js (App Router)
+- **UI**: React + Chakra UI
+- **数据库**: PostgreSQL + Supabase
+- **ORM**: Drizzle
+- **数据获取**: TanStack Query (useQuery/useMutation)
+- **状态管理**: Zustand
+- **AI Flow**: LangChain + LangGraph
+- **部署**: Vercel
+
+### 国际化 (i18n)
+
+- **是否需要**: 否
+- **默认语言**: en (如需要)
+- **支持语言**: ["en"] (如需要)
+
+### 代码规范
+
+- **TypeScript 严格模式**: 是
+- **文件大小限制**: 300 行
+- **禁用**: `as` / `!` / `any` / `export *`
+- **ESLint & Prettier 配置一致性**: 是 (必须)
+- **VSCode 自动格式化**: 是
+- **测试覆盖要求**: 否
 
 ## 项目结构
 
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── api/               # Route Handlers
-│   └── [pages]/           # 页面
+│   ├── api/               # API 路由 (Route Handlers)
+│   └── [pages]/           # 页面组件
 ├── components/            # React 组件
-├── db/                    # Drizzle Schema
+├── db/                    # 数据库 Schema (Drizzle)
 ├── hooks/                 # 自定义 Hooks
-├── lib/                   # Service 层
+├── lib/                   # 服务层 (Service Class)
 ├── store/                 # Zustand Store
 ├── types/                 # TypeScript 类型
 │   ├── *-client.ts       # 前端类型
 │   └── *-server.ts       # 后端类型
 ├── utils/                 # 工具函数
-└── styles/                # Chakra Theme
+└── styles/                # Chakra Theme 配置
 ```
 
-## 代码规范
-
-### 架构约定
+## 架构约定
 
 | 层次 | 模式 | 路径 |
 |------|------|------|
@@ -105,87 +69,72 @@ src/
 | Hooks | TanStack Query | `src/hooks/use-[resource].ts` |
 | 类型 | Client/Server 分离 | `src/types/[resource]-*.ts` |
 
-### 必须遵守
+## 代码质量
 
-- **类型安全**: 严格 TS，禁用 `as` / `!` / `any` / `export *`
-- **文件大小**: < 300 行，超过需拆分
-- **每次生成后**: 运行 `tsc --noEmit` + `lint --fix`
-- **禁止**: 原生 HTML 标签，必须用 Chakra 组件
-- **禁止**: SWR，仅用 TanStack Query
-- **安全**: 密码非对称加密，敏感变量不暴露给 client
+- **类型安全**: 严格 TS，禁用 `as`/`!`/`any`/`export *`
+- **文件大小**: < 300 行，大文件拆分
+- **脚本**: `tsc --noEmit` + `lint --fix` 每次生成后运行
+- **绕过**: 复杂类型用 `eslint-disable-next-line` 或 `@ts-expect-error`
 
-### 类型命名
+## 集成约定
 
-**服务端** (`*-server.ts`):
-- `XxxModel`, `CreateXxxRequest`, `UpdateXxxRequest`, `GetXxxListParams`
+- **安全**: 非对称加密处理密码，禁止泄漏敏感变量到 client
+- **前后端**: Client 禁止操作数据库，通过 API 交互
+- **样式**: 使用 Chakra theme，不自定义 class，基础组件样式在 theme.components 定义
+- **表单**: 使用第三方库（提供校验）
+- **数据获取**: 仅 TanStack Query (useQuery/useMutation)，禁止 SWR
+- **错误处理**: 完善的错误和 loading/pending 处理
+- **UI**: 禁止使用原生 tag，使用 Chakra 组件
+- **自动化**: 优先自动化（如 Drizzle 生成 SQL），避免硬编码
 
-**客户端** (`*-client.ts`):
-- `Xxx` (Date→string), `XxxFormData`, `XxxListResponse`
+## 类型约定
 
-### API 约定
+**服务端** (`*-server.ts`): `XxxModel`, `CreateXxxRequest`, `UpdateXxxRequest`, `GetXxxListParams`
 
-- RESTful: `/api/[resource]`（列表/创建）, `/api/[resource]/[id]`（详情/更新/删除）
-- 响应格式: `{ data: T }` | `{ data: T[], pagination }` | `{ error: string }`
+**客户端** (`*-client.ts`): `Xxx` (Date→string), `XxxFormData`, `XxxListResponse`
 
-### 数据库约定
+## API 约定
 
-- 主键: `id` (UUID)
-- 外键: `userId`
+- RESTful: `/api/[resource]` (列表/创建), `/api/[resource]/[id]` (详情/更新/删除)
+- 响应: `{ data: T }` | `{ data: T[], pagination }` | `{ error: string }`
+
+## 数据库约定
+
+- 主键: `id` (UUID), 外键: `userId`
 - 时间戳: `createdAt`, `updatedAt`
-- 使用 Drizzle schema，`drizzle-kit` 生成迁移
+- 使用 Drizzle schema 定义，`drizzle-kit` 生成迁移
 
----
+## 测试约定
 
-## UI 规范
+- 不覆盖第三方包
+- 单元测试覆盖工具函数
+- 测试精简，显而易见的场景不测
+
+## UI 配置
+
+### 品牌
+
+- **名称**: NEO-LOG
+- **理念**: AI 原生的个人生活追踪系统，赛博朋克美学与实用主义结合
+- **Slogan**: Log your life. Hack your future.
+- **风格**: 赛博朋克 + 复古未来主义 + Matrix 数据流 + 科幻 HUD
 
 ### 配色
 
-| 类型 | 名称 | 色值 |
-|------|------|------|
-| 主色 | 矩阵绿 | `#00FF41` |
-| 次强调 | 警报橙 | `#FF6B35` |
-| 链接 | 电光蓝 | `#00D4FF` |
-| 背景 | 深空黑 | `#0A0A0A` |
-| 卡片 | 碳灰 | `#1A1A1A` |
-| 文字 | 荧光白 | `#E0E0E0` |
+**主色**:
+- 矩阵绿 `#00FF41` - 主强调、成功、AI响应
+- 警报橙 `#FF6B35` - 次强调、警告、重要操作
+- 电光蓝 `#00D4FF` - 链接、交互、信息提示
 
-### 图标
+**语义色**: 成功 `#00FF41` | 警告 `#FFD700` | 错误 `#FF3366` | 信息 `#00D4FF`
 
-- 库: Phosphor Icons (Fill风格)，备选 Lucide
-- 发光效果: `filter: drop-shadow(0 0 4px currentColor)`
+### 字体
 
-### 响应式断点
+- **品牌/标题**: Press Start 2P (英文), Zpix (中文)
+- **正文**: VT323 / IBM Plex Mono (英文), 思源黑体 (中文)
+- **数据/代码**: JetBrains Mono
 
-| 断点 | 范围 | 布局 |
-|------|------|------|
-| Mobile | < 640px | 底部Tab + 单列 |
-| Tablet | 640-1024px | 顶部导航 + 双列 |
-| Desktop | > 1024px | 顶部导航 + 多列网格 |
+### 组件库
 
----
+Chakra UI
 
-## 常用命令
-
-```bash
-# 开发
-pnpm dev
-
-# 代码检查
-pnpm lint --fix
-pnpm tsc --noEmit
-
-# 测试
-pnpm test
-
-# 数据库
-pnpm db:generate   # 生成迁移
-pnpm db:migrate    # 执行迁移
-pnpm db:studio     # 打开 Drizzle Studio
-```
-
-## 质量门禁
-
-工作流执行时自动检查：
-- `pnpm test && pnpm lint && pnpm tsc --noEmit` 无错误
-- 无新增 TODO/FIXME 注释
-- 文档-代码同步率: 05阶段≥90%, 06阶段≥95%, 07阶段100%
