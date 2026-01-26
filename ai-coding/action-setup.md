@@ -64,6 +64,7 @@ flowchart TD
 - `action-quick.md` → `flow-quick.md`
 - `action-iterate.md` → `flow-iterate.md`
 - `action-refactor.md` → `flow-refactor.md`
+- `action-archive.md` → `flow-archive.md`
 - `action-status.md` → 拆分为多个命令文件：
   - `flow-status.md`
   - `flow-list.md`
@@ -191,11 +192,12 @@ flowchart TD
 - `ai-coding/action-quick.md`
 - `ai-coding/action-iterate.md`
 - `ai-coding/action-refactor.md`
+- `ai-coding/action-archive.md`
 - `ai-coding/action-status.md`
 
 **生成规则**:
 
-1. **单个命令文件** (action-init, action-work, action-quick, action-iterate, action-refactor):
+1. **单个命令文件** (action-init, action-work, action-quick, action-iterate, action-refactor, action-archive):
    - 提取触发指令
    - 提取简要说明（文件描述）
    - 提取执行流程（简化）
@@ -240,46 +242,3 @@ flowchart TD
 - 检查 `.cursor/commands/` 目录下的所有命令文件是否存在
 
 验证命令文件内容完整性
-
-## 完成提示
-
-### Claude Code (`claude`)
-
-```
-配置生成完成！
-
-已生成文件：
-- CLAUDE.md
-- .claude/commands/flow-init.md
-- .claude/commands/flow-start.md
-- .claude/commands/flow-quick.md
-- .claude/commands/flow-iterate.md
-- .claude/commands/flow-refactor.md
-- .claude/commands/flow-status.md
-- .claude/commands/flow-list.md
-- .claude/commands/flow-sync-check.md
-- .claude/commands/read-full.md
-
-现在可以在 Claude Code 中使用这些命令了。
-```
-
-### Cursor (`cursor`)
-
-```
-配置生成完成！
-
-已生成文件：
-- .cursorrules
-- .cursor/commands/flow-init.md
-- .cursor/commands/flow-start.md
-- .cursor/commands/flow-quick.md
-- .cursor/commands/flow-iterate.md
-- .cursor/commands/flow-refactor.md
-- .cursor/commands/flow-status.md
-- .cursor/commands/flow-list.md
-- .cursor/commands/flow-sync-check.md
-- .cursor/commands/read-full.md
-
-现在可以在 Cursor 中使用这些命令了。
-```
-

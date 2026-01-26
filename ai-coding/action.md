@@ -22,4 +22,8 @@
 - **`/flow-list`**: 列出所有工作流 - [action-status.md](./action-status.md)
 - **`/flow-sync-check [单号]?`**: 检查文档与代码同步状态 - [action-status.md](./action-status.md)
 
+### 归档指令
+
+- **`/flow-archive [单号]`**: 归档已完成或已终止的工作流，生成总结报告并清理文件 - [action-archive.md](./action-archive.md)
+
 
