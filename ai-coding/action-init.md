@@ -103,3 +103,7 @@ flowchart TD
 ## 字段映射说明
 
 问题回答会映射到 context 文件的对应字段，映射关系在每个问题的注释中说明（用 `→` 表示）。
+
+## Markdown 输出规范
+
+所有生成的 Markdown 文档必须遵循 [shared/markdown-style.md](./shared/markdown-style.md)
