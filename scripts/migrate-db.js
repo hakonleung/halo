@@ -12,7 +12,6 @@ const fs = require('fs');
 const path = require('path');
 
 const MIGRATION_DIR = path.join(__dirname, '../supabase/migrations');
-const CUSTOM_SQL = path.join(__dirname, '../supabase/custom.sql');
 const SCHEMA_SQL = path.join(__dirname, '../supabase/schema.sql');
 const ENV_LOCAL = path.join(__dirname, '../.env.local');
 
@@ -100,7 +99,7 @@ function executeWithCLI(cliType, env) {
             });
             isLinked = true;
             console.log('✅ Project linked successfully!\n');
-          } catch (linkError) {
+          } catch {
             console.log('⚠️  Auto-link failed. You may need to authenticate first.\n');
             console.log('💡 To link manually, run:');
             console.log(`   ${supabaseCmd} link --project-ref ${projectRef}\n`);
@@ -130,7 +129,7 @@ function executeWithCLI(cliType, env) {
         execSync(`${supabaseCmd} db push`, { stdio: 'inherit' });
         console.log('\n✅ Migrations executed successfully!\n');
         return true;
-      } catch (pushError) {
+      } catch {
         console.log('\n⚠️  Migration push failed. This might be due to version mismatch.\n');
         console.log('💡 Options:');
         console.log('   1. Execute SQL directly via Supabase Dashboard (see below)');

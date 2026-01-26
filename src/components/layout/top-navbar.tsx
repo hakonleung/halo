@@ -12,6 +12,7 @@ export function TopNavbar() {
 
   const navLinks = [
     { label: 'DASHBOARD', path: '/dashboard' },
+    { label: 'GOALS', path: '/goals' },
     { label: 'CHAT', path: '/chat' },
     { label: 'HISTORY', path: '/history' },
     { label: 'SETTINGS', path: '/settings' },
@@ -26,7 +27,7 @@ export function TopNavbar() {
       position="sticky"
       top={0}
       zIndex={200}
-      px={8}
+      px={{ base: 4, md: 8 }}
     >
       <HStack h="full" justify="space-between">
         <HStack gap={8}>
@@ -44,7 +45,7 @@ export function TopNavbar() {
             </NextLink>
           </Link>
 
-          <HStack gap={6}>
+          <HStack gap={6} display={{ base: 'none', md: 'flex' }}>
             {navLinks.map((link) => (
               <Link asChild key={link.path} _hover={{ textDecoration: 'none' }}>
                 <NextLink href={link.path}>
@@ -78,7 +79,9 @@ export function TopNavbar() {
           </HStack>
         </HStack>
 
-        <HStack gap={4}>{/* User profile / Logout placeholder */}</HStack>
+        <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
+          {/* User profile / Logout placeholder */}
+        </HStack>
       </HStack>
     </Box>
   );

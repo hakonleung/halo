@@ -6,6 +6,19 @@ import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
+  {
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      '.turbo/**',
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      '.env*',
+      'public/**',
+      'supabase/.temp/**',
+    ],
+  },
   js.configs.recommended,
   prettierConfig,
   {
