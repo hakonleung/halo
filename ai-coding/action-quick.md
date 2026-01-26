@@ -95,10 +95,6 @@ ai-works/[单号]/
 
 ---
 
-## 用户响应格式
-
-详见 [shared/response-format.md](./shared/response-format.md)
-
 ## Markdown 输出规范
 
 所有生成的 Markdown 文档必须遵循 [shared/markdown-style.md](./shared/markdown-style.md)

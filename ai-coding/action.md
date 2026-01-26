@@ -75,7 +75,6 @@ ai-coding/
 ├── action-iterate.md      ← 迭代工作流指令
 ├── action-refactor.md     ← 重构工作流指令
 ├── shared/                ← 共享定义
-│   ├── response-format.md ← 用户响应格式
 │   ├── data-structures.md ← 数据结构定义
 │   └── validation-scripts.md ← 验证脚本
 ├── context/               ← 项目配置
@@ -99,10 +98,6 @@ ai-works/                  ← 工作记录（与 ai-coding 同级）
 ```
 
 ---
-
-## 用户响应格式
-
-详见 [shared/response-format.md](./shared/response-format.md)
 
 ## Markdown 输出规范
 

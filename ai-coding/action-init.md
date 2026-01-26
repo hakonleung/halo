@@ -103,7 +103,3 @@ flowchart TD
 ## 字段映射说明
 
 问题回答会映射到 context 文件的对应字段，映射关系在每个问题的注释中说明（用 `→` 表示）。
-
-## 用户响应格式
-
-详见 [shared/response-format.md](./shared/response-format.md)
