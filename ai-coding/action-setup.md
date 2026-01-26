@@ -19,7 +19,10 @@ flowchart TD
     A["/flow-setup [tool]"] --> B["读取 context 文件"]
     B --> C["读取 action-* 文件"]
     C --> D["生成配置文件"]
-    D --> E["完成"]
+    D --> E["验证文件"]
+    E --> F["人类确认"]
+    F --> G["提交到 Git"]
+    G --> H["完成"]
 ```
 
 ## Claude Code 配置 (`claude`)
@@ -242,3 +245,27 @@ flowchart TD
 - 检查 `.cursor/commands/` 目录下的所有命令文件是否存在
 
 验证命令文件内容完整性
+
+### 步骤 5: 提交
+
+**确认提示**:
+向用户展示已生成的文件列表，并询问是否提交到 Git。
+
+**提交操作** (经用户确认后):
+1. 添加所有生成的配置文件到 Git 暂存区
+2. 创建提交，提交信息格式：`chore: setup [tool] AI coding tool configuration`
+3. 显示提交结果
+
+**Claude Code (`claude`)** 提交文件：
+- `CLAUDE.md`
+- `.claude/commands/*.md` (所有命令文件)
+
+**Cursor (`cursor`)** 提交文件：
+- `.cursorrules`
+- `.cursor/commands/*.md` (所有命令文件)
+
+**注意事项**:
+- 如果用户拒绝提交，跳过此步骤
+- 如果 Git 仓库未初始化，提示用户先初始化仓库
+- 如果文件已在 Git 中且无变更，跳过提交
+

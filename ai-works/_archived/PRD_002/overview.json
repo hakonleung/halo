@@ -1,0 +1,132 @@
+{
+  "id": "PRD_002",
+  "branch": "feat/PRD_002",
+  "title": "目标管理 (Goal Management)",
+  "description": "添加目标管理功能，在AI验收通过下不再需要用户确认",
+  "created_at": "2026-01-25T00:00:00Z",
+  "updated_at": "2026-01-25T00:00:00Z",
+  "current_stage": "07_deploy",
+  "status": "completed",
+  "stages": {
+    "01_requirements": {
+      "status": "completed",
+      "risk_level": "high",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": "80cb677"
+    },
+    "02_prd": {
+      "status": "completed",
+      "risk_level": "medium",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": "331268e"
+    },
+    "03_ui_design": {
+      "status": "completed",
+      "risk_level": "medium",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": "a2b79d9"
+    },
+    "04_tech_design": {
+      "status": "completed",
+      "risk_level": "high",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "05a_prep": {
+      "status": "completed",
+      "risk_level": "low",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": "cc4c185"
+    },
+    "05b_backend": {
+      "status": "completed",
+      "risk_level": "medium",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "05c_frontend": {
+      "status": "completed",
+      "risk_level": "medium",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "06_validation": {
+      "status": "completed",
+      "risk_level": "high",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "07_deploy": {
+      "status": "completed",
+      "risk_level": "high",
+      "started_at": "2026-01-25T00:00:00Z",
+      "ended_at": "2026-01-25T00:00:00Z",
+      "duration_minutes": 0,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
+      "rework_count": 0,
+      "commit_hash": null
+    }
+  },
+  "metrics": {
+    "total_duration_minutes": 0,
+    "human_interventions": 0,
+    "human_wait_minutes": 0,
+    "auto_passed_stages": 0,
+    "total_rework_count": 0,
+    "tokens_used": 0,
+    "ai_audit_accuracy": 0,
+    "ac_total": 0,
+    "ac_passed": 0,
+    "lint_errors": 0,
+    "ts_errors": 0,
+    "test_coverage": 0,
+    "files_created": 0,
+    "files_modified": 0,
+    "lines_added": 0,
+    "lines_removed": 0,
+    "post_deploy_bugs": null
+  },
+  "snapshots": [],
+  "last_snapshot_id": null
+}
