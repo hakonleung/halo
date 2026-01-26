@@ -7,8 +7,7 @@ AI Coding 工作流：Audit, Auto, Revert, Code。
 ## 使用简介
 
 **初始化**
-- 新项目：`/flow-create`
-- 既有项目：`/flow-init`
+- `/flow-init` - 创建或初始化配置（可选择是否从现有项目扫描）
 
 **执行**
 - 完整流程（7 阶段）：`/flow-start [需求]`

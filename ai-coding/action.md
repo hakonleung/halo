@@ -6,10 +6,7 @@
 
 ```mermaid
 flowchart TB
-    subgraph 初始化["初始化（二选一）"]
-        CREATE["/flow-create<br/>新建项目"]
-        INIT["/flow-init<br/>已有项目"]
-    end
+    INIT["/flow-init<br/>初始化配置"]
 
     subgraph 配置产出["配置文件"]
         CTX["context/<br/>project.md<br/>ui-config.md<br/>tech-config.md"]
@@ -36,7 +33,6 @@ flowchart TB
         Q3["Q3 验证"]
     end
 
-    CREATE --> CTX
     INIT --> CTX
     CTX --> START
     CTX --> QUICK
@@ -48,8 +44,7 @@ flowchart TB
 
 ### 初始化指令
 
-- **`/flow-create`**: 新建项目，交互式生成配置 - [action-create.md](./action-create.md)
-- **`/flow-init`**: 初始化已有项目，扫描并生成配置 - [action-init.md](./action-init.md)
+- **`/flow-init`**: 创建或初始化配置（可选择是否从现有项目扫描） - [action-init.md](./action-init.md)
 
 ### 工作流指令
 
@@ -74,8 +69,7 @@ flowchart TB
 ```
 ai-coding/
 ├── action.md              ← 当前文件（指令中心）
-├── action-create.md       ← 新建项目指令
-├── action-init.md         ← 初始化已有项目指令
+├── action-init.md         ← 初始化配置指令
 ├── action-work.md         ← 完整工作流指令
 ├── action-quick.md        ← 轻量工作流指令
 ├── action-iterate.md      ← 迭代工作流指令
