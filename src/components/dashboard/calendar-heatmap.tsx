@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Text, Skeleton, HStack, SimpleGrid, Tooltip } from '@chakra-ui/react';
+import { Box, Text, Skeleton, HStack, Tooltip } from '@chakra-ui/react';
 import type { HeatmapData } from '@/types/dashboard-client';
 
 interface CalendarHeatmapProps {
@@ -118,33 +118,34 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
           {weeks.map((week, weekIndex) => (
             <Box key={weekIndex} display="flex" flexDirection="column" gap="2px">
               {week.map((day, dayIndex) => (
-                <Tooltip
-                  key={`${weekIndex}-${dayIndex}`}
-                  content={
-                    day.date
-                      ? `${new Date(day.date).toLocaleDateString('zh-CN')} - ${day.count} 条记录`
-                      : ''
-                  }
-                  disabled={!day.date}
-                >
-                  <Box
-                    w="12px"
-                    h="12px"
-                    borderRadius="2px"
-                    bg={day.date ? LEVEL_COLORS[day.level] : 'transparent'}
-                    cursor={day.date && onDayClick ? 'pointer' : 'default'}
-                    transition="all 0.15s ease"
-                    _hover={
-                      day.date
-                        ? {
-                            transform: 'scale(1.3)',
-                            boxShadow: '0 0 8px #00FF41',
-                          }
-                        : undefined
-                    }
-                    onClick={() => day.date && onDayClick?.(day.date, day.count)}
-                  />
-                </Tooltip>
+                <Tooltip.Root key={`${weekIndex}-${dayIndex}`} disabled={!day.date}>
+                  <Tooltip.Trigger asChild>
+                    <Box
+                      w="12px"
+                      h="12px"
+                      borderRadius="2px"
+                      bg={day.date ? LEVEL_COLORS[day.level] : 'transparent'}
+                      cursor={day.date && onDayClick ? 'pointer' : 'default'}
+                      transition="all 0.15s ease"
+                      _hover={
+                        day.date
+                          ? {
+                              transform: 'scale(1.3)',
+                              boxShadow: '0 0 8px #00FF41',
+                            }
+                          : undefined
+                      }
+                      onClick={() => day.date && onDayClick?.(day.date, day.count)}
+                    />
+                  </Tooltip.Trigger>
+                  {day.date && (
+                    <Tooltip.Positioner>
+                      <Tooltip.Content>
+                        {`${new Date(day.date).toLocaleDateString('zh-CN')} - ${day.count} 条记录`}
+                      </Tooltip.Content>
+                    </Tooltip.Positioner>
+                  )}
+                </Tooltip.Root>
               ))}
             </Box>
           ))}

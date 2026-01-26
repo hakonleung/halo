@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Button, Menu, Portal } from '@chakra-ui/react';
-import { CaretDown, Calendar } from '@phosphor-icons/react';
+import { CaretDown, Calendar } from 'phosphor-react';
 import type { TimeRange, TimeRangePreset } from '@/types/dashboard-client';
 
 interface TimeRangeSelectorProps {

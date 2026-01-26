@@ -31,3 +31,11 @@ export interface GoalCreateRequest {
   criteria: GoalCriteria[];
 }
 
+export interface GoalProgress {
+  current: number;
+  target: number;
+  progress: number; // 0-100
+  isCompleted: boolean;
+  remainingDays?: number;
+}
+

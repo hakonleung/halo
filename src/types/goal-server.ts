@@ -19,3 +19,11 @@ export type GoalCreateRequest = Partial<InferInsertModel<typeof neologGoals>> & 
   criteria: GoalCriteria[];
 };
 
+export interface GoalProgress {
+  current: number;
+  target: number;
+  progress: number; // 0-100
+  isCompleted: boolean;
+  remainingDays?: number;
+}
+

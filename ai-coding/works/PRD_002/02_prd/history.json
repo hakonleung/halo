@@ -1,0 +1,38 @@
+{
+  "stage": "02_prd",
+  "records": [
+    {
+      "id": "prd_001",
+      "type": "ai_result",
+      "timestamp": "2026-01-25T00:00:00Z",
+      "summary": "生成 PRD 文档和功能流程图",
+      "details": {
+        "action": "create_documents",
+        "files_affected": [
+          "prd.md",
+          "flow.md",
+          "summary.md"
+        ],
+        "content_summary": "完成 PRD 编写，包含10个用户故事、功能规格、流程图"
+      }
+    },
+    {
+      "id": "prd_002",
+      "type": "ai_audit",
+      "timestamp": "2026-01-25T00:00:00Z",
+      "summary": "AI 自验收通过",
+      "details": {
+        "checklist": {
+          "故事格式": true,
+          "验收标准": true,
+          "优先级": true,
+          "需求覆盖": true
+        },
+        "pass_rate": 1.0,
+        "result": "passed",
+        "notes": "所有检查项均通过，PRD 文档完整且符合规范，包含10个用户故事和30+个验收标准"
+      }
+    }
+  ]
+}
+

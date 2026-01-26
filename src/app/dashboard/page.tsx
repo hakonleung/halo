@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Box, Heading, Flex, SimpleGrid, VStack, Button } from '@chakra-ui/react';
-import { ArrowClockwise } from '@phosphor-icons/react';
+import { ArrowClockwise } from 'phosphor-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { withAuth } from '@/components/auth/with-auth';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
@@ -20,7 +20,6 @@ function DashboardContent() {
   const queryClient = useQueryClient();
   const [timeRange, setTimeRange] = useState<TimeRange>({ type: 'preset', value: '7d' });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // Fetch data
   const { data: stats, isLoading: statsLoading } = useDashboardStats();
@@ -37,8 +36,7 @@ function DashboardContent() {
   };
 
   // Handle heatmap day click
-  const handleDayClick = (date: string) => {
-    setSelectedDate(date);
+  const handleDayClick = (_date: string) => {
     // Could open a modal here to show day details
   };
 
