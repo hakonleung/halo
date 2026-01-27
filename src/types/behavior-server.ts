@@ -33,18 +33,7 @@ export interface NumberMetadataField extends BaseMetadataField {
     min?: number;
     max?: number;
     decimals?: number;
-    defaultValue?: number;
-    placeholder?: string;
-  };
-}
-
-export interface NumberUnitMetadataField extends BaseMetadataField {
-  type: 'number_unit';
-  config: {
-    min?: number;
-    max?: number;
-    units: string[];
-    defaultUnit?: string;
+    unit?: string;
     defaultValue?: number;
     placeholder?: string;
   };
@@ -93,7 +82,6 @@ export interface CurrencyMetadataField extends BaseMetadataField {
 
 export type MetadataField =
   | NumberMetadataField
-  | NumberUnitMetadataField
   | TextMetadataField
   | SelectMetadataField
   | DateMetadataField

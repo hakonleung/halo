@@ -46,10 +46,17 @@ export function useCreateBehaviorRecord() {
 
   const mutation = useMutation({
     mutationFn: async (record: BehaviorRecordCreateRequest) => {
+      // Convert camelCase to snake_case for server
+      const serverRecord = {
+        definition_id: record.definitionId,
+        recorded_at: record.recordedAt,
+        metadata: record.metadata,
+        note: record.note,
+      };
       const res = await fetch('/api/behaviors/records', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(record),
+        body: JSON.stringify(serverRecord),
       });
       if (!res.ok) {
         const error = await res.json().catch(() => ({ error: 'Failed to create behavior record' }));
