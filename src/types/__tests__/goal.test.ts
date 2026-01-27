@@ -123,6 +123,7 @@ export function convertServerGoalToClient(serverGoal: ServerGoal): ClientGoal {
       period: c.period,
       description: c.description,
     })),
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     status: (serverGoal.status as GoalStatus) ?? GoalStatus.Active,
     createdAt: serverGoal.created_at ?? new Date().toISOString(),
     updatedAt: serverGoal.updated_at ?? new Date().toISOString(),

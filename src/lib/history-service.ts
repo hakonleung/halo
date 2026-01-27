@@ -55,6 +55,7 @@ export const historyService = {
             type: HistoryItemType.Behavior,
             createdAt: record.created_at || '',
             updatedAt: record.created_at || '', // Behavior records don't have updated_at yet
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             data: record as unknown as BehaviorRecordWithDefinition,
           });
         });
@@ -84,6 +85,7 @@ export const historyService = {
             type: HistoryItemType.Goal,
             createdAt: goal.created_at || '',
             updatedAt: goal.updated_at || '',
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             data: goal as Goal,
           });
         });
@@ -113,6 +115,7 @@ export const historyService = {
             type: HistoryItemType.Note,
             createdAt: note.created_at || '',
             updatedAt: note.updated_at || '',
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             data: note as Note,
           });
         });

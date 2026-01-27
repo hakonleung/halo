@@ -8,7 +8,6 @@ import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
 import { GoalStatusBadge } from '@/components/goals';
 import { useGoal, useUpdateGoal, useDeleteGoal } from '@/hooks/use-goals';
 import type { GoalProgress as DashboardGoalProgress } from '@/types/dashboard-client';
-import type { Goal } from '@/types/goal-client';
 
 export default function GoalDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -62,17 +61,7 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
     );
   }
 
-  const progress = (
-    goal as Goal & {
-      progress?: {
-        current: number;
-        target: number;
-        progress: number;
-        isCompleted: boolean;
-        remainingDays?: number;
-      };
-    }
-  ).progress;
+  const progress = goal.progress;
   const progressData: DashboardGoalProgress = {
     id: goal.id,
     name: goal.name,

@@ -20,7 +20,10 @@ export async function GET(request: Request) {
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);
-    const range = (searchParams.get('range') || '7d') as GetTrendsParams['range'];
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const rangeParam = (searchParams.get('range') || '7d') as GetTrendsParams['range'];
+    const validRanges: GetTrendsParams['range'][] = ['7d', '30d', '90d', 'custom'];
+    const range: GetTrendsParams['range'] = validRanges.includes(rangeParam) ? rangeParam : '7d';
     const start = searchParams.get('start') || undefined;
     const end = searchParams.get('end') || undefined;
     const typesParam = searchParams.get('types');

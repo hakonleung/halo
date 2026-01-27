@@ -1,7 +1,8 @@
 'use client';
 
 import { Box, HStack, Input, createListCollection, Select } from '@chakra-ui/react';
-import type { HistoryListRequest, HistoryItemType } from '@/types/history-client';
+import type { HistoryListRequest } from '@/types/history-client';
+import { HistoryItemType } from '@/types/history-server';
 
 interface HistoryFiltersProps {
   filters: HistoryListRequest;
@@ -25,7 +26,18 @@ export function HistoryFilters({ filters, onFilterChange }: HistoryFiltersProps)
           <Select.Root
             collection={typeOptions}
             value={[filters.type || 'all']}
-            onValueChange={(e) => onFilterChange({ type: e.value[0] as HistoryItemType | 'all' })}
+            onValueChange={(e) => {
+              const value = e.value[0];
+              if (value === 'all') {
+                onFilterChange({ type: 'all' });
+              } else if (value === 'behavior') {
+                onFilterChange({ type: HistoryItemType.Behavior });
+              } else if (value === 'goal') {
+                onFilterChange({ type: HistoryItemType.Goal });
+              } else if (value === 'note') {
+                onFilterChange({ type: HistoryItemType.Note });
+              }
+            }}
           >
             <Select.Trigger>
               <Select.ValueText placeholder="Select Type" />

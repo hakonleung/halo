@@ -27,6 +27,7 @@ function convertChatMessage(server: ServerChatMessage): ClientChatMessage {
     id: server.id,
     conversationId: server.conversation_id,
     userId: server.user_id,
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     role: server.role as ClientChatMessage['role'],
     content: server.content,
     attachments: server.attachments,

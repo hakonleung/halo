@@ -43,8 +43,10 @@ export function LocaleSettings() {
 
   const handleSave = async () => {
     await updateSettings({
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       language: language as 'en' | 'zh-CN' | 'zh-TW',
       timezone: timezone,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       date_format: dateFormat as 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY',
       currency: currency,
     });

@@ -99,7 +99,12 @@ export default function GoalsPage() {
                 <Select.Root
                   collection={statusOptions}
                   value={[filters.status || 'all']}
-                  onValueChange={(e) => handleFilterChange('status', e.value[0] as string)}
+                  onValueChange={(e) => {
+                    const value = e.value[0];
+                    if (typeof value === 'string') {
+                      handleFilterChange('status', value);
+                    }
+                  }}
                 >
                   <Select.Trigger>
                     <Select.ValueText placeholder="Select Status" />
@@ -118,7 +123,12 @@ export default function GoalsPage() {
                 <Select.Root
                   collection={categoryOptions}
                   value={[filters.category || 'all']}
-                  onValueChange={(e) => handleFilterChange('category', e.value[0] as string)}
+                  onValueChange={(e) => {
+                    const value = e.value[0];
+                    if (typeof value === 'string') {
+                      handleFilterChange('category', value);
+                    }
+                  }}
                 >
                   <Select.Trigger>
                     <Select.ValueText placeholder="Select Category" />
@@ -137,7 +147,12 @@ export default function GoalsPage() {
                 <Select.Root
                   collection={sortOptions}
                   value={[filters.sort || 'created_at']}
-                  onValueChange={(e) => handleFilterChange('sort', e.value[0] as string)}
+                  onValueChange={(e) => {
+                    const value = e.value[0];
+                    if (typeof value === 'string') {
+                      handleFilterChange('sort', value);
+                    }
+                  }}
                 >
                   <Select.Trigger>
                     <Select.ValueText placeholder="Sort By" />

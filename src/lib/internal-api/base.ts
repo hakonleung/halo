@@ -27,6 +27,7 @@ export class BaseApiService {
       throw new Error(error.error || `Request failed with status ${res.status}`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return res.json() as Promise<T>;
   }
 

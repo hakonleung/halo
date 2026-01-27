@@ -20,17 +20,11 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const typeParam = searchParams.get('type');
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const typeParam = searchParams.get('type') as HistoryItemType | 'all';
     const sortOrderParam = searchParams.get('sortOrder');
     const params: HistoryListRequest = {
-      type:
-        typeParam &&
-        (typeParam === 'all' ||
-          typeParam === 'behavior' ||
-          typeParam === 'goal' ||
-          typeParam === 'note')
-          ? (typeParam as HistoryItemType | 'all')
-          : 'all',
+      type: typeParam,
       startDate: searchParams.get('startDate') || undefined,
       endDate: searchParams.get('endDate') || undefined,
       search: searchParams.get('search') || undefined,

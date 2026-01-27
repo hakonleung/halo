@@ -72,7 +72,11 @@ export function MetadataFieldEditor({
 }: Props) {
   const updateConfig = (key: string, value: unknown) => {
     const newConfig = { ...field.config, [key]: value };
-    if (value === '' || value === undefined) delete (newConfig as Record<string, unknown>)[key];
+    if (value === '' || value === undefined) {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      delete (newConfig as Record<string, unknown>)[key];
+    }
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     onChange({ ...field, config: newConfig } as MetadataField);
   };
 
@@ -82,6 +86,7 @@ export function MetadataFieldEditor({
   };
 
   const handleNameChange = (name: string) => {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     onChange({ ...field, name, key: generateKey(name) } as MetadataField);
   };
 
@@ -104,7 +109,19 @@ export function MetadataFieldEditor({
           <Select.Root
             collection={fieldTypeCollection}
             value={[field.type]}
-            onValueChange={(e) => handleTypeChange(e.value[0] as SimpleFieldType)}
+            onValueChange={(e) => {
+              const value = e.value[0];
+              if (
+                value === 'text' ||
+                value === 'textarea' ||
+                value === 'number' ||
+                value === 'select' ||
+                value === 'rating' ||
+                value === 'currency'
+              ) {
+                handleTypeChange(value);
+              }
+            }}
             size="sm"
             width="120px"
           >
@@ -143,7 +160,10 @@ export function MetadataFieldEditor({
         <HStack gap={4}>
           <Checkbox.Root
             checked={field.required}
-            onCheckedChange={(e) => onChange({ ...field, required: !!e.checked } as MetadataField)}
+            onCheckedChange={(e) => {
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              onChange({ ...field, required: !!e.checked } as MetadataField);
+            }}
             size="sm"
           >
             <Checkbox.HiddenInput />

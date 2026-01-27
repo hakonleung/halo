@@ -86,8 +86,8 @@ export const dashboardService = {
       const typeCount: Record<string, { name: string; count: number }> = {};
       for (const record of todayRecords || []) {
         const defId = record.definition_id;
-        const defName =
-          (record.neolog_behavior_definitions as { name: string } | null)?.name || 'Unknown';
+
+        const defName = record.neolog_behavior_definitions?.name || 'Unknown';
         if (!typeCount[defId]) {
           typeCount[defId] = { name: defName, count: 0 };
         }
@@ -215,7 +215,7 @@ export const dashboardService = {
         error: null,
       };
     } catch (err) {
-      return { data: null, error: (err as Error).message };
+      return { data: null, error: err instanceof Error ? err.message : String(err) };
     }
   },
 
@@ -307,7 +307,7 @@ export const dashboardService = {
         error: null,
       };
     } catch (err) {
-      return { data: null, error: (err as Error).message };
+      return { data: null, error: err instanceof Error ? err.message : String(err) };
     }
   },
 
@@ -357,7 +357,7 @@ export const dashboardService = {
 
       return { data: result, error: null };
     } catch (err) {
-      return { data: null, error: (err as Error).message };
+      return { data: null, error: err instanceof Error ? err.message : String(err) };
     }
   },
 };

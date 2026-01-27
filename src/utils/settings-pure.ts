@@ -139,6 +139,7 @@ export function hasUnsavedChanges(original: Settings | null, current: Partial<Se
     return Object.keys(current).length > 0;
   }
   return Object.keys(current).some((key) => {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     const typedKey = key as keyof Settings;
     return original[typedKey] !== current[typedKey];
   });

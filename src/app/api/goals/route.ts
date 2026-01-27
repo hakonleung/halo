@@ -18,17 +18,23 @@ export async function GET(request: Request) {
     // Parse query parameters
     const { searchParams } = new URL(request.url);
     const params: GetGoalsParams = {};
-    if (searchParams.get('status')) {
-      params.status = searchParams.get('status') as 'active' | 'completed' | 'abandoned';
+    const statusParam = searchParams.get('status');
+    if (
+      statusParam &&
+      (statusParam === 'active' || statusParam === 'completed' || statusParam === 'abandoned')
+    ) {
+      params.status = statusParam;
     }
     if (searchParams.get('category')) {
       params.category = searchParams.get('category') || undefined;
     }
-    if (searchParams.get('sort')) {
-      params.sort = searchParams.get('sort') as 'created_at' | 'name';
+    const sortParam = searchParams.get('sort');
+    if (sortParam && (sortParam === 'created_at' || sortParam === 'name')) {
+      params.sort = sortParam;
     }
-    if (searchParams.get('order')) {
-      params.order = searchParams.get('order') as 'asc' | 'desc';
+    const orderParam = searchParams.get('order');
+    if (orderParam && (orderParam === 'asc' || orderParam === 'desc')) {
+      params.order = orderParam;
     }
 
     const res = await goalService.getGoals(supabase, user.id, params);

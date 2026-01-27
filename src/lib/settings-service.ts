@@ -27,6 +27,7 @@ export const settingsService = {
       return { settings: null, error: error.message };
     }
 
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { settings: data as UserSettings, error: null };
   },
 
@@ -46,7 +47,7 @@ export const settingsService = {
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
-      } as Database['public']['Tables']['neolog_user_settings']['Update'])
+      })
       .eq('id', userId)
       .select()
       .single();
@@ -55,6 +56,7 @@ export const settingsService = {
       return { settings: null, error: error.message };
     }
 
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { settings: data as unknown as UserSettings, error: null };
   },
 };

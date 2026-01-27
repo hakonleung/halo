@@ -24,6 +24,7 @@ export const behaviorService = {
       .order('usage_count', { ascending: false });
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as BehaviorDefinition[], error: null };
   },
 
@@ -38,6 +39,7 @@ export const behaviorService = {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
       .from('neolog_behavior_definitions')
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       .insert({
         ...definition,
         user_id: userId,
@@ -47,6 +49,7 @@ export const behaviorService = {
       .single();
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as BehaviorDefinition, error: null };
   },
 
@@ -63,6 +66,7 @@ export const behaviorService = {
       .range(offset, offset + limit - 1);
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as unknown as BehaviorRecordWithDefinition[], error: null };
   },
 
@@ -77,6 +81,7 @@ export const behaviorService = {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
       .from('neolog_behavior_records')
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       .insert({
         ...record,
         user_id: userId,
@@ -91,6 +96,7 @@ export const behaviorService = {
       await supabase.rpc('increment_behavior_usage', { def_id: record.definition_id });
     }
 
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as BehaviorRecord, error: null };
   },
 

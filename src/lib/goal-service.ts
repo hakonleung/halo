@@ -37,6 +37,7 @@ export const goalService = {
     const { data, error } = await query;
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Goal[], error: null };
   },
 
@@ -59,6 +60,7 @@ export const goalService = {
       }
       return { data: null, error: error.message };
     }
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Goal, error: null };
   },
 
@@ -69,6 +71,7 @@ export const goalService = {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
       .from('neolog_goals')
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       .insert({
         ...goal,
         user_id: userId,
@@ -78,6 +81,7 @@ export const goalService = {
       .single();
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Goal, error: null };
   },
 
@@ -96,13 +100,14 @@ export const goalService = {
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
-      } as Database['public']['Tables']['neolog_goals']['Update'])
+      })
       .eq('id', goalId)
       .eq('user_id', userId)
       .select()
       .single();
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Goal, error: null };
   },
 

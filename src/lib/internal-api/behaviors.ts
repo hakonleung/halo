@@ -24,6 +24,7 @@ function convertBehaviorDefinition(server: ServerBehaviorDefinition): ClientBeha
     id: server.id,
     userId: server.user_id ?? null,
     name: server.name,
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     category: server.category as ClientBehaviorDefinition['category'],
     icon: server.icon ?? undefined,
     metadataSchema: server.metadata_schema,

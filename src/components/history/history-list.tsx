@@ -36,6 +36,7 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
   const renderDataSummary = (item: HistoryItem) => {
     switch (item.type) {
       case 'behavior': {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const record = item.data as BehaviorRecordWithDefinition;
         const def = record.behavior_definitions;
         return (
@@ -50,6 +51,7 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
         );
       }
       case 'goal': {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const goal = item.data as Goal;
         return (
           <VStack align="start" gap={0}>
@@ -61,6 +63,7 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
         );
       }
       case 'note': {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const note = item.data as Note;
         return (
           <VStack align="start" gap={0}>

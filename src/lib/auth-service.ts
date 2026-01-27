@@ -1,7 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import type { AuthResponse } from '@/types/auth';
-import type { Settings } from '@/types/settings-client';
 
 /**
  * Authentication service - Server-side logic encapsulation
@@ -40,7 +39,8 @@ export const authService = {
       user: {
         id: data.user.id,
         email: data.user.email ?? '',
-        settings: settings ? (settings as Settings) : undefined,
+
+        settings: settings ? settings : undefined,
       },
       session: data.session,
       error: null,
@@ -113,7 +113,8 @@ export const authService = {
       user: {
         id: user.id,
         email: user.email ?? '',
-        settings: settingsError ? undefined : (settings as Settings),
+
+        settings: settingsError ? undefined : settings,
       },
       session: null, // getUser doesn't return session, use getSession if needed
       error: null,

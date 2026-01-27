@@ -7,6 +7,7 @@ import type { UserSettings, AISettings } from '@/types/settings-server';
  * Factory for creating LLM instances based on user settings
  */
 export async function createLLM(settings: UserSettings) {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const ai = settings.ai_settings as AISettings;
 
   // Use platform default if configured

@@ -56,9 +56,12 @@ export function AppearanceSettings() {
     setAccentColorError(null);
 
     await updateSettings({
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       theme: theme as 'dark' | 'light' | 'system',
       accent_color: accentColor,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       animation_level: animationLevel as 'full' | 'reduced' | 'none',
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       font_size: fontSize as 'small' | 'medium' | 'large' | 'xlarge',
       code_font: codeFont,
     });

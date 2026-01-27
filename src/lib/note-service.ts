@@ -18,6 +18,7 @@ export const noteService = {
       .order('created_at', { ascending: false });
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Note[], error: null };
   },
 
@@ -32,11 +33,12 @@ export const noteService = {
         ...note,
         user_id: userId,
         updated_at: new Date().toISOString(),
-      } as Database['public']['Tables']['neolog_notes']['Insert'])
+      })
       .select()
       .single();
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Note, error: null };
   },
 
@@ -55,13 +57,14 @@ export const noteService = {
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
-      } as Database['public']['Tables']['neolog_notes']['Update'])
+      })
       .eq('id', noteId)
       .eq('user_id', userId)
       .select()
       .single();
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Note, error: null };
   },
 

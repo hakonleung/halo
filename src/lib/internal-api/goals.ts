@@ -30,6 +30,7 @@ function convertGoal(server: ServerGoal): ClientGoal {
       period: c.period,
       description: c.description,
     })),
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     status: (server.status ?? 'active') as ClientGoal['status'],
     createdAt: server.created_at ?? new Date().toISOString(),
     updatedAt: server.updated_at ?? new Date().toISOString(),

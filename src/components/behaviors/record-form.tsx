@@ -66,6 +66,7 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
     if (selectedDef) {
       const initialMetadata: MetadataRecord = {};
       selectedDef.metadataSchema.forEach((field) => {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         initialMetadata[field.key] = (field.config.defaultValue as MetadataValue) ?? '';
       });
       setMetadata(initialMetadata);
@@ -212,7 +213,18 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
                   <Select.Root
                     collection={categoryCollection}
                     value={[newDefCategory]}
-                    onValueChange={(e) => setNewDefCategory(e.value[0] as BehaviorCategory)}
+                    onValueChange={(e) => {
+                      const value = e.value[0];
+                      if (
+                        value === BehaviorCategory.Health ||
+                        value === BehaviorCategory.Expense ||
+                        value === BehaviorCategory.Income ||
+                        value === BehaviorCategory.Habit ||
+                        value === BehaviorCategory.Other
+                      ) {
+                        setNewDefCategory(value);
+                      }
+                    }}
                   >
                     <Select.Trigger>
                       <Select.ValueText />
@@ -282,6 +294,7 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
                 <Input
                   type="number"
                   variant="outline"
+                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                   value={(metadata[field.key] as string | number) ?? ''}
                   onChange={(e) => handleMetadataChange(field.key, parseFloat(e.target.value))}
                   placeholder={'placeholder' in field.config ? field.config.placeholder : undefined}
@@ -290,6 +303,7 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
                 <Textarea
                   variant="outline"
                   rows={3}
+                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                   value={(metadata[field.key] as string) ?? ''}
                   onChange={(e) => handleMetadataChange(field.key, e.target.value)}
                   placeholder={'placeholder' in field.config ? field.config.placeholder : undefined}
@@ -297,6 +311,7 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
               ) : (
                 <Input
                   variant="outline"
+                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                   value={(metadata[field.key] as string) ?? ''}
                   onChange={(e) => handleMetadataChange(field.key, e.target.value)}
                   placeholder={'placeholder' in field.config ? field.config.placeholder : undefined}

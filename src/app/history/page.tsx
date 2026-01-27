@@ -56,7 +56,7 @@ export default function HistoryPage() {
             borderRadius="4px"
           >
             <Text color="red.500" fontFamily="mono">
-              Error: {(error as Error).message}
+              Error: {error instanceof Error ? error.message : String(error)}
             </Text>
           </Box>
         ) : (

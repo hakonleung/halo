@@ -18,6 +18,7 @@ export const chatService = {
       .order('updated_at', { ascending: false });
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Conversation[], error: null };
   },
 
@@ -46,6 +47,7 @@ export const chatService = {
       .order('created_at', { ascending: true });
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as ChatMessage[], error: null };
   },
 
@@ -59,11 +61,12 @@ export const chatService = {
       .insert({
         user_id: userId,
         title: title || 'New Conversation',
-      } as Database['public']['Tables']['neolog_conversations']['Insert'])
+      })
       .select()
       .single();
 
     if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as Conversation, error: null };
   },
 
@@ -91,7 +94,7 @@ export const chatService = {
         content: params.content,
         attachments: params.attachments || [],
         metadata: params.metadata || {},
-      } as Database['public']['Tables']['neolog_messages']['Insert'])
+      })
       .select()
       .single();
 
@@ -102,9 +105,10 @@ export const chatService = {
       .from('neolog_conversations')
       .update({
         updated_at: new Date().toISOString(),
-      } as Database['public']['Tables']['neolog_conversations']['Update'])
+      })
       .eq('id', params.conversationId);
 
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return { data: data as ChatMessage, error: null };
   },
 
