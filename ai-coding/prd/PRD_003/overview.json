@@ -1,0 +1,111 @@
+{
+  "id": "PRD_003",
+  "branch": "feat/PRD_003",
+  "title": "赛博朋克风格样式重构",
+  "description": "重构 Chakra UI 主题和组件 Recipe，打造具有层次感、炫酷效果的赛博朋克视觉风格，包括字体选择优化",
+  "created_at": "2026-01-27T00:00:00Z",
+  "updated_at": "2026-01-27T00:00:00Z",
+  "current_stage": "01_requirements",
+  "status": "in_progress",
+  "stages": {
+    "01_requirements": {
+      "status": "in_progress",
+      "risk_level": "high",
+      "started_at": "2026-01-27T00:00:00Z",
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "02_prd": {
+      "status": "pending",
+      "risk_level": "medium",
+      "started_at": null,
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "03_ui_design": {
+      "status": "pending",
+      "risk_level": "medium",
+      "started_at": null,
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "04_tech_design": {
+      "status": "pending",
+      "risk_level": "high",
+      "started_at": null,
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "05a_prep": {
+      "status": "pending",
+      "risk_level": "low",
+      "started_at": null,
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "05b_backend": {
+      "status": "pending",
+      "risk_level": "medium",
+      "started_at": null,
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "05c_frontend": {
+      "status": "pending",
+      "risk_level": "medium",
+      "started_at": null,
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "06_validation": {
+      "status": "pending",
+      "risk_level": "high",
+      "started_at": null,
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    },
+    "07_deploy": {
+      "status": "pending",
+      "risk_level": "high",
+      "started_at": null,
+      "ended_at": null,
+      "duration_minutes": null,
+      "ai_audit": null,
+      "human_audit": null,
+      "rework_count": 0,
+      "commit_hash": null
+    }
+  }
+}
