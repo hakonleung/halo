@@ -4,25 +4,25 @@
   "title": "赛博朋克风格样式重构",
   "description": "重构 Chakra UI 主题和组件 Recipe，打造具有层次感、炫酷效果的赛博朋克视觉风格，包括字体选择优化",
   "created_at": "2026-01-27T00:00:00Z",
-  "updated_at": "2026-01-27T00:00:00Z",
-  "current_stage": "01_requirements",
+  "updated_at": "2026-01-27T00:05:00Z",
+  "current_stage": "02_prd",
   "status": "in_progress",
   "stages": {
     "01_requirements": {
-      "status": "in_progress",
+      "status": "completed",
       "risk_level": "high",
       "started_at": "2026-01-27T00:00:00Z",
-      "ended_at": null,
-      "duration_minutes": null,
-      "ai_audit": null,
-      "human_audit": null,
+      "ended_at": "2026-01-27T00:05:00Z",
+      "duration_minutes": 5,
+      "ai_audit": "passed",
+      "human_audit": "skipped",
       "rework_count": 0,
-      "commit_hash": null
+      "commit_hash": "c01093d"
     },
     "02_prd": {
-      "status": "pending",
+      "status": "in_progress",
       "risk_level": "medium",
-      "started_at": null,
+      "started_at": "2026-01-27T00:05:00Z",
       "ended_at": null,
       "duration_minutes": null,
       "ai_audit": null,
@@ -31,9 +31,9 @@
       "commit_hash": null
     },
     "03_ui_design": {
-      "status": "pending",
+      "status": "in_progress",
       "risk_level": "medium",
-      "started_at": null,
+      "started_at": "2026-01-27T00:05:00Z",
       "ended_at": null,
       "duration_minutes": null,
       "ai_audit": null,

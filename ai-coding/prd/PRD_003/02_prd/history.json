@@ -1,0 +1,32 @@
+{
+  "stage": "02_prd",
+  "records": [
+    {
+      "id": "02-001",
+      "type": "ai_result",
+      "timestamp": "2026-01-27T00:05:00Z",
+      "summary": "Generate PRD document with 10 user stories",
+      "details": {
+        "action": "generate",
+        "files_affected": ["02_prd/prd.md", "02_prd/flow.md"],
+        "content_summary": "10 user stories (7 P0, 3 P1), covering theme, components, animations"
+      }
+    },
+    {
+      "id": "02-002",
+      "type": "ai_audit",
+      "timestamp": "2026-01-27T00:06:00Z",
+      "summary": "AI self-audit passed",
+      "details": {
+        "checklist": [
+          "Story format: contains 'As...I want...so that'",
+          "Acceptance criteria: Given/When/Then format",
+          "Priority: P0/P1/P2 assigned",
+          "Coverage: all requirements covered"
+        ],
+        "pass_rate": 1.0,
+        "result": "passed"
+      }
+    }
+  ]
+}
