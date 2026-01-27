@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Goal, GoalCreateRequest } from '@/types/goal-client';
+import type { GoalCreateRequest } from '@/types/goal-client';
 import { createToaster } from '@chakra-ui/react';
+import { internalApiService } from '@/lib/internal-api';
 
 const toaster = createToaster({
   placement: 'bottom-end',
@@ -13,43 +14,25 @@ export interface GetGoalsParams {
   order?: 'asc' | 'desc';
 }
 
-interface GoalResponse {
-  data: Goal[] | Goal | null;
-  error: string | null;
-}
-
 /**
  * Hook to get goals list
  */
 export function useGoals(params?: GetGoalsParams) {
   const queryKey = ['goals', params];
   const {
-    data: goalsData,
+    data: goals,
     isLoading,
     error,
   } = useQuery({
     queryKey,
-    queryFn: async () => {
-      const searchParams = new URLSearchParams();
-      if (params?.status) searchParams.set('status', params.status);
-      if (params?.category) searchParams.set('category', params.category);
-      if (params?.sort) searchParams.set('sort', params.sort);
-      if (params?.order) searchParams.set('order', params.order);
-
-      const url = `/api/goals${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-      const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error('Failed to fetch goals');
-      }
-      return res.json() as Promise<GoalResponse>;
-    },
+    queryFn: () => internalApiService.getGoals(params),
     staleTime: 60 * 1000, // 1 minute
   });
 
   return {
-    goals: (goalsData?.data as Goal[]) ?? [],
+    goals: goals ?? [],
     isLoading,
-    error: error?.message ?? goalsData?.error ?? null,
+    error: error?.message ?? null,
   };
 }
 
@@ -58,39 +41,23 @@ export function useGoals(params?: GetGoalsParams) {
  */
 export function useGoal(goalId: string | null) {
   const {
-    data: goalData,
+    data: goal,
     isLoading,
     error,
   } = useQuery({
     queryKey: ['goals', goalId],
-    queryFn: async () => {
-      if (!goalId) return null;
-      const res = await fetch(`/api/goals/${goalId}`);
-      if (!res.ok) {
-        throw new Error('Failed to fetch goal');
-      }
-      return res.json() as Promise<
-        GoalResponse & {
-          data: Goal & {
-            progress?: {
-              current: number;
-              target: number;
-              progress: number;
-              isCompleted: boolean;
-              remainingDays?: number;
-            };
-          };
-        }
-      >;
+    queryFn: () => {
+      if (!goalId) throw new Error('Goal ID is required');
+      return internalApiService.getGoal(goalId);
     },
     enabled: !!goalId,
     staleTime: 30 * 1000, // 30 seconds
   });
 
   return {
-    goal: goalData?.data ?? null,
+    goal: goal ?? null,
     isLoading,
-    error: error?.message ?? goalData?.error ?? null,
+    error: error?.message ?? null,
   };
 }
 
@@ -101,33 +68,14 @@ export function useCreateGoal() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (goal: GoalCreateRequest) => {
-      const res = await fetch('/api/goals', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(goal),
+    mutationFn: (goal: GoalCreateRequest) => internalApiService.createGoal(goal),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['goals'] });
+      toaster.create({
+        title: 'Success',
+        description: 'Goal created successfully.',
+        type: 'success',
       });
-      if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'Failed to create goal' }));
-        throw new Error(error.error || 'Failed to create goal');
-      }
-      return res.json() as Promise<GoalResponse>;
-    },
-    onSuccess: (res) => {
-      if (res.data) {
-        void queryClient.invalidateQueries({ queryKey: ['goals'] });
-        toaster.create({
-          title: 'Success',
-          description: 'Goal created successfully.',
-          type: 'success',
-        });
-      } else if (res.error) {
-        toaster.create({
-          title: 'Error',
-          description: res.error,
-          type: 'error',
-        });
-      }
     },
     onError: (error: Error) => {
       toaster.create({
@@ -141,7 +89,7 @@ export function useCreateGoal() {
   return {
     createGoal: mutation.mutateAsync,
     isLoading: mutation.isPending,
-    error: mutation.error?.message ?? mutation.data?.error ?? null,
+    error: mutation.error?.message ?? null,
   };
 }
 
@@ -152,40 +100,21 @@ export function useUpdateGoal() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       id,
       updates,
     }: {
       id: string;
       updates: Partial<GoalCreateRequest> & { status?: 'active' | 'completed' | 'abandoned' };
-    }) => {
-      const res = await fetch(`/api/goals/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
+    }) => internalApiService.updateGoal(id, updates),
+    onSuccess: (_, variables) => {
+      void queryClient.invalidateQueries({ queryKey: ['goals'] });
+      void queryClient.invalidateQueries({ queryKey: ['goals', variables.id] });
+      toaster.create({
+        title: 'Success',
+        description: 'Goal updated successfully.',
+        type: 'success',
       });
-      if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'Failed to update goal' }));
-        throw new Error(error.error || 'Failed to update goal');
-      }
-      return res.json() as Promise<GoalResponse>;
-    },
-    onSuccess: (res, variables) => {
-      if (res.data) {
-        void queryClient.invalidateQueries({ queryKey: ['goals'] });
-        void queryClient.invalidateQueries({ queryKey: ['goals', variables.id] });
-        toaster.create({
-          title: 'Success',
-          description: 'Goal updated successfully.',
-          type: 'success',
-        });
-      } else if (res.error) {
-        toaster.create({
-          title: 'Error',
-          description: res.error,
-          type: 'error',
-        });
-      }
     },
     onError: (error: Error) => {
       toaster.create({
@@ -199,7 +128,7 @@ export function useUpdateGoal() {
   return {
     updateGoal: mutation.mutateAsync,
     isLoading: mutation.isPending,
-    error: mutation.error?.message ?? mutation.data?.error ?? null,
+    error: mutation.error?.message ?? null,
   };
 }
 
@@ -210,30 +139,13 @@ export function useDeleteGoal() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (goalId: string) => {
-      const res = await fetch(`/api/goals/${goalId}`, {
-        method: 'DELETE',
+    mutationFn: (goalId: string) => internalApiService.deleteGoal(goalId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['goals'] });
+      toaster.create({
+        title: 'Goal deleted',
+        type: 'info',
       });
-      if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'Failed to delete goal' }));
-        throw new Error(error.error || 'Failed to delete goal');
-      }
-      return res.json() as Promise<{ error: string | null }>;
-    },
-    onSuccess: (res) => {
-      if (!res.error) {
-        void queryClient.invalidateQueries({ queryKey: ['goals'] });
-        toaster.create({
-          title: 'Goal deleted',
-          type: 'info',
-        });
-      } else {
-        toaster.create({
-          title: 'Error',
-          description: res.error,
-          type: 'error',
-        });
-      }
     },
     onError: (error: Error) => {
       toaster.create({

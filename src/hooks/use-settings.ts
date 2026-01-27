@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { SettingsResponse } from '@/types/settings-client';
+import { internalApiService } from '@/lib/internal-api';
 
 /**
  * Hook to get user settings
@@ -7,25 +7,19 @@ import type { SettingsResponse } from '@/types/settings-client';
  */
 export function useSettings() {
   const {
-    data: settingsData,
+    data: settings,
     isLoading,
     error,
   } = useQuery({
     queryKey: ['user-settings'],
-    queryFn: async () => {
-      const res = await fetch('/api/settings');
-      return res.json() as Promise<SettingsResponse>;
-    },
+    queryFn: () => internalApiService.getSettings(),
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const settings = settingsData?.settings ?? null;
-  const errorMessage = error?.message ?? settingsData?.error ?? null;
-
   return {
-    settings,
+    settings: settings ?? null,
     isLoading,
-    error: errorMessage,
+    error: error?.message ?? null,
   };
 }

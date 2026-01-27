@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { AuthResponse } from '@/types/auth';
 import { encryptPassword } from '@/utils/crypto';
+import { internalApiService } from '@/lib/internal-api';
 
 /**
  * Hook for user login
@@ -13,12 +13,7 @@ export function useLogin() {
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
       // Encrypt password on client side
       const encryptedPassword = encryptPassword(password);
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, encryptedPassword }),
-      });
-      return res.json() as Promise<AuthResponse>;
+      return internalApiService.login(email, encryptedPassword);
     },
     onSuccess: (res) => {
       if (res.user) {

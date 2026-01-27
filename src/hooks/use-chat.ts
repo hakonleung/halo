@@ -1,23 +1,24 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Conversation, ChatMessage } from '@/types/chat-client';
+import { internalApiService } from '@/lib/internal-api';
 
 /**
  * Hook for managing chat conversations
  */
 export function useConversations() {
-  const { data, isLoading, error } = useQuery({
+  const {
+    data: conversations,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['conversations'],
-    queryFn: async () => {
-      const res = await fetch('/api/chat/conversations');
-      return res.json() as Promise<{ data: Conversation[]; error: string | null }>;
-    },
+    queryFn: () => internalApiService.getConversations(),
   });
 
   return {
-    conversations: data?.data ?? [],
+    conversations: conversations ?? [],
     isLoading,
-    error: error?.message ?? data?.error ?? null,
+    error: error?.message ?? null,
   };
 }
 
@@ -29,12 +30,11 @@ export function useChat(conversationId?: string) {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
 
-  const { data: messagesData, isLoading: loadingMessages } = useQuery({
+  const { data: messages, isLoading: loadingMessages } = useQuery({
     queryKey: ['messages', conversationId],
-    queryFn: async () => {
-      if (!conversationId) return { data: [], error: null };
-      const res = await fetch(`/api/chat/conversations/${conversationId}/messages`);
-      return res.json() as Promise<{ data: ChatMessage[]; error: string | null }>;
+    queryFn: () => {
+      if (!conversationId) throw new Error('Conversation ID is required');
+      return internalApiService.getMessages(conversationId);
     },
     enabled: !!conversationId,
   });
@@ -45,18 +45,11 @@ export function useChat(conversationId?: string) {
       setStreamingContent('');
 
       try {
-        const response = await fetch('/api/chat/message', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content, conversationId }),
-        });
+        const stream = await internalApiService.sendMessage(content, conversationId);
 
-        if (!response.ok) throw new Error('Failed to send message');
+        if (!stream) return;
 
-        const reader = response.body?.getReader();
-
-        if (!reader) return;
-
+        const reader = stream.getReader();
         let currentConversationId = conversationId;
 
         while (true) {
@@ -93,7 +86,7 @@ export function useChat(conversationId?: string) {
   );
 
   return {
-    messages: messagesData?.data ?? [],
+    messages: messages ?? [],
     loadingMessages,
     sendMessage,
     isStreaming,

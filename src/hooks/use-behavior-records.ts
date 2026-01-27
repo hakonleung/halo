@@ -1,11 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type {
-  BehaviorRecord,
-  BehaviorRecordWithDefinition,
-  BehaviorRecordCreateRequest,
-  BehaviorResponse,
-} from '@/types/behavior-client';
+import type { BehaviorRecordCreateRequest } from '@/types/behavior-client';
 import { createToaster } from '@chakra-ui/react';
+import { internalApiService } from '@/lib/internal-api';
 
 const toaster = createToaster({
   placement: 'bottom-end',
@@ -16,25 +12,19 @@ const toaster = createToaster({
  */
 export function useBehaviorRecords(limit = 50, offset = 0) {
   const {
-    data: recordsData,
+    data: records,
     isLoading,
     error,
   } = useQuery({
     queryKey: ['behavior-records', limit, offset],
-    queryFn: async () => {
-      const res = await fetch(`/api/behaviors/records?limit=${limit}&offset=${offset}`);
-      if (!res.ok) {
-        throw new Error('Failed to fetch behavior records');
-      }
-      return res.json() as Promise<BehaviorResponse<BehaviorRecordWithDefinition[]>>;
-    },
+    queryFn: () => internalApiService.getBehaviorRecords(limit, offset),
     staleTime: 1 * 60 * 1000, // 1 minute
   });
 
   return {
-    records: recordsData?.data ?? [],
+    records: records ?? [],
     isLoading,
-    error: error?.message ?? recordsData?.error ?? null,
+    error: error?.message ?? null,
   };
 }
 
@@ -45,42 +35,17 @@ export function useCreateBehaviorRecord() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (record: BehaviorRecordCreateRequest) => {
-      // Convert camelCase to snake_case for server
-      const serverRecord = {
-        definition_id: record.definitionId,
-        recorded_at: record.recordedAt,
-        metadata: record.metadata,
-        note: record.note,
-      };
-      const res = await fetch('/api/behaviors/records', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(serverRecord),
+    mutationFn: (record: BehaviorRecordCreateRequest) =>
+      internalApiService.createBehaviorRecord(record),
+    onSuccess: () => {
+      // Invalidate both records and definitions (to update usage count)
+      void queryClient.invalidateQueries({ queryKey: ['behavior-records'] });
+      void queryClient.invalidateQueries({ queryKey: ['behavior-definitions'] });
+      toaster.create({
+        title: 'Success',
+        description: 'Record saved successfully.',
+        type: 'success',
       });
-      if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'Failed to create behavior record' }));
-        throw new Error(error.error || 'Failed to create behavior record');
-      }
-      return res.json() as Promise<BehaviorResponse<BehaviorRecord>>;
-    },
-    onSuccess: (res) => {
-      if (res.data) {
-        // Invalidate both records and definitions (to update usage count)
-        void queryClient.invalidateQueries({ queryKey: ['behavior-records'] });
-        void queryClient.invalidateQueries({ queryKey: ['behavior-definitions'] });
-        toaster.create({
-          title: 'Success',
-          description: 'Record saved successfully.',
-          type: 'success',
-        });
-      } else if (res.error) {
-        toaster.create({
-          title: 'Error',
-          description: res.error,
-          type: 'error',
-        });
-      }
     },
     onError: (error: Error) => {
       toaster.create({
@@ -94,7 +59,7 @@ export function useCreateBehaviorRecord() {
   return {
     createRecord: mutation.mutateAsync,
     isLoading: mutation.isPending,
-    error: mutation.error?.message ?? mutation.data?.error ?? null,
+    error: mutation.error?.message ?? null,
   };
 }
 
@@ -105,30 +70,13 @@ export function useDeleteBehaviorRecord() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (recordId: string) => {
-      const res = await fetch(`/api/behaviors/records/${recordId}`, {
-        method: 'DELETE',
+    mutationFn: (recordId: string) => internalApiService.deleteBehaviorRecord(recordId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['behavior-records'] });
+      toaster.create({
+        title: 'Record deleted',
+        type: 'info',
       });
-      if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'Failed to delete record' }));
-        throw new Error(error.error || 'Failed to delete record');
-      }
-      return res.json() as Promise<{ error: string | null }>;
-    },
-    onSuccess: (res) => {
-      if (!res.error) {
-        void queryClient.invalidateQueries({ queryKey: ['behavior-records'] });
-        toaster.create({
-          title: 'Record deleted',
-          type: 'info',
-        });
-      } else {
-        toaster.create({
-          title: 'Error',
-          description: res.error,
-          type: 'error',
-        });
-      }
     },
     onError: (error: Error) => {
       toaster.create({

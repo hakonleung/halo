@@ -1,36 +1,33 @@
 'use client';
 
 import { Box, Text, SimpleGrid, Skeleton } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
+import { useGoals } from '@/hooks/use-goals';
 import { GoalProgressRing } from './goal-progress-ring';
 import type { GoalProgress } from '@/types/dashboard-client';
+import { useMemo } from 'react';
 
 interface GoalProgressSectionProps {
   loading?: boolean;
 }
 
-async function fetchGoals(): Promise<GoalProgress[]> {
-  const res = await fetch('/api/goals');
-  if (!res.ok) throw new Error('Failed to fetch goals');
-  const json = await res.json();
-
-  // Transform to GoalProgress format
-  return (json.data || []).map((goal: Record<string, unknown>) => ({
-    id: goal.id as string,
-    name: goal.name as string,
-    progress: 50, // Would need actual progress calculation
-    target: 100,
-    current: 50,
-    status: goal.status as 'active' | 'completed' | 'abandoned',
-  }));
-}
-
 export function GoalProgressSection({ loading: externalLoading }: GoalProgressSectionProps) {
-  const { data: goals, isLoading } = useQuery({
-    queryKey: ['goals', 'progress'],
-    queryFn: fetchGoals,
-    staleTime: 60 * 1000,
-  });
+  const { goals, isLoading } = useGoals();
+
+  // Transform goals to GoalProgress format
+  const goalProgressList = useMemo<GoalProgress[]>(() => {
+    return goals.map((goal) => {
+      // For now, use placeholder values - actual progress calculation would need goal progress API
+      // This should ideally come from the goal detail endpoint with progress data
+      return {
+        id: goal.id,
+        name: goal.name,
+        progress: 50, // Would need actual progress calculation from goal.progress
+        target: 100,
+        current: 50,
+        status: goal.status,
+      };
+    });
+  }, [goals]);
 
   const loading = externalLoading || isLoading;
 
@@ -52,7 +49,7 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
     );
   }
 
-  const activeGoals = goals?.filter((g) => g.status === 'active') || [];
+  const activeGoals = goalProgressList.filter((g) => g.status === 'active');
 
   if (activeGoals.length === 0) {
     return (

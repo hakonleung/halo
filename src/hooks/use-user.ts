@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { AuthResponse } from '@/types/auth';
+import { internalApiService } from '@/lib/internal-api';
 
 /**
  * Hook to get current user
@@ -12,10 +12,7 @@ export function useUser() {
     error,
   } = useQuery({
     queryKey: ['current-user'],
-    queryFn: async () => {
-      const res = await fetch('/api/auth/me');
-      return res.json() as Promise<AuthResponse>;
-    },
+    queryFn: () => internalApiService.getCurrentUser(),
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });

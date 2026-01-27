@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { internalApiService } from '@/lib/internal-api';
 
 /**
  * Hook for user logout
@@ -8,10 +9,7 @@ export function useLogout() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch('/api/auth/logout', { method: 'POST' });
-      return res.json() as Promise<{ error: string | null }>;
-    },
+    mutationFn: () => internalApiService.logout(),
     onSuccess: () => {
       // Clear query cache
       void queryClient.invalidateQueries({ queryKey: ['current-user'] });
@@ -21,6 +19,6 @@ export function useLogout() {
   return {
     logout: mutation.mutateAsync,
     isLoading: mutation.isPending,
-    error: mutation.error?.message ?? mutation.data?.error ?? null,
+    error: mutation.error?.message ?? null,
   };
 }

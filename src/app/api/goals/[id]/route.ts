@@ -5,8 +5,9 @@ import { goalProgressService } from '@/lib/goal-progress-service';
 import { convertServerGoalToClient } from '@/types/__tests__/goal.test';
 import type { GoalProgress as ClientGoalProgress } from '@/types/goal-client';
 
-export async function GET(_request: Request, { params }: { params: { id: string } }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const supabase = await getSupabaseClient();
     const {
       data: { user },
@@ -17,7 +18,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
       return NextResponse.json({ data: null, error: 'Not authenticated' }, { status: 401 });
     }
 
-    const res = await goalService.getGoal(supabase, user.id, params.id);
+    const res = await goalService.getGoal(supabase, user.id, id);
 
     if (res.error) {
       if (res.error === 'Goal not found') {
@@ -56,8 +57,9 @@ export async function GET(_request: Request, { params }: { params: { id: string 
   }
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const supabase = await getSupabaseClient();
     const {
       data: { user },
@@ -105,7 +107,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       }));
     }
 
-    const res = await goalService.updateGoal(supabase, user.id, params.id, updates);
+    const res = await goalService.updateGoal(supabase, user.id, id, updates);
 
     if (res.error) {
       if (res.error === 'Goal not found') {
@@ -128,8 +130,9 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const supabase = await getSupabaseClient();
     const {
       data: { user },
@@ -140,7 +143,7 @@ export async function DELETE(_request: Request, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const res = await goalService.deleteGoal(supabase, user.id, params.id);
+    const res = await goalService.deleteGoal(supabase, user.id, id);
 
     if (res.error) {
       if (res.error === 'Goal not found') {
