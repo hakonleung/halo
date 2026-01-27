@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, HStack, Input, createListCollection, Select } from '@chakra-ui/react';
+import { Box, HStack, Input, createListCollection, Select, Portal } from '@chakra-ui/react';
 import type { HistoryListRequest } from '@/types/history-client';
 import { HistoryItemType } from '@/types/history-server';
 
@@ -42,13 +42,21 @@ export function HistoryFilters({ filters, onFilterChange }: HistoryFiltersProps)
             <Select.Trigger>
               <Select.ValueText placeholder="Select Type" />
             </Select.Trigger>
-            <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-              {typeOptions.items.map((item) => (
-                <Select.Item item={item} key={item.value} _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}>
-                  {item.label}
-                </Select.Item>
-              ))}
-            </Select.Content>
+            <Portal>
+              <Select.Positioner>
+                <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                  {typeOptions.items.map((item) => (
+                    <Select.Item
+                      item={item}
+                      key={item.value}
+                      _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
+                    >
+                      {item.label}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Portal>
           </Select.Root>
         </Box>
 

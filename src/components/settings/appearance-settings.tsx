@@ -12,6 +12,7 @@ import {
   FieldLabel,
   Select,
   createListCollection,
+  Portal,
 } from '@chakra-ui/react';
 import { useSettings } from '@/hooks/use-settings';
 import { useUpdateSettings } from '@/hooks/use-update-settings';
@@ -102,13 +103,17 @@ export function AppearanceSettings() {
           <Select.Trigger>
             <Select.ValueText />
           </Select.Trigger>
-          <Select.Content>
-            {themes.map((t) => (
-              <Select.Item key={t.value} item={t.value}>
-                {t.label}
-              </Select.Item>
-            ))}
-          </Select.Content>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {themes.map((t) => (
+                  <Select.Item key={t.value} item={t.value}>
+                    {t.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
         </Select.Root>
       </FieldRoot>
 
@@ -169,13 +174,17 @@ export function AppearanceSettings() {
           <Select.Trigger>
             <Select.ValueText />
           </Select.Trigger>
-          <Select.Content>
-            {animationLevels.map((level) => (
-              <Select.Item key={level.value} item={level.value}>
-                {level.label}
-              </Select.Item>
-            ))}
-          </Select.Content>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {animationLevels.map((level) => (
+                  <Select.Item key={level.value} item={level.value}>
+                    {level.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
         </Select.Root>
       </FieldRoot>
 
@@ -189,13 +198,17 @@ export function AppearanceSettings() {
           <Select.Trigger>
             <Select.ValueText />
           </Select.Trigger>
-          <Select.Content>
-            {fontSizes.map((size) => (
-              <Select.Item key={size.value} item={size.value}>
-                {size.label}
-              </Select.Item>
-            ))}
-          </Select.Content>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {fontSizes.map((size) => (
+                  <Select.Item key={size.value} item={size.value}>
+                    {size.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
         </Select.Root>
       </FieldRoot>
 

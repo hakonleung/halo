@@ -14,6 +14,7 @@ import {
   Checkbox,
   Collapsible,
   Button,
+  Portal,
 } from '@chakra-ui/react';
 import { LuTrash2, LuSettings, LuPlus } from 'react-icons/lu';
 import type { MetadataField } from '@/types/behavior-client';
@@ -128,13 +129,21 @@ export function MetadataFieldEditor({
             <Select.Trigger>
               <Select.ValueText />
             </Select.Trigger>
-            <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-              {fieldTypeCollection.items.map((item) => (
-                <Select.Item item={item} key={item.value} _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}>
-                  {item.label}
-                </Select.Item>
-              ))}
-            </Select.Content>
+            <Portal>
+              <Select.Positioner>
+                <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                  {fieldTypeCollection.items.map((item) => (
+                    <Select.Item
+                      item={item}
+                      key={item.value}
+                      _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
+                    >
+                      {item.label}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Portal>
           </Select.Root>
           <IconButton
             size="xs"

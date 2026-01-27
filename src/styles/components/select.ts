@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from '@chakra-ui/react';
 
 export const select = defineSlotRecipe({
-  slots: ['trigger', 'content', 'item'],
+  slots: ['trigger', 'positioner', 'content', 'item'],
   base: {
     trigger: {
       borderColor: 'brand.matrix',

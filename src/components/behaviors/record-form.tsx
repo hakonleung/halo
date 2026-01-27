@@ -13,6 +13,7 @@ import {
   Textarea,
   Box,
   Collapsible,
+  Portal,
 } from '@chakra-ui/react';
 import { LuPlus, LuChevronUp } from 'react-icons/lu';
 import {
@@ -159,20 +160,24 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
           <Select.Trigger>
             <Select.ValueText placeholder="Choose a behavior..." />
           </Select.Trigger>
-          <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-            {definitionCollection.items.map((item) => (
-              <Select.Item
-                item={item}
-                key={item.value}
-                _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
-                color={item.value === ADD_DEFINITION_VALUE ? 'brand.matrix' : undefined}
-                fontWeight={item.value === ADD_DEFINITION_VALUE ? 'bold' : undefined}
-              >
-                {item.value === ADD_DEFINITION_VALUE && <LuPlus style={{ marginRight: 4 }} />}
-                {item.label}
-              </Select.Item>
-            ))}
-          </Select.Content>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                {definitionCollection.items.map((item) => (
+                  <Select.Item
+                    item={item}
+                    key={item.value}
+                    _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
+                    color={item.value === ADD_DEFINITION_VALUE ? 'brand.matrix' : undefined}
+                    fontWeight={item.value === ADD_DEFINITION_VALUE ? 'bold' : undefined}
+                  >
+                    {item.value === ADD_DEFINITION_VALUE && <LuPlus style={{ marginRight: 4 }} />}
+                    {item.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
         </Select.Root>
       </Field.Root>
 
@@ -229,17 +234,21 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
                     <Select.Trigger>
                       <Select.ValueText />
                     </Select.Trigger>
-                    <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                      {categoryCollection.items.map((item) => (
-                        <Select.Item
-                          item={item}
-                          key={item.value}
-                          _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
-                        >
-                          {item.label}
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
+                    <Portal>
+                      <Select.Positioner>
+                        <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                          {categoryCollection.items.map((item) => (
+                            <Select.Item
+                              item={item}
+                              key={item.value}
+                              _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
+                            >
+                              {item.label}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Positioner>
+                    </Portal>
                   </Select.Root>
                 </Field.Root>
 

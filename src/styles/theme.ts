@@ -3,6 +3,7 @@ import { input } from './components/input';
 import { button } from './components/button';
 import { select } from './components/select';
 import { fieldLabel } from './components/field-label';
+import { drawer } from './components/drawer';
 
 export const config = defineConfig({
   theme: {
@@ -57,6 +58,7 @@ export const config = defineConfig({
     },
     slotRecipes: {
       select,
+      drawer,
     },
   },
 } as const);

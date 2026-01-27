@@ -12,6 +12,7 @@ import {
   Select,
   createListCollection,
   Input,
+  Portal,
 } from '@chakra-ui/react';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import { GoalList } from '@/components/goals';
@@ -109,13 +110,17 @@ export default function GoalsPage() {
                   <Select.Trigger>
                     <Select.ValueText placeholder="Select Status" />
                   </Select.Trigger>
-                  <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                    {statusOptions.items.map((item) => (
-                      <Select.Item item={item} key={item.value}>
-                        {item.label}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
+                  <Portal>
+                    <Select.Positioner>
+                      <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                        {statusOptions.items.map((item) => (
+                          <Select.Item item={item} key={item.value}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Portal>
                 </Select.Root>
               </Box>
 
@@ -133,13 +138,17 @@ export default function GoalsPage() {
                   <Select.Trigger>
                     <Select.ValueText placeholder="Select Category" />
                   </Select.Trigger>
-                  <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                    {categoryOptions.items.map((item) => (
-                      <Select.Item item={item} key={item.value}>
-                        {item.label}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
+                  <Portal>
+                    <Select.Positioner>
+                      <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                        {categoryOptions.items.map((item) => (
+                          <Select.Item item={item} key={item.value}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Portal>
                 </Select.Root>
               </Box>
 
@@ -157,13 +166,17 @@ export default function GoalsPage() {
                   <Select.Trigger>
                     <Select.ValueText placeholder="Sort By" />
                   </Select.Trigger>
-                  <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                    {sortOptions.items.map((item) => (
-                      <Select.Item item={item} key={item.value}>
-                        {item.label}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
+                  <Portal>
+                    <Select.Positioner>
+                      <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                        {sortOptions.items.map((item) => (
+                          <Select.Item item={item} key={item.value}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Portal>
                 </Select.Root>
               </Box>
 

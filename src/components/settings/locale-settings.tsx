@@ -12,6 +12,7 @@ import {
   FieldLabel,
   Select,
   createListCollection,
+  Portal,
 } from '@chakra-ui/react';
 import { useSettings } from '@/hooks/use-settings';
 import { useUpdateSettings } from '@/hooks/use-update-settings';
@@ -84,13 +85,17 @@ export function LocaleSettings() {
           <Select.Trigger>
             <Select.ValueText />
           </Select.Trigger>
-          <Select.Content>
-            {languages.map((lang) => (
-              <Select.Item key={lang.value} item={lang.value}>
-                {lang.label}
-              </Select.Item>
-            ))}
-          </Select.Content>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {languages.map((lang) => (
+                  <Select.Item key={lang.value} item={lang.value}>
+                    {lang.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
         </Select.Root>
       </FieldRoot>
 
@@ -112,13 +117,17 @@ export function LocaleSettings() {
           <Select.Trigger>
             <Select.ValueText />
           </Select.Trigger>
-          <Select.Content>
-            {dateFormats.map((format) => (
-              <Select.Item key={format.value} item={format.value}>
-                {format.label}
-              </Select.Item>
-            ))}
-          </Select.Content>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {dateFormats.map((format) => (
+                  <Select.Item key={format.value} item={format.value}>
+                    {format.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
         </Select.Root>
       </FieldRoot>
 
