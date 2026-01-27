@@ -1,37 +1,66 @@
 'use client';
 
-import { Box, Heading, Text, VStack, Container, Button } from '@chakra-ui/react';
-import { useRouter } from 'next/navigation';
+import { Box, Text, VStack, Spinner } from '@chakra-ui/react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useUser } from '@/hooks/use-user';
+import { AuthForm } from '@/components/auth/auth-form';
+import { useEffect } from 'react';
 
 export default function Home() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { isAuthenticated, isLoading } = useUser();
+  const redirectTo = searchParams.get('redirect') || '/dashboard';
 
-  return (
-    <Box bg="bg.deep" minH="100vh" color="text.neon">
-      <Container maxW="container.md" pt={20}>
-        <VStack gap={8} align="center">
-          <Heading
-            as="h1"
-            size="4xl"
-            textShadow="0 0 10px #00FF41, 0 0 20px #00FF41"
-            color="brand.matrix"
-            fontFamily="heading"
-          >
-            NEO-LOG
-          </Heading>
-          <Text fontSize="xl" fontFamily="mono" color="text.mist">
-            [ SYSTEM INITIALIZED ]
+  // 如果已登录，跳转到目标页面
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push(redirectTo);
+    }
+  }, [isAuthenticated, isLoading, redirectTo, router]);
+
+  // 加载中状态
+  if (isLoading) {
+    return (
+      <Box
+        bg="bg.deep"
+        minH="100vh"
+        color="text.neon"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <VStack gap={4}>
+          <Spinner size="xl" color="brand.matrix" />
+          <Text fontFamily="mono" color="text.mist">
+            [ LOADING... ]
           </Text>
-          <Text textAlign="center" color="text.neon" fontFamily="mono">
-            Log your life. Hack your future.
-            <br />
-            The cyber-tracking system is coming online.
-          </Text>
-          <Button variant="solid" size="lg" onClick={() => router.push('/dashboard')} mt={4}>
-            Get Started
-          </Button>
         </VStack>
-      </Container>
-    </Box>
-  );
+      </Box>
+    );
+  }
+
+  // 如果已登录，显示加载中（等待跳转）
+  if (isAuthenticated) {
+    return (
+      <Box
+        bg="bg.deep"
+        minH="100vh"
+        color="text.neon"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <VStack gap={4}>
+          <Spinner size="xl" color="brand.matrix" />
+          <Text fontFamily="mono" color="text.mist">
+            [ REDIRECTING... ]
+          </Text>
+        </VStack>
+      </Box>
+    );
+  }
+
+  // 未登录，显示登录表单
+  return <AuthForm />;
 }

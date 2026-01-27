@@ -54,6 +54,7 @@ export function AuthForm() {
   const onLogin = async (data: LoginFormData) => {
     try {
       await login({ email: data.email, password: data.password });
+      // 登录成功后，useUser hook 会更新，page.tsx 的 useEffect 会自动处理跳转
     } catch {
       // Error is handled by hook
     }
@@ -62,6 +63,7 @@ export function AuthForm() {
   const onSignup = async (data: SignupFormData) => {
     try {
       await signup({ email: data.email, password: data.password });
+      // 注册成功后，useUser hook 会更新，page.tsx 的 useEffect 会自动处理跳转
     } catch {
       // Error is handled by hook
     }

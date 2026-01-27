@@ -20,8 +20,8 @@ export const config = defineConfig({
         },
         text: {
           neon: { value: '#E0E0E0' },
-          mist: { value: '#888888' },
-          dim: { value: '#555555' },
+          mist: { value: '#C0C0C0' },
+          dim: { value: '#999999' },
         },
       },
       fonts: {
@@ -53,8 +53,10 @@ export const config = defineConfig({
     recipes: {
       input,
       button,
-      select,
       fieldLabel,
+    },
+    slotRecipes: {
+      select,
     },
   },
 } as const);

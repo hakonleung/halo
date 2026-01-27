@@ -46,9 +46,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // If accessing home page with session, redirect to dashboard
+  // If accessing home page with session, redirect based on redirect param or default to dashboard
   if (pathname === '/' && session) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    const redirectParam = request.nextUrl.searchParams.get('redirect');
+    const targetPath = redirectParam || '/dashboard';
+    return NextResponse.redirect(new URL(targetPath, request.url));
   }
 
   return response;
