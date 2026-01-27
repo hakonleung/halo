@@ -25,41 +25,34 @@ flowchart TD
     G --> H["完成"]
 ```
 
-## Claude Code 配置 (`claude`)
+## 执行步骤
 
-### 1. 生成 CLAUDE.md
+### 步骤 1: 检查 context 文件
 
-### 1. 生成 CLAUDE.md
+检查以下文件是否存在：
+- `ai-coding/context/project.md`
+- `ai-coding/context/ui-config.md`
+- `ai-coding/context/tech-config.md`
 
-**读取**: `ai-coding/context/project.md`, `ai-coding/context/ui-config.md`, `ai-coding/context/tech-config.md`
+如缺失，提示用户先运行 `/flow-init`。
 
-**生成**: 项目根目录 `CLAUDE.md`
+### 步骤 2: 生成配置文件
 
-**内容结构**:
-```markdown
-# [项目名称]
+#### Claude Code (`claude`)
 
-## 项目概述
-[从 project.md 提取：名称、定位、核心价值、目标用户]
+**生成 CLAUDE.md** (项目根目录)
+- 从 `project.md`, `tech-config.md`, `ui-config.md` 提取内容
 
-## 技术栈
-[从 tech-config.md 提取：框架、数据库、ORM、状态管理、i18n 等]
+**生成 .claude/commands/*.md**
 
-## UI 配置
-[从 ui-config.md 提取：品牌、配色、字体、组件库等]
+#### Cursor (`cursor`)
 
-## 项目结构
-[从 tech-config.md 提取项目结构说明]
+**生成 .cursorrules** (项目根目录)
+- 从 `project.md`, `tech-config.md`, `ui-config.md` 提取内容
 
-## 代码规范
-[从 tech-config.md 提取：TypeScript、ESLint、Prettier、测试等]
-```
+**生成 .cursor/commands/*.md**
 
-### 2. 生成 .claude/commands
-
-**读取**: `ai-coding/action-*.md` 文件
-
-**生成**: `.claude/commands/*.md` 命令文件
+### 步骤 3: 生成命令文件
 
 **命令映射规则**:
 - `action-init.md` → `flow-init.md`
@@ -68,204 +61,52 @@ flowchart TD
 - `action-iterate.md` → `flow-iterate.md`
 - `action-refactor.md` → `flow-refactor.md`
 - `action-archive.md` → `flow-archive.md`
-- `action-status.md` → 拆分为多个命令文件：
-  - `flow-status.md`
-  - `flow-list.md`
-  - `flow-sync-check.md`
-  - `read-full.md`
+- `action-status.md` → 拆分为 `flow-status.md`, `flow-list.md`, `flow-sync-check.md`, `read-full.md`
 
-**命令文件格式**:
-每个命令文件应包含：
-- 触发指令（从 action 文件中提取）
-- 简要说明（从 action 文件描述中提取）
-- 详细说明在映射的原始md文件路径
-- 执行流程（简化版流程图或步骤）
-- 关键参数说明（如有）
-
-## 执行步骤
-
-### 步骤 1: 检查 context 文件
-
-检查以下文件是否存在：
-- `ai-coding/context/project.md`
-- `ai-coding/context/ui-config.md`
-- `ai-coding/context/tech-config.md`
-
-如缺失，提示用户先运行 `/flow-init`。
-
-## Cursor 配置 (`cursor`)
-
-### 1. 生成 .cursorrules
-
-**读取**: `ai-coding/context/project.md`, `ai-coding/context/ui-config.md`, `ai-coding/context/tech-config.md`
-
-**生成**: 项目根目录 `.cursorrules`
-
-**内容结构**:
-```
-[项目名称] - [项目定位]
-
-## 技术栈
-[从 tech-config.md 提取：框架、数据库、ORM、状态管理、i18n 等]
-
-## 项目结构
-[从 tech-config.md 提取项目结构说明]
-
-## 代码规范
-[从 tech-config.md 提取：TypeScript、ESLint、Prettier、测试等]
-
-## UI 配置
-[从 ui-config.md 提取：品牌、配色、字体、组件库等]
-```
-
-### 2. 生成 .cursor/commands
-
-**读取**: `ai-coding/action-*.md` 文件
-
-**生成**: `.cursor/commands/*.md` 命令文件
-
-**命令映射规则**: 与 Claude Code 相同
-
----
-
-## 执行步骤
-
-### 步骤 1: 检查 context 文件
-
-检查以下文件是否存在：
-- `ai-coding/context/project.md`
-- `ai-coding/context/ui-config.md`
-- `ai-coding/context/tech-config.md`
-
-如缺失，提示用户先运行 `/flow-init`。
-
-### 步骤 2: 根据 tool 类型生成配置
-
-#### Claude Code (`claude`)
-
-**生成 CLAUDE.md**
-
-**读取内容**:
-- 从 `project.md` 提取：项目名称、定位、核心价值、目标用户、功能模块
-- 从 `tech-config.md` 提取：技术栈、项目结构、代码规范、约定
-- 从 `ui-config.md` 提取：品牌、配色、字体、组件规范
-
-**生成格式**:
-```markdown
-# [项目名称]
-
-> [项目定位]
-
-## 项目概述
-[从 project.md 提取]
-
-## 技术栈
-[从 tech-config.md 提取]
-
-## UI 配置
-[从 ui-config.md 提取]
-
-## 项目结构
-[从 tech-config.md 提取]
-
-## 代码规范
-[从 tech-config.md 提取]
-```
-
-**生成 .claude/commands**
-
-#### Cursor (`cursor`)
-
-**生成 .cursorrules**
-
-**读取内容**:
-- 从 `project.md` 提取：项目名称、定位
-- 从 `tech-config.md` 提取：技术栈、项目结构、代码规范、约定
-- 从 `ui-config.md` 提取：品牌、配色、字体、组件规范
-
-**生成格式**: 纯文本格式，简洁明了，适合作为 AI 规则
-
-**生成 .cursor/commands**
-
-### 步骤 3: 生成命令文件
-
-**扫描 action 文件**:
-- `ai-coding/action-init.md`
-- `ai-coding/action-work.md`
-- `ai-coding/action-quick.md`
-- `ai-coding/action-iterate.md`
-- `ai-coding/action-refactor.md`
-- `ai-coding/action-archive.md`
-- `ai-coding/action-status.md`
-
-**生成规则**:
-
-1. **单个命令文件** (action-init, action-work, action-quick, action-iterate, action-refactor, action-archive):
-   - 提取触发指令
-   - 提取简要说明（文件描述）
-   - 提取执行流程（简化）
-   - 提取关键参数
-
-2. **多个命令文件** (action-status):
-   - 根据文件中的多个触发指令，拆分为多个命令文件
-   - `flow-status.md` - 提取 `/flow-status` 相关说明
-   - `flow-list.md` - 提取 `/flow-list` 相关说明
-   - `flow-sync-check.md` - 提取 `/flow-sync-check` 相关说明
-   - `read-full.md` - 提取 `/read-full` 相关说明
-
-**命令文件格式**:
+**命令文件格式** (必须包含):
 ```markdown
 # [命令名称]
 
 [简要说明]
 
 ## 触发指令
-
 ```
 [触发指令]
 ```
 
+## 重要提示
+
+**在执行此命令前，必须先读取完整的详细说明文件：**
+
+`ai-coding/action-[name].md`
+
+该文件包含完整的执行流程、详细步骤、输出格式等所有必要信息。请先读取该文件，然后按照其中的详细说明执行。
+
 ## 执行流程
 
-[简化版流程说明]
+[简化版流程说明 - 仅作为快速参考]
 
 ## 参数说明
 
 [参数说明，如有]
+
+## 详细说明
+
+完整的工作流说明、执行步骤、输出格式等详细信息，请参考：
+
+`ai-coding/action-[name].md`
+
+**请务必在执行前阅读该文件的完整内容。**
 ```
 
 ### 步骤 4: 验证
 
-**Claude Code**:
-- 检查 `CLAUDE.md` 是否存在且格式正确
-- 检查 `.claude/commands/` 目录下的所有命令文件是否存在
-
-**Cursor**:
-- 检查 `.cursorrules` 是否存在且格式正确
-- 检查 `.cursor/commands/` 目录下的所有命令文件是否存在
-
-验证命令文件内容完整性
+- 检查生成的配置文件是否存在
+- 验证每个命令文件都包含"重要提示"和"详细说明"部分，指向正确的原始 action 文件
 
 ### 步骤 5: 提交
 
-**确认提示**:
-向用户展示已生成的文件列表，并询问是否提交到 Git。
+展示已生成的文件列表，询问是否提交到 Git。
 
-**提交操作** (经用户确认后):
-1. 添加所有生成的配置文件到 Git 暂存区
-2. 创建提交，提交信息格式：`chore: setup [tool] AI coding tool configuration`
-3. 显示提交结果
-
-**Claude Code (`claude`)** 提交文件：
-- `CLAUDE.md`
-- `.claude/commands/*.md` (所有命令文件)
-
-**Cursor (`cursor`)** 提交文件：
-- `.cursorrules`
-- `.cursor/commands/*.md` (所有命令文件)
-
-**注意事项**:
-- 如果用户拒绝提交，跳过此步骤
-- 如果 Git 仓库未初始化，提示用户先初始化仓库
-- 如果文件已在 Git 中且无变更，跳过提交
+**提交信息**: `chore: setup [tool] AI coding tool configuration`
 
