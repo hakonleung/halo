@@ -5,10 +5,10 @@
 
 export const fonts = {
   heading: {
-    value: "var(--font-orbitron), 'SF Pro Display', -apple-system, sans-serif",
+    value: "'Orbitron', 'SF Pro Display', -apple-system, sans-serif",
   },
   body: {
-    value: "var(--font-rajdhani), 'SF Pro Display', -apple-system, sans-serif",
+    value: "'Rajdhani', 'SF Pro Display', -apple-system, sans-serif",
   },
   mono: {
     value: "'JetBrains Mono', 'Fira Code', monospace",
