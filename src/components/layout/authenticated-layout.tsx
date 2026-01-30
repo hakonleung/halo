@@ -14,7 +14,7 @@ interface AuthenticatedLayoutProps {
  */
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   return (
-    <Box minH="100vh" bg="bg.deep">
+    <Box minH="100vh" bg="transparent" position="relative" zIndex={1}>
       <TopNavbar />
       <Box as="main" p={0} pb={{ base: '80px', md: 0 }}>
         {children}

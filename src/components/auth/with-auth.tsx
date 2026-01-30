@@ -10,7 +10,15 @@ export function withAuth<P extends object>(Component: React.ComponentType<P>) {
 
     if (isLoading) {
       return (
-        <Box minH="100vh" bg="bg.deep" display="flex" alignItems="center" justifyContent="center">
+        <Box
+          minH="100vh"
+          bg="transparent"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          position="relative"
+          zIndex={1}
+        >
           <Text color="text.mist" fontFamily="mono">
             [ LOADING... ]
           </Text>

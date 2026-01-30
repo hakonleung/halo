@@ -42,7 +42,7 @@ function ChatPage() {
 
   return (
     <AuthenticatedLayout>
-      <Flex h="calc(100vh - 64px)" bg="bg.deep">
+      <Flex h="calc(100vh - 64px)" bg="transparent" position="relative" zIndex={1}>
         {/* Sidebar */}
         <Box
           w="280px"

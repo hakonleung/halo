@@ -87,25 +87,8 @@ export function AuthForm() {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bg="bg.deep"
-      _before={{
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundImage: `
-          repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(0, 255, 65, 0.05) 2px,
-            rgba(0, 255, 65, 0.05) 4px
-          )
-        `,
-        backgroundSize: '40px 40px',
-      }}
+      bg="transparent"
+      zIndex={1}
     >
       <Box
         position="relative"

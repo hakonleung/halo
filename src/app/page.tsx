@@ -23,12 +23,14 @@ export default function Home() {
   if (isLoading) {
     return (
       <Box
-        bg="bg.deep"
+        bg="transparent"
         minH="100vh"
         color="text.neon"
         display="flex"
         alignItems="center"
         justifyContent="center"
+        position="relative"
+        zIndex={1}
       >
         <VStack gap={4}>
           <Spinner size="xl" color="brand.matrix" />
@@ -44,12 +46,14 @@ export default function Home() {
   if (isAuthenticated) {
     return (
       <Box
-        bg="bg.deep"
+        bg="transparent"
         minH="100vh"
         color="text.neon"
         display="flex"
         alignItems="center"
         justifyContent="center"
+        position="relative"
+        zIndex={1}
       >
         <VStack gap={4}>
           <Spinner size="xl" color="brand.matrix" />
