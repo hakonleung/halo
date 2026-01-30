@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Text, SimpleGrid, Skeleton } from '@chakra-ui/react';
+import { Text, SimpleGrid, Skeleton, Card } from '@chakra-ui/react';
 import { useGoals } from '@/hooks/use-goals';
 import { GoalProgressRing } from './goal-progress-ring';
 import type { GoalProgress } from '@/types/dashboard-client';
@@ -33,19 +33,15 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
 
   if (loading) {
     return (
-      <Box
-        bg="bg.carbon"
-        border="1px solid"
-        borderColor="rgba(0, 255, 65, 0.3)"
-        borderRadius="4px"
-        p={4}
-      >
-        <Skeleton height="16px" width="100px" mb={4} />
-        <SimpleGrid columns={2} gap={4}>
-          <Skeleton height="100px" borderRadius="full" />
-          <Skeleton height="100px" borderRadius="full" />
-        </SimpleGrid>
-      </Box>
+      <Card.Root size="md">
+        <Card.Body>
+          <Skeleton height="16px" width="100px" mb={4} />
+          <SimpleGrid columns={2} gap={4}>
+            <Skeleton height="100px" borderRadius="full" />
+            <Skeleton height="100px" borderRadius="full" />
+          </SimpleGrid>
+        </Card.Body>
+      </Card.Root>
     );
   }
 
@@ -53,45 +49,38 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
 
   if (activeGoals.length === 0) {
     return (
-      <Box
-        bg="bg.carbon"
-        border="1px dashed"
-        borderColor="rgba(0, 255, 65, 0.3)"
-        borderRadius="4px"
-        p={4}
-        h="200px"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        flexDirection="column"
-        gap={2}
-      >
-        <Text color="text.mist" fontFamily="mono">
-          No Active Goals
-        </Text>
-        <Text color="brand.matrix" fontFamily="mono" fontSize="sm">
-          Create Your First Goal
-        </Text>
-      </Box>
+      <Card.Root size="md" borderStyle="dashed">
+        <Card.Body
+          h="200px"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          flexDirection="column"
+          gap={2}
+        >
+          <Text color="text.mist" fontFamily="mono">
+            No Active Goals
+          </Text>
+          <Text color="brand.matrix" fontFamily="mono" fontSize="sm">
+            Create Your First Goal
+          </Text>
+        </Card.Body>
+      </Card.Root>
     );
   }
 
   return (
-    <Box
-      bg="bg.carbon"
-      border="1px solid"
-      borderColor="rgba(0, 255, 65, 0.3)"
-      borderRadius="4px"
-      p={4}
-    >
-      <Text fontSize="md" color="text.neon" fontFamily="mono" mb={4}>
-        Goal Progress
-      </Text>
-      <SimpleGrid columns={{ base: 2, md: 2 }} gap={4} justifyItems="center">
-        {activeGoals.slice(0, 4).map((goal) => (
-          <GoalProgressRing key={goal.id} goal={goal} size="md" />
-        ))}
-      </SimpleGrid>
-    </Box>
+    <Card.Root size="md">
+      <Card.Body>
+        <Text fontSize="md" color="text.neon" fontFamily="mono" mb={4}>
+          Goal Progress
+        </Text>
+        <SimpleGrid columns={{ base: 2, md: 2 }} gap={4} justifyItems="center">
+          {activeGoals.slice(0, 4).map((goal) => (
+            <GoalProgressRing key={goal.id} goal={goal} size="md" />
+          ))}
+        </SimpleGrid>
+      </Card.Body>
+    </Card.Root>
   );
 }

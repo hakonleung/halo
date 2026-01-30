@@ -41,6 +41,8 @@ export function useCreateBehaviorRecord() {
       // Invalidate both records and definitions (to update usage count)
       void queryClient.invalidateQueries({ queryKey: ['behavior-records'] });
       void queryClient.invalidateQueries({ queryKey: ['behavior-definitions'] });
+      // Invalidate dashboard queries to refresh stats, trends, and heatmap
+      void queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       toaster.create({
         title: 'Success',
         description: 'Record saved successfully.',

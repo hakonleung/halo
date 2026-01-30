@@ -2,7 +2,17 @@
 
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
-import { Box, Container, Heading, Button, HStack, VStack, Text, Skeleton } from '@chakra-ui/react';
+import {
+  Box,
+  Container,
+  Heading,
+  Button,
+  HStack,
+  VStack,
+  Text,
+  Skeleton,
+  Card,
+} from '@chakra-ui/react';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
 import { GoalStatusBadge } from '@/components/goals';
@@ -103,77 +113,73 @@ export default function GoalDetailPage({ params }: { params: Promise<{ id: strin
           </HStack>
 
           {/* Goal Detail Card */}
-          <Box
-            bg="bg.carbon"
-            border="1px solid"
-            borderColor="rgba(0, 255, 65, 0.3)"
-            borderRadius="4px"
-            p={6}
-          >
-            <VStack gap={6} align="stretch">
-              {/* Goal Info */}
-              <VStack align="flex-start" gap={2}>
-                <HStack justify="space-between" w="full">
-                  <Heading fontSize="24px" color="text.neon" fontFamily="mono">
-                    {goal.name}
-                  </Heading>
-                  <GoalStatusBadge status={goal.status} />
-                </HStack>
-                {goal.description && <Text color="text.mist">{goal.description}</Text>}
-                <HStack gap={4} fontSize="sm" color="text.mist" fontFamily="mono">
-                  <Text>Category: {goal.category}</Text>
-                  <Text>|</Text>
-                  <Text>Start: {new Date(goal.startDate).toLocaleDateString('en-US')}</Text>
-                  {goal.endDate && (
-                    <>
-                      <Text>|</Text>
-                      <Text>End: {new Date(goal.endDate).toLocaleDateString('en-US')}</Text>
-                    </>
-                  )}
-                </HStack>
-              </VStack>
-
-              {/* Progress */}
-              <HStack align="center" gap={6}>
-                <GoalProgressRing goal={progressData} size="lg" />
-                <VStack align="flex-start" gap={1}>
-                  <Text fontSize="xl" fontWeight="bold" color="text.neon">
-                    {progress?.current ?? 0} / {progress?.target ?? 0}
-                  </Text>
-                  <Text fontSize="md" color="text.mist">
-                    Progress: {progress?.progress ?? 0}%
-                  </Text>
-                  {progress?.remainingDays !== undefined && (
-                    <Text fontSize="sm" color="text.mist">
-                      Remaining: {progress.remainingDays} days
-                    </Text>
-                  )}
-                </VStack>
-              </HStack>
-
-              {/* Criteria */}
-              {goal.criteria && goal.criteria.length > 0 && (
+          <Card.Root size="lg">
+            <Card.Body>
+              <VStack gap={6} align="stretch">
+                {/* Goal Info */}
                 <VStack align="flex-start" gap={2}>
-                  <Heading fontSize="md" color="text.neon" fontFamily="mono">
-                    Completion Criteria
-                  </Heading>
-                  <VStack align="flex-start" gap={2} w="full">
-                    {goal.criteria.map((criterion, index) => (
-                      <Box key={index} p={3} bg="bg.dark" borderRadius="4px" w="full">
-                        <Text fontSize="sm" color="text.mist">
-                          {criterion.description || `Criterion ${index + 1}`}
-                        </Text>
-                        <Text fontSize="xs" color="text.dim" fontFamily="mono" mt={1}>
-                          Behavior: {criterion.behaviorId} | Metric: {criterion.metric} | Target:{' '}
-                          {criterion.value} | Period: {criterion.period}
-                        </Text>
-                      </Box>
-                    ))}
-                  </VStack>
+                  <HStack justify="space-between" w="full">
+                    <Heading fontSize="24px" color="text.neon" fontFamily="mono">
+                      {goal.name}
+                    </Heading>
+                    <GoalStatusBadge status={goal.status} />
+                  </HStack>
+                  {goal.description && <Text color="text.mist">{goal.description}</Text>}
+                  <HStack gap={4} fontSize="sm" color="text.mist" fontFamily="mono">
+                    <Text>Category: {goal.category}</Text>
+                    <Text>|</Text>
+                    <Text>Start: {new Date(goal.startDate).toLocaleDateString('en-US')}</Text>
+                    {goal.endDate && (
+                      <>
+                        <Text>|</Text>
+                        <Text>End: {new Date(goal.endDate).toLocaleDateString('en-US')}</Text>
+                      </>
+                    )}
+                  </HStack>
                 </VStack>
-              )}
-            </VStack>
-          </Box>
+
+                {/* Progress */}
+                <HStack align="center" gap={6}>
+                  <GoalProgressRing goal={progressData} size="lg" />
+                  <VStack align="flex-start" gap={1}>
+                    <Text fontSize="xl" fontWeight="bold" color="text.neon">
+                      {progress?.current ?? 0} / {progress?.target ?? 0}
+                    </Text>
+                    <Text fontSize="md" color="text.mist">
+                      Progress: {progress?.progress ?? 0}%
+                    </Text>
+                    {progress?.remainingDays !== undefined && (
+                      <Text fontSize="sm" color="text.mist">
+                        Remaining: {progress.remainingDays} days
+                      </Text>
+                    )}
+                  </VStack>
+                </HStack>
+
+                {/* Criteria */}
+                {goal.criteria && goal.criteria.length > 0 && (
+                  <VStack align="flex-start" gap={2}>
+                    <Heading fontSize="md" color="text.neon" fontFamily="mono">
+                      Completion Criteria
+                    </Heading>
+                    <VStack align="flex-start" gap={2} w="full">
+                      {goal.criteria.map((criterion, index) => (
+                        <Box key={index} p={3} bg="bg.dark" borderRadius="4px" w="full">
+                          <Text fontSize="sm" color="text.mist">
+                            {criterion.description || `Criterion ${index + 1}`}
+                          </Text>
+                          <Text fontSize="xs" color="text.dim" fontFamily="mono" mt={1}>
+                            Behavior: {criterion.behaviorId} | Metric: {criterion.metric} | Target:{' '}
+                            {criterion.value} | Period: {criterion.period}
+                          </Text>
+                        </Box>
+                      ))}
+                    </VStack>
+                  </VStack>
+                )}
+              </VStack>
+            </Card.Body>
+          </Card.Root>
         </VStack>
       </Container>
     </AuthenticatedLayout>

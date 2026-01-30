@@ -5,7 +5,7 @@ export const drawer = defineSlotRecipe({
   slots: ['backdrop', 'positioner', 'content', 'header', 'title', 'body', 'footer', 'closeTrigger'],
   base: {
     backdrop: {
-      background: 'rgba(0, 0, 0, 0.6)',
+      background: 'transparent',
       backdropFilter: 'blur(4px)',
       zIndex: 400,
     },
@@ -16,7 +16,7 @@ export const drawer = defineSlotRecipe({
       zIndex: 500,
     },
     content: {
-      background: 'rgba(26, 26, 26, 0.8)',
+      background: 'transparent',
       backdropFilter: 'blur(16px)',
       color: 'text.neon',
       borderLeft: '1px solid',

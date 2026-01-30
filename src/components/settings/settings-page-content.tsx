@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, VStack, Heading, HStack, Button } from '@chakra-ui/react';
+import { Box, VStack, Heading, HStack, Button, Card } from '@chakra-ui/react';
 import { ProfileSettings } from './profile-settings';
 import { AppearanceSettings } from './appearance-settings';
 import { NotificationSettings } from './notification-settings';
@@ -52,46 +52,41 @@ export function SettingsPageContent() {
           SETTINGS
         </Heading>
 
-        <Box
-          bg="bg.carbon"
-          border="1px solid"
-          borderColor="brand.matrix"
-          borderRadius="4px"
-          p={6}
-          boxShadow="0 0 15px rgba(0, 255, 65, 0.1)"
-        >
-          <HStack
-            gap={2}
-            borderBottom="1px solid"
-            borderColor="brand.matrix"
-            pb={4}
-            mb={6}
-            flexWrap="wrap"
-          >
-            {tabs.map((tab) => (
-              <Button
-                key={tab.id}
-                variant="ghost"
-                size="sm"
-                onClick={() => setActiveTab(tab.id)}
-                color={activeTab === tab.id ? 'brand.matrix' : 'text.mist'}
-                borderBottom={activeTab === tab.id ? '2px solid' : 'none'}
-                borderColor={activeTab === tab.id ? 'brand.matrix' : 'transparent'}
-                borderRadius={0}
-                fontFamily="mono"
-                fontSize="sm"
-                _hover={{
-                  color: 'brand.matrix',
-                  bg: 'transparent',
-                }}
-              >
-                {tab.label}
-              </Button>
-            ))}
-          </HStack>
+        <Card.Root size="lg" borderColor="brand.matrix">
+          <Card.Body>
+            <HStack
+              gap={2}
+              borderBottom="1px solid"
+              borderColor="brand.matrix"
+              pb={4}
+              mb={6}
+              flexWrap="wrap"
+            >
+              {tabs.map((tab) => (
+                <Button
+                  key={tab.id}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActiveTab(tab.id)}
+                  color={activeTab === tab.id ? 'brand.matrix' : 'text.mist'}
+                  borderBottom={activeTab === tab.id ? '2px solid' : 'none'}
+                  borderColor={activeTab === tab.id ? 'brand.matrix' : 'transparent'}
+                  borderRadius={0}
+                  fontFamily="mono"
+                  fontSize="sm"
+                  _hover={{
+                    color: 'brand.matrix',
+                    bg: 'transparent',
+                  }}
+                >
+                  {tab.label}
+                </Button>
+              ))}
+            </HStack>
 
-          {renderContent()}
-        </Box>
+            {renderContent()}
+          </Card.Body>
+        </Card.Root>
       </VStack>
     </Box>
   );

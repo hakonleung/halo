@@ -5,7 +5,7 @@ export const popover = defineSlotRecipe({
   slots: ['content', 'header', 'body', 'footer', 'arrow', 'closeTrigger'],
   base: {
     content: {
-      background: 'rgba(26, 26, 26, 0.8)',
+      background: 'transparent',
       backdropFilter: 'blur(16px)',
       borderWidth: '1px',
       borderStyle: 'solid',

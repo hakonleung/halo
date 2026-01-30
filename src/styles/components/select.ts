@@ -33,10 +33,11 @@ export const select = defineSlotRecipe({
       },
     },
     positioner: {
+      background: 'transparent',
       zIndex: 300,
     },
     content: {
-      background: 'rgba(26, 26, 26, 0.8)',
+      background: 'transparent',
       backdropFilter: 'blur(16px)',
       borderWidth: '1px',
       borderStyle: 'solid',

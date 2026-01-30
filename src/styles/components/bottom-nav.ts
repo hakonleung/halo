@@ -11,7 +11,7 @@ export const bottomNav = defineSlotRecipe({
       right: 0,
       height: '64px',
       paddingBottom: 'env(safe-area-inset-bottom)',
-      background: 'rgba(26, 26, 26, 0.8)',
+      background: 'transparent',
       backdropFilter: 'blur(16px)',
       borderTop: '1px solid',
       borderColor: 'rgba(0, 255, 65, 0.2)',

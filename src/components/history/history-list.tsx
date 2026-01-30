@@ -1,6 +1,16 @@
 'use client';
 
-import { Box, Table, Text, Badge, HStack, IconButton, Button, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Table,
+  Text,
+  Badge,
+  HStack,
+  IconButton,
+  Button,
+  VStack,
+  Card,
+} from '@chakra-ui/react';
 import type { HistoryItem } from '@/types/history-client';
 import { formatDistanceToNow } from 'date-fns';
 import { LuPencil, LuTrash2 } from 'react-icons/lu';
@@ -19,17 +29,13 @@ interface HistoryListProps {
 export function HistoryList({ items, total, page, pageSize, onPageChange }: HistoryListProps) {
   if (items.length === 0) {
     return (
-      <Box
-        py={20}
-        textAlign="center"
-        border="1px dashed"
-        borderColor="border.subtle"
-        borderRadius="4px"
-      >
-        <Text color="text.mist" fontFamily="mono">
-          [ NO RECORDS FOUND ]
-        </Text>
-      </Box>
+      <Card.Root size="md" borderStyle="dashed" borderColor="border.subtle">
+        <Card.Body py={20} textAlign="center">
+          <Text color="text.mist" fontFamily="mono">
+            [ NO RECORDS FOUND ]
+          </Text>
+        </Card.Body>
+      </Card.Root>
     );
   }
 

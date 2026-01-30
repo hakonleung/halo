@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, SimpleGrid, Skeleton, Text, VStack } from '@chakra-ui/react';
+import { SimpleGrid, Skeleton, Text, VStack, Card } from '@chakra-ui/react';
 import { GoalCard } from './goal-card';
 import type { Goal } from '@/types/goal-client';
 
@@ -27,23 +27,18 @@ export function GoalList({ goals, progressMap, isLoading, onGoalClick }: GoalLis
 
   if (goals.length === 0) {
     return (
-      <Box
-        bg="bg.carbon"
-        border="1px dashed"
-        borderColor="rgba(0, 255, 65, 0.3)"
-        borderRadius="4px"
-        p={8}
-        textAlign="center"
-      >
-        <VStack gap={2}>
-          <Text color="text.mist" fontFamily="mono" fontSize="lg">
-            No Goals
-          </Text>
-          <Text color="brand.matrix" fontFamily="mono" fontSize="sm">
-            Create Your First Goal
-          </Text>
-        </VStack>
-      </Box>
+      <Card.Root size="lg" borderStyle="dashed">
+        <Card.Body textAlign="center">
+          <VStack gap={2}>
+            <Text color="text.mist" fontFamily="mono" fontSize="lg">
+              No Goals
+            </Text>
+            <Text color="brand.matrix" fontFamily="mono" fontSize="sm">
+              Create Your First Goal
+            </Text>
+          </VStack>
+        </Card.Body>
+      </Card.Root>
     );
   }
 

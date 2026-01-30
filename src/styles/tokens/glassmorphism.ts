@@ -22,6 +22,7 @@ export const glow = {
  * Use with style prop or recipe definition
  */
 export const glassStyles = {
+  background: 'transparent',
   backdropFilter: 'blur(16px)',
   WebkitBackdropFilter: 'blur(16px)',
 } as const;

@@ -21,37 +21,40 @@ const TYPE_COLORS = [
 ];
 
 /**
- * Calculate heatmap level based on count
- */
-function calculateLevel(count: number): 0 | 1 | 2 | 3 | 4 {
-  if (count === 0) return 0;
-  if (count <= 2) return 1;
-  if (count <= 5) return 2;
-  if (count <= 9) return 3;
-  return 4;
-}
-
-/**
  * Get date range based on preset
  */
 function getDateRange(range: GetTrendsParams['range'], start?: string, end?: string) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
+  // Set end to end of today (23:59:59.999) to ensure today is included
+  const todayEnd = new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1);
   switch (range) {
     case 'today':
-      return { start: today, end: now };
+      return { start: today, end: todayEnd };
     case '7d':
-      return { start: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000), end: now };
+      return { start: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000), end: todayEnd };
     case '30d':
-      return { start: new Date(today.getTime() - 29 * 24 * 60 * 60 * 1000), end: now };
+      return { start: new Date(today.getTime() - 29 * 24 * 60 * 60 * 1000), end: todayEnd };
     case '90d':
-      return { start: new Date(today.getTime() - 89 * 24 * 60 * 60 * 1000), end: now };
-    case 'custom':
+      return { start: new Date(today.getTime() - 89 * 24 * 60 * 60 * 1000), end: todayEnd };
+    case 'custom': {
       if (!start || !end) throw new Error('Start and end dates required for custom range');
-      return { start: new Date(start), end: new Date(end) };
+      const customStart = new Date(start);
+      const customEnd = new Date(end);
+      // If custom end is today, set to end of today
+      const customEndDate = new Date(
+        customEnd.getFullYear(),
+        customEnd.getMonth(),
+        customEnd.getDate(),
+      );
+      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      if (customEndDate.getTime() === todayDate.getTime()) {
+        return { start: customStart, end: todayEnd };
+      }
+      return { start: customStart, end: customEnd };
+    }
     default:
-      return { start: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000), end: now };
+      return { start: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000), end: todayEnd };
   }
 }
 
@@ -221,6 +224,7 @@ export const dashboardService = {
 
   /**
    * Get trend data for charts
+   * Returns raw records and date range, frontend will process based on local timezone
    */
   async getTrends(
     supabase: SupabaseClient<Database>,
@@ -265,32 +269,6 @@ export const dashboardService = {
         });
       });
 
-      // Aggregate by date
-      const dateMap = new Map<string, { total: number; byType: Record<string, number> }>();
-
-      // Fill in all dates in range
-      const currentDate = new Date(start);
-      while (currentDate <= end) {
-        const dateStr = currentDate.toISOString().split('T')[0];
-        dateMap.set(dateStr, { total: 0, byType: {} });
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-
-      // Count records
-      for (const record of records || []) {
-        const dateStr = new Date(record.recorded_at).toISOString().split('T')[0];
-        const entry = dateMap.get(dateStr);
-        if (entry) {
-          entry.total++;
-          entry.byType[record.definition_id] = (entry.byType[record.definition_id] || 0) + 1;
-        }
-      }
-
-      // Convert to array
-      const points = Array.from(dateMap.entries())
-        .map(([date, data]) => ({ date, ...data }))
-        .sort((a, b) => a.date.localeCompare(b.date));
-
       // Get unique types used
       const usedTypes = new Set<string>();
       for (const record of records || []) {
@@ -299,10 +277,12 @@ export const dashboardService = {
 
       return {
         data: {
-          points,
+          records: records || [],
           types: Array.from(usedTypes)
             .map((id) => typeMap.get(id))
             .filter((t): t is { id: string; name: string; color: string } => t !== undefined),
+          start: start.toISOString(),
+          end: end.toISOString(),
         },
         error: null,
       };
@@ -313,49 +293,40 @@ export const dashboardService = {
 
   /**
    * Get heatmap data
+   * Returns raw records and date range, frontend will process based on local timezone
    */
   async getHeatmap(
     supabase: SupabaseClient<Database>,
     userId: string,
     params: GetHeatmapParams = {},
-  ): Promise<{ data: HeatmapDataModel[] | null; error: string | null }> {
+  ): Promise<{ data: HeatmapDataModel | null; error: string | null }> {
     if (!userId) return { data: null, error: 'User ID is required' };
 
     try {
       const months = params.months || 12;
       const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      // Set end to end of today to ensure today is included
+      const todayEnd = new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1);
       const start = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
 
       const { data: records, error } = await supabase
         .from('neolog_behavior_records')
         .select('recorded_at')
         .eq('user_id', userId)
-        .gte('recorded_at', start.toISOString());
+        .gte('recorded_at', start.toISOString())
+        .lte('recorded_at', todayEnd.toISOString());
 
       if (error) throw error;
 
-      // Count by date
-      const countMap = new Map<string, number>();
-      for (const record of records || []) {
-        const dateStr = new Date(record.recorded_at).toISOString().split('T')[0];
-        countMap.set(dateStr, (countMap.get(dateStr) || 0) + 1);
-      }
-
-      // Generate all dates in range
-      const result: HeatmapDataModel[] = [];
-      const currentDate = new Date(start);
-      while (currentDate <= now) {
-        const dateStr = currentDate.toISOString().split('T')[0];
-        const count = countMap.get(dateStr) || 0;
-        result.push({
-          date: dateStr,
-          count,
-          level: calculateLevel(count),
-        });
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-
-      return { data: result, error: null };
+      return {
+        data: {
+          records: records || [],
+          start: start.toISOString(),
+          end: todayEnd.toISOString(),
+        },
+        error: null,
+      };
     } catch (err) {
       return { data: null, error: err instanceof Error ? err.message : String(err) };
     }

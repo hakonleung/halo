@@ -36,7 +36,6 @@ export const config = defineConfig({
       input,
       button,
       fieldLabel,
-      card,
       badge,
     },
     slotRecipes: {
@@ -44,6 +43,7 @@ export const config = defineConfig({
       drawer,
       bottomNav,
       popover,
+      card,
     },
   },
 });

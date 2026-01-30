@@ -27,7 +27,8 @@ export function BottomNavbar() {
       left={0}
       right={0}
       h="64px"
-      bg="bg.deep"
+      background="transparent"
+      backdropFilter="blur(16px)"
       borderTop="1px solid"
       borderColor="rgba(0, 255, 65, 0.2)"
       zIndex={200}

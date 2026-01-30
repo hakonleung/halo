@@ -13,6 +13,7 @@ import {
   createListCollection,
   Input,
   Portal,
+  Card,
 } from '@chakra-ui/react';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import { GoalList } from '@/components/goals';
@@ -88,106 +89,102 @@ export default function GoalsPage() {
           </HStack>
 
           {/* Filters */}
-          <Box
-            bg="bg.carbon"
-            border="1px solid"
-            borderColor="rgba(0, 255, 65, 0.3)"
-            borderRadius="4px"
-            p={4}
-          >
-            <HStack gap={4} wrap="wrap">
-              <Box minW="200px">
-                <Select.Root
-                  collection={statusOptions}
-                  value={[filters.status || 'all']}
-                  onValueChange={(e) => {
-                    const value = e.value[0];
-                    if (typeof value === 'string') {
-                      handleFilterChange('status', value);
-                    }
-                  }}
-                >
-                  <Select.Trigger>
-                    <Select.ValueText placeholder="Select Status" />
-                  </Select.Trigger>
-                  <Portal>
-                    <Select.Positioner>
-                      <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                        {statusOptions.items.map((item) => (
-                          <Select.Item item={item} key={item.value}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Portal>
-                </Select.Root>
-              </Box>
+          <Card.Root size="md">
+            <Card.Body>
+              <HStack gap={4} wrap="wrap">
+                <Box minW="200px">
+                  <Select.Root
+                    collection={statusOptions}
+                    value={[filters.status || 'all']}
+                    onValueChange={(e) => {
+                      const value = e.value[0];
+                      if (typeof value === 'string') {
+                        handleFilterChange('status', value);
+                      }
+                    }}
+                  >
+                    <Select.Trigger>
+                      <Select.ValueText placeholder="Select Status" />
+                    </Select.Trigger>
+                    <Portal>
+                      <Select.Positioner>
+                        <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                          {statusOptions.items.map((item) => (
+                            <Select.Item item={item} key={item.value}>
+                              {item.label}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Positioner>
+                    </Portal>
+                  </Select.Root>
+                </Box>
 
-              <Box minW="200px">
-                <Select.Root
-                  collection={categoryOptions}
-                  value={[filters.category || 'all']}
-                  onValueChange={(e) => {
-                    const value = e.value[0];
-                    if (typeof value === 'string') {
-                      handleFilterChange('category', value);
-                    }
-                  }}
-                >
-                  <Select.Trigger>
-                    <Select.ValueText placeholder="Select Category" />
-                  </Select.Trigger>
-                  <Portal>
-                    <Select.Positioner>
-                      <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                        {categoryOptions.items.map((item) => (
-                          <Select.Item item={item} key={item.value}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Portal>
-                </Select.Root>
-              </Box>
+                <Box minW="200px">
+                  <Select.Root
+                    collection={categoryOptions}
+                    value={[filters.category || 'all']}
+                    onValueChange={(e) => {
+                      const value = e.value[0];
+                      if (typeof value === 'string') {
+                        handleFilterChange('category', value);
+                      }
+                    }}
+                  >
+                    <Select.Trigger>
+                      <Select.ValueText placeholder="Select Category" />
+                    </Select.Trigger>
+                    <Portal>
+                      <Select.Positioner>
+                        <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                          {categoryOptions.items.map((item) => (
+                            <Select.Item item={item} key={item.value}>
+                              {item.label}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Positioner>
+                    </Portal>
+                  </Select.Root>
+                </Box>
 
-              <Box minW="180px">
-                <Select.Root
-                  collection={sortOptions}
-                  value={[filters.sort || 'created_at']}
-                  onValueChange={(e) => {
-                    const value = e.value[0];
-                    if (typeof value === 'string') {
-                      handleFilterChange('sort', value);
-                    }
-                  }}
-                >
-                  <Select.Trigger>
-                    <Select.ValueText placeholder="Sort By" />
-                  </Select.Trigger>
-                  <Portal>
-                    <Select.Positioner>
-                      <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                        {sortOptions.items.map((item) => (
-                          <Select.Item item={item} key={item.value}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Portal>
-                </Select.Root>
-              </Box>
+                <Box minW="180px">
+                  <Select.Root
+                    collection={sortOptions}
+                    value={[filters.sort || 'created_at']}
+                    onValueChange={(e) => {
+                      const value = e.value[0];
+                      if (typeof value === 'string') {
+                        handleFilterChange('sort', value);
+                      }
+                    }}
+                  >
+                    <Select.Trigger>
+                      <Select.ValueText placeholder="Sort By" />
+                    </Select.Trigger>
+                    <Portal>
+                      <Select.Positioner>
+                        <Select.Content bg="bg.carbon" borderColor="brand.matrix">
+                          {sortOptions.items.map((item) => (
+                            <Select.Item item={item} key={item.value}>
+                              {item.label}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Positioner>
+                    </Portal>
+                  </Select.Root>
+                </Box>
 
-              <Input
-                placeholder="Search goal name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                maxW="300px"
-              />
-            </HStack>
-          </Box>
+                <Input
+                  placeholder="Search goal name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  maxW="300px"
+                />
+              </HStack>
+            </Card.Body>
+          </Card.Root>
 
           {/* Goal List */}
           <GoalList

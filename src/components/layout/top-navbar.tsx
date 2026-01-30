@@ -21,7 +21,8 @@ export function TopNavbar() {
   return (
     <Box
       h="64px"
-      bg="bg.deep"
+      background="transparent"
+      backdropFilter="blur(16px)"
       borderBottom="1px solid"
       borderColor="rgba(0, 255, 65, 0.2)"
       position="sticky"

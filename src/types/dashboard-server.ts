@@ -49,11 +49,10 @@ export interface DashboardStatsModel {
   weekCompare: WeekCompareModel;
 }
 
-// Trend data point
-export interface TrendPointModel {
-  date: string;
-  total: number;
-  byType: Record<string, number>;
+// Raw record for trends (returned from service, processed by frontend)
+export interface TrendRecordModel {
+  recorded_at: string;
+  definition_id: string;
 }
 
 // Behavior type info
@@ -63,33 +62,22 @@ export interface BehaviorTypeModel {
   color: string;
 }
 
-// Trend data response
+// Trend data response (includes raw records and date range)
 export interface TrendDataModel {
-  points: TrendPointModel[];
+  records: TrendRecordModel[];
   types: BehaviorTypeModel[];
+  start: string; // ISO date string
+  end: string; // ISO date string
 }
 
-// Heatmap data point
+// Raw record for heatmap (returned from service, processed by frontend)
+export interface HeatmapRecordModel {
+  recorded_at: string;
+}
+
+// Heatmap data response (includes raw records and date range)
 export interface HeatmapDataModel {
-  date: string;
-  count: number;
-  level: 0 | 1 | 2 | 3 | 4;
-}
-
-// API Response wrappers
-export interface DashboardStatsResponse {
-  data: DashboardStatsModel;
-}
-
-export interface TrendDataResponse {
-  data: TrendDataModel;
-}
-
-export interface HeatmapDataResponse {
-  data: HeatmapDataModel[];
-}
-
-export interface DashboardErrorResponse {
-  error: string;
-  message: string;
+  records: HeatmapRecordModel[];
+  start: string; // ISO date string
+  end: string; // ISO date string
 }

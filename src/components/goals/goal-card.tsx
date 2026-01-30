@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Text, HStack, VStack } from '@chakra-ui/react';
+import { Text, HStack, VStack, Card } from '@chakra-ui/react';
 import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
 import { GoalStatusBadge } from './goal-status-badge';
 import type { Goal } from '@/types/goal-client';
@@ -23,9 +23,10 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
   };
 
   return (
-    <Box
-      bg="bg.carbon"
-      border="1px solid"
+    <Card.Root
+      size="md"
+      cursor={onClick ? 'pointer' : 'default'}
+      onClick={onClick}
       borderColor={
         goal.status === 'active'
           ? 'rgba(0, 255, 65, 0.3)'
@@ -33,64 +34,53 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
             ? 'rgba(0, 255, 65, 0.2)'
             : 'rgba(136, 136, 136, 0.3)'
       }
-      borderRadius="4px"
-      p={4}
-      cursor={onClick ? 'pointer' : 'default'}
-      onClick={onClick}
-      transition="all 150ms ease-out"
-      _hover={
-        onClick
-          ? {
-              borderColor: 'rgba(0, 255, 65, 0.5)',
-              boxShadow: '0 0 15px rgba(0, 255, 65, 0.2)',
-            }
-          : undefined
-      }
     >
-      <HStack justify="space-between" align="flex-start" mb={3}>
-        <VStack align="flex-start" gap={1} flex={1}>
-          <Text fontSize="lg" fontWeight="bold" color="text.neon" fontFamily="mono">
-            {goal.name}
-          </Text>
-          {goal.description && (
-            <Text
-              fontSize="sm"
-              color="text.mist"
-              style={{
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-              }}
-            >
-              {goal.description}
+      <Card.Body>
+        <HStack justify="space-between" align="flex-start" mb={3}>
+          <VStack align="flex-start" gap={1} flex={1}>
+            <Text fontSize="lg" fontWeight="bold" color="text.neon" fontFamily="mono">
+              {goal.name}
             </Text>
-          )}
-        </VStack>
-        <GoalStatusBadge status={goal.status} />
-      </HStack>
+            {goal.description && (
+              <Text
+                fontSize="sm"
+                color="text.mist"
+                style={{
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
+              >
+                {goal.description}
+              </Text>
+            )}
+          </VStack>
+          <GoalStatusBadge status={goal.status} />
+        </HStack>
 
-      <HStack gap={2} mb={3} fontSize="xs" color="text.mist" fontFamily="mono">
-        <Text>Category: {goal.category}</Text>
-        <Text>|</Text>
-        <Text>Start: {new Date(goal.startDate).toLocaleDateString('en-US')}</Text>
-      </HStack>
+        <HStack gap={2} mb={3} fontSize="xs" color="text.mist" fontFamily="mono">
+          <Text>Category: {goal.category}</Text>
+          <Text>|</Text>
+          <Text>Start: {new Date(goal.startDate).toLocaleDateString('en-US')}</Text>
+        </HStack>
 
-      <HStack align="center" gap={4}>
-        <GoalProgressRing goal={progressData} size="sm" />
-        <VStack align="flex-start" gap={0} flex={1}>
-          <Text fontSize="md" fontWeight="bold" color="text.neon">
-            {progress?.current ?? 0} / {progress?.target ?? 0}
-          </Text>
-          {goal.endDate && (
-            <Text fontSize="xs" color="text.mist">
-              Remaining:{' '}
-              {Math.ceil((new Date(goal.endDate).getTime() - Date.now()) / (24 * 60 * 60 * 1000))}{' '}
-              days
+        <HStack align="center" gap={4}>
+          <GoalProgressRing goal={progressData} size="sm" />
+          <VStack align="flex-start" gap={0} flex={1}>
+            <Text fontSize="md" fontWeight="bold" color="text.neon">
+              {progress?.current ?? 0} / {progress?.target ?? 0}
             </Text>
-          )}
-        </VStack>
-      </HStack>
-    </Box>
+            {goal.endDate && (
+              <Text fontSize="xs" color="text.mist">
+                Remaining:{' '}
+                {Math.ceil((new Date(goal.endDate).getTime() - Date.now()) / (24 * 60 * 60 * 1000))}{' '}
+                days
+              </Text>
+            )}
+          </VStack>
+        </HStack>
+      </Card.Body>
+    </Card.Root>
   );
 }
