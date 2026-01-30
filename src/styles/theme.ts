@@ -1,66 +1,51 @@
 import { createSystem, defineConfig, defaultConfig } from '@chakra-ui/react';
+import { colors, alphaColors } from './tokens/colors';
+import { fonts } from './tokens/fonts';
+import { keyframes } from './tokens/animations';
+import { glass, glow } from './tokens/glassmorphism';
 import { input } from './components/input';
 import { button } from './components/button';
 import { select } from './components/select';
 import { fieldLabel } from './components/field-label';
 import { drawer } from './components/drawer';
+import { card } from './components/card';
+import { badge } from './components/badge';
+import { bottomNav } from './components/bottom-nav';
+import { popover } from './components/popover';
 
 export const config = defineConfig({
   theme: {
     tokens: {
       colors: {
-        brand: {
-          matrix: { value: '#00FF41' },
-          alert: { value: '#FF6B35' },
-          cyber: { value: '#00D4FF' },
-        },
-        bg: {
-          deep: { value: '#0A0A0A' },
-          carbon: { value: '#1A1A1A' },
-          dark: { value: '#2A2A2A' },
-        },
-        text: {
-          neon: { value: '#E0E0E0' },
-          mist: { value: '#C0C0C0' },
-          dim: { value: '#999999' },
-        },
+        ...colors,
+        ...alphaColors,
       },
-      fonts: {
-        heading: { value: 'monospace, "Press Start 2P"' },
-        body: { value: 'monospace, "VT323", "IBM Plex Mono"' },
-      },
+      fonts,
+      shadows: glow,
     },
     semanticTokens: {
       colors: {
+        glass,
         primary: { value: '{colors.brand.matrix}' },
         secondary: { value: '{colors.brand.alert}' },
         accent: { value: '{colors.brand.cyber}' },
       },
     },
-    keyframes: {
-      glitch: {
-        '0%': { transform: 'translate(0)' },
-        '20%': { transform: 'translate(-2px, 2px)' },
-        '40%': { transform: 'translate(-2px, -2px)' },
-        '60%': { transform: 'translate(2px, 2px)' },
-        '80%': { transform: 'translate(2px, -2px)' },
-        '100%': { transform: 'translate(0)' },
-      },
-      'matrix-flow': {
-        '0%': { backgroundPosition: '0% 0%' },
-        '100%': { backgroundPosition: '0% 100%' },
-      },
-    },
+    keyframes,
     recipes: {
       input,
       button,
       fieldLabel,
+      card,
+      badge,
     },
     slotRecipes: {
       select,
       drawer,
+      bottomNav,
+      popover,
     },
   },
-} as const);
+});
 
 export const system = createSystem(defaultConfig, config);

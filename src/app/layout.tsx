@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ChakraProvider } from '@/lib/chakra-provider';
+import './fonts.css';
 
 export const metadata: Metadata = {
   title: 'NEO-LOG | Log your life. Hack your future.',
