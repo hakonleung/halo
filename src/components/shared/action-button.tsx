@@ -1,13 +1,13 @@
 'use client';
 
-import { Box, IconButton, Drawer, Portal, Tabs } from '@chakra-ui/react';
-import { Plus } from 'lucide-react';
+import { Drawer, Portal, Tabs } from '@chakra-ui/react';
 import { RecordForm } from '@/components/behaviors/record-form';
 import { GoalForm } from '@/components/goals';
+import { NoteForm } from '@/components/log/note-form';
 import { useActionDrawer } from './action-drawer-context';
 
 export function ActionButton() {
-  const { isOpen, activeTab, closeDrawer, setActiveTab, openDrawer } = useActionDrawer();
+  const { isOpen, activeTab, closeDrawer, setActiveTab } = useActionDrawer();
 
   const getTitle = () => {
     switch (activeTab) {
@@ -15,6 +15,8 @@ export function ActionButton() {
         return 'NEW RECORD';
       case 'goal':
         return 'NEW GOAL';
+      case 'note':
+        return 'NEW NOTE';
       default:
         return 'NEW';
     }
@@ -22,7 +24,7 @@ export function ActionButton() {
 
   return (
     <>
-      <Box position="fixed" bottom="24px" right="24px" zIndex={100}>
+      {/* <Box position="fixed" bottom="24px" right="24px" zIndex={100}>
         <IconButton
           aria-label="Add recording"
           size="lg"
@@ -37,7 +39,7 @@ export function ActionButton() {
         >
           <Plus size={24} strokeWidth={3} />
         </IconButton>
-      </Box>
+      </Box> */}
 
       <Drawer.Root
         open={isOpen}
@@ -57,7 +59,7 @@ export function ActionButton() {
                   value={activeTab}
                   onValueChange={(e) => {
                     const value = e.value;
-                    if (value === 'record' || value === 'goal') {
+                    if (value === 'record' || value === 'goal' || value === 'note') {
                       setActiveTab(value);
                     }
                   }}
@@ -65,6 +67,7 @@ export function ActionButton() {
                   <Tabs.List>
                     <Tabs.Trigger value="record">Record</Tabs.Trigger>
                     <Tabs.Trigger value="goal">Goal</Tabs.Trigger>
+                    <Tabs.Trigger value="note">Note</Tabs.Trigger>
                   </Tabs.List>
 
                   <Tabs.Content value="record">
@@ -72,6 +75,9 @@ export function ActionButton() {
                   </Tabs.Content>
                   <Tabs.Content value="goal">
                     <GoalForm onSuccess={closeDrawer} onCancel={closeDrawer} />
+                  </Tabs.Content>
+                  <Tabs.Content value="note">
+                    <NoteForm onSuccess={closeDrawer} onCancel={closeDrawer} />
                   </Tabs.Content>
                 </Tabs.Root>
               </Drawer.Body>

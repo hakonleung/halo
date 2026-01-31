@@ -134,7 +134,22 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
                 <Table.Cell>{renderDataSummary(item)}</Table.Cell>
                 <Table.Cell textAlign="right">
                   <HStack gap={2} justify="flex-end">
-                    <IconButton variant="ghost" size="xs" aria-label="Edit">
+                    <IconButton
+                      variant="ghost"
+                      size="xs"
+                      aria-label="Edit"
+                      onClick={() => {
+                        // Add query parameter based on item type
+                        const url = new URL(window.location.href);
+                        if (item.type === 'goal') {
+                          url.searchParams.set('goal', item.id);
+                        } else if (item.type === 'behavior') {
+                          url.searchParams.set('record', item.id);
+                        }
+                        window.history.pushState({}, '', url.toString());
+                        window.dispatchEvent(new Event('popstate'));
+                      }}
+                    >
                       <LuPencil />
                     </IconButton>
                     <IconButton variant="ghost" size="xs" aria-label="Delete" colorPalette="red">

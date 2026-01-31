@@ -10,7 +10,7 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, isLoading } = useUser();
-  const redirectTo = searchParams.get('redirect') || '/dashboard';
+  const redirectTo = searchParams.get('redirect') || '/log';
 
   // 如果已登录，跳转到目标页面
   useEffect(() => {

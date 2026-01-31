@@ -11,10 +11,9 @@ export function TopNavbar() {
   const pathname = usePathname();
 
   const navLinks = [
+    { label: 'LOG', path: '/log' },
     { label: 'DASHBOARD', path: '/dashboard' },
-    { label: 'GOALS', path: '/goals' },
     { label: 'CHAT', path: '/chat' },
-    { label: 'HISTORY', path: '/history' },
     { label: 'SETTINGS', path: '/settings' },
   ];
 
@@ -33,7 +32,7 @@ export function TopNavbar() {
       <HStack h="full" justify="space-between">
         <HStack gap={8}>
           <Link asChild _hover={{ textDecoration: 'none' }}>
-            <NextLink href="/dashboard">
+            <NextLink href="/log">
               <Text
                 fontFamily="heading"
                 color="brand.matrix"

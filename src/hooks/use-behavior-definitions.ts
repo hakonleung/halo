@@ -60,3 +60,41 @@ export function useCreateBehaviorDefinition() {
     error: mutation.error?.message ?? null,
   };
 }
+
+/**
+ * Hook to update a behavior definition
+ */
+export function useUpdateBehaviorDefinition() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<BehaviorDefinitionCreateRequest>;
+    }) => internalApiService.updateBehaviorDefinition(id, updates),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['behavior-definitions'] });
+      toaster.create({
+        title: 'Success',
+        description: 'Behavior definition updated successfully.',
+        type: 'success',
+      });
+    },
+    onError: (error: Error) => {
+      toaster.create({
+        title: 'Error',
+        description: error.message,
+        type: 'error',
+      });
+    },
+  });
+
+  return {
+    updateDefinition: mutation.mutateAsync,
+    isLoading: mutation.isPending,
+    error: mutation.error?.message ?? null,
+  };
+}

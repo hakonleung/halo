@@ -11,10 +11,9 @@ interface GoalListProps {
     { current: number; target: number; progress: number; isCompleted: boolean }
   >;
   isLoading?: boolean;
-  onGoalClick?: (goalId: string) => void;
 }
 
-export function GoalList({ goals, progressMap, isLoading, onGoalClick }: GoalListProps) {
+export function GoalList({ goals, progressMap, isLoading }: GoalListProps) {
   if (isLoading) {
     return (
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={4}>
@@ -51,7 +50,13 @@ export function GoalList({ goals, progressMap, isLoading, onGoalClick }: GoalLis
             key={goal.id}
             goal={goal}
             progress={progress}
-            onClick={() => onGoalClick?.(goal.id)}
+            onClick={() => {
+              // Use URL query instead of navigation
+              const url = new URL(window.location.href);
+              url.searchParams.set('goal', goal.id);
+              window.history.pushState({}, '', url.toString());
+              window.dispatchEvent(new Event('popstate'));
+            }}
           />
         );
       })}

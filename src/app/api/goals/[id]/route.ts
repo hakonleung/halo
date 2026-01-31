@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabase-server';
 import { goalService } from '@/lib/goal-service';
 import { goalProgressService } from '@/lib/goal-progress-service';
-import { convertServerGoalToClient } from '@/types/__tests__/goal.test';
 import type { GoalProgress as ClientGoalProgress } from '@/types/goal-client';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -34,8 +33,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     // Calculate progress
     const progress = await goalProgressService.calculateProgress(supabase, user.id, res.data);
 
-    // Convert Server types to Client types
-    const clientGoal = convertServerGoalToClient(res.data);
     const clientProgress: ClientGoalProgress = {
       current: progress.current,
       target: progress.target,
@@ -46,7 +43,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
     return NextResponse.json({
       data: {
-        ...clientGoal,
+        ...res.data,
         progress: clientProgress,
       },
       error: null,
@@ -120,10 +117,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return NextResponse.json({ data: null, error: 'Goal not found' }, { status: 404 });
     }
 
-    // Convert Server type to Client type
-    const clientGoal = convertServerGoalToClient(res.data);
-
-    return NextResponse.json({ data: clientGoal, error: null });
+    return NextResponse.json({ data: res.data, error: null });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ data: null, error: message }, { status: 500 });

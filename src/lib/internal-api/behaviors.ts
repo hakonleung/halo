@@ -100,6 +100,35 @@ export const behaviorsApi = {
   },
 
   /**
+   * Update a behavior record
+   */
+  async updateBehaviorRecord(
+    recordId: string,
+    updates: Partial<ClientBehaviorRecordCreateRequest>,
+  ): Promise<ClientBehaviorRecord> {
+    const serverRequest: Partial<ServerBehaviorRecordCreateRequest> = {
+      definition_id: updates.definitionId,
+      recorded_at: updates.recordedAt,
+      metadata: updates.metadata,
+      note: updates.note,
+    };
+
+    const response = await BaseApiService.fetchApi<ServerBehaviorResponse<ServerBehaviorRecord>>(
+      `/api/behaviors/records/${recordId}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(serverRequest),
+      },
+    );
+
+    if (!response.data) {
+      throw new Error(response.error || 'Failed to update behavior record');
+    }
+
+    return convertBehaviorRecord(response.data);
+  },
+
+  /**
    * Delete a behavior record
    */
   async deleteBehaviorRecord(recordId: string): Promise<void> {
@@ -152,6 +181,34 @@ export const behaviorsApi = {
 
     if (!response.data) {
       throw new Error(response.error || 'Failed to create behavior definition');
+    }
+
+    return convertBehaviorDefinition(response.data);
+  },
+
+  /**
+   * Update a behavior definition
+   */
+  async updateBehaviorDefinition(
+    definitionId: string,
+    updates: Partial<ClientBehaviorDefinitionCreateRequest>,
+  ): Promise<ClientBehaviorDefinition> {
+    const serverRequest: Partial<ServerBehaviorDefinitionCreateRequest> = {};
+    if (updates.name !== undefined) serverRequest.name = updates.name;
+    if (updates.category !== undefined) serverRequest.category = updates.category;
+    if (updates.icon !== undefined) serverRequest.icon = updates.icon;
+    if (updates.metadataSchema !== undefined)
+      serverRequest.metadata_schema = updates.metadataSchema;
+
+    const response = await BaseApiService.fetchApi<
+      ServerBehaviorResponse<ServerBehaviorDefinition>
+    >(`/api/behaviors/definitions/${definitionId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(serverRequest),
+    });
+
+    if (!response.data) {
+      throw new Error(response.error || 'Failed to update behavior definition');
     }
 
     return convertBehaviorDefinition(response.data);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   VStack,
   HStack,
@@ -16,11 +16,20 @@ import {
 } from '@chakra-ui/react';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
-import { useCreateGoal } from '@/hooks/use-goals';
+import { useCreateGoal, useUpdateGoal } from '@/hooks/use-goals';
 import type { GoalCriteria } from '@/types/goal-client';
 import { GoalMetric, GoalOperator, GoalPeriod } from '@/types/goal-client';
 
 interface GoalFormProps {
+  initialData?: {
+    id: string;
+    name: string;
+    description?: string;
+    category: string;
+    startDate: string;
+    endDate?: string;
+    criteria: GoalCriteria[];
+  };
   onSuccess?: () => void;
   onCancel?: () => void;
 }
@@ -78,16 +87,48 @@ const createEmptyCriterion = (): GoalCriteria => ({
   description: '',
 });
 
-export function GoalForm({ onSuccess, onCancel }: GoalFormProps) {
+export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
   const { definitions, isLoading: loadingDefs } = useBehaviorDefinitions();
   const { createGoal, isLoading: saving } = useCreateGoal();
+  const { updateGoal } = useUpdateGoal();
 
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('other');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [criteria, setCriteria] = useState<GoalCriteria[]>([createEmptyCriterion()]);
+  const [name, setName] = useState(initialData?.name || '');
+  const [description, setDescription] = useState(initialData?.description || '');
+  const [category, setCategory] = useState(initialData?.category || 'other');
+  const [startDate, setStartDate] = useState(
+    initialData?.startDate ? initialData.startDate.split('T')[0] : '',
+  );
+  const [endDate, setEndDate] = useState(
+    initialData?.endDate ? initialData.endDate.split('T')[0] : '',
+  );
+  const [criteria, setCriteria] = useState<GoalCriteria[]>(() => {
+    if (
+      initialData?.criteria &&
+      Array.isArray(initialData.criteria) &&
+      initialData.criteria.length > 0
+    ) {
+      return initialData.criteria;
+    }
+    return [createEmptyCriterion()];
+  });
+
+  const isEditing = !!initialData;
+
+  // Update criteria when initialData changes (e.g., when goal loads)
+  useEffect(() => {
+    if (initialData) {
+      // Always use the criteria from initialData if it exists, even if empty
+      // This ensures we show the correct data when editing
+      if (initialData.criteria && Array.isArray(initialData.criteria)) {
+        // If criteria array is empty, show at least one empty criterion
+        setCriteria(
+          initialData.criteria.length > 0 ? initialData.criteria : [createEmptyCriterion()],
+        );
+      } else {
+        setCriteria([createEmptyCriterion()]);
+      }
+    }
+  }, [initialData]);
 
   const behaviorCollection = createListCollection({
     items: definitions.map((d) => ({
@@ -131,14 +172,28 @@ export function GoalForm({ onSuccess, onCancel }: GoalFormProps) {
     }
 
     try {
-      await createGoal({
-        name: name.trim(),
-        description: description.trim() || undefined,
-        category,
-        startDate,
-        endDate: endDate || undefined,
-        criteria: validCriteria,
-      });
+      if (isEditing && initialData) {
+        await updateGoal({
+          id: initialData.id,
+          updates: {
+            name: name.trim(),
+            description: description.trim() || undefined,
+            category,
+            startDate,
+            endDate: endDate || undefined,
+            criteria: validCriteria,
+          },
+        });
+      } else {
+        await createGoal({
+          name: name.trim(),
+          description: description.trim() || undefined,
+          category,
+          startDate,
+          endDate: endDate || undefined,
+          criteria: validCriteria,
+        });
+      }
       if (onSuccess) onSuccess();
     } catch {
       // Error handled by hook

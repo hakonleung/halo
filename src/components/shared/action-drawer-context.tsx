@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, type ReactNode } from 'react';
 
-type ActionDrawerTab = 'record' | 'goal';
+type ActionDrawerTab = 'record' | 'goal' | 'note';
 
 interface ActionDrawerContextValue {
   isOpen: boolean;

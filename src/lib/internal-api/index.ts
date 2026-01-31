@@ -35,9 +35,11 @@ export const internalApiService = {
   // Behaviors API
   getBehaviorRecords: behaviorsApi.getBehaviorRecords,
   createBehaviorRecord: behaviorsApi.createBehaviorRecord,
+  updateBehaviorRecord: behaviorsApi.updateBehaviorRecord,
   deleteBehaviorRecord: behaviorsApi.deleteBehaviorRecord,
   getBehaviorDefinitions: behaviorsApi.getBehaviorDefinitions,
   createBehaviorDefinition: behaviorsApi.createBehaviorDefinition,
+  updateBehaviorDefinition: behaviorsApi.updateBehaviorDefinition,
 
   // Notes API
   getNotes: notesApi.getNotes,

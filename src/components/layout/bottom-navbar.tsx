@@ -3,7 +3,7 @@
 import { Box, HStack, Text, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Target, MessageSquare, History, Settings } from 'lucide-react';
+import { LayoutDashboard, BarChart3, MessageSquare, Settings } from 'lucide-react';
 
 /**
  * Bottom navigation bar component (mobile only)
@@ -12,10 +12,9 @@ export function BottomNavbar() {
   const pathname = usePathname();
 
   const navItems = [
-    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { label: 'Goals', path: '/goals', icon: Target },
+    { label: 'Log', path: '/log', icon: LayoutDashboard },
+    { label: 'Dashboard', path: '/dashboard', icon: BarChart3 },
     { label: 'Chat', path: '/chat', icon: MessageSquare },
-    { label: 'History', path: '/history', icon: History },
     { label: 'Settings', path: '/settings', icon: Settings },
   ];
 

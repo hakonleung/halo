@@ -20,7 +20,7 @@ import {
   useBehaviorDefinitions,
   useCreateBehaviorDefinition,
 } from '@/hooks/use-behavior-definitions';
-import { useCreateBehaviorRecord } from '@/hooks/use-behavior-records';
+import { useCreateBehaviorRecord, useUpdateBehaviorRecord } from '@/hooks/use-behavior-records';
 import { MetadataSchemaEditor } from './metadata-schema-editor';
 import { BehaviorCategory } from '@/types/behavior-server';
 import type { MetadataField, MetadataValue, MetadataRecord } from '@/types/behavior-client';
@@ -28,6 +28,13 @@ import type { MetadataField, MetadataValue, MetadataRecord } from '@/types/behav
 const ADD_DEFINITION_VALUE = '__add_definition__';
 
 interface RecordFormProps {
+  initialData?: {
+    id: string;
+    definitionId: string;
+    metadata: MetadataRecord;
+    note?: string;
+    recordedAt: string;
+  };
   onSuccess?: () => void;
   onCancel?: () => void;
 }
@@ -44,14 +51,18 @@ const categoryCollection = createListCollection({
   items: categoryOptions.map((opt) => ({ label: opt.label, value: opt.value })),
 });
 
-export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
+export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps) {
   const { definitions, isLoading: loadingDefs } = useBehaviorDefinitions();
   const { createDefinition, isLoading: savingDef } = useCreateBehaviorDefinition();
   const { createRecord, isLoading: savingRecord } = useCreateBehaviorRecord();
+  const { updateRecord, isLoading: updatingRecord } = useUpdateBehaviorRecord();
 
-  const [selectedDefId, setSelectedDefId] = useState<string>('');
-  const [metadata, setMetadata] = useState<MetadataRecord>({});
-  const [note, setNote] = useState('');
+  const isEditing = !!initialData;
+  const isLoading = savingRecord || updatingRecord;
+
+  const [selectedDefId, setSelectedDefId] = useState<string>(initialData?.definitionId || '');
+  const [metadata, setMetadata] = useState<MetadataRecord>(initialData?.metadata || {});
+  const [note, setNote] = useState(initialData?.note || '');
 
   // Inline definition creation state
   const [isAddingDefinition, setIsAddingDefinition] = useState(false);
@@ -65,16 +76,30 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
   // Initialize metadata with default values when definition changes
   useEffect(() => {
     if (selectedDef) {
-      const initialMetadata: MetadataRecord = {};
-      selectedDef.metadataSchema.forEach((field) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        initialMetadata[field.key] = (field.config.defaultValue as MetadataValue) ?? '';
-      });
-      setMetadata(initialMetadata);
-    } else {
+      // If editing and we have existing metadata, merge with defaults
+      if (isEditing && initialData && Object.keys(metadata).length > 0) {
+        // Keep existing metadata, only add defaults for new fields
+        const mergedMetadata: MetadataRecord = { ...metadata };
+        selectedDef.metadataSchema.forEach((field) => {
+          if (!(field.key in mergedMetadata)) {
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            mergedMetadata[field.key] = (field.config.defaultValue as MetadataValue) ?? '';
+          }
+        });
+        setMetadata(mergedMetadata);
+      } else if (!isEditing) {
+        // Create new metadata with defaults
+        const initialMetadata: MetadataRecord = {};
+        selectedDef.metadataSchema.forEach((field) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          initialMetadata[field.key] = (field.config.defaultValue as MetadataValue) ?? '';
+        });
+        setMetadata(initialMetadata);
+      }
+    } else if (!isEditing) {
       setMetadata({});
     }
-  }, [selectedDef]);
+  }, [selectedDef, isEditing, initialData]);
 
   const handleSelectChange = (value: string) => {
     if (value === ADD_DEFINITION_VALUE) {
@@ -123,11 +148,22 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
     if (!selectedDefId) return;
 
     try {
-      await createRecord({
-        definitionId: selectedDefId,
-        metadata,
-        note,
-      });
+      if (isEditing && initialData) {
+        await updateRecord({
+          id: initialData.id,
+          updates: {
+            definitionId: selectedDefId,
+            metadata,
+            note,
+          },
+        });
+      } else {
+        await createRecord({
+          definitionId: selectedDefId,
+          metadata,
+          note,
+        });
+      }
       if (onSuccess) onSuccess();
     } catch {
       // Error handled by hook
@@ -350,10 +386,10 @@ export function RecordForm({ onSuccess, onCancel }: RecordFormProps) {
           variant="primary"
           flex={1}
           onClick={handleSubmit}
-          loading={savingRecord}
+          loading={isLoading}
           disabled={!selectedDefId}
         >
-          SAVE RECORD
+          {isEditing ? 'SAVE CHANGES' : 'SAVE RECORD'}
         </Button>
       </HStack>
     </VStack>

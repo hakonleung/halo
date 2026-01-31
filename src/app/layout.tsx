@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { ChakraProvider } from '@/lib/chakra-provider';
 import { AnimatedBackground } from '@/components/layout/animated-background';
 import { ActionDrawerProvider } from '@/components/shared/action-drawer-context';
+import { DetailDrawerProvider } from '@/components/log/detail-drawer-provider';
+import { DetailDrawers } from '@/components/log/detail-drawers';
 import './fonts.css';
 
 export const metadata: Metadata = {
@@ -19,8 +21,11 @@ export default function RootLayout({
       <body>
         <ChakraProvider>
           <ActionDrawerProvider>
-            <AnimatedBackground />
-            {children}
+            <DetailDrawerProvider>
+              <AnimatedBackground />
+              {children}
+              <DetailDrawers />
+            </DetailDrawerProvider>
           </ActionDrawerProvider>
         </ChakraProvider>
       </body>

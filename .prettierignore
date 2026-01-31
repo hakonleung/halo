@@ -1,4 +1,4 @@
 *.md
 .claude/**/*.md
 
-.pnpm-lock.yaml
+*.yaml

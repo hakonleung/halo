@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabase-server';
 import { goalService, type GetGoalsParams } from '@/lib/goal-service';
-import { convertServerGoalToClient } from '@/types/__tests__/goal.test';
 
 export async function GET(request: Request) {
   try {
@@ -43,10 +42,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ data: null, error: res.error }, { status: 500 });
     }
 
-    // Convert Server types to Client types
-    const clientGoals = res.data?.map(convertServerGoalToClient) || [];
-
-    return NextResponse.json({ data: clientGoals, error: null });
+    return NextResponse.json({ data: res.data ?? [], error: null });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ data: null, error: message }, { status: 500 });
@@ -127,10 +123,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ data: null, error: 'Failed to create goal' }, { status: 500 });
     }
 
-    // Convert Server type to Client type
-    const clientGoal = convertServerGoalToClient(res.data);
-
-    return NextResponse.json({ data: clientGoal, error: null }, { status: 201 });
+    return NextResponse.json({ data: res.data, error: null }, { status: 201 });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ data: null, error: message }, { status: 500 });

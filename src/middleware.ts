@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getSession();
 
   // Protected routes that require authentication
-  const protectedRoutes = ['/dashboard', '/chat', '/history', '/settings'];
+  const protectedRoutes = ['/dashboard', '/log', '/chat', '/settings'];
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
   // If accessing protected route without session, redirect to home with redirect param
@@ -46,10 +46,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // If accessing home page with session, redirect based on redirect param or default to dashboard
+  // If accessing home page with session, redirect based on redirect param or default to log
   if (pathname === '/' && session) {
     const redirectParam = request.nextUrl.searchParams.get('redirect');
-    const targetPath = redirectParam || '/dashboard';
+    const targetPath = redirectParam || '/log';
     return NextResponse.redirect(new URL(targetPath, request.url));
   }
 

@@ -8,10 +8,7 @@
       "summary": "Generate UI design document with 8 component specs",
       "details": {
         "action": "generate",
-        "files_affected": [
-          "03_ui_design/ui-design.md",
-          "03_ui_design/preview/index.html"
-        ],
+        "files_affected": ["03_ui_design/ui-design.md", "03_ui_design/preview/index.html"],
         "content_summary": "8 component specs, 4 animations, design variables, HTML preview"
       }
     },

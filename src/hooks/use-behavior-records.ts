@@ -66,6 +66,40 @@ export function useCreateBehaviorRecord() {
 }
 
 /**
+ * Hook to update a behavior record
+ */
+export function useUpdateBehaviorRecord() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<BehaviorRecordCreateRequest> }) =>
+      internalApiService.updateBehaviorRecord(id, updates),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['behavior-records'] });
+      void queryClient.invalidateQueries({ queryKey: ['behavior-definitions'] });
+      void queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      toaster.create({
+        title: 'Success',
+        description: 'Record updated successfully.',
+        type: 'success',
+      });
+    },
+    onError: (error: Error) => {
+      toaster.create({
+        title: 'Error',
+        description: error.message,
+        type: 'error',
+      });
+    },
+  });
+
+  return {
+    updateRecord: mutation.mutateAsync,
+    isLoading: mutation.isPending,
+  };
+}
+
+/**
  * Hook to delete a behavior record
  */
 export function useDeleteBehaviorRecord() {

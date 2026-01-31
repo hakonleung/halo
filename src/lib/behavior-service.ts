@@ -101,6 +101,32 @@ export const behaviorService = {
   },
 
   /**
+   * Update a behavior record
+   */
+  async updateRecord(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+    recordId: string,
+    updates: Partial<BehaviorRecordCreateRequest>,
+  ) {
+    if (!userId || !recordId) return { data: null, error: 'User ID and Record ID are required' };
+    const { data, error } = await supabase
+      .from('neolog_behavior_records')
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      .update({
+        ...updates,
+      } as Database['public']['Tables']['neolog_behavior_records']['Update'])
+      .eq('id', recordId)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) return { data: null, error: error.message };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return { data: data as BehaviorRecord, error: null };
+  },
+
+  /**
    * Delete a behavior record
    */
   async deleteRecord(supabase: SupabaseClient<Database>, userId: string, recordId: string) {
@@ -113,5 +139,59 @@ export const behaviorService = {
 
     if (error) return { error: error.message };
     return { error: null };
+  },
+
+  /**
+   * Update a behavior definition
+   */
+  async updateDefinition(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+    definitionId: string,
+    updates: Partial<BehaviorDefinitionCreateRequest>,
+  ) {
+    if (!userId || !definitionId)
+      return { data: null, error: 'User ID and Definition ID are required' };
+
+    // First, check if the definition exists and belongs to the user
+    const { data: existingDefinition, error: checkError } = await supabase
+      .from('neolog_behavior_definitions')
+      .select('id, user_id')
+      .eq('id', definitionId)
+      .maybeSingle();
+
+    if (checkError) return { data: null, error: checkError.message };
+    if (!existingDefinition) return { data: null, error: 'Definition not found' };
+    if (existingDefinition.user_id !== userId) {
+      return { data: null, error: 'You do not have permission to update this definition' };
+    }
+
+    const updatePayload: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+
+    // Only include fields that are provided
+    if (updates.name !== undefined) updatePayload.name = updates.name;
+    if (updates.category !== undefined) updatePayload.category = updates.category;
+    if (updates.icon !== undefined) updatePayload.icon = updates.icon;
+    if (updates.metadata_schema !== undefined)
+      updatePayload.metadata_schema = updates.metadata_schema;
+
+    const { data, error } = await supabase
+      .from('neolog_behavior_definitions')
+
+      .update(
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        updatePayload as Database['public']['Tables']['neolog_behavior_definitions']['Update'],
+      )
+      .eq('id', definitionId)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) return { data: null, error: error.message };
+    if (!data) return { data: null, error: 'Failed to update definition' };
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return { data: data as BehaviorDefinition, error: null };
   },
 };
