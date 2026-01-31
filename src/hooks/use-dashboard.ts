@@ -34,18 +34,3 @@ export function useHeatmap(months = 12) {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
-
-/**
- * Hook for behaviors by date (for heatmap drill-down)
- */
-export function useBehaviorsByDate(date: string | null) {
-  return useQuery({
-    queryKey: ['behaviors', 'byDate', date],
-    queryFn: async () => {
-      if (!date) return [];
-      const records = await internalApiService.getBehaviorRecords(1000, 0);
-      return records.filter((r) => r.recordedAt.startsWith(date));
-    },
-    enabled: Boolean(date),
-  });
-}

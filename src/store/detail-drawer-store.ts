@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { DetailDrawerType } from '@/types/drawer';
+import type { DetailDrawerType } from '@/types/drawer';
 
 interface DetailDrawerStore {
   drawerType: DetailDrawerType | null;

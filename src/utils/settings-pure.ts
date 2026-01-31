@@ -1,5 +1,3 @@
-import type { Settings, SettingsUpdateRequest } from '@/types/settings-client';
-
 /**
  * Pure functions for settings validation and transformation
  */
@@ -81,68 +79,6 @@ export function validateDoNotDisturbTimeRange(
     return 'Start time and end time must be different';
   }
   return null;
-}
-
-/**
- * Get default settings
- * @returns Default settings object
- */
-export function getDefaultSettings(): Partial<Settings> {
-  return {
-    theme: 'dark',
-    accent_color: '#00FF41',
-    animation_level: 'full',
-    font_size: 'medium',
-    code_font: 'JetBrains Mono',
-    notifications_in_app: true,
-    notifications_push: false,
-    notifications_email: false,
-    goal_reminder_enabled: true,
-    record_reminder_enabled: false,
-    insights_enabled: true,
-    do_not_disturb_weekends: false,
-    language: 'en',
-    timezone: 'UTC',
-    date_format: 'YYYY-MM-DD',
-    currency: 'CNY',
-    shortcuts: {},
-  };
-}
-
-/**
- * Merge settings with updates
- * @param current - Current settings
- * @param updates - Settings updates
- * @returns Merged settings
- */
-export function mergeSettingsUpdates(
-  current: Settings | null,
-  updates: SettingsUpdateRequest,
-): SettingsUpdateRequest {
-  if (!current) {
-    return updates;
-  }
-  return {
-    ...updates,
-    // Only include fields that are being updated
-  };
-}
-
-/**
- * Check if settings have unsaved changes
- * @param original - Original settings
- * @param current - Current settings values
- * @returns True if there are unsaved changes
- */
-export function hasUnsavedChanges(original: Settings | null, current: Partial<Settings>): boolean {
-  if (!original) {
-    return Object.keys(current).length > 0;
-  }
-  return Object.keys(current).some((key) => {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const typedKey = key as keyof Settings;
-    return original[typedKey] !== current[typedKey];
-  });
 }
 
 /**
