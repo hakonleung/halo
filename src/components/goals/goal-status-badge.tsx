@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Text } from '@chakra-ui/react';
+import { Badge } from '@chakra-ui/react';
 import type { Goal } from '@/types/goal-client';
 
 interface GoalStatusBadgeProps {
@@ -10,21 +10,15 @@ interface GoalStatusBadgeProps {
 export function GoalStatusBadge({ status }: GoalStatusBadgeProps) {
   const statusConfig = {
     active: {
-      bg: 'rgba(0, 255, 65, 0.2)',
-      color: '#00FF41',
-      border: '#00FF41',
+      colorScheme: 'success' as const,
       text: 'Active',
     },
     completed: {
-      bg: 'rgba(0, 255, 65, 0.3)',
-      color: '#00FF41',
-      border: '#00FF41',
+      colorScheme: 'success' as const,
       text: 'Completed',
     },
     abandoned: {
-      bg: 'rgba(136, 136, 136, 0.2)',
-      color: '#888888',
-      border: '#888888',
+      colorScheme: 'neutral' as const,
       text: 'Abandoned',
     },
   };
@@ -32,18 +26,8 @@ export function GoalStatusBadge({ status }: GoalStatusBadgeProps) {
   const config = statusConfig[status];
 
   return (
-    <Box
-      px={2}
-      py={1}
-      borderRadius="4px"
-      bg={config.bg}
-      border="1px solid"
-      borderColor={config.border}
-      display="inline-block"
-    >
-      <Text fontSize="xs" color={config.color} fontFamily="mono" fontWeight="bold">
-        {config.text}
-      </Text>
-    </Box>
+    <Badge colorScheme={config.colorScheme} size="sm">
+      {config.text}
+    </Badge>
   );
 }

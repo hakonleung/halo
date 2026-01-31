@@ -13,6 +13,7 @@ export interface RecordFiltersType {
 interface RecordFiltersProps {
   filters: RecordFiltersType;
   onFilterChange: (newFilters: Partial<RecordFiltersType>) => void;
+  hideDatePickers?: boolean;
 }
 
 const categoryOptions = [
@@ -24,7 +25,11 @@ const categoryOptions = [
   { label: 'Other', value: 'other' },
 ];
 
-export function RecordFilters({ filters, onFilterChange }: RecordFiltersProps) {
+export function RecordFilters({
+  filters,
+  onFilterChange,
+  hideDatePickers = false,
+}: RecordFiltersProps) {
   const filterConfigs: FilterConfig[] = [
     {
       key: 'category',
@@ -41,18 +46,22 @@ export function RecordFilters({ filters, onFilterChange }: RecordFiltersProps) {
       value: filters.search || '',
       maxW: '150px',
     },
-    {
-      key: 'startDate',
-      type: 'datepicker',
-      value: filters.startDate || '',
-      maxW: '120px',
-    },
-    {
-      key: 'endDate',
-      type: 'datepicker',
-      value: filters.endDate || '',
-      maxW: '120px',
-    },
+    ...(hideDatePickers
+      ? []
+      : [
+          {
+            key: 'startDate',
+            type: 'datepicker' as const,
+            value: filters.startDate || '',
+            maxW: '120px',
+          },
+          {
+            key: 'endDate',
+            type: 'datepicker' as const,
+            value: filters.endDate || '',
+            maxW: '120px',
+          },
+        ]),
   ];
 
   const handleFilterChange = (key: string, value: string) => {

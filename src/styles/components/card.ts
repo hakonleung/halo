@@ -87,10 +87,10 @@ export const card = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          p: '16px',
+          p: '0',
         },
         body: {
-          p: '16px',
+          p: '4px',
         },
       },
       md: {
