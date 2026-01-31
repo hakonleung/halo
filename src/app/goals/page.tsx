@@ -19,6 +19,7 @@ import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import { GoalList } from '@/components/goals';
 import { useGoals } from '@/hooks/use-goals';
 import type { GetGoalsParams } from '@/hooks/use-goals';
+import { useActionDrawer } from '@/components/shared/action-drawer-context';
 
 const statusOptions = createListCollection({
   items: [
@@ -49,6 +50,7 @@ const sortOptions = createListCollection({
 
 export default function GoalsPage() {
   const router = useRouter();
+  const { openDrawer } = useActionDrawer();
   const [filters, setFilters] = useState<GetGoalsParams>({
     sort: 'created_at',
     order: 'desc',
@@ -83,7 +85,7 @@ export default function GoalsPage() {
             <Heading fontSize="32px" color="text.neon" fontFamily="mono">
               Goal Management
             </Heading>
-            <Button colorScheme="green" onClick={() => router.push('/goals/new')}>
+            <Button colorScheme="green" onClick={() => openDrawer('goal')}>
               + Create Goal
             </Button>
           </HStack>

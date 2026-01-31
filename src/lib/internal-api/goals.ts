@@ -86,14 +86,15 @@ export const goalsApi = {
    * Create a goal
    */
   async createGoal(goal: ClientGoalCreateRequest): Promise<ClientGoal> {
-    const serverRequest: ServerGoalCreateRequest = {
+    // API route expects camelCase, not snake_case
+    const apiRequest = {
       name: goal.name,
       description: goal.description,
       category: goal.category,
-      start_date: goal.startDate,
-      end_date: goal.endDate,
+      startDate: goal.startDate,
+      endDate: goal.endDate,
       criteria: goal.criteria.map((c) => ({
-        behavior_id: c.behaviorId,
+        behaviorId: c.behaviorId,
         metric: c.metric,
         operator: c.operator,
         value: c.value,
@@ -104,7 +105,7 @@ export const goalsApi = {
 
     const response = await BaseApiService.fetchApi<ApiResponse<ServerGoal>>('/api/goals', {
       method: 'POST',
-      body: JSON.stringify(serverRequest),
+      body: JSON.stringify(apiRequest),
     });
 
     if (!response.data) {

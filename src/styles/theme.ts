@@ -12,6 +12,7 @@ import { card } from './components/card';
 import { badge } from './components/badge';
 import { bottomNav } from './components/bottom-nav';
 import { popover } from './components/popover';
+import { tabs } from './components/tabs';
 
 export const config = defineConfig({
   theme: {
@@ -44,6 +45,7 @@ export const config = defineConfig({
       bottomNav,
       popover,
       card,
+      tabs,
     },
   },
 });

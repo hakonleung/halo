@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ChakraProvider } from '@/lib/chakra-provider';
 import { AnimatedBackground } from '@/components/layout/animated-background';
+import { ActionDrawerProvider } from '@/components/shared/action-drawer-context';
 import './fonts.css';
 
 export const metadata: Metadata = {
@@ -17,8 +18,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ChakraProvider>
-          <AnimatedBackground />
-          {children}
+          <ActionDrawerProvider>
+            <AnimatedBackground />
+            {children}
+          </ActionDrawerProvider>
         </ChakraProvider>
       </body>
     </html>

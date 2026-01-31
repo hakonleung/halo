@@ -1,14 +1,24 @@
 'use client';
 
-import { useState } from 'react';
-import { Box, IconButton, Drawer, Portal } from '@chakra-ui/react';
+import { Box, IconButton, Drawer, Portal, Tabs } from '@chakra-ui/react';
 import { Plus } from 'lucide-react';
 import { RecordForm } from '@/components/behaviors/record-form';
+import { GoalForm } from '@/components/goals';
+import { useActionDrawer } from './action-drawer-context';
 
 export function ActionButton() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, activeTab, closeDrawer, setActiveTab, openDrawer } = useActionDrawer();
 
-  const handleClose = () => setIsOpen(false);
+  const getTitle = () => {
+    switch (activeTab) {
+      case 'record':
+        return 'NEW RECORD';
+      case 'goal':
+        return 'NEW GOAL';
+      default:
+        return 'NEW';
+    }
+  };
 
   return (
     <>
@@ -22,24 +32,48 @@ export function ActionButton() {
           bg="brand.matrix"
           color="bg.deep"
           _hover={{ bg: '#00cc33', boxShadow: '0 0 15px #00FF41' }}
-          onClick={() => setIsOpen(true)}
+          onClick={() => openDrawer('record')}
           boxShadow="0 0 10px rgba(0, 255, 65, 0.3)"
         >
           <Plus size={24} strokeWidth={3} />
         </IconButton>
       </Box>
 
-      <Drawer.Root open={isOpen} onOpenChange={(e) => setIsOpen(e.open)} placement="end">
+      <Drawer.Root
+        open={isOpen}
+        onOpenChange={(e) => (e.open ? undefined : closeDrawer())}
+        placement="end"
+      >
         <Portal>
           <Drawer.Backdrop />
           <Drawer.Positioner>
-            <Drawer.Content width={{ base: 'full', md: '420px' }}>
+            <Drawer.Content width={{ base: 'full', md: '500px' }}>
               <Drawer.Header>
-                <Drawer.Title>NEW RECORD</Drawer.Title>
+                <Drawer.Title>{getTitle()}</Drawer.Title>
               </Drawer.Header>
 
               <Drawer.Body>
-                <RecordForm onSuccess={handleClose} onCancel={handleClose} />
+                <Tabs.Root
+                  value={activeTab}
+                  onValueChange={(e) => {
+                    const value = e.value;
+                    if (value === 'record' || value === 'goal') {
+                      setActiveTab(value);
+                    }
+                  }}
+                >
+                  <Tabs.List>
+                    <Tabs.Trigger value="record">Record</Tabs.Trigger>
+                    <Tabs.Trigger value="goal">Goal</Tabs.Trigger>
+                  </Tabs.List>
+
+                  <Tabs.Content value="record">
+                    <RecordForm onSuccess={closeDrawer} onCancel={closeDrawer} />
+                  </Tabs.Content>
+                  <Tabs.Content value="goal">
+                    <GoalForm onSuccess={closeDrawer} onCancel={closeDrawer} />
+                  </Tabs.Content>
+                </Tabs.Root>
               </Drawer.Body>
 
               <Drawer.CloseTrigger />
