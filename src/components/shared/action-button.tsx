@@ -2,20 +2,20 @@
 
 import { Drawer, Portal, Tabs } from '@chakra-ui/react';
 import { RecordForm } from '@/components/behaviors/record-form';
-import { GoalForm } from '@/components/goals';
-import { NoteForm } from '@/components/log/note-form';
-import { useActionDrawer } from './action-drawer-context';
+import { GoalForm, NoteForm } from '@/components/forms';
+import { useActionDrawerStore } from '@/store/action-drawer-store';
+import { ActionDrawerTab } from '@/types/drawer';
 
 export function ActionButton() {
-  const { isOpen, activeTab, closeDrawer, setActiveTab } = useActionDrawer();
+  const { isOpen, activeTab, closeDrawer, setActiveTab } = useActionDrawerStore();
 
   const getTitle = () => {
     switch (activeTab) {
-      case 'record':
+      case ActionDrawerTab.Record:
         return 'NEW RECORD';
-      case 'goal':
+      case ActionDrawerTab.Goal:
         return 'NEW GOAL';
-      case 'note':
+      case ActionDrawerTab.Note:
         return 'NEW NOTE';
       default:
         return 'NEW';
@@ -59,24 +59,28 @@ export function ActionButton() {
                   value={activeTab}
                   onValueChange={(e) => {
                     const value = e.value;
-                    if (value === 'record' || value === 'goal' || value === 'note') {
+                    if (
+                      value === ActionDrawerTab.Record ||
+                      value === ActionDrawerTab.Goal ||
+                      value === ActionDrawerTab.Note
+                    ) {
                       setActiveTab(value);
                     }
                   }}
                 >
                   <Tabs.List>
-                    <Tabs.Trigger value="record">Record</Tabs.Trigger>
-                    <Tabs.Trigger value="goal">Goal</Tabs.Trigger>
-                    <Tabs.Trigger value="note">Note</Tabs.Trigger>
+                    <Tabs.Trigger value={ActionDrawerTab.Record}>Record</Tabs.Trigger>
+                    <Tabs.Trigger value={ActionDrawerTab.Goal}>Goal</Tabs.Trigger>
+                    <Tabs.Trigger value={ActionDrawerTab.Note}>Note</Tabs.Trigger>
                   </Tabs.List>
 
-                  <Tabs.Content value="record">
+                  <Tabs.Content value={ActionDrawerTab.Record}>
                     <RecordForm onSuccess={closeDrawer} onCancel={closeDrawer} />
                   </Tabs.Content>
-                  <Tabs.Content value="goal">
+                  <Tabs.Content value={ActionDrawerTab.Goal}>
                     <GoalForm onSuccess={closeDrawer} onCancel={closeDrawer} />
                   </Tabs.Content>
-                  <Tabs.Content value="note">
+                  <Tabs.Content value={ActionDrawerTab.Note}>
                     <NoteForm onSuccess={closeDrawer} onCancel={closeDrawer} />
                   </Tabs.Content>
                 </Tabs.Root>

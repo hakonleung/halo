@@ -28,7 +28,8 @@ import type { Note } from '@/types/note-client';
 import type { GetGoalsParams } from '@/hooks/use-goals';
 import type { HistoryListRequest } from '@/types/history-client';
 import { SortOrder } from '@/types/history-server';
-import { useActionDrawer } from '@/components/shared/action-drawer-context';
+import { useActionDrawerStore } from '@/store/action-drawer-store';
+import { ActionDrawerTab } from '@/types/drawer';
 
 const statusOptions = createListCollection({
   items: [
@@ -51,7 +52,7 @@ const categoryOptions = createListCollection({
 });
 
 export default function LogPage() {
-  const { openDrawer } = useActionDrawer();
+  const { openDrawer } = useActionDrawerStore();
   const [activeTab, setActiveTab] = useState<'goals' | 'records' | 'notes'>('goals');
 
   // Goals state
@@ -111,7 +112,7 @@ export default function LogPage() {
             <Heading fontSize="32px" color="text.neon" fontFamily="mono">
               LOG
             </Heading>
-            <Button colorScheme="green" onClick={() => openDrawer('record')}>
+            <Button colorScheme="green" onClick={() => openDrawer(ActionDrawerTab.Record)}>
               + Add Entry
             </Button>
           </HStack>

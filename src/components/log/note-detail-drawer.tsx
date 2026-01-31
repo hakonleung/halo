@@ -13,7 +13,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { useNotes, useDeleteNote } from '@/hooks/use-notes';
-import { NoteForm } from './note-form';
+import { NoteForm } from '@/components/forms';
 
 interface NoteDetailDrawerProps {
   noteId: string;

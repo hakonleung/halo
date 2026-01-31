@@ -1,8 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, type ReactNode } from 'react';
-
-type ActionDrawerTab = 'record' | 'goal' | 'note';
+import { ActionDrawerTab } from '@/types/drawer';
 
 interface ActionDrawerContextValue {
   isOpen: boolean;
@@ -16,7 +15,7 @@ const ActionDrawerContext = createContext<ActionDrawerContextValue | undefined>(
 
 export function ActionDrawerProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<ActionDrawerTab>('record');
+  const [activeTab, setActiveTab] = useState<ActionDrawerTab>(ActionDrawerTab.Record);
 
   const openDrawer = (tab?: ActionDrawerTab) => {
     if (tab) {

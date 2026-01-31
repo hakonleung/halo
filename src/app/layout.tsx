@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 import { ChakraProvider } from '@/lib/chakra-provider';
-import { AnimatedBackground } from '@/components/layout/animated-background';
-import { ActionDrawerProvider } from '@/components/shared/action-drawer-context';
-import { DetailDrawerProvider } from '@/components/log/detail-drawer-provider';
-import { DetailDrawers } from '@/components/log/detail-drawers';
+import { GlobalComponents } from '@/components/global/global-components';
 import './fonts.css';
 
 export const metadata: Metadata = {
@@ -20,13 +17,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ChakraProvider>
-          <ActionDrawerProvider>
-            <DetailDrawerProvider>
-              <AnimatedBackground />
-              {children}
-              <DetailDrawers />
-            </DetailDrawerProvider>
-          </ActionDrawerProvider>
+          <GlobalComponents>{children}</GlobalComponents>
         </ChakraProvider>
       </body>
     </html>

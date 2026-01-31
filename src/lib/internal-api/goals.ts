@@ -11,6 +11,7 @@ import type {
   Goal as ClientGoal,
   GoalCreateRequest as ClientGoalCreateRequest,
   GoalProgress,
+  GoalCategory,
 } from '@/types/goal-client';
 
 function convertGoal(server: ServerGoal): ClientGoal {
@@ -19,7 +20,8 @@ function convertGoal(server: ServerGoal): ClientGoal {
     userId: server.user_id,
     name: server.name,
     description: server.description ?? undefined,
-    category: server.category,
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    category: server.category as GoalCategory,
     startDate: server.start_date,
     endDate: server.end_date ?? undefined,
     criteria: server.criteria.map((c) => ({

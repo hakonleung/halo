@@ -13,7 +13,8 @@
     "ts-check": "tsc --noEmit",
     "typegen": "chakra typegen ./src/styles/theme.ts",
     "db:generate": "drizzle-kit generate && cat supabase/migrations/*.sql supabase/custom.sql > supabase/schema.sql",
-    "db:migrate": "node scripts/migrate-db.js"
+    "db:migrate": "node scripts/migrate-db.js",
+    "analyze-deps": "tsx scripts/analyze-dependencies.ts"
   },
   "keywords": [],
   "author": "",
@@ -67,6 +68,8 @@
     "eslint-plugin-prettier": "^5.5.5",
     "globals": "^17.0.0",
     "prettier": "^3.8.0",
-    "supabase": "^2.72.8"
+    "supabase": "^2.72.8",
+    "ts-morph": "^27.0.2",
+    "tsx": "^4.21.0"
   }
 }

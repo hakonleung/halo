@@ -3,11 +3,10 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useUrlQuery } from '@/hooks/use-url-query';
-
-type DetailDrawerType = 'goal' | 'record' | 'definition' | 'note' | null;
+import { DetailDrawerType } from '@/types/drawer';
 
 interface DetailDrawerContextValue {
-  drawerType: DetailDrawerType;
+  drawerType: DetailDrawerType | null;
   drawerId: string | null;
   closeDrawer: () => void;
 }
@@ -23,14 +22,14 @@ export function DetailDrawerProvider({ children }: { children: ReactNode }) {
   const definitionId = searchParams.get('definition');
   const noteId = searchParams.get('note');
 
-  const drawerType: DetailDrawerType = goalId
-    ? 'goal'
+  const drawerType: DetailDrawerType | null = goalId
+    ? DetailDrawerType.Goal
     : recordId
-      ? 'record'
+      ? DetailDrawerType.Record
       : definitionId
-        ? 'definition'
+        ? DetailDrawerType.Definition
         : noteId
-          ? 'note'
+          ? DetailDrawerType.Note
           : null;
 
   const drawerId = goalId || recordId || definitionId || noteId || null;

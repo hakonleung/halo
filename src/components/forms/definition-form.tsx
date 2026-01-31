@@ -15,7 +15,7 @@ import {
   useCreateBehaviorDefinition,
   useUpdateBehaviorDefinition,
 } from '@/hooks/use-behavior-definitions';
-import { MetadataSchemaEditor } from './metadata-schema-editor';
+import { MetadataSchemaEditor } from '@/components/behaviors/metadata-schema-editor';
 import { BehaviorCategory } from '@/types/behavior-server';
 import type { MetadataField } from '@/types/behavior-client';
 

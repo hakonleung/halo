@@ -25,6 +25,14 @@ export enum GoalStatus {
   Abandoned = 'abandoned',
 }
 
+export enum GoalCategory {
+  Health = 'health',
+  Finance = 'finance',
+  Habit = 'habit',
+  Learning = 'learning',
+  Other = 'other',
+}
+
 export interface GoalCriteria {
   behaviorId: string;
   metric: GoalMetric;
@@ -39,7 +47,7 @@ export interface Goal {
   userId: string;
   name: string;
   description?: string;
-  category: string;
+  category: GoalCategory;
   startDate: string;
   endDate?: string;
   criteria: GoalCriteria[];
@@ -51,7 +59,7 @@ export interface Goal {
 export interface GoalCreateRequest {
   name: string;
   description?: string;
-  category: string;
+  category: GoalCategory;
   startDate: string;
   endDate?: string;
   criteria: GoalCriteria[];

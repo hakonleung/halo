@@ -7,6 +7,7 @@ import type {
   GetTrendsParams,
   GetHeatmapParams,
 } from '@/types/dashboard-server';
+import { DashboardRange } from '@/types/dashboard-server';
 
 // Color palette for behavior types
 const TYPE_COLORS = [
@@ -29,15 +30,15 @@ function getDateRange(range: GetTrendsParams['range'], start?: string, end?: str
   // Set end to end of today (23:59:59.999) to ensure today is included
   const todayEnd = new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1);
   switch (range) {
-    case 'today':
+    case DashboardRange.Today:
       return { start: today, end: todayEnd };
-    case '7d':
+    case DashboardRange.Last7Days:
       return { start: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000), end: todayEnd };
-    case '30d':
+    case DashboardRange.Last30Days:
       return { start: new Date(today.getTime() - 29 * 24 * 60 * 60 * 1000), end: todayEnd };
-    case '90d':
+    case DashboardRange.Last90Days:
       return { start: new Date(today.getTime() - 89 * 24 * 60 * 60 * 1000), end: todayEnd };
-    case 'custom': {
+    case DashboardRange.Custom: {
       if (!start || !end) throw new Error('Start and end dates required for custom range');
       const customStart = new Date(start);
       const customEnd = new Date(end);

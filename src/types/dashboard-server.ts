@@ -1,8 +1,16 @@
 // Server-side types for dashboard statistics
 
+export enum DashboardRange {
+  Today = 'today',
+  Last7Days = '7d',
+  Last30Days = '30d',
+  Last90Days = '90d',
+  Custom = 'custom',
+}
+
 // Request parameters
 export interface GetTrendsParams {
-  range: 'today' | '7d' | '30d' | '90d' | 'custom';
+  range: DashboardRange;
   start?: string;
   end?: string;
   types?: string[];

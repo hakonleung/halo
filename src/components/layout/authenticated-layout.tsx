@@ -3,14 +3,14 @@
 import { Box } from '@chakra-ui/react';
 import { TopNavbar } from './top-navbar';
 import { BottomNavbar } from './bottom-navbar';
-import { ActionButton } from '@/components/shared/action-button';
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
 }
 
 /**
- * Layout for authenticated pages, including navbar and action button
+ * Layout for authenticated pages, including navbar
+ * Note: ActionDrawer is now rendered in GlobalComponents
  */
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   return (
@@ -20,7 +20,6 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
         {children}
       </Box>
       <BottomNavbar />
-      <ActionButton />
     </Box>
   );
 }

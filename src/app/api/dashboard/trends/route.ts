@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabase-server';
 import { dashboardService } from '@/lib/dashboard-service';
-import type { GetTrendsParams } from '@/types/dashboard-server';
+import { DashboardRange } from '@/types/dashboard-server';
 
 export async function GET(request: Request) {
   try {
@@ -20,17 +20,21 @@ export async function GET(request: Request) {
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const rangeParam = (searchParams.get('range') || '7d') as GetTrendsParams['range'];
-    const validRanges: GetTrendsParams['range'][] = ['7d', '30d', '90d', 'custom'];
-    const range: GetTrendsParams['range'] = validRanges.includes(rangeParam) ? rangeParam : '7d';
+    const rangeParam = searchParams.get('range') || DashboardRange.Last7Days;
+    const validRanges: string[] = Object.values(DashboardRange);
+    // Validate and convert range parameter
+    let range: DashboardRange = DashboardRange.Last7Days;
+    if (rangeParam && validRanges.includes(rangeParam)) {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      range = rangeParam as DashboardRange;
+    }
     const start = searchParams.get('start') || undefined;
     const end = searchParams.get('end') || undefined;
     const typesParam = searchParams.get('types');
     const types = typesParam ? typesParam.split(',').filter(Boolean) : undefined;
 
     // Validate custom range
-    if (range === 'custom') {
+    if (range === DashboardRange.Custom) {
       if (!start || !end) {
         return NextResponse.json(
           { error: 'INVALID_DATE_RANGE', message: 'Start and end dates required for custom range' },

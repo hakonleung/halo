@@ -18,7 +18,7 @@ import { useBehaviorRecords } from '@/hooks/use-behavior-records';
 import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import { useDeleteBehaviorRecord } from '@/hooks/use-behavior-records';
 import { RecordForm } from '@/components/behaviors/record-form';
-import { DefinitionForm } from '@/components/behaviors/definition-form';
+import { DefinitionForm } from '@/components/forms';
 import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
 
 interface RecordDetailDrawerProps {

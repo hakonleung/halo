@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
 import { GoalStatusBadge } from '@/components/goals';
-import { GoalForm } from '@/components/goals/goal-form';
+import { GoalForm } from '@/components/forms';
 import { useGoal, useUpdateGoal, useDeleteGoal } from '@/hooks/use-goals';
 import type { GoalProgress as DashboardGoalProgress } from '@/types/dashboard-client';
 

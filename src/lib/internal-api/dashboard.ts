@@ -8,13 +8,16 @@ import type {
   TrendDataModel,
   HeatmapDataModel,
 } from '@/types/dashboard-server';
+import { DashboardRange } from '@/types/dashboard-server';
 import type {
   DashboardStats,
   TrendData,
   TrendPoint,
   HeatmapData,
   HeatmapLevel,
+  TimeRange,
 } from '@/types/dashboard-client';
+import { TimeRangePreset } from '@/types/dashboard-client';
 
 // Dashboard types are already compatible (no Date conversion needed)
 function convertDashboardStats(server: DashboardStatsModel): DashboardStats {
@@ -189,16 +192,20 @@ export const dashboardApi = {
   /**
    * Get trend data
    */
-  async getTrends(
-    range: { type: 'preset'; value: string } | { type: 'custom'; start: string; end: string },
-    types?: string[],
-  ): Promise<TrendData> {
+  async getTrends(range: TimeRange, types?: string[]): Promise<TrendData> {
     const params = new URLSearchParams();
 
     if (range.type === 'preset') {
-      params.set('range', range.value);
+      // Map TimeRangePreset to DashboardRange
+      const rangeMap: Record<TimeRangePreset, DashboardRange> = {
+        [TimeRangePreset.Today]: DashboardRange.Today,
+        [TimeRangePreset.Last7Days]: DashboardRange.Last7Days,
+        [TimeRangePreset.Last30Days]: DashboardRange.Last30Days,
+        [TimeRangePreset.Last90Days]: DashboardRange.Last90Days,
+      };
+      params.set('range', rangeMap[range.value]);
     } else {
-      params.set('range', 'custom');
+      params.set('range', DashboardRange.Custom);
       params.set('start', range.start);
       params.set('end', range.end);
     }
