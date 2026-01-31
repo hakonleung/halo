@@ -19,6 +19,7 @@ import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import { useCreateGoal, useUpdateGoal } from '@/hooks/use-goals';
 import type { GoalCriteria } from '@/types/goal-client';
 import { GoalMetric, GoalOperator, GoalPeriod, GoalCategory } from '@/types/goal-client';
+import { useEditorModalStore } from '@/store/editor-modal-store';
 
 interface GoalFormProps {
   initialData?: {
@@ -94,6 +95,7 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
 
   const [name, setName] = useState(initialData?.name || '');
   const [description, setDescription] = useState(initialData?.description || '');
+  const { openModal } = useEditorModalStore();
   const [category, setCategory] = useState<GoalCategory>(
     initialData?.category || GoalCategory.Other,
   );
@@ -229,8 +231,23 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
             variant="outline"
             rows={2}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Optional description..."
+            readOnly
+            onClick={() => {
+              openModal({
+                value: description,
+                onChange: setDescription,
+                onSave: (value) => {
+                  setDescription(value);
+                },
+                placeholder: 'Optional description...',
+                title: 'GOAL DESCRIPTION EDITOR',
+              });
+            }}
+            placeholder="Click to edit in fullscreen editor..."
+            cursor="pointer"
+            _hover={{
+              borderColor: 'brand.matrix',
+            }}
           />
         </Field.Root>
 

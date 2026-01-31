@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { VStack, HStack, Text, Input, Button, Field, Textarea } from '@chakra-ui/react';
 import { useCreateNote, useUpdateNote } from '@/hooks/use-notes';
 import type { Note } from '@/types/note-client';
+import { useEditorModalStore } from '@/store/editor-modal-store';
 
 interface NoteFormProps {
   initialData?: Note;
@@ -21,6 +22,7 @@ export function NoteForm({ initialData, onSuccess, onCancel }: NoteFormProps) {
   const [title, setTitle] = useState(initialData?.title || '');
   const [content, setContent] = useState(initialData?.content || '');
   const [tags, setTags] = useState(initialData?.tags?.join(', ') || '');
+  const { openModal } = useEditorModalStore();
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
@@ -73,8 +75,23 @@ export function NoteForm({ initialData, onSuccess, onCancel }: NoteFormProps) {
           variant="outline"
           rows={8}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Write your note here..."
+          readOnly
+          onClick={() => {
+            openModal({
+              value: content,
+              onChange: setContent,
+              onSave: (value) => {
+                setContent(value);
+              },
+              placeholder: 'Write your note here...',
+              title: 'NOTE EDITOR',
+            });
+          }}
+          placeholder="Click to edit in fullscreen editor..."
+          cursor="pointer"
+          _hover={{
+            borderColor: 'brand.matrix',
+          }}
         />
       </Field.Root>
 

@@ -24,6 +24,7 @@ import { useCreateBehaviorRecord, useUpdateBehaviorRecord } from '@/hooks/use-be
 import { MetadataSchemaEditor } from './metadata-schema-editor';
 import { BehaviorCategory } from '@/types/behavior-server';
 import type { MetadataField, MetadataValue, MetadataRecord } from '@/types/behavior-client';
+import { useEditorModalStore } from '@/store/editor-modal-store';
 
 const ADD_DEFINITION_VALUE = '__add_definition__';
 
@@ -63,6 +64,7 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
   const [selectedDefId, setSelectedDefId] = useState<string>(initialData?.definitionId || '');
   const [metadata, setMetadata] = useState<MetadataRecord>(initialData?.metadata || {});
   const [note, setNote] = useState(initialData?.note || '');
+  const { openModal } = useEditorModalStore();
 
   // Inline definition creation state
   const [isAddingDefinition, setIsAddingDefinition] = useState(false);
@@ -172,6 +174,42 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
 
   const handleMetadataChange = (key: string, value: MetadataValue) => {
     setMetadata((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const openEditor = (type: 'note' | 'metadata', fieldKey?: string) => {
+    if (type === 'note') {
+      openModal({
+        value: note,
+        onChange: setNote,
+        onSave: (value) => {
+          setNote(value);
+        },
+        placeholder: 'Add a comment...',
+        title: 'NOTE EDITOR',
+      });
+    } else if (fieldKey) {
+      const fieldValue = metadata[fieldKey];
+      const field = selectedDef?.metadataSchema.find((f) => f.key === fieldKey);
+      const config = field?.config;
+      const placeholder =
+        config && typeof config === 'object' && 'placeholder' in config
+          ? typeof config.placeholder === 'string'
+            ? config.placeholder
+            : 'Click to edit in fullscreen editor...'
+          : 'Start typing...';
+
+      openModal({
+        value: typeof fieldValue === 'string' ? fieldValue : '',
+        onChange: (value) => {
+          handleMetadataChange(fieldKey, value);
+        },
+        onSave: (value) => {
+          handleMetadataChange(fieldKey, value);
+        },
+        placeholder,
+        title: 'METADATA EDITOR',
+      });
+    }
   };
 
   const definitionCollection = createListCollection({
@@ -350,8 +388,17 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
                   rows={3}
                   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                   value={(metadata[field.key] as string) ?? ''}
-                  onChange={(e) => handleMetadataChange(field.key, e.target.value)}
-                  placeholder={'placeholder' in field.config ? field.config.placeholder : undefined}
+                  readOnly
+                  onClick={() => openEditor('metadata', field.key)}
+                  placeholder={
+                    'placeholder' in field.config
+                      ? field.config.placeholder
+                      : 'Click to edit in fullscreen editor...'
+                  }
+                  cursor="pointer"
+                  _hover={{
+                    borderColor: 'brand.matrix',
+                  }}
                 />
               ) : (
                 <Input
@@ -371,8 +418,13 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
               variant="outline"
               rows={2}
               value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Add a comment..."
+              readOnly
+              onClick={() => openEditor('note')}
+              placeholder="Click to edit in fullscreen editor..."
+              cursor="pointer"
+              _hover={{
+                borderColor: 'brand.matrix',
+              }}
             />
           </Field.Root>
         </VStack>
