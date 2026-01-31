@@ -37,7 +37,7 @@ export function LocaleSettings() {
     if (settings) {
       setLanguage(settings.language ?? 'en');
       setTimezone(settings.timezone ?? 'UTC');
-      setDateFormat(settings.date_format ?? 'YYYY-MM-DD');
+      setDateFormat(settings.dateFormat ?? 'YYYY-MM-DD');
       setCurrency(settings.currency ?? 'CNY');
     }
   }, [settings]);
@@ -48,7 +48,7 @@ export function LocaleSettings() {
       language: language as 'en' | 'zh-CN' | 'zh-TW',
       timezone: timezone,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      date_format: dateFormat as 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY',
+      dateFormat: dateFormat as 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY',
       currency: currency,
     });
   };

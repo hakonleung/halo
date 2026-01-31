@@ -4,30 +4,28 @@ import { useState } from 'react';
 import {
   Box,
   Container,
-  Heading,
   Button,
   HStack,
   VStack,
-  Select,
   createListCollection,
-  Input,
-  Portal,
   Card,
-  Tabs,
   Text,
   Spinner,
+  Collapsible,
+  IconButton,
 } from '@chakra-ui/react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import { GoalList } from '@/components/goals';
-import { HistoryList } from '@/components/history/history-list';
-import { HistoryFilters } from '@/components/history/history-filters';
+import { RecordFilters, type RecordFiltersType } from '@/components/history/record-filters';
+import { RecordList } from '@/components/history/record-list';
+import { FilterBar } from '@/components/shared/filter-bar';
 import { useGoals } from '@/hooks/use-goals';
-import { useHistory } from '@/hooks/use-history';
+import { useBehaviorRecords } from '@/hooks/use-behavior-records';
 import { useNotes } from '@/hooks/use-notes';
 import type { Note } from '@/types/note-client';
 import type { GetGoalsParams } from '@/hooks/use-goals';
-import type { HistoryListRequest } from '@/types/history-client';
-import { SortOrder } from '@/types/history-server';
+import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
 import { useActionDrawerStore } from '@/store/action-drawer-store';
 import { ActionDrawerTab } from '@/types/drawer';
 
@@ -53,7 +51,11 @@ const categoryOptions = createListCollection({
 
 export default function LogPage() {
   const { openDrawer } = useActionDrawerStore();
-  const [activeTab, setActiveTab] = useState<'goals' | 'records' | 'notes'>('goals');
+
+  // Collapse states
+  const [goalsCollapsed, setGoalsCollapsed] = useState(false);
+  const [recordsCollapsed, setRecordsCollapsed] = useState(false);
+  const [notesCollapsed, setNotesCollapsed] = useState(false);
 
   // Goals state
   const [goalFilters, setGoalFilters] = useState<GetGoalsParams>({
@@ -66,22 +68,65 @@ export default function LogPage() {
     ? goals.filter((goal) => goal.name.toLowerCase().includes(goalSearchQuery.toLowerCase()))
     : goals;
 
-  // Records state (from history)
-  const [recordFilters, setRecordFilters] = useState<HistoryListRequest>({
-    type: 'all',
-    page: 1,
-    pageSize: 20,
-    sortOrder: SortOrder.Desc,
+  // Records state
+  const [recordFilters, setRecordFilters] = useState<RecordFiltersType>({
+    category: 'all',
+    search: '',
   });
-  const {
-    data: recordsData,
-    isLoading: recordsLoading,
-    error: recordsError,
-  } = useHistory(recordFilters);
+  const { records, isLoading: recordsLoading, error: recordsError } = useBehaviorRecords(100, 0);
+
+  // Filter records
+  const filteredRecords = records.filter((record: BehaviorRecordWithDefinition) => {
+    // Category filter
+    if (recordFilters.category && recordFilters.category !== 'all') {
+      if (record.behaviorDefinitions.category !== recordFilters.category) return false;
+    }
+
+    // Search filter
+    if (recordFilters.search) {
+      const searchLower = recordFilters.search.toLowerCase();
+      const matchesName = record.behaviorDefinitions.name.toLowerCase().includes(searchLower);
+      const matchesNote = record.note?.toLowerCase().includes(searchLower);
+      if (!matchesName && !matchesNote) return false;
+    }
+
+    // Date filters
+    if (recordFilters.startDate) {
+      if (record.recordedAt < recordFilters.startDate) return false;
+    }
+    if (recordFilters.endDate) {
+      if (record.recordedAt > recordFilters.endDate) return false;
+    }
+
+    return true;
+  });
 
   // Notes state
+  const [noteSearchQuery, setNoteSearchQuery] = useState('');
+  const [noteTagFilter, setNoteTagFilter] = useState<string>('all');
   const { data: notesData, isLoading: notesLoading } = useNotes();
-  const notes = notesData || [];
+  const allNotes = notesData || [];
+
+  // Get all unique tags from notes
+  const allTags = Array.from(new Set(allNotes.flatMap((note) => note.tags || []))).sort();
+
+  // Filter notes
+  const filteredNotes = allNotes.filter((note) => {
+    // Search filter
+    if (noteSearchQuery) {
+      const searchLower = noteSearchQuery.toLowerCase();
+      const matchesTitle = note.title?.toLowerCase().includes(searchLower);
+      const matchesContent = note.content.toLowerCase().includes(searchLower);
+      if (!matchesTitle && !matchesContent) return false;
+    }
+
+    // Tag filter
+    if (noteTagFilter !== 'all') {
+      if (!note.tags || !note.tags.includes(noteTagFilter)) return false;
+    }
+
+    return true;
+  });
 
   const handleGoalFilterChange = (key: keyof GetGoalsParams, value: string) => {
     if (value === 'all') {
@@ -95,127 +140,146 @@ export default function LogPage() {
     }
   };
 
-  const handleRecordFilterChange = (newFilters: Partial<HistoryListRequest>) => {
-    setRecordFilters((prev) => ({ ...prev, ...newFilters, page: 1 }));
-  };
-
-  const handleRecordPageChange = (newPage: number) => {
-    setRecordFilters((prev) => ({ ...prev, page: newPage }));
+  const handleRecordFilterChange = (newFilters: Partial<RecordFiltersType>) => {
+    setRecordFilters((prev: RecordFiltersType) => ({ ...prev, ...newFilters }));
   };
 
   return (
     <AuthenticatedLayout>
-      <Container maxW="1400px" py={6}>
-        <VStack gap={6} align="stretch">
-          {/* Page Header */}
-          <HStack justify="space-between" align="center">
-            <Heading fontSize="32px" color="text.neon" fontFamily="mono">
-              LOG
-            </Heading>
-            <Button colorScheme="green" onClick={() => openDrawer(ActionDrawerTab.Record)}>
-              + Add Entry
-            </Button>
-          </HStack>
-
-          {/* Tabs */}
-          <Tabs.Root
-            value={activeTab}
-            onValueChange={(e) => {
-              const value = e.value;
-              if (value === 'goals' || value === 'records' || value === 'notes') {
-                setActiveTab(value);
-              }
-            }}
-          >
-            <Tabs.List>
-              <Tabs.Trigger value="goals">Goals</Tabs.Trigger>
-              <Tabs.Trigger value="records">Records</Tabs.Trigger>
-              <Tabs.Trigger value="notes">Notes</Tabs.Trigger>
-            </Tabs.List>
-
-            {/* Goals Tab */}
-            <Tabs.Content value="goals">
-              <VStack gap={6} align="stretch">
-                {/* Filters */}
-                <Card.Root size="md">
-                  <Card.Body>
-                    <HStack gap={4} wrap="wrap">
-                      <Box minW="200px">
-                        <Select.Root
-                          collection={statusOptions}
-                          value={[goalFilters.status || 'all']}
-                          onValueChange={(e) => {
-                            const value = e.value[0];
-                            if (typeof value === 'string') {
-                              handleGoalFilterChange('status', value);
-                            }
-                          }}
-                        >
-                          <Select.Trigger>
-                            <Select.ValueText placeholder="Select Status" />
-                          </Select.Trigger>
-                          <Portal>
-                            <Select.Positioner>
-                              <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                                {statusOptions.items.map((item) => (
-                                  <Select.Item item={item} key={item.value}>
-                                    {item.label}
-                                  </Select.Item>
-                                ))}
-                              </Select.Content>
-                            </Select.Positioner>
-                          </Portal>
-                        </Select.Root>
-                      </Box>
-
-                      <Box minW="200px">
-                        <Select.Root
-                          collection={categoryOptions}
-                          value={[goalFilters.category || 'all']}
-                          onValueChange={(e) => {
-                            const value = e.value[0];
-                            if (typeof value === 'string') {
-                              handleGoalFilterChange('category', value);
-                            }
-                          }}
-                        >
-                          <Select.Trigger>
-                            <Select.ValueText placeholder="Select Category" />
-                          </Select.Trigger>
-                          <Portal>
-                            <Select.Positioner>
-                              <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                                {categoryOptions.items.map((item) => (
-                                  <Select.Item item={item} key={item.value}>
-                                    {item.label}
-                                  </Select.Item>
-                                ))}
-                              </Select.Content>
-                            </Select.Positioner>
-                          </Portal>
-                        </Select.Root>
-                      </Box>
-
-                      <Input
-                        placeholder="Search goal name..."
-                        value={goalSearchQuery}
-                        onChange={(e) => setGoalSearchQuery(e.target.value)}
-                        maxW="300px"
+      <Container maxW="1400px" py={2} display="flex" flexDirection="column">
+        <VStack gap={2} align="stretch" h="full" overflow="hidden">
+          {/* Goals Section */}
+          <Box flexShrink={0}>
+            <Card.Root size="sm">
+              <Card.Body p={2}>
+                <HStack justify="space-between" align="center" mb={1}>
+                  <HStack gap={2}>
+                    <IconButton
+                      size="xs"
+                      variant="ghost"
+                      onClick={() => setGoalsCollapsed(!goalsCollapsed)}
+                      aria-label={goalsCollapsed ? 'Expand' : 'Collapse'}
+                    >
+                      {goalsCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+                    </IconButton>
+                    <Text fontSize="sm" fontWeight="bold" color="text.neon" fontFamily="mono">
+                      GOALS
+                    </Text>
+                  </HStack>
+                  <Button
+                    size="xs"
+                    colorScheme="green"
+                    onClick={() => openDrawer(ActionDrawerTab.Goal)}
+                  >
+                    + Add
+                  </Button>
+                </HStack>
+                <Collapsible.Root open={!goalsCollapsed}>
+                  <Collapsible.Content>
+                    <Box mb={1}>
+                      <FilterBar
+                        filters={[
+                          {
+                            key: 'status',
+                            type: 'select',
+                            placeholder: 'Status',
+                            options: statusOptions.items,
+                            value: goalFilters.status || 'all',
+                            minW: '100px',
+                          },
+                          {
+                            key: 'category',
+                            type: 'select',
+                            placeholder: 'Category',
+                            options: categoryOptions.items,
+                            value: goalFilters.category || 'all',
+                            minW: '100px',
+                          },
+                          {
+                            key: 'search',
+                            type: 'search',
+                            placeholder: 'Search...',
+                            value: goalSearchQuery,
+                            maxW: '150px',
+                          },
+                        ]}
+                        onChange={(key, value) => {
+                          if (key === 'search') {
+                            setGoalSearchQuery(value);
+                          } else if (key === 'status' || key === 'category') {
+                            handleGoalFilterChange(key, value);
+                          }
+                        }}
+                        compact
                       />
-                    </HStack>
-                  </Card.Body>
-                </Card.Root>
-
-                {/* Goal List */}
+                    </Box>
+                  </Collapsible.Content>
+                </Collapsible.Root>
+              </Card.Body>
+            </Card.Root>
+          </Box>
+          <Collapsible.Root open={!goalsCollapsed}>
+            <Collapsible.Content>
+              <Box
+                as="section"
+                flex={goalsCollapsed ? 0 : 1}
+                minH={goalsCollapsed ? '120px' : 0}
+                maxH={goalsCollapsed ? '120px' : 'none'}
+                overflowY="auto"
+              >
                 <GoalList goals={filteredGoals} isLoading={goalsLoading} />
-              </VStack>
-            </Tabs.Content>
+              </Box>
+            </Collapsible.Content>
+          </Collapsible.Root>
 
-            {/* Records Tab */}
-            <Tabs.Content value="records">
-              <VStack gap={6} align="stretch">
-                <HistoryFilters filters={recordFilters} onFilterChange={handleRecordFilterChange} />
-
+          {/* Records Section */}
+          <Box flexShrink={0}>
+            <Card.Root size="sm">
+              <Card.Body p={2}>
+                <HStack justify="space-between" align="center" mb={1}>
+                  <HStack gap={2}>
+                    <IconButton
+                      size="xs"
+                      variant="ghost"
+                      onClick={() => setRecordsCollapsed(!recordsCollapsed)}
+                      aria-label={recordsCollapsed ? 'Expand' : 'Collapse'}
+                    >
+                      {recordsCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+                    </IconButton>
+                    <Text fontSize="sm" fontWeight="bold" color="text.neon" fontFamily="mono">
+                      RECORDS
+                    </Text>
+                  </HStack>
+                  <Button
+                    size="xs"
+                    colorScheme="green"
+                    onClick={() => openDrawer(ActionDrawerTab.Record)}
+                  >
+                    + Add
+                  </Button>
+                </HStack>
+                <Collapsible.Root open={!recordsCollapsed}>
+                  <Collapsible.Content>
+                    <Box mb={1}>
+                      <RecordFilters
+                        filters={recordFilters}
+                        onFilterChange={handleRecordFilterChange}
+                      />
+                    </Box>
+                  </Collapsible.Content>
+                </Collapsible.Root>
+              </Card.Body>
+            </Card.Root>
+          </Box>
+          <Collapsible.Root open={!recordsCollapsed}>
+            <Collapsible.Content>
+              <Box
+                as="section"
+                flex={recordsCollapsed ? 0 : 1}
+                minH={recordsCollapsed ? '120px' : 0}
+                maxH={recordsCollapsed ? '120px' : 'none'}
+                overflowY="auto"
+              >
                 {recordsLoading ? (
                   <HStack justify="center" py={20}>
                     <Spinner size="xl" color="brand.matrix" />
@@ -229,30 +293,95 @@ export default function LogPage() {
                     borderRadius="4px"
                   >
                     <Text color="red.500" fontFamily="mono">
-                      Error:{' '}
-                      {recordsError instanceof Error ? recordsError.message : String(recordsError)}
+                      Error: {recordsError || 'Unknown error'}
                     </Text>
                   </Box>
                 ) : (
-                  <HistoryList
-                    items={recordsData?.items || []}
-                    total={recordsData?.total || 0}
-                    page={recordFilters.page || 1}
-                    pageSize={recordFilters.pageSize || 20}
-                    onPageChange={handleRecordPageChange}
-                  />
+                  <RecordList records={filteredRecords} isLoading={recordsLoading} />
                 )}
-              </VStack>
-            </Tabs.Content>
+              </Box>
+            </Collapsible.Content>
+          </Collapsible.Root>
 
-            {/* Notes Tab */}
-            <Tabs.Content value="notes">
-              <VStack gap={6} align="stretch">
+          {/* Notes Section */}
+          <Box flexShrink={0}>
+            <Card.Root size="sm">
+              <Card.Body p={2}>
+                <HStack justify="space-between" align="center" mb={1}>
+                  <HStack gap={2}>
+                    <IconButton
+                      size="xs"
+                      variant="ghost"
+                      onClick={() => setNotesCollapsed(!notesCollapsed)}
+                      aria-label={notesCollapsed ? 'Expand' : 'Collapse'}
+                    >
+                      {notesCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+                    </IconButton>
+                    <Text fontSize="sm" fontWeight="bold" color="text.neon" fontFamily="mono">
+                      NOTES
+                    </Text>
+                  </HStack>
+                  <Button
+                    size="xs"
+                    colorScheme="green"
+                    onClick={() => openDrawer(ActionDrawerTab.Note)}
+                  >
+                    + Add
+                  </Button>
+                </HStack>
+                <Collapsible.Root open={!notesCollapsed}>
+                  <Collapsible.Content>
+                    <Box mb={1}>
+                      <FilterBar
+                        filters={[
+                          {
+                            key: 'tag',
+                            type: 'select',
+                            placeholder: 'Tag',
+                            options: [
+                              { label: 'All Tags', value: 'all' },
+                              ...allTags.map((tag) => ({ label: `#${tag}`, value: tag })),
+                            ],
+                            value: noteTagFilter,
+                            minW: '100px',
+                          },
+                          {
+                            key: 'search',
+                            type: 'search',
+                            placeholder: 'Search...',
+                            value: noteSearchQuery,
+                            maxW: '150px',
+                          },
+                        ]}
+                        onChange={(key, value) => {
+                          if (key === 'search') {
+                            setNoteSearchQuery(value);
+                          } else if (key === 'tag') {
+                            setNoteTagFilter(value);
+                          }
+                        }}
+                        compact
+                      />
+                    </Box>
+                  </Collapsible.Content>
+                </Collapsible.Root>
+              </Card.Body>
+            </Card.Root>
+          </Box>
+          <Collapsible.Root open={!notesCollapsed}>
+            <Collapsible.Content>
+              <Box
+                as="section"
+                flex={notesCollapsed ? 0 : 1}
+                minH={notesCollapsed ? '120px' : 0}
+                maxH={notesCollapsed ? '120px' : 'none'}
+                overflowY="auto"
+              >
                 {notesLoading ? (
                   <HStack justify="center" py={20}>
                     <Spinner size="xl" color="brand.matrix" />
                   </HStack>
-                ) : !notes || notes.length === 0 ? (
+                ) : allNotes.length === 0 ? (
                   <Card.Root size="lg" borderStyle="dashed">
                     <Card.Body textAlign="center">
                       <VStack gap={2}>
@@ -265,9 +394,24 @@ export default function LogPage() {
                       </VStack>
                     </Card.Body>
                   </Card.Root>
+                ) : filteredNotes.length === 0 ? (
+                  <Card.Root size="lg" borderStyle="dashed">
+                    <Card.Body textAlign="center">
+                      <VStack gap={2}>
+                        <Text color="text.mist" fontFamily="mono" fontSize="lg">
+                          No Notes Found
+                        </Text>
+                        <Text color="brand.matrix" fontFamily="mono" fontSize="sm">
+                          {noteSearchQuery || noteTagFilter !== 'all'
+                            ? 'Try adjusting your filters'
+                            : 'Create Your First Note'}
+                        </Text>
+                      </VStack>
+                    </Card.Body>
+                  </Card.Root>
                 ) : (
                   <VStack gap={4} align="stretch">
-                    {notes.map((note: Note) => (
+                    {filteredNotes.map((note: Note) => (
                       <Card.Root
                         key={note.id}
                         size="md"
@@ -286,9 +430,14 @@ export default function LogPage() {
                         <Card.Body>
                           <VStack align="flex-start" gap={2}>
                             {note.title && (
-                              <Heading fontSize="lg" color="text.neon" fontFamily="mono">
+                              <Text
+                                fontSize="lg"
+                                fontWeight="bold"
+                                color="text.neon"
+                                fontFamily="mono"
+                              >
                                 {note.title}
-                              </Heading>
+                              </Text>
                             )}
                             <Text color="text.mist">{note.content}</Text>
                             {note.tags && note.tags.length > 0 && (
@@ -318,9 +467,9 @@ export default function LogPage() {
                     ))}
                   </VStack>
                 )}
-              </VStack>
-            </Tabs.Content>
-          </Tabs.Root>
+              </Box>
+            </Collapsible.Content>
+          </Collapsible.Root>
         </VStack>
       </Container>
     </AuthenticatedLayout>

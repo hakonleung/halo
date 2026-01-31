@@ -1,88 +1,65 @@
 'use client';
 
-import { Box, HStack, Input, createListCollection, Select, Portal, Card } from '@chakra-ui/react';
 import type { HistoryListRequest } from '@/types/history-client';
 import { HistoryItemType } from '@/types/history-server';
+import { FilterBar, type FilterConfig } from '@/components/shared/filter-bar';
 
 interface HistoryFiltersProps {
   filters: HistoryListRequest;
   onFilterChange: (newFilters: Partial<HistoryListRequest>) => void;
 }
 
-const typeOptions = createListCollection({
-  items: [
-    { label: 'All Types', value: 'all' },
-    { label: 'Behaviors', value: 'behavior' },
-    { label: 'Goals', value: 'goal' },
-    { label: 'Notes', value: 'note' },
-  ],
-});
-
 export function HistoryFilters({ filters, onFilterChange }: HistoryFiltersProps) {
-  return (
-    <Card.Root size="md">
-      <Card.Body>
-        <HStack gap={4} wrap="wrap">
-          <Box minW="200px">
-            <Select.Root
-              collection={typeOptions}
-              value={[filters.type || 'all']}
-              onValueChange={(e) => {
-                const value = e.value[0];
-                if (value === 'all') {
-                  onFilterChange({ type: 'all' });
-                } else if (value === 'behavior') {
-                  onFilterChange({ type: HistoryItemType.Behavior });
-                } else if (value === 'goal') {
-                  onFilterChange({ type: HistoryItemType.Goal });
-                } else if (value === 'note') {
-                  onFilterChange({ type: HistoryItemType.Note });
-                }
-              }}
-            >
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select Type" />
-              </Select.Trigger>
-              <Portal>
-                <Select.Positioner>
-                  <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                    {typeOptions.items.map((item) => (
-                      <Select.Item
-                        item={item}
-                        key={item.value}
-                        _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
-                      >
-                        {item.label}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Positioner>
-              </Portal>
-            </Select.Root>
-          </Box>
+  const filterConfigs: FilterConfig[] = [
+    {
+      key: 'type',
+      type: 'select',
+      placeholder: 'Type',
+      options: [
+        { label: 'All Types', value: 'all' },
+        { label: 'Behaviors', value: 'behavior' },
+        { label: 'Goals', value: 'goal' },
+        { label: 'Notes', value: 'note' },
+      ],
+      value: filters.type === 'all' ? 'all' : filters.type,
+      minW: '100px',
+    },
+    {
+      key: 'search',
+      type: 'search',
+      placeholder: 'Search...',
+      value: filters.search || '',
+      maxW: '150px',
+    },
+    {
+      key: 'startDate',
+      type: 'datepicker',
+      value: filters.startDate || '',
+      maxW: '120px',
+    },
+    {
+      key: 'endDate',
+      type: 'datepicker',
+      value: filters.endDate || '',
+      maxW: '120px',
+    },
+  ];
 
-          <Input
-            placeholder="Search records..."
-            value={filters.search || ''}
-            onChange={(e) => onFilterChange({ search: e.target.value })}
-            maxW="300px"
-          />
+  const handleFilterChange = (key: string, value: string) => {
+    if (key === 'type') {
+      if (value === 'all') {
+        onFilterChange({ type: 'all' });
+      } else if (value === 'behavior') {
+        onFilterChange({ type: HistoryItemType.Behavior });
+      } else if (value === 'goal') {
+        onFilterChange({ type: HistoryItemType.Goal });
+      } else if (value === 'note') {
+        onFilterChange({ type: HistoryItemType.Note });
+      }
+    } else {
+      onFilterChange({ [key]: value || undefined });
+    }
+  };
 
-          <Input
-            type="date"
-            value={filters.startDate || ''}
-            onChange={(e) => onFilterChange({ startDate: e.target.value })}
-            maxW="180px"
-          />
-
-          <Input
-            type="date"
-            value={filters.endDate || ''}
-            onChange={(e) => onFilterChange({ endDate: e.target.value })}
-            maxW="180px"
-          />
-        </HStack>
-      </Card.Body>
-    </Card.Root>
-  );
+  return <FilterBar filters={filterConfigs} onChange={handleFilterChange} compact />;
 }

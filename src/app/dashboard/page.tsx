@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Heading, Flex, SimpleGrid, VStack, Button } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid, VStack, Button } from '@chakra-ui/react';
 import { ArrowClockwise } from 'phosphor-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { withAuth } from '@/components/auth/with-auth';
@@ -52,24 +52,15 @@ function DashboardContent() {
 
   return (
     <AuthenticatedLayout>
-      <Box p={{ base: 4, md: 6, lg: 8 }} maxW="1400px" mx="auto">
-        <VStack gap={{ base: 4, md: 6 }} align="stretch">
+      <Box p={{ base: 3, md: 4, lg: 5 }} maxW="1400px" mx="auto">
+        <VStack gap={{ base: 3, md: 4 }} align="stretch">
           {/* Header */}
           <Flex
-            justify="space-between"
+            justify="flex-end"
             align={{ base: 'flex-start', md: 'center' }}
             direction={{ base: 'column', md: 'row' }}
             gap={4}
           >
-            <Heading
-              as="h1"
-              size={{ base: 'xl', md: '2xl' }}
-              color="brand.matrix"
-              fontFamily="heading"
-              textShadow="0 0 10px currentColor"
-            >
-              DASHBOARD
-            </Heading>
             <Flex gap={2}>
               <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
               <Button
@@ -99,7 +90,7 @@ function DashboardContent() {
           />
 
           {/* Heatmap & Goals */}
-          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={{ base: 4, md: 6 }}>
+          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={{ base: 3, md: 4 }}>
             <CalendarHeatmap data={heatmap} loading={heatmapLoading} onDayClick={handleDayClick} />
             <GoalProgressSection loading={statsLoading} />
           </SimpleGrid>

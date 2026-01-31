@@ -16,7 +16,7 @@ interface GoalListProps {
 export function GoalList({ goals, progressMap, isLoading }: GoalListProps) {
   if (isLoading) {
     return (
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={4}>
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={3}>
         {[1, 2, 3].map((i) => (
           <Skeleton key={i} height="200px" borderRadius="4px" />
         ))}

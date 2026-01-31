@@ -14,9 +14,9 @@ import {
 import type { HistoryItem } from '@/types/history-client';
 import { formatDistanceToNow } from 'date-fns';
 import { LuPencil, LuTrash2 } from 'react-icons/lu';
-import type { BehaviorRecordWithDefinition } from '@/types/behavior-server';
-import type { Goal } from '@/types/goal-server';
-import type { Note } from '@/types/note-server';
+import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
+import type { Goal } from '@/types/goal-client';
+import type { Note } from '@/types/note-client';
 
 interface HistoryListProps {
   items: HistoryItem[];
@@ -27,6 +27,18 @@ interface HistoryListProps {
 }
 
 export function HistoryList({ items, total, page, pageSize, onPageChange }: HistoryListProps) {
+  // Safely format date
+  const formatDate = (dateString: string | undefined | null) => {
+    if (!dateString) return 'Unknown time';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      return formatDistanceToNow(date, { addSuffix: true });
+    } catch {
+      return 'Invalid date';
+    }
+  };
+
   if (items.length === 0) {
     return (
       <Card.Root size="md" borderStyle="dashed" borderColor="border.subtle">
@@ -43,8 +55,8 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
     switch (item.type) {
       case 'behavior': {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const record = item.data as BehaviorRecordWithDefinition;
-        const def = record.behavior_definitions;
+        const record = item.data as unknown as BehaviorRecordWithDefinition;
+        const def = record.behaviorDefinitions;
         return (
           <HStack gap={2}>
             <Text fontWeight="bold">{def?.name}</Text>
@@ -58,7 +70,7 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
       }
       case 'goal': {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const goal = item.data as Goal;
+        const goal = item.data as unknown as Goal;
         return (
           <VStack align="start" gap={0}>
             <Text fontWeight="bold">{goal.name}</Text>
@@ -70,7 +82,7 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
       }
       case 'note': {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const note = item.data as Note;
+        const note = item.data as unknown as Note;
         return (
           <VStack align="start" gap={0}>
             <Text fontWeight="bold">{note.title || 'Untitled Note'}</Text>
@@ -99,7 +111,7 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
   };
 
   return (
-    <VStack align="stretch" gap={4}>
+    <VStack align="stretch" gap={3}>
       <Box overflowX="auto">
         <Table.Root size="sm" variant="line">
           <Table.Header>
@@ -123,7 +135,7 @@ export function HistoryList({ items, total, page, pageSize, onPageChange }: Hist
               <Table.Row key={`${item.type}-${item.id}`} _hover={{ bg: 'rgba(0, 255, 65, 0.02)' }}>
                 <Table.Cell whiteSpace="nowrap">
                   <Text fontSize="xs" fontFamily="mono">
-                    {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                    {formatDate(item.createdAt)}
                   </Text>
                 </Table.Cell>
                 <Table.Cell>

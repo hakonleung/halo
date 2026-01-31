@@ -19,6 +19,7 @@ import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import { useDeleteBehaviorRecord } from '@/hooks/use-behavior-records';
 import { RecordForm } from '@/components/behaviors/record-form';
 import { DefinitionForm } from '@/components/forms';
+import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
 
 interface RecordDetailDrawerProps {
@@ -31,25 +32,24 @@ export function RecordDetailDrawer({ recordId, isOpen, onClose }: RecordDetailDr
   const [activeTab, setActiveTab] = useState<'record' | 'definition'>('record');
   const [isEditMode, setIsEditMode] = useState(false);
   const [isEditDefinition, setIsEditDefinition] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { records, isLoading } = useBehaviorRecords(100, 0); // Get more records to find the one we need
   const { definitions } = useBehaviorDefinitions();
   const { deleteRecord, isLoading: isDeleting } = useDeleteBehaviorRecord();
 
   const foundRecord = records.find((r) => r.id === recordId);
   let record: BehaviorRecordWithDefinition | undefined;
-  if (foundRecord && 'behavior_definitions' in foundRecord) {
+  if (foundRecord && 'behaviorDefinitions' in foundRecord) {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     record = foundRecord as BehaviorRecordWithDefinition;
   }
   const definition =
-    record?.behavior_definitions || definitions.find((d) => d.id === record?.definitionId);
+    record?.behaviorDefinitions || definitions.find((d) => d.id === record?.definitionId);
 
   const handleDelete = async () => {
     if (!record) return;
-    if (confirm('Are you sure you want to delete this record?')) {
-      await deleteRecord(record.id);
-      onClose();
-    }
+    await deleteRecord(record.id);
+    onClose();
   };
 
   return (
@@ -187,7 +187,7 @@ export function RecordDetailDrawer({ recordId, isOpen, onClose }: RecordDetailDr
                           <Button
                             size="sm"
                             colorScheme="red"
-                            onClick={handleDelete}
+                            onClick={() => setShowDeleteDialog(true)}
                             loading={isDeleting}
                             flex={1}
                           >
@@ -256,6 +256,18 @@ export function RecordDetailDrawer({ recordId, isOpen, onClose }: RecordDetailDr
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>
+
+      <ConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Record"
+        message="Are you sure you want to delete this record? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmColorScheme="red"
+        isLoading={isDeleting}
+      />
     </Drawer.Root>
   );
 }

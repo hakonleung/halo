@@ -51,9 +51,12 @@ function convertBehaviorRecordWithDefinition(
 ): ClientBehaviorRecordWithDefinition {
   return {
     ...convertBehaviorRecord(server),
-    behavior_definitions: convertBehaviorDefinition(server.behavior_definitions),
+    behaviorDefinitions: convertBehaviorDefinition(server.behavior_definitions),
   };
 }
+
+// Export converters for reuse in other modules
+export { convertBehaviorRecordWithDefinition };
 
 export const behaviorsApi = {
   /**

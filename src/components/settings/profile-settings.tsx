@@ -21,7 +21,7 @@ export function ProfileSettings() {
   const { updateSettings, isLoading: isUpdating, error: updateError } = useUpdateSettings();
 
   const [username, setUsername] = useState(settings?.username || '');
-  const [fullName, setFullName] = useState(settings?.full_name || '');
+  const [fullName, setFullName] = useState(settings?.fullName || '');
   const [website, setWebsite] = useState(settings?.website || '');
   const [usernameError, setUsernameError] = useState<string | null>(null);
 
@@ -29,7 +29,7 @@ export function ProfileSettings() {
   useEffect(() => {
     if (settings) {
       setUsername(settings.username || '');
-      setFullName(settings.full_name || '');
+      setFullName(settings.fullName || '');
       setWebsite(settings.website || '');
     }
   }, [settings]);
@@ -45,7 +45,7 @@ export function ProfileSettings() {
 
     await updateSettings({
       username: username || undefined,
-      full_name: fullName || undefined,
+      fullName: fullName || undefined,
       website: website || undefined,
     });
   };

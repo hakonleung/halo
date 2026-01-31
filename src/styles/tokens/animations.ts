@@ -39,6 +39,66 @@ export const keyframes = {
       transform: 'rotate(360deg) scale(1)',
     },
   },
+  'skeleton-pulse': {
+    '0%': {
+      transform: 'translateX(-100%)',
+    },
+    '100%': {
+      transform: 'translateX(100%)',
+    },
+  },
+  'skeleton-matrix': {
+    '0%': {
+      backgroundPosition: '200% 0',
+      opacity: 0.3,
+    },
+    '50%': {
+      opacity: 0.8,
+    },
+    '100%': {
+      backgroundPosition: '-200% 0',
+      opacity: 0.3,
+    },
+  },
+  'skeleton-scan': {
+    '0%': {
+      transform: 'translateY(-100%)',
+      opacity: 0,
+    },
+    '50%': {
+      opacity: 1,
+    },
+    '100%': {
+      transform: 'translateY(100%)',
+      opacity: 0,
+    },
+  },
+  'skeleton-glitch': {
+    '0%, 100%': {
+      transform: 'translateX(0)',
+      filter: 'hue-rotate(0deg)',
+    },
+    '10%': {
+      transform: 'translateX(-2px)',
+      filter: 'hue-rotate(90deg)',
+    },
+    '20%': {
+      transform: 'translateX(2px)',
+      filter: 'hue-rotate(180deg)',
+    },
+    '30%': {
+      transform: 'translateX(-1px)',
+      filter: 'hue-rotate(270deg)',
+    },
+    '40%': {
+      transform: 'translateX(1px)',
+      filter: 'hue-rotate(360deg)',
+    },
+    '50%': {
+      transform: 'translateX(0)',
+      filter: 'hue-rotate(0deg)',
+    },
+  },
 } as const;
 
 export const durations = {

@@ -40,10 +40,10 @@ export function AppearanceSettings() {
   useEffect(() => {
     if (settings) {
       setTheme(settings.theme ?? 'dark');
-      setAccentColor(settings.accent_color ?? '#00FF41');
-      setAnimationLevel(settings.animation_level ?? 'full');
-      setFontSize(settings.font_size ?? 'medium');
-      setCodeFont(settings.code_font ?? 'JetBrains Mono');
+      setAccentColor(settings.accentColor ?? '#00FF41');
+      setAnimationLevel(settings.animationLevel ?? 'full');
+      setFontSize(settings.fontSize ?? 'medium');
+      setCodeFont(settings.codeFont ?? 'JetBrains Mono');
     }
   }, [settings]);
 
@@ -59,12 +59,12 @@ export function AppearanceSettings() {
     await updateSettings({
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       theme: theme as 'dark' | 'light' | 'system',
-      accent_color: accentColor,
+      accentColor: accentColor,
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      animation_level: animationLevel as 'full' | 'reduced' | 'none',
+      animationLevel: animationLevel as 'full' | 'reduced' | 'none',
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      font_size: fontSize as 'small' | 'medium' | 'large' | 'xlarge',
-      code_font: codeFont,
+      fontSize: fontSize as 'small' | 'medium' | 'large' | 'xlarge',
+      codeFont: codeFont,
     });
   };
 

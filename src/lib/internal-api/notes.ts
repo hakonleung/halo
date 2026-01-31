@@ -24,6 +24,9 @@ function convertNote(server: ServerNote): ClientNote {
   };
 }
 
+// Export converters for reuse in other modules
+export { convertNote };
+
 export const notesApi = {
   /**
    * Get notes

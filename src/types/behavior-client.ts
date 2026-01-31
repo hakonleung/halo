@@ -30,7 +30,7 @@ export interface BehaviorRecord {
 }
 
 export interface BehaviorRecordWithDefinition extends BehaviorRecord {
-  behavior_definitions: BehaviorDefinition;
+  behaviorDefinitions: BehaviorDefinition;
 }
 
 export interface BehaviorDefinitionCreateRequest {

@@ -1,10 +1,11 @@
 'use client';
 
-import { Box, VStack, Heading, HStack, Button, Card } from '@chakra-ui/react';
+import { Box, VStack, HStack, Button, Card } from '@chakra-ui/react';
 import { ProfileSettings } from './profile-settings';
 import { AppearanceSettings } from './appearance-settings';
 import { NotificationSettings } from './notification-settings';
 import { LocaleSettings } from './locale-settings';
+import { AISettingsComponent } from './ai-settings';
 import { useState } from 'react';
 
 enum SettingsTab {
@@ -12,6 +13,7 @@ enum SettingsTab {
   Appearance = 'appearance',
   Notifications = 'notifications',
   Locale = 'locale',
+  AI = 'ai',
 }
 
 export function SettingsPageContent() {
@@ -22,6 +24,7 @@ export function SettingsPageContent() {
     { id: SettingsTab.Appearance, label: 'Appearance' },
     { id: SettingsTab.Notifications, label: 'Notifications' },
     { id: SettingsTab.Locale, label: 'Locale' },
+    { id: SettingsTab.AI, label: 'AI' },
   ];
 
   const renderContent = () => {
@@ -34,6 +37,8 @@ export function SettingsPageContent() {
         return <NotificationSettings />;
       case SettingsTab.Locale:
         return <LocaleSettings />;
+      case SettingsTab.AI:
+        return <AISettingsComponent />;
       default:
         return <ProfileSettings />;
     }
@@ -42,16 +47,6 @@ export function SettingsPageContent() {
   return (
     <Box p={8}>
       <VStack gap={8} align="stretch" maxW="container.lg" mx="auto">
-        <Heading
-          as="h1"
-          size="2xl"
-          color="brand.matrix"
-          fontFamily="heading"
-          textShadow="0 0 10px currentColor"
-        >
-          SETTINGS
-        </Heading>
-
         <Card.Root size="lg" borderColor="brand.matrix">
           <Card.Body>
             <HStack

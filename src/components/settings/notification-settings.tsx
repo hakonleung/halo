@@ -34,15 +34,15 @@ export function NotificationSettings() {
   // Sync form values when settings load
   useEffect(() => {
     if (settings) {
-      setNotificationsInApp(settings.notifications_in_app ?? true);
-      setNotificationsPush(settings.notifications_push ?? false);
-      setNotificationsEmail(settings.notifications_email ?? false);
-      setGoalReminderEnabled(settings.goal_reminder_enabled ?? true);
-      setRecordReminderEnabled(settings.record_reminder_enabled ?? false);
-      setInsightsEnabled(settings.insights_enabled ?? true);
-      setDoNotDisturbStart(settings.do_not_disturb_start || '');
-      setDoNotDisturbEnd(settings.do_not_disturb_end || '');
-      setDoNotDisturbWeekends(settings.do_not_disturb_weekends ?? false);
+      setNotificationsInApp(settings.notificationsInApp ?? true);
+      setNotificationsPush(settings.notificationsPush ?? false);
+      setNotificationsEmail(settings.notificationsEmail ?? false);
+      setGoalReminderEnabled(settings.goalReminderEnabled ?? true);
+      setRecordReminderEnabled(settings.recordReminderEnabled ?? false);
+      setInsightsEnabled(settings.insightsEnabled ?? true);
+      setDoNotDisturbStart(settings.doNotDisturbStart || '');
+      setDoNotDisturbEnd(settings.doNotDisturbEnd || '');
+      setDoNotDisturbWeekends(settings.doNotDisturbWeekends ?? false);
     }
   }, [settings]);
 
@@ -59,15 +59,15 @@ export function NotificationSettings() {
     setTimeRangeError(null);
 
     await updateSettings({
-      notifications_in_app: notificationsInApp,
-      notifications_push: notificationsPush,
-      notifications_email: notificationsEmail,
-      goal_reminder_enabled: goalReminderEnabled,
-      record_reminder_enabled: recordReminderEnabled,
-      insights_enabled: insightsEnabled,
-      do_not_disturb_start: doNotDisturbStart || null,
-      do_not_disturb_end: doNotDisturbEnd || null,
-      do_not_disturb_weekends: doNotDisturbWeekends,
+      notificationsInApp: notificationsInApp,
+      notificationsPush: notificationsPush,
+      notificationsEmail: notificationsEmail,
+      goalReminderEnabled: goalReminderEnabled,
+      recordReminderEnabled: recordReminderEnabled,
+      insightsEnabled: insightsEnabled,
+      doNotDisturbStart: doNotDisturbStart || undefined,
+      doNotDisturbEnd: doNotDisturbEnd || undefined,
+      doNotDisturbWeekends: doNotDisturbWeekends,
     });
   };
 

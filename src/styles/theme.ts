@@ -13,6 +13,7 @@ import { badge } from './components/badge';
 import { bottomNav } from './components/bottom-nav';
 import { popover } from './components/popover';
 import { tabs } from './components/tabs';
+import { skeleton } from './components/skeleton';
 
 export const config = defineConfig({
   theme: {
@@ -38,6 +39,7 @@ export const config = defineConfig({
       button,
       fieldLabel,
       badge,
+      skeleton,
     },
     slotRecipes: {
       select,

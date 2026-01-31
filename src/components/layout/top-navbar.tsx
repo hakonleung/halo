@@ -13,7 +13,6 @@ export function TopNavbar() {
   const navLinks = [
     { label: 'LOG', path: '/log' },
     { label: 'DASHBOARD', path: '/dashboard' },
-    { label: 'CHAT', path: '/chat' },
     { label: 'SETTINGS', path: '/settings' },
   ];
 

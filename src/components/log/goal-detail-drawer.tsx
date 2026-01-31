@@ -15,6 +15,7 @@ import {
 import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
 import { GoalStatusBadge } from '@/components/goals';
 import { GoalForm } from '@/components/forms';
+import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { useGoal, useUpdateGoal, useDeleteGoal } from '@/hooks/use-goals';
 import type { GoalProgress as DashboardGoalProgress } from '@/types/dashboard-client';
 
@@ -26,6 +27,8 @@ interface GoalDetailDrawerProps {
 
 export function GoalDetailDrawer({ goalId, isOpen, onClose }: GoalDetailDrawerProps) {
   const [activeTab, setActiveTab] = useState<'view' | 'edit'>('view');
+  const [showAbandonDialog, setShowAbandonDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goal, isLoading, error } = useGoal(goalId);
   const { updateGoal, isLoading: isUpdating } = useUpdateGoal();
   const { deleteGoal, isLoading: isDeleting } = useDeleteGoal();
@@ -42,10 +45,8 @@ export function GoalDetailDrawer({ goalId, isOpen, onClose }: GoalDetailDrawerPr
 
   const handleDelete = async () => {
     if (!goal) return;
-    if (confirm('Are you sure you want to delete this goal?')) {
-      await deleteGoal(goal.id);
-      onClose();
-    }
+    await deleteGoal(goal.id);
+    onClose();
   };
 
   const progress = goal?.progress;
@@ -195,7 +196,7 @@ export function GoalDetailDrawer({ goalId, isOpen, onClose }: GoalDetailDrawerPr
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={handleAbandon}
+                              onClick={() => setShowAbandonDialog(true)}
                               loading={isUpdating}
                               flex={1}
                             >
@@ -206,7 +207,7 @@ export function GoalDetailDrawer({ goalId, isOpen, onClose }: GoalDetailDrawerPr
                         <Button
                           size="sm"
                           colorScheme="red"
-                          onClick={handleDelete}
+                          onClick={() => setShowDeleteDialog(true)}
                           loading={isDeleting}
                           flex={1}
                         >
@@ -223,6 +224,30 @@ export function GoalDetailDrawer({ goalId, isOpen, onClose }: GoalDetailDrawerPr
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>
+
+      <ConfirmDialog
+        isOpen={showAbandonDialog}
+        onClose={() => setShowAbandonDialog(false)}
+        onConfirm={handleAbandon}
+        title="Abandon Goal"
+        message="Are you sure you want to abandon this goal? This action cannot be undone."
+        confirmLabel="Abandon"
+        cancelLabel="Cancel"
+        confirmColorScheme="green"
+        isLoading={isUpdating}
+      />
+
+      <ConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Goal"
+        message="Are you sure you want to delete this goal? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmColorScheme="red"
+        isLoading={isDeleting}
+      />
     </Drawer.Root>
   );
 }

@@ -39,6 +39,9 @@ function convertGoal(server: ServerGoal): ClientGoal {
   };
 }
 
+// Export converters for reuse in other modules
+export { convertGoal };
+
 export const goalsApi = {
   /**
    * Get goals list
