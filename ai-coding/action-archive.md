@@ -9,9 +9,10 @@
 ```
 
 示例：
-- `/flow-archive PRD_001`
-- `/flow-archive PRD_002`
-- `/flow-archive QUICK_001`
+
+- `/flow-archive PRD_001` - 归档指定工作流
+- `/flow-archive PRD_002` - 归档指定工作流
+- `/flow-archive` - 不传参数，归档所有未归档的工作流
 
 ## 适用场景
 
@@ -23,14 +24,50 @@
 
 ```mermaid
 flowchart TD
-    A["/flow-archive [单号]"] --> B["读取 ai-works/[单号]"]
-    B --> C["生成归档报告"]
-    C --> D["保存到 ai-works/_archived/[单号]/"]
-    D --> E["删除原始目录"]
-    E --> F["人类确认"]
-    F --> G["提交到 Git"]
-    G --> H["完成"]
+    A["/flow-archive [单号]?"] --> B{是否传递单号?}
+    B -->|是| C["读取 ai-works/[单号]"]
+    B -->|否| D["询问用户是否归档所有 works"]
+    D -->|是| E["查找 ai-works 所有未归档的 item"]
+    D -->|否| F["取消操作"]
+    E --> G["遍历每个未归档的 item"]
+    C --> H["生成归档报告"]
+    G --> H
+    H --> I["保存到 ai-works/_archived/[单号]/"]
+    I --> J["删除原始目录"]
+    J --> K["人类确认"]
+    K --> L["提交到 Git"]
+    L --> M["完成"]
+    F --> N["结束"]
 ```
+
+---
+
+## 步骤 0: 参数处理
+
+### 0.1 检查参数
+
+- 如果传递了 `[单号]`，进入步骤 1，处理单个工作流
+- 如果未传递参数，进入步骤 0.2
+
+### 0.2 批量归档询问
+
+如果未传递参数：
+
+1. **询问用户**：是否归档所有未归档的 works？
+   - 提示：这将查找 `ai-works/` 目录下所有未归档的 item（不在 `_archived/` 目录中的）
+   - 如果用户选择"否"，终止操作
+   - 如果用户选择"是"，继续执行
+
+2. **查找未归档的 works**：
+   - 扫描 `ai-works/` 目录
+   - 排除 `_archived/` 目录
+   - 列出所有子目录（这些是未归档的 works）
+   - 显示找到的 works 列表，让用户确认
+
+3. **批量处理**：
+   - 对每个未归档的 work，按照步骤 1-4 执行归档流程
+   - 每个 work 独立生成归档报告
+   - 所有归档完成后，统一询问是否提交到 Git
 
 ---
 
@@ -126,11 +163,13 @@ ai-works/_archived/[单号]/
 
 **确认提示**:
 向用户展示归档操作的结果，包括：
+
 - 归档报告已保存到 `ai-works/_archived/[单号]/archive.md`
 - 原始目录 `ai-works/[单号]/` 已删除
 - 询问是否提交到 Git
 
 **提交操作** (经用户确认后):
+
 1. 添加归档文件到 Git 暂存区：
    - `ai-works/_archived/[单号]/archive.md`
    - `ai-works/_archived/[单号]/overview.json` (如果存在)
@@ -139,6 +178,7 @@ ai-works/_archived/[单号]/
 4. 显示提交结果
 
 **注意事项**:
+
 - 如果用户拒绝提交，跳过此步骤
 - 如果 Git 仓库未初始化，提示用户先初始化仓库
 - 如果归档文件已在 Git 中且无变更，跳过提交
@@ -156,25 +196,31 @@ ai-works/_archived/[单号]/
 ## 1. 需求是什么
 
 ### 背景与痛点
+
 [从 requirements.md 提取]
 
 ### 功能范围
+
 - **Must Have**: [列表]
 - **Nice to Have**: [列表]
 - **不做**: [列表]
 
 ### 成功指标
+
 [从 requirements.md 或 prd.md 提取]
 
 ## 2. 做了什么
 
 ### 完成阶段
+
 [从 overview.json 的 stages 提取]
 
 ### 实现功能
+
 [对照 PRD 用户故事，列出已实现的功能]
 
 ### 代码统计
+
 - 创建文件: [metrics.files_created]
 - 修改文件: [metrics.files_modified]
 - 新增行数: [metrics.lines_added]
@@ -183,29 +229,36 @@ ai-works/_archived/[单号]/
 ## 3. 还有什么没做
 
 ### 未实现功能
+
 [从 Nice to Have 和验证报告中提取]
 
 ### 待改进项
+
 [从验证报告的"待改进项"提取]
 
 ### 技术债务
+
 [如果有，列出]
 
 ## 4. 质量如何
 
 ### 验证结果
+
 [从 validation/report.md 提取]
 
 ### 代码质量
+
 - P0 功能覆盖率: [百分比]
 - 类型安全: [通过/未通过]
 - 文件大小合规: [通过/未通过]
 - TODO/FIXME: [数量]
 
 ### 文档同步率
+
 [从验证报告提取]
 
 ### 部署状态
+
 [如果已完成部署，说明部署情况]
 ```
 
@@ -223,4 +276,3 @@ ai-works/_archived/[单号]/
 ## Markdown 输出规范
 
 所有生成的 Markdown 文档必须遵循 [shared/markdown-style.md](./shared/markdown-style.md)
-

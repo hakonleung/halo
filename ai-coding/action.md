@@ -25,5 +25,8 @@
 ### 归档指令
 
 - **`/flow-archive [单号]`**: 归档已完成或已终止的工作流，生成总结报告并清理文件 - [action-archive.md](./action-archive.md)
+- **`/flow-archive`**: 不传参数时，归档所有未归档的工作流 - [action-archive.md](./action-archive.md)
 
+### 学习指令
 
+- **`/flow-learn`**: 从归档的工作流中提取技术设计和技术经验，更新到项目配置文件中 - [action-learn.md](./action-learn.md)

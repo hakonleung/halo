@@ -61,6 +61,7 @@ flowchart TD
 - `action-iterate.md` → `flow-iterate.md`
 - `action-refactor.md` → `flow-refactor.md`
 - `action-archive.md` → `flow-archive.md`
+- `action-learn.md` → `flow-learn.md`
 - `action-status.md` → 拆分为 `flow-status.md`, `flow-list.md`, `flow-sync-check.md`, `read-full.md`
 
 **命令文件格式** (必须包含):
