@@ -1,10 +1,11 @@
 'use client';
 
 import { Drawer, Portal, Tabs } from '@chakra-ui/react';
-import { RecordForm } from '@/components/behaviors/record-form';
-import { GoalForm, NoteForm } from '@/components/forms';
+import { RecordForm } from '@/components/global/action/record-form';
 import { useActionDrawerStore } from '@/store/action-drawer-store';
 import { ActionDrawerTab } from '@/types/drawer';
+import { GoalForm } from './action/goal-form';
+import { NoteForm } from './action/note-form';
 
 export function ActionDrawer() {
   const { isOpen, activeTab, closeDrawer, setActiveTab } = useActionDrawerStore();

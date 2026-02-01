@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { Container, VStack, Box, Card } from '@chakra-ui/react';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import { DateRangePicker } from '@/components/log/date-range-picker';
-import { LogTimeline } from '@/components/log/log-timeline';
+import { LogTimeline } from '@/components/log/timeline/log-timeline';
 import type { TimeRange } from '@/types/dashboard-client';
 
 function formatDate(date: Date): string {

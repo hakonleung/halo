@@ -17,10 +17,10 @@ import {
 import { useBehaviorRecords } from '@/hooks/use-behavior-records';
 import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import { useDeleteBehaviorRecord } from '@/hooks/use-behavior-records';
-import { RecordForm } from '@/components/behaviors/record-form';
-import { DefinitionForm } from '@/components/forms';
+import { RecordForm } from '@/components/global/action/record-form';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
+import { DefinitionForm } from './definition-form';
 
 interface RecordDetailDrawerProps {
   recordId: string;

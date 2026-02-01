@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ChakraProvider } from '@/lib/chakra-provider';
 import { GlobalComponents } from '@/components/global/global-components';
 import './fonts.css';
 
@@ -16,9 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ChakraProvider>
-          <GlobalComponents>{children}</GlobalComponents>
-        </ChakraProvider>
+        <GlobalComponents>{children}</GlobalComponents>
       </body>
     </html>
   );

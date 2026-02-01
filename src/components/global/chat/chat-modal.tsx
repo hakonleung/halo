@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { Send, Plus, MessageSquare, Image, Mic, ArrowLeft } from 'lucide-react';
 import { useConversations, useChat } from '@/hooks/use-chat';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar } from '@/components/shared/avatar';
 
 interface ChatModalProps {
   isOpen: boolean;

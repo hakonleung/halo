@@ -13,12 +13,12 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
-import { GoalStatusBadge } from '@/components/goals';
-import { GoalForm } from '@/components/forms';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { useGoal, useUpdateGoal, useDeleteGoal } from '@/hooks/use-goals';
 import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import type { GoalProgress as DashboardGoalProgress } from '@/types/dashboard-client';
+import { GoalForm } from './goal-form';
+import { GoalStatusBadge } from '../../goals/goal-status-badge';
 
 interface GoalDetailDrawerProps {
   goalId: string;
