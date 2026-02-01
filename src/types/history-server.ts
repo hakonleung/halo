@@ -16,13 +16,13 @@ export interface HistoryItem {
   data: BehaviorRecordWithDefinition | Goal | Note;
 }
 
-export enum GoalStatus {
+enum GoalStatus {
   Active = 'active',
   Completed = 'completed',
   Abandoned = 'abandoned',
 }
 
-export enum HistorySortBy {
+enum HistorySortBy {
   Time = 'time',
   Type = 'type',
 }

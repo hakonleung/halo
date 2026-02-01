@@ -34,7 +34,7 @@ export function ChatButton() {
 
   return (
     <>
-      <Box position="fixed" bottom={{ base: 20, md: 6 }} right={{ base: 4, md: 6 }} zIndex={1000}>
+      <Box position="fixed" bottom={{ base: 20, md: 6 }} right={{ base: 4, md: 6 }} zIndex={100}>
         <IconButton
           aria-label="Open Chat"
           size="lg"

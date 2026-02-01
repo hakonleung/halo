@@ -27,7 +27,7 @@ export interface BaseMetadataField {
   required: boolean;
 }
 
-export interface NumberMetadataField extends BaseMetadataField {
+interface NumberMetadataField extends BaseMetadataField {
   type: 'number';
   config: {
     min?: number;
@@ -39,7 +39,7 @@ export interface NumberMetadataField extends BaseMetadataField {
   };
 }
 
-export interface TextMetadataField extends BaseMetadataField {
+interface TextMetadataField extends BaseMetadataField {
   type: 'text' | 'textarea';
   config: {
     defaultValue?: string;
@@ -47,7 +47,7 @@ export interface TextMetadataField extends BaseMetadataField {
   };
 }
 
-export interface SelectMetadataField extends BaseMetadataField {
+interface SelectMetadataField extends BaseMetadataField {
   type: 'select' | 'multiselect';
   config: {
     options: { label: string; value: string }[];
@@ -56,14 +56,14 @@ export interface SelectMetadataField extends BaseMetadataField {
   };
 }
 
-export interface DateMetadataField extends BaseMetadataField {
+interface DateMetadataField extends BaseMetadataField {
   type: 'date' | 'time' | 'datetime';
   config: {
     defaultValue?: string;
   };
 }
 
-export interface RatingMetadataField extends BaseMetadataField {
+interface RatingMetadataField extends BaseMetadataField {
   type: 'rating';
   config: {
     maxRating: number;
@@ -71,7 +71,7 @@ export interface RatingMetadataField extends BaseMetadataField {
   };
 }
 
-export interface CurrencyMetadataField extends BaseMetadataField {
+interface CurrencyMetadataField extends BaseMetadataField {
   type: 'currency';
   config: {
     currency: string;

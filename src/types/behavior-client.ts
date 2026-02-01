@@ -46,8 +46,3 @@ export interface BehaviorRecordCreateRequest {
   metadata: MetadataRecord;
   note?: string;
 }
-
-export interface BehaviorResponse<T> {
-  data: T | null;
-  error: string | null;
-}

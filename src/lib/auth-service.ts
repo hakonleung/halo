@@ -1,8 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import type { AuthResponse } from '@/types/auth';
-import type { UserSettings } from '@/types/settings-server';
-import { convertSettings } from '@/lib/internal-api/settings';
 
 /**
  * Authentication service - Server-side logic encapsulation
@@ -41,8 +39,7 @@ export const authService = {
       user: {
         id: data.user.id,
         email: data.user.email ?? '',
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        settings: settings ? convertSettings(settings as UserSettings) : undefined,
+        settings: settings ? settings : undefined,
       },
       session: data.session,
       error: null,
@@ -115,8 +112,7 @@ export const authService = {
       user: {
         id: user.id,
         email: user.email ?? '',
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        settings: settingsError ? undefined : convertSettings(settings as UserSettings),
+        settings: settingsError ? undefined : settings,
       },
       session: null, // getUser doesn't return session, use getSession if needed
       error: null,

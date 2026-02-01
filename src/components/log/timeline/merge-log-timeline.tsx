@@ -11,9 +11,9 @@ import { useNoteTimelineItems } from '@/hooks/use-note-timeline-items';
 import { useGoals, type GetGoalsParams } from '@/hooks/use-goals';
 import { useBehaviorRecords } from '@/hooks/use-behavior-records';
 import { useNotes } from '@/hooks/use-notes';
-import type { RecordFiltersType } from '@/components/history/record-filters';
+import type { RecordFiltersType } from '@/components/log/record-filters';
 import { FilterBar } from '@/components/shared/filter-bar';
-import { RecordFilters } from '@/components/history/record-filters';
+import { RecordFilters } from '@/components/log/record-filters';
 import { createListCollection } from '@chakra-ui/react';
 
 const statusOptions = createListCollection({

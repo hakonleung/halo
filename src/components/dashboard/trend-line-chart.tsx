@@ -30,10 +30,10 @@ export function TrendLineChart({
 }: TrendLineChartProps) {
   if (loading) {
     return (
-      <Card.Root size="md">
+      <Card.Root size="sm">
         <Card.Body>
-          <Skeleton height="16px" width="120px" mb={4} />
-          <Skeleton height="280px" />
+          <Skeleton height="14px" width="120px" mb={2} />
+          <Skeleton height="200px" />
         </Card.Body>
       </Card.Root>
     );
@@ -41,9 +41,9 @@ export function TrendLineChart({
 
   if (!data || data.points.length === 0) {
     return (
-      <Card.Root size="md" borderStyle="dashed">
-        <Card.Body h="340px" display="flex" alignItems="center" justifyContent="center">
-          <Text color="text.mist" fontFamily="mono">
+      <Card.Root size="sm" borderStyle="dashed">
+        <Card.Body h="240px" display="flex" alignItems="center" justifyContent="center">
+          <Text color="text.mist" fontFamily="mono" fontSize="sm">
             No Trend Data
           </Text>
         </Card.Body>
@@ -64,22 +64,22 @@ export function TrendLineChart({
       : data.types;
 
   return (
-    <Card.Root size="md">
+    <Card.Root size="sm">
       <Card.Body>
-        <Flex justify="space-between" align="center" mb={4}>
-          <Text fontSize="md" color="text.neon" fontFamily="mono">
+        <Flex justify="space-between" align="center" mb={2}>
+          <Text fontSize="sm" color="text.neon" fontFamily="mono">
             Behavior Trend
           </Text>
           {data.types.length > 0 && (
-            <HStack gap={2} flexWrap="wrap">
+            <HStack gap={1.5} flexWrap="wrap">
               {data.types.map((type) => {
                 const isActive =
                   !selectedTypes || selectedTypes.length === 0 || selectedTypes.includes(type.id);
                 return (
                   <Box
                     key={type.id}
-                    px={2}
-                    py={1}
+                    px={1.5}
+                    py={0.5}
                     borderRadius="4px"
                     border="1px solid"
                     borderColor={type.color}
@@ -101,17 +101,17 @@ export function TrendLineChart({
           )}
         </Flex>
 
-        <Box h="280px">
+        <Box h="200px">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data.points} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
               <XAxis
                 dataKey="date"
                 tickFormatter={formatDate}
                 stroke="#555"
-                fontSize={12}
+                fontSize={11}
                 fontFamily="JetBrains Mono"
               />
-              <YAxis stroke="#555" fontSize={12} fontFamily="JetBrains Mono" />
+              <YAxis stroke="#555" fontSize={11} fontFamily="JetBrains Mono" />
               <Tooltip
                 contentStyle={{
                   background: '#1A1A1A',

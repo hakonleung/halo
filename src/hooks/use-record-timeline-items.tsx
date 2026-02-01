@@ -2,9 +2,9 @@
 
 import { useMemo } from 'react';
 import type { TimelineItem } from '@/components/shared/timeline-view';
-import { RecordTimelineCard } from '@/components/history/record-timeline-card';
-import { FilterTimelineCard } from '@/components/log/filter-timeline-card';
-import { RecordFilters, type RecordFiltersType } from '@/components/history/record-filters';
+import { RecordTimelineCard } from '@/components/log/timeline/record-timeline-card';
+import { FilterTimelineCard } from '@/components/log/timeline/filter-timeline-card';
+import { RecordFilters, type RecordFiltersType } from '@/components/log/record-filters';
 import { useBehaviorRecords } from '@/hooks/use-behavior-records';
 import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
 

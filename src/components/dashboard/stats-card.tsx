@@ -18,11 +18,11 @@ interface StatsCardProps {
 export function StatsCard({ title, value, trend, suffix, loading, onClick }: StatsCardProps) {
   if (loading) {
     return (
-      <Card.Root size="md" h="180px">
+      <Card.Root size="sm" h="120px">
         <Card.Body>
-          <Skeleton height="16px" width="60%" mb={4} />
-          <Skeleton height="48px" width="40%" mb={4} />
-          <Skeleton height="14px" width="50%" />
+          <Skeleton height="12px" width="60%" mb={2} />
+          <Skeleton height="32px" width="40%" mb={2} />
+          <Skeleton height="12px" width="50%" />
         </Card.Body>
       </Card.Root>
     );
@@ -39,8 +39,8 @@ export function StatsCard({ title, value, trend, suffix, loading, onClick }: Sta
 
   return (
     <Card.Root
-      size="md"
-      h="180px"
+      size="sm"
+      h="120px"
       cursor={onClick ? 'pointer' : 'default'}
       transition="all 0.15s ease"
       _hover={
@@ -55,7 +55,7 @@ export function StatsCard({ title, value, trend, suffix, loading, onClick }: Sta
       <Card.Body>
         <VStack align="stretch" h="full" gap={0}>
           <Text
-            fontSize="sm"
+            fontSize="xs"
             color="text.mist"
             fontFamily="mono"
             textTransform="uppercase"
@@ -67,7 +67,7 @@ export function StatsCard({ title, value, trend, suffix, loading, onClick }: Sta
           <Box flex={1} display="flex" alignItems="center">
             <HStack gap={2} align="baseline">
               <Text
-                fontSize="4xl"
+                fontSize="2xl"
                 fontWeight="bold"
                 fontFamily="mono"
                 color="brand.matrix"
@@ -77,7 +77,7 @@ export function StatsCard({ title, value, trend, suffix, loading, onClick }: Sta
                 {value}
               </Text>
               {suffix && (
-                <Text fontSize="lg" color="text.mist" fontFamily="mono">
+                <Text fontSize="sm" color="text.mist" fontFamily="mono">
                   {suffix}
                 </Text>
               )}
@@ -86,8 +86,8 @@ export function StatsCard({ title, value, trend, suffix, loading, onClick }: Sta
 
           {trend && (
             <HStack gap={1} color={trendColor}>
-              <TrendIcon size={14} weight="bold" />
-              <Text fontSize="sm" fontFamily="mono">
+              <TrendIcon size={12} weight="bold" />
+              <Text fontSize="xs" fontFamily="mono">
                 {trend.value}
               </Text>
             </HStack>

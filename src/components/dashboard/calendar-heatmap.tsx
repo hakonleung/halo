@@ -37,10 +37,10 @@ const MONTH_ABBREVIATIONS = [
 export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapProps) {
   if (loading) {
     return (
-      <Card.Root size="md">
+      <Card.Root size="sm">
         <Card.Body>
-          <Skeleton height="16px" width="100px" mb={4} />
-          <Skeleton height="120px" />
+          <Skeleton height="14px" width="100px" mb={2} />
+          <Skeleton height="100px" />
         </Card.Body>
       </Card.Root>
     );
@@ -48,9 +48,9 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
 
   if (!data || data.length === 0) {
     return (
-      <Card.Root size="md" borderStyle="dashed">
-        <Card.Body h="200px" display="flex" alignItems="center" justifyContent="center">
-          <Text color="text.mist" fontFamily="mono">
+      <Card.Root size="sm" borderStyle="dashed">
+        <Card.Body h="160px" display="flex" alignItems="center" justifyContent="center">
+          <Text color="text.mist" fontFamily="mono" fontSize="sm">
             No Activity Data
           </Text>
         </Card.Body>
@@ -138,9 +138,9 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
   };
 
   return (
-    <Card.Root size="md" overflowX="auto">
+    <Card.Root size="sm" overflowX="auto">
       <Card.Body>
-        <Text fontSize="md" color="text.neon" fontFamily="mono" mb={4}>
+        <Text fontSize="sm" color="text.neon" fontFamily="mono" mb={2}>
           Activity Heatmap
         </Text>
 
@@ -241,15 +241,15 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
         </HStack>
 
         {/* Legend */}
-        <HStack gap={2} mt={4} justify="flex-end">
+        <HStack gap={1.5} mt={2} justify="flex-end">
           <Text fontSize="xs" color="text.mist" fontFamily="mono">
             Less
           </Text>
           {LEVEL_COLORS.map((color, i) => (
             <Box
               key={i}
-              w="12px"
-              h="12px"
+              w="10px"
+              h="10px"
               borderRadius="2px"
               bg={color}
               border={i === 0 ? '1px solid #333' : 'none'}

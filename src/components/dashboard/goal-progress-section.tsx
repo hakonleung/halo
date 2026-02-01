@@ -33,12 +33,12 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
 
   if (loading) {
     return (
-      <Card.Root size="md">
+      <Card.Root size="sm">
         <Card.Body>
-          <Skeleton height="16px" width="100px" mb={4} />
-          <SimpleGrid columns={2} gap={4}>
-            <Skeleton height="100px" borderRadius="full" />
-            <Skeleton height="100px" borderRadius="full" />
+          <Skeleton height="14px" width="100px" mb={2} />
+          <SimpleGrid columns={2} gap={3}>
+            <Skeleton height="80px" borderRadius="full" />
+            <Skeleton height="80px" borderRadius="full" />
           </SimpleGrid>
         </Card.Body>
       </Card.Root>
@@ -49,19 +49,19 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
 
   if (activeGoals.length === 0) {
     return (
-      <Card.Root size="md" borderStyle="dashed">
+      <Card.Root size="sm" borderStyle="dashed">
         <Card.Body
-          h="200px"
+          h="160px"
           display="flex"
           alignItems="center"
           justifyContent="center"
           flexDirection="column"
           gap={2}
         >
-          <Text color="text.mist" fontFamily="mono">
+          <Text color="text.mist" fontFamily="mono" fontSize="sm">
             No Active Goals
           </Text>
-          <Text color="brand.matrix" fontFamily="mono" fontSize="sm">
+          <Text color="brand.matrix" fontFamily="mono" fontSize="xs">
             Create Your First Goal
           </Text>
         </Card.Body>
@@ -70,14 +70,14 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
   }
 
   return (
-    <Card.Root size="md">
+    <Card.Root size="sm">
       <Card.Body>
-        <Text fontSize="md" color="text.neon" fontFamily="mono" mb={4}>
+        <Text fontSize="sm" color="text.neon" fontFamily="mono" mb={2}>
           Goal Progress
         </Text>
-        <SimpleGrid columns={{ base: 2, md: 2 }} gap={4} justifyItems="center">
+        <SimpleGrid columns={{ base: 2, md: 2 }} gap={3} justifyItems="center">
           {activeGoals.slice(0, 4).map((goal) => (
-            <GoalProgressRing key={goal.id} goal={goal} size="md" />
+            <GoalProgressRing key={goal.id} goal={goal} size="sm" />
           ))}
         </SimpleGrid>
       </Card.Body>

@@ -2,8 +2,8 @@
 
 import { useMemo } from 'react';
 import type { TimelineItem } from '@/components/shared/timeline-view';
-import { NoteTimelineCard } from '@/components/log/note-timeline-card';
-import { FilterTimelineCard } from '@/components/log/filter-timeline-card';
+import { NoteTimelineCard } from '@/components/log/timeline/note-timeline-card';
+import { FilterTimelineCard } from '@/components/log/timeline/filter-timeline-card';
 import { FilterBar } from '@/components/shared/filter-bar';
 import { useNotes } from '@/hooks/use-notes';
 

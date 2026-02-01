@@ -2,7 +2,7 @@
 
 import { SimpleGrid, VStack, Card, Text, Skeleton } from '@chakra-ui/react';
 import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
-import { RecordCard } from './record-card';
+import { RecordCard } from '../log/timeline/record-card';
 
 interface RecordListProps {
   records: BehaviorRecordWithDefinition[];

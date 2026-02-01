@@ -63,6 +63,8 @@ export function AISettingsComponent() {
     customKeys: [],
   });
 
+  console.log(settings, aiSettings);
+
   // Sync form values when settings load
   useEffect(() => {
     if (settings?.aiSettings) {

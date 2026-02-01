@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import type { TimelineItem } from '@/components/shared/timeline-view';
 import { GoalTimelineCard } from '@/components/goals/goal-timeline-card';
-import { FilterTimelineCard } from '@/components/log/filter-timeline-card';
+import { FilterTimelineCard } from '@/components/log/timeline/filter-timeline-card';
 import { FilterBar } from '@/components/shared/filter-bar';
 import { useGoals, type GetGoalsParams } from '@/hooks/use-goals';
 import { createListCollection } from '@chakra-ui/react';

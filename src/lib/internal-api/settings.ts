@@ -42,7 +42,7 @@ export function convertSettings(server: ServerUserSettings): ClientSettings {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     shortcuts: (server.shortcuts as Record<string, unknown>) ?? null,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    aiSettings: (server.ai_settings as AISettings) ?? null,
+    aiSettings: server.ai_settings as AISettings,
   };
 }
 

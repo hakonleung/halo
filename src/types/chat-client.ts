@@ -19,15 +19,3 @@ export interface Conversation {
   createdAt: string;
   updatedAt: string;
 }
-
-export interface SendMessageRequest {
-  conversationId?: string;
-  content: string;
-  attachments?: ChatAttachment[];
-}
-
-export interface ChatResponse {
-  messageId: string;
-  conversationId: string;
-  error: string | null;
-}

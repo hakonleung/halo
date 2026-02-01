@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { Box, Switch, HStack, Card, Text } from '@chakra-ui/react';
 import type { TimeRange } from '@/types/dashboard-client';
-import { SplitLogTimeline } from '@/components/log/split-log-timeline';
-import { MergeLogTimeline } from '@/components/log/merge-log-timeline';
+import { SplitLogTimeline } from '@/components/log/timeline/split-log-timeline';
+import { MergeLogTimeline } from '@/components/log/timeline/merge-log-timeline';
 
 type ViewMode = 'split' | 'merge';
 

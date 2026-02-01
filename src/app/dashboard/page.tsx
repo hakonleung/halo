@@ -1,9 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Flex, SimpleGrid, VStack, Button } from '@chakra-ui/react';
-import { ArrowClockwise } from 'phosphor-react';
-import { useQueryClient } from '@tanstack/react-query';
+import { Box, Flex, SimpleGrid, VStack } from '@chakra-ui/react';
 import { withAuth } from '@/components/auth/with-auth';
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
 import {
@@ -18,7 +16,6 @@ import type { TimeRange } from '@/types/dashboard-client';
 import { TimeRangePreset } from '@/types/dashboard-client';
 
 function DashboardContent() {
-  const queryClient = useQueryClient();
   const [timeRange, setTimeRange] = useState<TimeRange>({
     type: 'preset',
     value: TimeRangePreset.Last7Days,
@@ -45,54 +42,46 @@ function DashboardContent() {
     // Could open a modal here to show day details
   };
 
-  // Refresh all data
-  const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-  };
-
   return (
     <AuthenticatedLayout>
-      <Box p={{ base: 3, md: 4, lg: 5 }} maxW="1400px" mx="auto">
-        <VStack gap={{ base: 3, md: 4 }} align="stretch">
+      <Box p={{ base: 2, md: 3 }} maxW="1400px" mx="auto">
+        <VStack gap={{ base: 2, md: 3 }} align="stretch">
           {/* Header */}
-          <Flex
-            justify="flex-end"
-            align={{ base: 'flex-start', md: 'center' }}
-            direction={{ base: 'column', md: 'row' }}
-            gap={4}
-          >
-            <Flex gap={2}>
-              <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
-              <Button
-                variant="outline"
-                size="sm"
-                borderColor="brand.matrix"
-                color="text.neon"
-                onClick={handleRefresh}
-                _hover={{
-                  bg: 'rgba(0, 255, 65, 0.1)',
-                }}
-              >
-                <ArrowClockwise size={16} />
-              </Button>
-            </Flex>
+          <Flex justify="flex-end" align="center">
+            <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
           </Flex>
 
-          {/* Stats Cards */}
-          <StatsCardGroup stats={stats} loading={statsLoading} />
+          {/* Desktop: 2x2 Grid, Mobile: 4 rows */}
+          {/* Priority: metric => heatmap => trend => progress */}
+          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={{ base: 2, md: 3 }}>
+            {/* Row 1, Col 1: Metric (first row on mobile) */}
+            <Box>
+              <StatsCardGroup stats={stats} loading={statsLoading} />
+            </Box>
 
-          {/* Trend Chart */}
-          <TrendLineChart
-            data={trends}
-            loading={trendsLoading}
-            selectedTypes={selectedTypes}
-            onTypeToggle={handleTypeToggle}
-          />
+            {/* Row 1, Col 2: Heatmap (second row on mobile) */}
+            <Box>
+              <CalendarHeatmap
+                data={heatmap}
+                loading={heatmapLoading}
+                onDayClick={handleDayClick}
+              />
+            </Box>
 
-          {/* Heatmap & Goals */}
-          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={{ base: 3, md: 4 }}>
-            <CalendarHeatmap data={heatmap} loading={heatmapLoading} onDayClick={handleDayClick} />
-            <GoalProgressSection loading={statsLoading} />
+            {/* Row 2, Col 1: Trend (third row on mobile) */}
+            <Box>
+              <TrendLineChart
+                data={trends}
+                loading={trendsLoading}
+                selectedTypes={selectedTypes}
+                onTypeToggle={handleTypeToggle}
+              />
+            </Box>
+
+            {/* Row 2, Col 2: Progress (fourth row on mobile) */}
+            <Box>
+              <GoalProgressSection loading={statsLoading} />
+            </Box>
           </SimpleGrid>
         </VStack>
       </Box>

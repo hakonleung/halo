@@ -33,6 +33,7 @@ export const settingsService = {
 
   /**
    * Update user settings (partial update)
+   * Uses upsert to handle cases where settings record doesn't exist
    */
   async updateSettings(
     supabase: SupabaseClient<Database>,
@@ -42,13 +43,28 @@ export const settingsService = {
     if (!userId) {
       return { settings: null, error: 'User ID is required' };
     }
+
+    // Get existing settings to merge with updates (ignore error if not found)
+    const { data: existing } = await supabase
+      .from('neolog_user_settings')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+
+    // Use upsert to update or insert
     const { data, error } = await supabase
       .from('neolog_user_settings')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId)
+      .upsert(
+        {
+          id: userId,
+          ...(existing ? existing : {}),
+          ...updates,
+          updated_at: new Date().toISOString(),
+        },
+        {
+          onConflict: 'id',
+        },
+      )
       .select()
       .single();
 

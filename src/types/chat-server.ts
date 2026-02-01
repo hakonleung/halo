@@ -14,7 +14,7 @@ export enum ChatRole {
   System = 'system',
 }
 
-export enum ChatAttachmentType {
+enum ChatAttachmentType {
   Image = 'image',
   Audio = 'audio',
 }
@@ -23,16 +23,4 @@ export interface ChatAttachment {
   type: ChatAttachmentType;
   url: string;
   mimeType: string;
-}
-
-export interface SendMessageRequest {
-  conversationId?: string;
-  content: string;
-  attachments?: ChatAttachment[];
-}
-
-export interface ChatResponse {
-  messageId: string;
-  conversationId: string;
-  error: string | null;
 }
