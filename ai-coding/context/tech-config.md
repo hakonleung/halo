@@ -44,7 +44,8 @@ src/
 ## 代码质量
 
 - **类型安全**: 严格 TS，禁用 `as`/`!`/`any`/`export *`
-- **文件大小**: < 300 行，大文件拆分
+- **类型定义**: 优先使用 enum 替代字符串字面量联合类型，提升类型安全性和可维护性
+- **文件大小**: < 300 行，大文件拆分（如 dashboard-service.ts 超过 300 行应拆分）
 - **脚本**: `tsc --noEmit` + `lint --fix` 每次生成后运行
 - **绕过**: 复杂类型用 `eslint-disable-next-line` 或 `@ts-expect-error`
 
@@ -81,3 +82,28 @@ src/
 - 不覆盖第三方包
 - 单元测试覆盖工具函数
 - 测试精简，显而易见的场景不测
+
+## 状态管理约定
+
+- **全局状态**: 使用 Zustand store，避免 Context Provider 嵌套
+- **URL 状态同步**: 使用自定义 hook 同步 URL query 参数到 store
+- **查询刷新**: 数据变更后使用 TanStack Query 的 `invalidate` 刷新相关查询
+
+## 组件设计约定
+
+- **通用组件**: 抽取可复用的通用组件（如 ConfirmDialog、FilterBar），提升代码复用性
+- **全局组件**: 使用统一的 GlobalComponents 入口管理全局组件
+- **详情抽屉**: 使用全局 Detail Drawers 组件，通过 URL query 参数控制显示
+- **表单组件**: 统一放在 `components/forms` 目录，支持 create/edit 模式
+
+## 时区处理约定
+
+- **后端**: 返回原始数据，不进行时区转换
+- **前端**: 根据用户时区进行数据划分和处理
+- **API**: 获取用户时区并传递给前端
+
+## UI 可访问性约定
+
+- **文字对比度**: 确保所有文字颜色符合 WCAG AA 对比度标准（正常文字 ≥ 4.5:1，大文字 ≥ 3:1）
+- **输入框**: 使用 Chakra Input 组件，配置 placeholder 颜色和样式
+- **确认对话框**: 使用 Chakra 组件替代原生 confirm，提供更好的可访问性

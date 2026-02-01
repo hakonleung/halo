@@ -22,5 +22,8 @@
     "project_loaded": true,
     "ui_config_loaded": true,
     "tech_config_loaded": false
-  }
+  },
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "Dashboard 服务层设计、图表组件实现、文件大小管理经验"
 }

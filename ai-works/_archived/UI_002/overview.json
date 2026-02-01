@@ -1,0 +1,8 @@
+{
+  "id": "UI_002",
+  "title": "动画背景效果",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "CSS 动画背景实现、全局组件集成"
+}

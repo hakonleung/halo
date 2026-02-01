@@ -1,0 +1,8 @@
+{
+  "id": "UI_001",
+  "title": "字体颜色可见性问题修复",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "WCAG 对比度标准、文字颜色配置、输入框样式规范"
+}

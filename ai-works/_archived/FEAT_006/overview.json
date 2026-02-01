@@ -1,0 +1,8 @@
+{
+  "id": "FEAT_006",
+  "title": "功能迭代 + UI微调",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "通用组件抽取（ConfirmDialog、FilterBar）、Chat 全局组件设计"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "FIX_003",
+  "title": "修复 Dashboard 时区和样式问题",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "时区处理最佳实践（后端返回原始数据，前端处理时区）"
+}

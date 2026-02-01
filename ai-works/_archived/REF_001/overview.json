@@ -1,0 +1,8 @@
+{
+  "id": "REF_001",
+  "title": "联合类型改为 enum 和 UI 国际化",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "类型系统重构（enum 替代字面量类型）、国际化准备"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "FEAT_005",
+  "title": "Textarea 和 Note 接入开源编辑器",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "Markdown 编辑器组件设计、全屏编辑模式实现"
+}

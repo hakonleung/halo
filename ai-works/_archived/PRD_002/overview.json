@@ -128,5 +128,8 @@
     "post_deploy_bugs": null
   },
   "snapshots": [],
-  "last_snapshot_id": null
+  "last_snapshot_id": null,
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "目标管理 CRUD API 设计、进度计算服务、目标组件架构"
 }

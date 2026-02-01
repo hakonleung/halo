@@ -1,0 +1,8 @@
+{
+  "id": "FEAT_007",
+  "title": "添加时间轴渲染组件 Timeline View",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "复杂时间轴组件设计、重叠检测算法、位置计算逻辑"
+}

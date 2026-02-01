@@ -1,0 +1,8 @@
+{
+  "id": "FEAT_004",
+  "title": "修改 goal / record / definition 的展示页面",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-01T00:00:00Z",
+  "learned_summary": "URL Query 参数管理、全局 Detail Drawers 设计模式"
+}
