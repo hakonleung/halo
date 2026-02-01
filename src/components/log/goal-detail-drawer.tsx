@@ -17,6 +17,7 @@ import { GoalStatusBadge } from '@/components/goals';
 import { GoalForm } from '@/components/forms';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { useGoal, useUpdateGoal, useDeleteGoal } from '@/hooks/use-goals';
+import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import type { GoalProgress as DashboardGoalProgress } from '@/types/dashboard-client';
 
 interface GoalDetailDrawerProps {
@@ -28,6 +29,7 @@ interface GoalDetailDrawerProps {
 export function GoalDetailDrawer({ goalId, isOpen, onClose }: GoalDetailDrawerProps) {
   const [activeTab, setActiveTab] = useState<'view' | 'edit'>('view');
   const [showAbandonDialog, setShowAbandonDialog] = useState(false);
+  const { definitions } = useBehaviorDefinitions();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { goal, isLoading, error } = useGoal(goalId);
   const { updateGoal, isLoading: isUpdating } = useUpdateGoal();
@@ -157,18 +159,60 @@ export function GoalDetailDrawer({ goalId, isOpen, onClose }: GoalDetailDrawerPr
                           <Heading fontSize="md" color="text.neon" fontFamily="mono">
                             Completion Criteria
                           </Heading>
-                          <VStack align="flex-start" gap={2} w="full">
-                            {goal.criteria.map((criterion, index) => (
-                              <Box key={index} p={3} bg="bg.dark" borderRadius="4px" w="full">
-                                <Text fontSize="sm" color="text.mist">
-                                  {criterion.description || `Criterion ${index + 1}`}
-                                </Text>
-                                <Text fontSize="xs" color="text.dim" fontFamily="mono" mt={1}>
-                                  Behavior: {criterion.behaviorId} | Metric: {criterion.metric} |
-                                  Target: {criterion.value} | Period: {criterion.period}
-                                </Text>
-                              </Box>
-                            ))}
+                          <VStack align="flex-start" gap={3} w="full">
+                            {goal.criteria.map((criterion, index) => {
+                              const behaviorDef = definitions.find(
+                                (d) => d.id === criterion.behaviorId,
+                              );
+                              return (
+                                <Box
+                                  key={index}
+                                  p={3}
+                                  bg="bg.dark"
+                                  borderRadius="4px"
+                                  w="full"
+                                  borderWidth="1px"
+                                  borderColor="rgba(0, 255, 65, 0.2)"
+                                >
+                                  {criterion.description && (
+                                    <Text fontSize="sm" color="text.neon" fontFamily="mono" mb={2}>
+                                      {criterion.description}
+                                    </Text>
+                                  )}
+                                  <VStack
+                                    align="flex-start"
+                                    gap={1}
+                                    fontSize="xs"
+                                    fontFamily="mono"
+                                  >
+                                    <Text color="text.mist">
+                                      <Text as="span" color="brand.matrix">
+                                        [BEHAVIOR]
+                                      </Text>{' '}
+                                      {behaviorDef?.name || criterion.behaviorId}
+                                    </Text>
+                                    <Text color="text.mist">
+                                      <Text as="span" color="brand.matrix">
+                                        [METRIC]
+                                      </Text>{' '}
+                                      {criterion.metric}
+                                    </Text>
+                                    <Text color="text.mist">
+                                      <Text as="span" color="brand.matrix">
+                                        [TARGET]
+                                      </Text>{' '}
+                                      {criterion.value}
+                                    </Text>
+                                    <Text color="text.mist">
+                                      <Text as="span" color="brand.matrix">
+                                        [PERIOD]
+                                      </Text>{' '}
+                                      {criterion.period}
+                                    </Text>
+                                  </VStack>
+                                </Box>
+                              );
+                            })}
                           </VStack>
                         </VStack>
                       )}
