@@ -43,6 +43,7 @@ export function FilterBar({ filters, onChange, compact = true }: FilterBarProps)
                       onChange(filter.key, value);
                     }
                   }}
+                  size="xs"
                 >
                   <Select.Trigger>
                     <Select.ValueText placeholder={filter.placeholder || 'Select...'} />
@@ -70,7 +71,7 @@ export function FilterBar({ filters, onChange, compact = true }: FilterBarProps)
                 placeholder={filter.placeholder || 'Search...'}
                 value={filter.value || ''}
                 onChange={(e) => onChange(filter.key, e.target.value)}
-                size={compact ? 'xs' : 'md'}
+                size="xs"
                 maxW={filter.maxW || '150px'}
                 minW={filter.minW}
               />
@@ -84,7 +85,7 @@ export function FilterBar({ filters, onChange, compact = true }: FilterBarProps)
                 type="date"
                 value={filter.value || ''}
                 onChange={(e) => onChange(filter.key, e.target.value)}
-                size={compact ? 'xs' : 'md'}
+                size="xs"
                 maxW={filter.maxW || '120px'}
                 minW={filter.minW}
               />

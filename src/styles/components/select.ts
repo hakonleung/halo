@@ -81,4 +81,32 @@ export const select = defineSlotRecipe({
       color: 'text.mist',
     },
   },
+  variants: {
+    size: {
+      sm: {
+        trigger: {
+          height: '32px',
+          px: '12px',
+          fontSize: '12px',
+        },
+      },
+      md: {
+        trigger: {
+          height: '40px',
+          px: '16px',
+          fontSize: '14px',
+        },
+      },
+      lg: {
+        trigger: {
+          height: '48px',
+          px: '16px',
+          fontSize: '16px',
+        },
+      },
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+  },
 });

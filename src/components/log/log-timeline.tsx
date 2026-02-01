@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Button, HStack, Card } from '@chakra-ui/react';
+import { Box, Switch, HStack, Card, Text } from '@chakra-ui/react';
 import type { TimeRange } from '@/types/dashboard-client';
 import { SplitLogTimeline } from '@/components/log/split-log-timeline';
 import { MergeLogTimeline } from '@/components/log/merge-log-timeline';
@@ -14,6 +14,7 @@ interface LogTimelineProps {
 
 export function LogTimeline({ timeRange }: LogTimelineProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('split');
+  const isMergeMode = viewMode === 'merge';
 
   return (
     <Box w="100%" h="100%" display="flex" flexDirection="column">
@@ -21,23 +22,19 @@ export function LogTimeline({ timeRange }: LogTimelineProps) {
       <Box flexShrink={0} mb={2}>
         <Card.Root size="sm">
           <Card.Body p={2}>
-            <HStack gap={2}>
-              <Button
-                size="xs"
-                variant={viewMode === 'split' ? 'solid' : 'outline'}
-                colorScheme={viewMode === 'split' ? 'green' : 'gray'}
-                onClick={() => setViewMode('split')}
+            <HStack gap={3} justify="space-between">
+              <Text fontSize="xs" color="text.mist" fontFamily="mono">
+                {isMergeMode ? 'Merge' : 'Split'}
+              </Text>
+              <Switch.Root
+                size="sm"
+                checked={isMergeMode}
+                onCheckedChange={(e) => setViewMode(e.checked ? 'merge' : 'split')}
               >
-                Split
-              </Button>
-              <Button
-                size="xs"
-                variant={viewMode === 'merge' ? 'solid' : 'outline'}
-                colorScheme={viewMode === 'merge' ? 'green' : 'gray'}
-                onClick={() => setViewMode('merge')}
-              >
-                Merge
-              </Button>
+                <Switch.Control>
+                  <Switch.Thumb />
+                </Switch.Control>
+              </Switch.Root>
             </HStack>
           </Card.Body>
         </Card.Root>

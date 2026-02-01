@@ -14,6 +14,7 @@ import { bottomNav } from './components/bottom-nav';
 import { popover } from './components/popover';
 import { tabs } from './components/tabs';
 import { skeleton } from './components/skeleton';
+import { switchRecipe } from './components/switch';
 
 export const config = defineConfig({
   theme: {
@@ -40,6 +41,7 @@ export const config = defineConfig({
       fieldLabel,
       badge,
       skeleton,
+      switch: switchRecipe,
     },
     slotRecipes: {
       select,
