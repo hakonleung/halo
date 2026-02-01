@@ -107,14 +107,10 @@ export function DefinitionForm({ initialData, onSuccess, onCancel }: DefinitionF
           value={[category]}
           onValueChange={(e) => {
             const selectedValue = e.value[0];
-            if (
-              selectedValue &&
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              Object.values(BehaviorCategory).includes(selectedValue as BehaviorCategory)
-            ) {
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              setCategory(selectedValue as BehaviorCategory);
-            }
+            const matchedCategory = Object.values(BehaviorCategory).find(
+              (c) => c === selectedValue,
+            );
+            if (matchedCategory) setCategory(matchedCategory);
           }}
           collection={categoryCollection}
         >

@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
-import type { Note, NoteCreateRequest } from '@/types/note-server';
+import type { NoteCreateRequest } from '@/types/note-server';
 
 /**
  * Note service - Logic for user notes
@@ -18,8 +18,7 @@ export const noteService = {
       .order('created_at', { ascending: false });
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Note[], error: null };
+    return { data, error: null };
   },
 
   /**
@@ -36,10 +35,8 @@ export const noteService = {
       })
       .select()
       .single();
-
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Note, error: null };
+    return { data, error: null };
   },
 
   /**
@@ -64,8 +61,7 @@ export const noteService = {
       .single();
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Note, error: null };
+    return { data, error: null };
   },
 
   /**

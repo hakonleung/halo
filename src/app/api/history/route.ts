@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabase-server';
 import { historyService } from '@/lib/history-service';
-import type { HistoryListRequest, HistoryItemType } from '@/types/history-server';
+import type { HistoryListRequest } from '@/types/history-server';
+import { HistoryItemType } from '@/types/history-server';
 import { SortOrder } from '@/types/history-server';
 
 export async function GET(request: Request) {
@@ -20,8 +21,8 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const typeParam = searchParams.get('type') as HistoryItemType | 'all';
+    const typeParam =
+      Object.values(HistoryItemType).find((t) => t === searchParams.get('type')) || 'all';
     const sortOrderParam = searchParams.get('sortOrder');
     const params: HistoryListRequest = {
       type: typeParam,

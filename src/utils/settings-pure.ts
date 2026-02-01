@@ -82,17 +82,14 @@ export function validateDoNotDisturbTimeRange(
 }
 
 /**
- * Get preset accent colors
- * @returns Array of preset color options
+ * Preset accent colors
  */
-export function getPresetAccentColors(): Array<{ label: string; value: string }> {
-  return [
-    { label: 'Matrix Green', value: '#00FF41' },
-    { label: 'Electric Blue', value: '#00D4FF' },
-    { label: 'Neon Purple', value: '#BF00FF' },
-    { label: 'Alert Orange', value: '#FF6B35' },
-  ];
-}
+export const PRESET_ACCENT_COLORS = [
+  { label: 'Matrix Green', value: '#00FF41' },
+  { label: 'Electric Blue', value: '#00D4FF' },
+  { label: 'Neon Purple', value: '#BF00FF' },
+  { label: 'Alert Orange', value: '#FF6B35' },
+] as const;
 
 /**
  * Format timezone display name
@@ -105,62 +102,47 @@ export function formatTimezone(timezone: string): string {
 }
 
 /**
- * Get available languages
- * @returns Array of language options
+ * Available languages
  */
-export function getAvailableLanguages(): Array<{ label: string; value: string }> {
-  return [
-    { label: 'English', value: 'en' },
-    { label: '简体中文', value: 'zh-CN' },
-    { label: '繁體中文', value: 'zh-TW' },
-  ];
-}
+export const AVAILABLE_LANGUAGES = [
+  { label: 'English', value: 'en' },
+  { label: '简体中文', value: 'zh-CN' },
+  { label: '繁體中文', value: 'zh-TW' },
+] as const;
 
 /**
- * Get available date formats
- * @returns Array of date format options
+ * Available date formats
  */
-export function getAvailableDateFormats(): Array<{ label: string; value: string }> {
-  return [
-    { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' },
-    { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' },
-    { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
-  ];
-}
+export const AVAILABLE_DATE_FORMATS = [
+  { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' },
+  { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' },
+  { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
+] as const;
 
 /**
- * Get available font sizes
- * @returns Array of font size options
+ * Available font sizes
  */
-export function getAvailableFontSizes(): Array<{ label: string; value: string }> {
-  return [
-    { label: 'Small', value: 'small' },
-    { label: 'Medium', value: 'medium' },
-    { label: 'Large', value: 'large' },
-    { label: 'Extra Large', value: 'xlarge' },
-  ];
-}
+export const AVAILABLE_FONT_SIZES = [
+  { label: 'Small', value: 'small' },
+  { label: 'Medium', value: 'medium' },
+  { label: 'Large', value: 'large' },
+  { label: 'Extra Large', value: 'xlarge' },
+] as const;
 
 /**
- * Get available animation levels
- * @returns Array of animation level options
+ * Available animation levels
  */
-export function getAvailableAnimationLevels(): Array<{ label: string; value: string }> {
-  return [
-    { label: 'Full', value: 'full' },
-    { label: 'Reduced', value: 'reduced' },
-    { label: 'None', value: 'none' },
-  ];
-}
+export const AVAILABLE_ANIMATION_LEVELS = [
+  { label: 'Full', value: 'full' },
+  { label: 'Reduced', value: 'reduced' },
+  { label: 'None', value: 'none' },
+] as const;
 
 /**
- * Get available themes
- * @returns Array of theme options
+ * Available themes
  */
-export function getAvailableThemes(): Array<{ label: string; value: string }> {
-  return [
-    { label: 'Dark', value: 'dark' },
-    { label: 'Light', value: 'light' },
-    { label: 'System', value: 'system' },
-  ];
-}
+export const AVAILABLE_THEMES = [
+  { label: 'Dark', value: 'dark' },
+  { label: 'Light', value: 'light' },
+  { label: 'System', value: 'system' },
+] as const;

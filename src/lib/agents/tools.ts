@@ -43,6 +43,7 @@ export function createChatTools(supabase: SupabaseClient, userId: string) {
         const res = await behaviorService.createRecord(
           supabase,
           userId,
+          // FIXME
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           params as BehaviorRecordCreateRequest,
         );
@@ -70,6 +71,7 @@ export function createChatTools(supabase: SupabaseClient, userId: string) {
         const res = await behaviorService.createDefinition(
           supabase,
           userId,
+          // FIXME
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           params as BehaviorDefinitionCreateRequest,
         );

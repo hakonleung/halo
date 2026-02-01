@@ -2,9 +2,8 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import type { HistoryItem, HistoryListRequest, HistoryListResponse } from '@/types/history-server';
 import { HistoryItemType } from '@/types/history-server';
-import type { BehaviorRecordWithDefinition } from '@/types/behavior-server';
-import type { Goal } from '@/types/goal-server';
-import type { Note } from '@/types/note-server';
+import { serverConvertGoal } from './goal-service';
+import { serverConvertBehaviorDefinition, serverConvertBehaviorRecord } from './behavior-service';
 
 /**
  * History service - Aggregates behavior records, goals, and notes
@@ -55,8 +54,10 @@ export const historyService = {
             type: HistoryItemType.Behavior,
             createdAt: record.created_at || '',
             updatedAt: record.created_at || '', // Behavior records don't have updated_at yet
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            data: record as unknown as BehaviorRecordWithDefinition,
+            data: {
+              ...serverConvertBehaviorRecord(record),
+              behavior_definitions: serverConvertBehaviorDefinition(record.behavior_definitions),
+            },
           });
         });
       }
@@ -85,8 +86,7 @@ export const historyService = {
             type: HistoryItemType.Goal,
             createdAt: goal.created_at || '',
             updatedAt: goal.updated_at || '',
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            data: goal as Goal,
+            data: serverConvertGoal(goal),
           });
         });
       }
@@ -115,8 +115,7 @@ export const historyService = {
             type: HistoryItemType.Note,
             createdAt: note.created_at || '',
             updatedAt: note.updated_at || '',
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            data: note as Note,
+            data: note,
           });
         });
       }

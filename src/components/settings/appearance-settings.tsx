@@ -18,10 +18,10 @@ import { useSettings } from '@/hooks/use-settings';
 import { useUpdateSettings } from '@/hooks/use-update-settings';
 import { useState, useEffect } from 'react';
 import {
-  getAvailableThemes,
-  getPresetAccentColors,
-  getAvailableAnimationLevels,
-  getAvailableFontSizes,
+  AVAILABLE_THEMES,
+  PRESET_ACCENT_COLORS,
+  AVAILABLE_ANIMATION_LEVELS,
+  AVAILABLE_FONT_SIZES,
   validateAccentColor,
 } from '@/utils/settings-pure';
 
@@ -29,10 +29,10 @@ export function AppearanceSettings() {
   const { settings, isLoading } = useSettings();
   const { updateSettings, isLoading: isUpdating } = useUpdateSettings();
 
-  const [theme, setTheme] = useState<string>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light' | 'system'>('dark');
   const [accentColor, setAccentColor] = useState('#00FF41');
-  const [animationLevel, setAnimationLevel] = useState<string>('full');
-  const [fontSize, setFontSize] = useState<string>('medium');
+  const [animationLevel, setAnimationLevel] = useState<'full' | 'reduced' | 'none'>('full');
+  const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large' | 'xlarge'>('medium');
   const [codeFont, setCodeFont] = useState('JetBrains Mono');
   const [accentColorError, setAccentColorError] = useState<string | null>(null);
 
@@ -57,13 +57,10 @@ export function AppearanceSettings() {
     setAccentColorError(null);
 
     await updateSettings({
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      theme: theme as 'dark' | 'light' | 'system',
+      theme: theme,
       accentColor: accentColor,
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      animationLevel: animationLevel as 'full' | 'reduced' | 'none',
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      fontSize: fontSize as 'small' | 'medium' | 'large' | 'xlarge',
+      animationLevel: animationLevel,
+      fontSize: fontSize,
       codeFont: codeFont,
     });
   };
@@ -78,14 +75,9 @@ export function AppearanceSettings() {
     );
   }
 
-  const presetColors = getPresetAccentColors();
-  const themes = getAvailableThemes();
-  const animationLevels = getAvailableAnimationLevels();
-  const fontSizes = getAvailableFontSizes();
-
-  const themesCollection = createListCollection({ items: themes });
-  const animationLevelsCollection = createListCollection({ items: animationLevels });
-  const fontSizesCollection = createListCollection({ items: fontSizes });
+  const themesCollection = createListCollection({ items: AVAILABLE_THEMES });
+  const animationLevelsCollection = createListCollection({ items: AVAILABLE_ANIMATION_LEVELS });
+  const fontSizesCollection = createListCollection({ items: AVAILABLE_FONT_SIZES });
 
   return (
     <VStack gap={6} align="stretch" p={6}>
@@ -98,7 +90,10 @@ export function AppearanceSettings() {
         <Select.Root
           collection={themesCollection}
           value={[theme]}
-          onValueChange={(e) => setTheme(e.value[0])}
+          onValueChange={(e) => {
+            const v = AVAILABLE_THEMES.find((t) => t.value === e.value[0])?.value;
+            if (v) setTheme(v);
+          }}
         >
           <Select.Trigger>
             <Select.ValueText />
@@ -106,7 +101,7 @@ export function AppearanceSettings() {
           <Portal>
             <Select.Positioner>
               <Select.Content>
-                {themes.map((t) => (
+                {AVAILABLE_THEMES.map((t) => (
                   <Select.Item key={t.value} item={t.value}>
                     {t.label}
                   </Select.Item>
@@ -121,7 +116,7 @@ export function AppearanceSettings() {
         <FieldLabel>Accent Color</FieldLabel>
         <VStack gap={2} align="stretch">
           <HStack gap={2} flexWrap="wrap">
-            {presetColors.map((preset) => (
+            {PRESET_ACCENT_COLORS.map((preset) => (
               <Button
                 key={preset.value}
                 size="sm"
@@ -169,7 +164,10 @@ export function AppearanceSettings() {
         <Select.Root
           collection={animationLevelsCollection}
           value={[animationLevel]}
-          onValueChange={(e) => setAnimationLevel(e.value[0])}
+          onValueChange={(e) => {
+            const v = AVAILABLE_ANIMATION_LEVELS.find((l) => l.value === e.value[0])?.value;
+            if (v) setAnimationLevel(v);
+          }}
         >
           <Select.Trigger>
             <Select.ValueText />
@@ -177,7 +175,7 @@ export function AppearanceSettings() {
           <Portal>
             <Select.Positioner>
               <Select.Content>
-                {animationLevels.map((level) => (
+                {AVAILABLE_ANIMATION_LEVELS.map((level) => (
                   <Select.Item key={level.value} item={level.value}>
                     {level.label}
                   </Select.Item>
@@ -193,7 +191,10 @@ export function AppearanceSettings() {
         <Select.Root
           collection={fontSizesCollection}
           value={[fontSize]}
-          onValueChange={(e) => setFontSize(e.value[0])}
+          onValueChange={(e) => {
+            const v = AVAILABLE_FONT_SIZES.find((s) => s.value === e.value[0])?.value;
+            if (v) setFontSize(v);
+          }}
         >
           <Select.Trigger>
             <Select.ValueText />
@@ -201,7 +202,7 @@ export function AppearanceSettings() {
           <Portal>
             <Select.Positioner>
               <Select.Content>
-                {fontSizes.map((size) => (
+                {AVAILABLE_FONT_SIZES.map((size) => (
                   <Select.Item key={size.value} item={size.value}>
                     {size.label}
                   </Select.Item>

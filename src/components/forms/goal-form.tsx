@@ -259,11 +259,8 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
               value={[category]}
               onValueChange={(e) => {
                 const value = e.value[0];
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                if (value && Object.values(GoalCategory).includes(value as GoalCategory)) {
-                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                  setCategory(value as GoalCategory);
-                }
+                const matchedCategory = Object.values(GoalCategory).find((c) => c === value);
+                if (matchedCategory) setCategory(matchedCategory);
               }}
             >
               <Select.Trigger>

@@ -3,13 +3,14 @@
  */
 
 import { BaseApiService, type ApiResponse } from './base';
-import type {
-  BehaviorDefinition as ServerBehaviorDefinition,
-  BehaviorRecord as ServerBehaviorRecord,
-  BehaviorRecordWithDefinition as ServerBehaviorRecordWithDefinition,
-  BehaviorDefinitionCreateRequest as ServerBehaviorDefinitionCreateRequest,
-  BehaviorRecordCreateRequest as ServerBehaviorRecordCreateRequest,
-  BehaviorResponse as ServerBehaviorResponse,
+import {
+  type BehaviorDefinition as ServerBehaviorDefinition,
+  type BehaviorRecord as ServerBehaviorRecord,
+  type BehaviorRecordWithDefinition as ServerBehaviorRecordWithDefinition,
+  type BehaviorDefinitionCreateRequest as ServerBehaviorDefinitionCreateRequest,
+  type BehaviorRecordCreateRequest as ServerBehaviorRecordCreateRequest,
+  type BehaviorResponse as ServerBehaviorResponse,
+  BehaviorCategory,
 } from '@/types/behavior-server';
 import type {
   BehaviorDefinition as ClientBehaviorDefinition,
@@ -24,8 +25,9 @@ function convertBehaviorDefinition(server: ServerBehaviorDefinition): ClientBeha
     id: server.id,
     userId: server.user_id ?? null,
     name: server.name,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    category: server.category as ClientBehaviorDefinition['category'],
+
+    category:
+      Object.values(BehaviorCategory).find((c) => c === server.category) || BehaviorCategory.Other,
     icon: server.icon ?? undefined,
     metadataSchema: server.metadata_schema,
     usageCount: server.usage_count ?? 0,

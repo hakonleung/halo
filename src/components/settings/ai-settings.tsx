@@ -63,17 +63,10 @@ export function AISettingsComponent() {
     customKeys: [],
   });
 
-  console.log(settings, aiSettings);
-
   // Sync form values when settings load
   useEffect(() => {
     if (settings?.aiSettings) {
-      const parsed =
-        typeof settings.aiSettings === 'string'
-          ? JSON.parse(settings.aiSettings)
-          : settings.aiSettings;
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      setAiSettings(parsed as AISettings);
+      setAiSettings(settings.aiSettings);
     }
   }, [settings]);
 
@@ -152,8 +145,7 @@ export function AISettingsComponent() {
           collection={providerOptions}
           value={[aiSettings.selectedProvider]}
           onValueChange={(e) => {
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            const provider = e.value[0] as AIProvider;
+            const provider = Object.values(AIProvider).find((p) => p === e.value[0]);
             if (provider) {
               const defaultModel = modelOptions[provider]?.items[0]?.value || 'gpt-4o';
               setAiSettings((prev) => ({
@@ -261,14 +253,8 @@ export function AISettingsComponent() {
                 collection={providerOptions}
                 value={[key.provider]}
                 onValueChange={(e) => {
-                  const providerValue = e.value[0];
-                  if (
-                    providerValue &&
-                    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                    Object.values(AIProvider).includes(providerValue as AIProvider)
-                  ) {
-                    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                    const provider = providerValue as AIProvider;
+                  const provider = Object.values(AIProvider).find((p) => p === e.value[0]);
+                  if (provider) {
                     handleUpdateCustomKey(index, provider, key.hasKey);
                   }
                 }}

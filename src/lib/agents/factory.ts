@@ -1,15 +1,15 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
-import type { UserSettings, AISettings } from '@/types/settings-server';
+import type { UserSettings } from '@/types/settings-server';
 import { AIProvider } from '@/types/settings-server';
+import { convertAISettings } from '../internal-api/settings';
 
 /**
  * Factory for creating LLM instances based on user settings
  */
 export async function createLLM(settings: UserSettings) {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  const ai = settings.ai_settings as AISettings;
+  const ai = convertAISettings(settings.ai_settings);
 
   // Use platform default if configured
   if (ai.useDefaultKey) {

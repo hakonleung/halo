@@ -1,6 +1,22 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import type { Conversation, ChatMessage, ChatRole, ChatAttachment } from '@/types/chat-server';
+import type { InferSelectModel } from 'drizzle-orm';
+import type { neologConversations, neologMessages } from '@/db/schema';
+
+const serverConvertConversation = (
+  server: InferSelectModel<typeof neologConversations>,
+): Conversation => {
+  // FIXME
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  return server as Conversation;
+};
+
+const serverConvertChatMessage = (server: InferSelectModel<typeof neologMessages>): ChatMessage => {
+  // FIXME
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  return server as ChatMessage;
+};
 
 /**
  * Chat service - Logic for conversations and messages
@@ -18,8 +34,7 @@ export const chatService = {
       .order('updated_at', { ascending: false });
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Conversation[], error: null };
+    return { data: data.map(serverConvertConversation), error: null };
   },
 
   /**
@@ -47,8 +62,7 @@ export const chatService = {
       .order('created_at', { ascending: true });
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as ChatMessage[], error: null };
+    return { data: data.map(serverConvertChatMessage), error: null };
   },
 
   /**
@@ -66,8 +80,7 @@ export const chatService = {
       .single();
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Conversation, error: null };
+    return { data: serverConvertConversation(data), error: null };
   },
 
   /**
@@ -108,8 +121,7 @@ export const chatService = {
       })
       .eq('id', params.conversationId);
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as ChatMessage, error: null };
+    return { data: serverConvertChatMessage(data), error: null };
   },
 
   /**

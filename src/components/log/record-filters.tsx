@@ -1,7 +1,7 @@
 'use client';
 
 import { FilterBar, type FilterConfig } from '@/components/shared/filter-bar';
-import type { BehaviorCategory } from '@/types/behavior-client';
+import { BehaviorCategory } from '@/types/behavior-client';
 
 export interface RecordFiltersType {
   category?: BehaviorCategory | 'all';
@@ -69,8 +69,8 @@ export function RecordFilters({
       if (value === 'all') {
         onFilterChange({ category: undefined });
       } else {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        onFilterChange({ category: value as BehaviorCategory });
+        const matchedCategory = Object.values(BehaviorCategory).find((c) => c === value);
+        onFilterChange({ category: matchedCategory });
       }
     } else {
       onFilterChange({ [key]: value || undefined });

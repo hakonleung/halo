@@ -21,13 +21,9 @@ export async function GET(request: Request) {
     // Parse query parameters
     const { searchParams } = new URL(request.url);
     const rangeParam = searchParams.get('range') || DashboardRange.Last7Days;
-    const validRanges: string[] = Object.values(DashboardRange);
     // Validate and convert range parameter
-    let range: DashboardRange = DashboardRange.Last7Days;
-    if (rangeParam && validRanges.includes(rangeParam)) {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      range = rangeParam as DashboardRange;
-    }
+    const range =
+      Object.values(DashboardRange).find((r) => r === rangeParam) || DashboardRange.Last7Days;
     const start = searchParams.get('start') || undefined;
     const end = searchParams.get('end') || undefined;
     const typesParam = searchParams.get('types');

@@ -3,15 +3,44 @@
  */
 
 import { BaseApiService, type ApiResponse } from './base';
-import type {
-  UserSettings as ServerUserSettings,
-  SettingsUpdateRequest as ServerSettingsUpdateRequest,
-  AISettings,
+import {
+  type UserSettings as ServerUserSettings,
+  type SettingsUpdateRequest as ServerSettingsUpdateRequest,
+  type AISettings,
+  AIProvider,
 } from '@/types/settings-server';
 import type {
   Settings as ClientSettings,
   SettingsUpdateRequest as ClientSettingsUpdateRequest,
 } from '@/types/settings-client';
+
+export const convertAISettings = (server: unknown): AISettings => {
+  const ans: AISettings = {
+    useDefaultKey: true,
+    selectedProvider: AIProvider.OpenAI,
+    selectedModel: 'gpt-4o',
+    temperature: 0.7,
+    streamEnabled: true,
+    customKeys: [],
+  };
+  if (typeof server === 'object' && server !== null) {
+    ans.useDefaultKey = 'useDefaultKey' in server && server.useDefaultKey === true;
+    ans.selectedProvider =
+      'selectedProvider' in server && typeof server.selectedProvider === 'string'
+        ? Object.values(AIProvider).find((p) => p === server.selectedProvider) || AIProvider.OpenAI
+        : AIProvider.OpenAI;
+    ans.selectedModel =
+      'selectedModel' in server && typeof server.selectedModel === 'string'
+        ? server.selectedModel
+        : 'gpt-4o';
+    ans.temperature =
+      'temperature' in server && typeof server.temperature === 'number' ? server.temperature : 0.7;
+    ans.streamEnabled = 'streamEnabled' in server && server.streamEnabled === true;
+    ans.customKeys =
+      'customKeys' in server && Array.isArray(server.customKeys) ? server.customKeys : [];
+  }
+  return ans;
+};
 
 export function convertSettings(server: ServerUserSettings): ClientSettings {
   return {
@@ -39,10 +68,7 @@ export function convertSettings(server: ServerUserSettings): ClientSettings {
     timezone: server.timezone ?? null,
     dateFormat: server.date_format ?? null,
     currency: server.currency ?? null,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    shortcuts: (server.shortcuts as Record<string, unknown>) ?? null,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    aiSettings: server.ai_settings as AISettings,
+    aiSettings: convertAISettings(server.ai_settings),
   };
 }
 
@@ -78,7 +104,6 @@ function convertSettingsUpdateRequest(
   if (client.timezone !== undefined) server.timezone = client.timezone;
   if (client.dateFormat !== undefined) server.date_format = client.dateFormat;
   if (client.currency !== undefined) server.currency = client.currency;
-  if (client.shortcuts !== undefined) server.shortcuts = client.shortcuts;
   if (client.aiSettings !== undefined) server.ai_settings = client.aiSettings;
   return server;
 }

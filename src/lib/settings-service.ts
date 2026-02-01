@@ -1,10 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
-import type {
-  UserSettings,
-  SettingsUpdateRequest,
-  SettingsResponse,
-} from '@/types/settings-server';
+import type { SettingsUpdateRequest, SettingsResponse } from '@/types/settings-server';
 
 /**
  * Settings service - Server-side logic for user settings
@@ -22,13 +18,10 @@ export const settingsService = {
       .select('*')
       .eq('id', userId)
       .single();
-
     if (error) {
       return { settings: null, error: error.message };
     }
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { settings: data as UserSettings, error: null };
+    return { settings: data, error: null };
   },
 
   /**
@@ -71,8 +64,6 @@ export const settingsService = {
     if (error) {
       return { settings: null, error: error.message };
     }
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { settings: data as unknown as UserSettings, error: null };
+    return { settings: data, error: null };
   },
 };

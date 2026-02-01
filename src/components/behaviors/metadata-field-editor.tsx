@@ -74,11 +74,13 @@ export function MetadataFieldEditor({
   const updateConfig = (key: string, value: unknown) => {
     const newConfig = { ...field.config, [key]: value };
     if (value === '' || value === undefined) {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      delete (newConfig as Record<string, unknown>)[key];
+      // FIXME
+      // @ts-expect-error - key is a valid key in newConfig
+      delete newConfig[key];
     }
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    onChange({ ...field, config: newConfig } as MetadataField);
+    // FIXME
+    // @ts-expect-error - newConfig is a valid config for MetadataField
+    onChange({ ...field, config: newConfig });
   };
 
   const handleTypeChange = (type: SimpleFieldType) => {
@@ -87,8 +89,7 @@ export function MetadataFieldEditor({
   };
 
   const handleNameChange = (name: string) => {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    onChange({ ...field, name, key: generateKey(name) } as MetadataField);
+    onChange({ ...field, name, key: generateKey(name) });
   };
 
   const hasPlaceholder = ['text', 'textarea', 'number', 'currency', 'select'].includes(field.type);
@@ -170,8 +171,7 @@ export function MetadataFieldEditor({
           <Checkbox.Root
             checked={field.required}
             onCheckedChange={(e) => {
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              onChange({ ...field, required: !!e.checked } as MetadataField);
+              onChange({ ...field, required: !!e.checked });
             }}
             size="sm"
           >

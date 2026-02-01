@@ -30,8 +30,6 @@ export interface Settings {
   timezone?: string | null;
   dateFormat?: 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY' | null;
   currency?: string | null;
-  // Shortcuts
-  shortcuts?: Record<string, unknown> | null;
   // AI Settings
   aiSettings?: AISettings | null;
 }
@@ -60,7 +58,6 @@ export type SettingsUpdateRequest = {
   timezone?: string;
   dateFormat?: 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY';
   currency?: string;
-  shortcuts?: Record<string, unknown>;
   aiSettings?: AISettings;
 };
 

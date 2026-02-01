@@ -21,14 +21,11 @@ export class BaseApiService {
         ...options?.headers,
       },
     });
-
     if (!res.ok) {
       const error = await res.json().catch(() => ({ error: 'Request failed' }));
       throw new Error(error.error || `Request failed with status ${res.status}`);
     }
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return res.json() as Promise<T>;
+    return res.json();
   }
 
   /**

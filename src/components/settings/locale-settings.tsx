@@ -17,19 +17,17 @@ import {
 import { useSettings } from '@/hooks/use-settings';
 import { useUpdateSettings } from '@/hooks/use-update-settings';
 import { useState, useEffect } from 'react';
-import {
-  getAvailableLanguages,
-  getAvailableDateFormats,
-  formatTimezone,
-} from '@/utils/settings-pure';
+import { AVAILABLE_LANGUAGES, AVAILABLE_DATE_FORMATS, formatTimezone } from '@/utils/settings-pure';
 
 export function LocaleSettings() {
   const { settings, isLoading } = useSettings();
   const { updateSettings, isLoading: isUpdating } = useUpdateSettings();
 
-  const [language, setLanguage] = useState<string>('en');
+  const [language, setLanguage] = useState<'en' | 'zh-CN' | 'zh-TW'>('en');
   const [timezone, setTimezone] = useState('UTC');
-  const [dateFormat, setDateFormat] = useState<string>('YYYY-MM-DD');
+  const [dateFormat, setDateFormat] = useState<'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY'>(
+    'YYYY-MM-DD',
+  );
   const [currency, setCurrency] = useState('CNY');
 
   // Sync form values when settings load
@@ -44,11 +42,9 @@ export function LocaleSettings() {
 
   const handleSave = async () => {
     await updateSettings({
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      language: language as 'en' | 'zh-CN' | 'zh-TW',
+      language: language,
       timezone: timezone,
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      dateFormat: dateFormat as 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY',
+      dateFormat: dateFormat,
       currency: currency,
     });
   };
@@ -63,11 +59,8 @@ export function LocaleSettings() {
     );
   }
 
-  const languages = getAvailableLanguages();
-  const dateFormats = getAvailableDateFormats();
-
-  const languagesCollection = createListCollection({ items: languages });
-  const dateFormatsCollection = createListCollection({ items: dateFormats });
+  const languagesCollection = createListCollection({ items: AVAILABLE_LANGUAGES });
+  const dateFormatsCollection = createListCollection({ items: AVAILABLE_DATE_FORMATS });
 
   return (
     <VStack gap={6} align="stretch" p={6}>
@@ -80,7 +73,10 @@ export function LocaleSettings() {
         <Select.Root
           collection={languagesCollection}
           value={[language]}
-          onValueChange={(e) => setLanguage(e.value[0])}
+          onValueChange={(e) => {
+            const v = AVAILABLE_LANGUAGES.find((l) => l.value === e.value[0])?.value;
+            if (v) setLanguage(v);
+          }}
         >
           <Select.Trigger>
             <Select.ValueText />
@@ -88,7 +84,7 @@ export function LocaleSettings() {
           <Portal>
             <Select.Positioner>
               <Select.Content>
-                {languages.map((lang) => (
+                {AVAILABLE_LANGUAGES.map((lang) => (
                   <Select.Item key={lang.value} item={lang.value}>
                     {lang.label}
                   </Select.Item>
@@ -112,7 +108,10 @@ export function LocaleSettings() {
         <Select.Root
           collection={dateFormatsCollection}
           value={[dateFormat]}
-          onValueChange={(e) => setDateFormat(e.value[0])}
+          onValueChange={(e) => {
+            const v = AVAILABLE_DATE_FORMATS.find((d) => d.value === e.value[0])?.value;
+            if (v) setDateFormat(v);
+          }}
         >
           <Select.Trigger>
             <Select.ValueText />
@@ -120,7 +119,7 @@ export function LocaleSettings() {
           <Portal>
             <Select.Positioner>
               <Select.Content>
-                {dateFormats.map((format) => (
+                {AVAILABLE_DATE_FORMATS.map((format) => (
                   <Select.Item key={format.value} item={format.value}>
                     {format.label}
                   </Select.Item>

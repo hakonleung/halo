@@ -7,6 +7,24 @@ import type {
   BehaviorDefinitionCreateRequest,
   BehaviorRecordCreateRequest,
 } from '@/types/behavior-server';
+import type { InferSelectModel } from 'drizzle-orm';
+import type { neologBehaviorDefinitions, neologBehaviorRecords } from '@/db/schema';
+
+export const serverConvertBehaviorDefinition = (
+  server: InferSelectModel<typeof neologBehaviorDefinitions>,
+): BehaviorDefinition => {
+  // FIXME
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  return server as BehaviorDefinition;
+};
+
+export const serverConvertBehaviorRecord = (
+  server: InferSelectModel<typeof neologBehaviorRecords>,
+): BehaviorRecord => {
+  // FIXME
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  return server as BehaviorRecord;
+};
 
 /**
  * Behavior service - Logic for behavior definitions and records
@@ -24,8 +42,7 @@ export const behaviorService = {
       .order('usage_count', { ascending: false });
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as BehaviorDefinition[], error: null };
+    return { data: data.map(serverConvertBehaviorDefinition), error: null };
   },
 
   /**
@@ -39,6 +56,7 @@ export const behaviorService = {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
       .from('neolog_behavior_definitions')
+      // FIXME
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       .insert({
         ...definition,
@@ -49,8 +67,7 @@ export const behaviorService = {
       .single();
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as BehaviorDefinition, error: null };
+    return { data: serverConvertBehaviorDefinition(data), error: null };
   },
 
   /**
@@ -66,8 +83,11 @@ export const behaviorService = {
       .range(offset, offset + limit - 1);
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as unknown as BehaviorRecordWithDefinition[], error: null };
+    const ans: BehaviorRecordWithDefinition[] = data.map((record) => ({
+      ...serverConvertBehaviorRecord(record),
+      behavior_definitions: serverConvertBehaviorDefinition(record.behavior_definitions),
+    }));
+    return { data: ans, error: null };
   },
 
   /**
@@ -81,6 +101,7 @@ export const behaviorService = {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
       .from('neolog_behavior_records')
+      // FIXME
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       .insert({
         ...record,
@@ -88,16 +109,12 @@ export const behaviorService = {
       } as Database['public']['Tables']['neolog_behavior_records']['Insert'])
       .select()
       .single();
-
     if (error) return { data: null, error: error.message };
-
     // Increment usage_count on the definition using the RPC
     if (record.definition_id) {
       await supabase.rpc('increment_behavior_usage', { def_id: record.definition_id });
     }
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as BehaviorRecord, error: null };
+    return { data: serverConvertBehaviorRecord(data), error: null };
   },
 
   /**
@@ -112,18 +129,13 @@ export const behaviorService = {
     if (!userId || !recordId) return { data: null, error: 'User ID and Record ID are required' };
     const { data, error } = await supabase
       .from('neolog_behavior_records')
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      .update({
-        ...updates,
-      } as Database['public']['Tables']['neolog_behavior_records']['Update'])
+      .update(updates)
       .eq('id', recordId)
       .eq('user_id', userId)
       .select()
       .single();
-
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as BehaviorRecord, error: null };
+    return { data: serverConvertBehaviorRecord(data), error: null };
   },
 
   /**
@@ -179,8 +191,8 @@ export const behaviorService = {
 
     const { data, error } = await supabase
       .from('neolog_behavior_definitions')
-
       .update(
+        // FIXME
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         updatePayload as Database['public']['Tables']['neolog_behavior_definitions']['Update'],
       )
@@ -191,7 +203,6 @@ export const behaviorService = {
 
     if (error) return { data: null, error: error.message };
     if (!data) return { data: null, error: 'Failed to update definition' };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as BehaviorDefinition, error: null };
+    return { data: serverConvertBehaviorDefinition(data), error: null };
   },
 };

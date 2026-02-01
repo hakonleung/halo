@@ -52,9 +52,6 @@ export const neologUserSettings = pgTable(
     ),
     currency: text('currency').default('CNY'),
 
-    // Shortcuts
-    shortcuts: jsonb('shortcuts').default({}),
-
     // AI Settings
     ai_settings: jsonb('ai_settings').default({
       useDefaultKey: true,

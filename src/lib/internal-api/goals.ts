@@ -11,8 +11,8 @@ import type {
   Goal as ClientGoal,
   GoalCreateRequest as ClientGoalCreateRequest,
   GoalProgress,
-  GoalCategory,
 } from '@/types/goal-client';
+import { GoalCategory, GoalStatus } from '@/types/goal-client';
 
 function convertGoal(server: ServerGoal): ClientGoal {
   return {
@@ -20,8 +20,7 @@ function convertGoal(server: ServerGoal): ClientGoal {
     userId: server.user_id,
     name: server.name,
     description: server.description ?? undefined,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    category: server.category as GoalCategory,
+    category: Object.values(GoalCategory).find((c) => c === server.category) || GoalCategory.Other,
     startDate: server.start_date,
     endDate: server.end_date ?? undefined,
     criteria: server.criteria.map((c) => ({
@@ -32,8 +31,7 @@ function convertGoal(server: ServerGoal): ClientGoal {
       period: c.period,
       description: c.description,
     })),
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    status: (server.status ?? 'active') as ClientGoal['status'],
+    status: Object.values(GoalStatus).find((s) => s === server.status) || GoalStatus.Active,
     createdAt: server.created_at ?? new Date().toISOString(),
     updatedAt: server.updated_at ?? new Date().toISOString(),
   };

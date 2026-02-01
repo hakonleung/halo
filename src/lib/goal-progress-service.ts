@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
-import type { Goal, GoalCriteria, GoalProgress } from '@/types/goal-server';
+import type { Goal, GoalProgress } from '@/types/goal-server';
 
 /**
  * Calculate date range based on period
@@ -72,10 +72,9 @@ async function calculateMetric(
     case 'sum': {
       // Sum numeric values from metadata
       return records.reduce((sum, record) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const metadata = record.metadata as Record<string, unknown>;
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const values = Object.values(metadata).filter((v) => typeof v === 'number') as number[];
+        const metadata =
+          record.metadata && typeof record.metadata === 'object' ? record.metadata : {};
+        const values = Object.values(metadata).filter((v) => typeof v === 'number');
         return sum + values.reduce((a, b) => a + b, 0);
       }, 0);
     }
@@ -83,10 +82,9 @@ async function calculateMetric(
       // Average numeric values from metadata
       const numericValues: number[] = [];
       records.forEach((record) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const metadata = record.metadata as Record<string, unknown>;
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const values = Object.values(metadata).filter((v) => typeof v === 'number') as number[];
+        const metadata =
+          record.metadata && typeof record.metadata === 'object' ? record.metadata : {};
+        const values = Object.values(metadata).filter((v) => typeof v === 'number');
         numericValues.push(...values);
       });
       if (numericValues.length === 0) return 0;
@@ -125,8 +123,7 @@ export const goalProgressService = {
     let totalTarget = 0;
     let totalCurrent = 0;
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    for (const criterion of goal.criteria as GoalCriteria[]) {
+    for (const criterion of goal.criteria) {
       const { start, end } = getDateRange(
         criterion.period,
         goal.start_date,

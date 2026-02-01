@@ -40,8 +40,7 @@ export function RecordDetailDrawer({ recordId, isOpen, onClose }: RecordDetailDr
   const foundRecord = records.find((r) => r.id === recordId);
   let record: BehaviorRecordWithDefinition | undefined;
   if (foundRecord && 'behaviorDefinitions' in foundRecord) {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    record = foundRecord as BehaviorRecordWithDefinition;
+    record = foundRecord;
   }
   const definition =
     record?.behaviorDefinitions || definitions.find((d) => d.id === record?.definitionId);

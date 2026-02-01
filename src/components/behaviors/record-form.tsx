@@ -84,8 +84,7 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
         const mergedMetadata: MetadataRecord = { ...metadata };
         selectedDef.metadataSchema.forEach((field) => {
           if (!(field.key in mergedMetadata)) {
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            mergedMetadata[field.key] = (field.config.defaultValue as MetadataValue) ?? '';
+            mergedMetadata[field.key] = field.config.defaultValue ?? '';
           }
         });
         setMetadata(mergedMetadata);
@@ -93,8 +92,7 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
         // Create new metadata with defaults
         const initialMetadata: MetadataRecord = {};
         selectedDef.metadataSchema.forEach((field) => {
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          initialMetadata[field.key] = (field.config.defaultValue as MetadataValue) ?? '';
+          initialMetadata[field.key] = field.config.defaultValue ?? '';
         });
         setMetadata(initialMetadata);
       }
@@ -370,47 +368,56 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
             METADATA FIELDS
           </Text>
 
-          {selectedDef.metadataSchema.map((field: MetadataField) => (
-            <Field.Root key={field.key} required={field.required}>
-              <Field.Label color="text.mist">{field.name}</Field.Label>
-              {field.type === 'number' || field.type === 'currency' ? (
-                <Input
-                  type="number"
-                  variant="outline"
-                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                  value={(metadata[field.key] as string | number) ?? ''}
-                  onChange={(e) => handleMetadataChange(field.key, parseFloat(e.target.value))}
-                  placeholder={'placeholder' in field.config ? field.config.placeholder : undefined}
-                />
-              ) : field.type === 'textarea' ? (
-                <Textarea
-                  variant="outline"
-                  rows={3}
-                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                  value={(metadata[field.key] as string) ?? ''}
-                  readOnly
-                  onClick={() => openEditor('metadata', field.key)}
-                  placeholder={
-                    'placeholder' in field.config
-                      ? field.config.placeholder
-                      : 'Click to edit in fullscreen editor...'
-                  }
-                  cursor="pointer"
-                  _hover={{
-                    borderColor: 'brand.matrix',
-                  }}
-                />
-              ) : (
-                <Input
-                  variant="outline"
-                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                  value={(metadata[field.key] as string) ?? ''}
-                  onChange={(e) => handleMetadataChange(field.key, e.target.value)}
-                  placeholder={'placeholder' in field.config ? field.config.placeholder : undefined}
-                />
-              )}
-            </Field.Root>
-          ))}
+          {selectedDef.metadataSchema.map((field: MetadataField) => {
+            return (
+              <Field.Root key={field.key} required={field.required}>
+                <Field.Label color="text.mist">{field.name}</Field.Label>
+                {field.type === 'number' || field.type === 'currency' ? (
+                  <Input
+                    type="number"
+                    variant="outline"
+                    // FIXME
+                    // @ts-expect-error - metadata[field.key] is a valid value for the input
+                    value={metadata[field.key] ?? ''}
+                    onChange={(e) => handleMetadataChange(field.key, parseFloat(e.target.value))}
+                    placeholder={
+                      'placeholder' in field.config ? field.config.placeholder : undefined
+                    }
+                  />
+                ) : field.type === 'textarea' ? (
+                  <Textarea
+                    variant="outline"
+                    rows={3}
+                    // FIXME
+                    // @ts-expect-error - metadata[field.key] is a valid value for the textarea
+                    value={metadata[field.key] ?? ''}
+                    readOnly
+                    onClick={() => openEditor('metadata', field.key)}
+                    placeholder={
+                      'placeholder' in field.config
+                        ? field.config.placeholder
+                        : 'Click to edit in fullscreen editor...'
+                    }
+                    cursor="pointer"
+                    _hover={{
+                      borderColor: 'brand.matrix',
+                    }}
+                  />
+                ) : (
+                  <Input
+                    variant="outline"
+                    // FIXME
+                    // @ts-expect-error - metadata[field.key] is a valid value for the input
+                    value={metadata[field.key] ?? ''}
+                    onChange={(e) => handleMetadataChange(field.key, e.target.value)}
+                    placeholder={
+                      'placeholder' in field.config ? field.config.placeholder : undefined
+                    }
+                  />
+                )}
+              </Field.Root>
+            );
+          })}
 
           <Field.Root>
             <Field.Label color="text.mist">Note</Field.Label>

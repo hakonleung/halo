@@ -1,6 +1,14 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 import type { Goal, GoalCreateRequest } from '@/types/goal-server';
+import type { InferSelectModel } from 'drizzle-orm';
+import type { neologGoals } from '@/db/schema';
+
+export const serverConvertGoal = (server: InferSelectModel<typeof neologGoals>): Goal => {
+  // FIXME
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  return server as Goal;
+};
 
 /**
  * Goal service - Logic for user goals
@@ -37,8 +45,7 @@ export const goalService = {
     const { data, error } = await query;
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Goal[], error: null };
+    return { data: data.map(serverConvertGoal), error: null };
   },
 
   /**
@@ -60,8 +67,7 @@ export const goalService = {
       }
       return { data: null, error: error.message };
     }
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Goal, error: null };
+    return { data: serverConvertGoal(data), error: null };
   },
 
   /**
@@ -71,6 +77,7 @@ export const goalService = {
     if (!userId) return { data: null, error: 'User ID is required' };
     const { data, error } = await supabase
       .from('neolog_goals')
+      // FIXME
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       .insert({
         ...goal,
@@ -81,8 +88,7 @@ export const goalService = {
       .single();
 
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Goal, error: null };
+    return { data: serverConvertGoal(data), error: null };
   },
 
   /**
@@ -105,10 +111,8 @@ export const goalService = {
       .eq('user_id', userId)
       .select()
       .single();
-
     if (error) return { data: null, error: error.message };
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return { data: data as Goal, error: null };
+    return { data: serverConvertGoal(data), error: null };
   },
 
   /**
