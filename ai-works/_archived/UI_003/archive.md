@@ -1,20 +1,25 @@
 # 工作流归档报告
 
-> UI_003 | UI_003: 修改 new goal 的渲染逻辑 | completed | 2026-02-01
+> UI_003 | 修改 new goal 的渲染逻辑 | completed | 2026-02-01
 
 ## 1. 需求是什么
 
 ### 背景与痛点
 
-[从 quick-analysis.md 提取需求描述]
+需要改进 goal 创建流程，将创建 goal 的功能集成到 action drawer 中，通过 Tab 切换，提供更统一的用户体验。
 
 ### 功能范围
 
-[从 quick-analysis.md 提取功能范围]
+**Must Have (必须实现)**
+1. Create behavior 的 drawer 增加 Tab 功能
+2. New goal 也在这个 drawer 里，通过 Tab 切换
+3. 移除或修改 Goals 页面的 "Create Goal" 按钮，改为打开同一个 drawer
 
 ### 成功指标
 
-[从 quick-analysis.md 或 changes.md 提取]
+- Action drawer 支持 Tab 切换
+- Goal 创建功能正常工作
+- Goals 页面的按钮正确打开 drawer
 
 ## 2. 做了什么
 
@@ -24,33 +29,50 @@
 
 ### 实现功能
 
-[从 changes.md 提取实现的功能清单]
+**核心功能 (100% 完成)**
+1. GoalForm 组件：创建了 Goal 创建表单组件，支持基本字段和动态 Criteria 管理
+2. Action Drawer Context：创建了全局 Context 管理 drawer 状态和 Tab 切换
+3. Action Button 改造：添加 Tab 功能，支持 Record 和 Goal 两个 Tab
+4. Goals 页面改造：修改 "Create Goal" 按钮，改为打开 drawer 并激活 Goal tab
 
 ### 创建的组件/API/数据表
 
-[从 changes.md 提取新建和修改的文件列表]
+**新建文件**
+- `src/components/goals/goal-form.tsx` - Goal 创建表单组件
+- `src/components/shared/action-drawer-context.tsx` - Action Drawer Context
+
+**修改文件**
+- `src/components/shared/action-button.tsx` - 添加 Tab 功能
+- `src/components/goals/index.ts` - 添加 GoalForm 导出
+- `src/app/layout.tsx` - 添加 ActionDrawerProvider
+- `src/app/goals/page.tsx` - 修改 Create Goal 按钮逻辑
+
+**数据表**
+- 无新增数据表
 
 ### 代码统计
 
-[从 changes.md 提取代码统计信息]
+- 新建文件：2 个
+- 修改文件：4 个
+- 功能完整度：100%
 
 ## 3. 还有什么没做
 
 ### 未实现功能
 
-[从 changes.md 的"待实现功能"或"注意事项"部分提取]
+无
 
 ### 待改进项
 
-[从 changes.md 提取]
+无
 
 ### 技术债务
 
-[如果有，列出]
+无
 
 ### 后续迭代建议
 
-[如果有，列出]
+- 可考虑添加 Goal 编辑功能
 
 ## 4. 质量如何
 
@@ -58,11 +80,24 @@
 
 根据 changes.md，验证结果：通过
 
+**检查项结果**
+- 功能测试通过
+- 表单验证正常
+- 样式测试通过
+
 ### 代码质量
 
-- 类型检查通过
-- Lint 检查通过
-- 功能完整度：100% Must Have 功能
+**功能覆盖率**
+- Must Have 功能：100% (3/3)
+
+**类型安全**
+- 使用 TypeScript，类型安全
+
+**文件大小合规性**
+- 所有新建文件均符合 < 300 行要求
+
+**TODO/FIXME 数量**
+- 无新增 TODO/FIXME 注释
 
 ### 文档同步率
 
