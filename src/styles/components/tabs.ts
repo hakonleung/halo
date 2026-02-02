@@ -1,8 +1,9 @@
 import { defineSlotRecipe } from '@chakra-ui/react';
+import { tabsAnatomy } from '@chakra-ui/react/anatomy';
 
 export const tabs = defineSlotRecipe({
   className: 'neo-tabs',
-  slots: ['root', 'list', 'trigger', 'content', 'indicator'],
+  slots: tabsAnatomy.keys(),
   base: {
     root: {
       position: 'relative',

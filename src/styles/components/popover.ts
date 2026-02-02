@@ -1,8 +1,9 @@
 import { defineSlotRecipe } from '@chakra-ui/react';
+import { popoverAnatomy } from '@chakra-ui/react/anatomy';
 
 export const popover = defineSlotRecipe({
   className: 'neo-popover',
-  slots: ['content', 'header', 'body', 'footer', 'arrow', 'closeTrigger'],
+  slots: popoverAnatomy.keys(),
   base: {
     content: {
       background: 'transparent',

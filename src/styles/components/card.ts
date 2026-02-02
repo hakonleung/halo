@@ -1,8 +1,9 @@
 import { defineSlotRecipe } from '@chakra-ui/react';
+import { cardAnatomy } from '@chakra-ui/react/anatomy';
 
 export const card = defineSlotRecipe({
   className: 'neo-card',
-  slots: ['root', 'header', 'body', 'footer', 'title', 'description'],
+  slots: cardAnatomy.keys(),
   base: {
     root: {
       background: 'transparent',

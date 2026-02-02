@@ -1,8 +1,9 @@
 import { defineSlotRecipe } from '@chakra-ui/react';
+import { drawerAnatomy } from '@chakra-ui/react/anatomy';
 
 export const drawer = defineSlotRecipe({
   className: 'neo-drawer',
-  slots: ['backdrop', 'positioner', 'content', 'header', 'title', 'body', 'footer', 'closeTrigger'],
+  slots: drawerAnatomy.keys(),
   base: {
     backdrop: {
       background: 'transparent',

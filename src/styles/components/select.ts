@@ -1,17 +1,9 @@
 import { defineSlotRecipe } from '@chakra-ui/react';
+import { selectAnatomy } from '@chakra-ui/react/anatomy';
 
 export const select = defineSlotRecipe({
   className: 'neo-select',
-  slots: [
-    'root',
-    'trigger',
-    'positioner',
-    'content',
-    'item',
-    'itemText',
-    'itemIndicator',
-    'indicator',
-  ],
+  slots: selectAnatomy.keys(),
   base: {
     root: {
       width: '100%',
