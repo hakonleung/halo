@@ -3,15 +3,14 @@
 import {
   Box,
   VStack,
-  Heading,
   Input,
   Text,
   Button,
   HStack,
-  FieldRoot,
-  FieldLabel,
   Select,
   createListCollection,
+  Portal,
+  Field,
 } from '@chakra-ui/react';
 import { useSettings } from '@/hooks/use-settings';
 import { useUpdateSettings } from '@/hooks/use-update-settings';
@@ -24,6 +23,7 @@ const providerOptions = createListCollection({
     { label: 'OpenAI', value: AIProvider.OpenAI },
     { label: 'Anthropic', value: AIProvider.Anthropic },
     { label: 'Google', value: AIProvider.Google },
+    { label: 'Custom', value: AIProvider.Custom },
   ],
 });
 
@@ -51,7 +51,7 @@ const modelOptions = {
 };
 
 export function AISettingsComponent() {
-  const { settings, isLoading } = useSettings();
+  const { settings } = useSettings();
   const { updateSettings, isLoading: isUpdating, error: updateError } = useUpdateSettings();
 
   const [aiSettings, setAiSettings] = useState<AISettings>({
@@ -60,7 +60,8 @@ export function AISettingsComponent() {
     selectedModel: 'gpt-4o',
     temperature: 0.7,
     streamEnabled: true,
-    customKeys: [],
+    apiKey: null,
+    baseUrl: null,
   });
 
   // Sync form values when settings load
@@ -76,82 +77,76 @@ export function AISettingsComponent() {
     });
   };
 
-  const handleAddCustomKey = () => {
-    setAiSettings((prev) => ({
-      ...prev,
-      customKeys: [...prev.customKeys, { provider: prev.selectedProvider, hasKey: false }],
-    }));
-  };
-
-  const handleUpdateCustomKey = (index: number, provider: string, hasKey: boolean) => {
-    setAiSettings((prev) => {
-      const newKeys = [...prev.customKeys];
-      newKeys[index] = { provider, hasKey };
-      return { ...prev, customKeys: newKeys };
-    });
-  };
-
-  const handleRemoveCustomKey = (index: number) => {
-    setAiSettings((prev) => ({
-      ...prev,
-      customKeys: prev.customKeys.filter((_, i) => i !== index),
-    }));
-  };
-
-  if (isLoading) {
-    return (
-      <Box p={6}>
-        <Text color="text.mist" fontFamily="mono">
-          [ LOADING... ]
-        </Text>
-      </Box>
-    );
-  }
-
   const currentModelOptions =
-    modelOptions[aiSettings.selectedProvider] || modelOptions[AIProvider.OpenAI];
+    aiSettings.selectedProvider !== AIProvider.Custom
+      ? modelOptions[aiSettings.selectedProvider]
+      : undefined;
+
+  // Check if form is valid and should be disabled
+  const isFormDisabled = () => {
+    // Model is always required
+    if (!aiSettings.selectedModel || aiSettings.selectedModel.trim() === '') {
+      return true;
+    }
+
+    // If using default key, no need to check apiKey/baseUrl
+    if (aiSettings.useDefaultKey) {
+      return false;
+    }
+
+    // For custom provider, baseUrl and apiKey are required
+    if (!currentModelOptions) {
+      if (!aiSettings.baseUrl || aiSettings.baseUrl.trim() === '') {
+        return true;
+      }
+      if (!aiSettings.apiKey || aiSettings.apiKey.trim() === '') {
+        return true;
+      }
+    }
+
+    // For non-custom provider, apiKey is optional when not using default key
+    // So we don't need to check it
+
+    return false;
+  };
+
+  const isDisabled = isFormDisabled();
 
   return (
     <VStack gap={6} align="stretch" p={6}>
-      <Heading size="md" color="text.neon" fontFamily="heading" mb={2}>
-        AI Configuration
-      </Heading>
-
-      <FieldRoot>
-        <FieldLabel>Use Default API Key</FieldLabel>
-        <HStack justify="space-between">
-          <Text color="text.mist" fontFamily="mono" fontSize="sm">
-            Use Default API Key
-          </Text>
-          <Button
-            size="sm"
-            variant={aiSettings.useDefaultKey ? 'toggle-active' : 'toggle'}
-            onClick={() =>
-              setAiSettings((prev) => ({ ...prev, useDefaultKey: !prev.useDefaultKey }))
-            }
-            minW="60px"
-          >
-            {aiSettings.useDefaultKey ? 'ON' : 'OFF'}
-          </Button>
-        </HStack>
-        <Text mt={1} fontSize="xs" color="text.mist" fontFamily="mono">
-          When enabled, uses the default API key configured on the server
+      <HStack justify="space-between">
+        <Text color="text.mist" fontFamily="mono" fontSize="sm">
+          Use Default API Key
         </Text>
-      </FieldRoot>
+        <Button
+          size="sm"
+          variant={aiSettings.useDefaultKey ? 'toggle-active' : 'toggle'}
+          onClick={() => setAiSettings((prev) => ({ ...prev, useDefaultKey: !prev.useDefaultKey }))}
+          minW="60px"
+        >
+          {aiSettings.useDefaultKey ? 'ON' : 'OFF'}
+        </Button>
+      </HStack>
 
-      <FieldRoot>
-        <FieldLabel>AI Provider</FieldLabel>
+      <Field.Root>
+        <Field.Label>AI Provider</Field.Label>
         <Select.Root
           collection={providerOptions}
           value={[aiSettings.selectedProvider]}
           onValueChange={(e) => {
             const provider = Object.values(AIProvider).find((p) => p === e.value[0]);
             if (provider) {
-              const defaultModel = modelOptions[provider]?.items[0]?.value || 'gpt-4o';
+              const defaultModel =
+                provider === AIProvider.Custom
+                  ? ''
+                  : modelOptions[provider]?.items[0]?.value || 'gpt-4o';
               setAiSettings((prev) => ({
                 ...prev,
                 selectedProvider: provider,
                 selectedModel: defaultModel,
+                // Clear apiKey and baseUrl when switching provider (except when switching to custom)
+                apiKey: provider === AIProvider.Custom ? prev.apiKey : null,
+                baseUrl: provider === AIProvider.Custom ? prev.baseUrl : null,
               }));
             }
           }}
@@ -159,43 +154,102 @@ export function AISettingsComponent() {
           <Select.Trigger>
             <Select.ValueText />
           </Select.Trigger>
-          <Select.Content>
-            {providerOptions.items.map((item) => (
-              <Select.Item item={item} key={item.value}>
-                {item.label}
-              </Select.Item>
-            ))}
-          </Select.Content>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {providerOptions.items.map((item) => (
+                  <Select.Item item={item} key={item.value}>
+                    {item.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
         </Select.Root>
-      </FieldRoot>
+      </Field.Root>
 
-      <FieldRoot>
-        <FieldLabel>Model</FieldLabel>
-        <Select.Root
-          collection={currentModelOptions}
-          value={[aiSettings.selectedModel]}
-          onValueChange={(e) => {
-            const model = e.value[0];
-            if (typeof model === 'string') {
-              setAiSettings((prev) => ({ ...prev, selectedModel: model }));
+      <Field.Root required={!currentModelOptions}>
+        <Field.Label>
+          Model <Field.RequiredIndicator />
+        </Field.Label>
+        {!currentModelOptions ? (
+          <Input
+            type="text"
+            placeholder="Enter model name"
+            value={aiSettings.selectedModel}
+            onChange={(e) => setAiSettings((prev) => ({ ...prev, selectedModel: e.target.value }))}
+            required
+          />
+        ) : (
+          <Select.Root
+            key={aiSettings.selectedProvider}
+            collection={currentModelOptions}
+            value={aiSettings.selectedModel ? [aiSettings.selectedModel] : []}
+            onValueChange={(e) => {
+              const model = e.value[0];
+              if (typeof model === 'string') {
+                setAiSettings((prev) => ({ ...prev, selectedModel: model }));
+              }
+            }}
+          >
+            <Select.Trigger flex="1">
+              <Select.ValueText />
+            </Select.Trigger>
+            <Portal>
+              <Select.Positioner>
+                <Select.Content>
+                  {currentModelOptions.items.map((item: { label: string; value: string }) => (
+                    <Select.Item item={item} key={item.value}>
+                      {item.label}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Portal>
+          </Select.Root>
+        )}
+      </Field.Root>
+
+      {!currentModelOptions && (
+        <Field.Root required>
+          <Field.Label>
+            Base URL
+            <Field.RequiredIndicator></Field.RequiredIndicator>
+          </Field.Label>
+          <Input
+            type="url"
+            placeholder="https://api.example.com/v1"
+            value={aiSettings.baseUrl || ''}
+            onChange={(e) =>
+              setAiSettings((prev) => ({ ...prev, baseUrl: e.target.value || null }))
             }
-          }}
-        >
-          <Select.Trigger>
-            <Select.ValueText />
-          </Select.Trigger>
-          <Select.Content>
-            {currentModelOptions.items.map((item) => (
-              <Select.Item item={item} key={item.value}>
-                {item.label}
-              </Select.Item>
-            ))}
-          </Select.Content>
-        </Select.Root>
-      </FieldRoot>
+            required
+          />
+          <Text mt={1} fontSize="xs" color="text.mist" fontFamily="mono">
+            Enter the base URL for your custom AI provider
+          </Text>
+        </Field.Root>
+      )}
 
-      <FieldRoot>
-        <FieldLabel>Temperature</FieldLabel>
+      <Field.Root required={!currentModelOptions}>
+        <Field.Label>
+          API Key
+          <Field.RequiredIndicator></Field.RequiredIndicator>
+        </Field.Label>
+        <Input
+          type="password"
+          placeholder="Enter API key"
+          value={aiSettings.apiKey || ''}
+          onChange={(e) => setAiSettings((prev) => ({ ...prev, apiKey: e.target.value || null }))}
+          required
+        />
+        <Text mt={1} fontSize="xs" color="text.mist" fontFamily="mono">
+          Enter the API key for your custom provider
+        </Text>
+      </Field.Root>
+
+      <Field.Root>
+        <Field.Label>Temperature</Field.Label>
         <Input
           type="number"
           min="0"
@@ -212,80 +266,21 @@ export function AISettingsComponent() {
         <Text mt={1} fontSize="xs" color="text.mist" fontFamily="mono">
           Controls randomness (0.0 = deterministic, 2.0 = very creative)
         </Text>
-      </FieldRoot>
+      </Field.Root>
 
-      <FieldRoot>
-        <FieldLabel>Stream Responses</FieldLabel>
-        <HStack justify="space-between">
-          <Text color="text.mist" fontFamily="mono" fontSize="sm">
-            Stream Responses
-          </Text>
-          <Button
-            size="sm"
-            variant={aiSettings.streamEnabled ? 'toggle-active' : 'toggle'}
-            onClick={() =>
-              setAiSettings((prev) => ({ ...prev, streamEnabled: !prev.streamEnabled }))
-            }
-            minW="60px"
-          >
-            {aiSettings.streamEnabled ? 'ON' : 'OFF'}
-          </Button>
-        </HStack>
-        <Text mt={1} fontSize="xs" color="text.mist" fontFamily="mono">
-          Enable streaming for real-time response generation
+      <HStack justify="space-between">
+        <Text color="text.mist" fontFamily="mono" fontSize="sm">
+          Stream Responses
         </Text>
-      </FieldRoot>
-
-      {!aiSettings.useDefaultKey && (
-        <VStack gap={4} align="stretch">
-          <HStack justify="space-between">
-            <Heading size="sm" color="text.neon" fontFamily="heading">
-              Custom API Keys
-            </Heading>
-            <Button size="xs" onClick={handleAddCustomKey}>
-              + Add Key
-            </Button>
-          </HStack>
-
-          {aiSettings.customKeys.map((key, index) => (
-            <HStack key={index} gap={2}>
-              <Select.Root
-                collection={providerOptions}
-                value={[key.provider]}
-                onValueChange={(e) => {
-                  const provider = Object.values(AIProvider).find((p) => p === e.value[0]);
-                  if (provider) {
-                    handleUpdateCustomKey(index, provider, key.hasKey);
-                  }
-                }}
-              >
-                <Select.Trigger>
-                  <Select.ValueText />
-                </Select.Trigger>
-                <Select.Content>
-                  {providerOptions.items.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      {item.label}
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Root>
-              <Input
-                type="password"
-                placeholder="API Key"
-                size="sm"
-                value={key.hasKey ? '••••••••' : ''}
-                onChange={(e) =>
-                  handleUpdateCustomKey(index, key.provider, e.target.value.length > 0)
-                }
-              />
-              <Button size="xs" variant="ghost" onClick={() => handleRemoveCustomKey(index)}>
-                Remove
-              </Button>
-            </HStack>
-          ))}
-        </VStack>
-      )}
+        <Button
+          size="sm"
+          variant={aiSettings.streamEnabled ? 'toggle-active' : 'toggle'}
+          onClick={() => setAiSettings((prev) => ({ ...prev, streamEnabled: !prev.streamEnabled }))}
+          minW="60px"
+        >
+          {aiSettings.streamEnabled ? 'ON' : 'OFF'}
+        </Button>
+      </HStack>
 
       {updateError && (
         <Box
@@ -303,7 +298,12 @@ export function AISettingsComponent() {
       )}
 
       <HStack justify="flex-end" gap={4}>
-        <Button onClick={handleSave} loading={isUpdating} disabled={isUpdating} variant="primary">
+        <Button
+          onClick={handleSave}
+          loading={isUpdating}
+          disabled={isUpdating || isDisabled}
+          variant="primary"
+        >
           Save
         </Button>
       </HStack>

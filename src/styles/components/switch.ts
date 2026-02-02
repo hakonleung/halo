@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from '@chakra-ui/react';
 import { switchAnatomy } from '@chakra-ui/react/anatomy';
 
-export const switchRecipe = defineSlotRecipe({
+export const switch_ = defineSlotRecipe({
   className: 'neo-switch',
   slots: switchAnatomy.keys(),
   base: {

@@ -8,6 +8,7 @@ export enum AIProvider {
   OpenAI = 'openai',
   Anthropic = 'anthropic',
   Google = 'google',
+  Custom = 'custom',
 }
 
 export interface AISettings {
@@ -16,10 +17,8 @@ export interface AISettings {
   selectedModel: string;
   temperature: number;
   streamEnabled: boolean;
-  customKeys: Array<{
-    provider: string;
-    hasKey: boolean;
-  }>;
+  apiKey?: string | null;
+  baseUrl?: string | null;
 }
 
 export type SettingsUpdateRequest = Partial<InferInsertModel<typeof neologUserSettings>>;

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChatModal } from './chat-modal';
 import { useSettings } from '@/hooks/use-settings';
+import { AIProvider } from '@/types/settings-server';
 
 export function ChatButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,14 +15,26 @@ export function ChatButton() {
 
   const hasApiKey = () => {
     if (!settings?.aiSettings) return false;
-    const aiSettings =
-      typeof settings.aiSettings === 'string'
-        ? JSON.parse(settings.aiSettings)
-        : settings.aiSettings;
-    return (
-      aiSettings.useDefaultKey ||
-      (aiSettings.customKeys && aiSettings.customKeys.some((k: { hasKey: boolean }) => k.hasKey))
-    );
+    const aiSettings = settings.aiSettings;
+
+    // If using default key, API key is available
+    if (aiSettings.useDefaultKey) {
+      return true;
+    }
+
+    // For custom provider, both apiKey and baseUrl are required
+    if (aiSettings.selectedProvider === AIProvider.Custom) {
+      return (
+        aiSettings.apiKey &&
+        aiSettings.apiKey.trim() !== '' &&
+        aiSettings.baseUrl &&
+        aiSettings.baseUrl.trim() !== ''
+      );
+    }
+
+    // For non-custom providers, apiKey is optional (will use env vars if not provided)
+    // So we just need to check if model is set
+    return aiSettings.selectedModel && aiSettings.selectedModel.trim() !== '';
   };
 
   const handleClick = () => {

@@ -7,6 +7,7 @@ import { input } from './components/input';
 import { button } from './components/button';
 import { select } from './components/select';
 import { fieldLabel } from './components/field-label';
+import { field } from './components/field';
 import { drawer } from './components/drawer';
 import { card } from './components/card';
 import { badge } from './components/badge';
@@ -14,7 +15,7 @@ import { bottomNav } from './components/bottom-nav';
 import { popover } from './components/popover';
 import { tabs } from './components/tabs';
 import { skeleton } from './components/skeleton';
-import { switchRecipe } from './components/switch';
+import { switch_ } from './components/switch';
 
 export const config = defineConfig({
   theme: {
@@ -44,12 +45,13 @@ export const config = defineConfig({
     },
     slotRecipes: {
       select,
+      field,
       drawer,
       bottomNav,
       popover,
       card,
       tabs,
-      switch: switchRecipe,
+      switch: switch_,
     },
   },
 });

@@ -21,7 +21,8 @@ export const convertAISettings = (server: unknown): AISettings => {
     selectedModel: 'gpt-4o',
     temperature: 0.7,
     streamEnabled: true,
-    customKeys: [],
+    apiKey: null,
+    baseUrl: null,
   };
   if (typeof server === 'object' && server !== null) {
     ans.useDefaultKey = 'useDefaultKey' in server && server.useDefaultKey === true;
@@ -36,8 +37,14 @@ export const convertAISettings = (server: unknown): AISettings => {
     ans.temperature =
       'temperature' in server && typeof server.temperature === 'number' ? server.temperature : 0.7;
     ans.streamEnabled = 'streamEnabled' in server && server.streamEnabled === true;
-    ans.customKeys =
-      'customKeys' in server && Array.isArray(server.customKeys) ? server.customKeys : [];
+    ans.apiKey =
+      'apiKey' in server && (server.apiKey === null || typeof server.apiKey === 'string')
+        ? server.apiKey
+        : null;
+    ans.baseUrl =
+      'baseUrl' in server && (server.baseUrl === null || typeof server.baseUrl === 'string')
+        ? server.baseUrl
+        : null;
   }
   return ans;
 };

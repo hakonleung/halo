@@ -59,7 +59,8 @@ export const neologUserSettings = pgTable(
       selectedModel: 'gpt-4o',
       temperature: 0.7,
       streamEnabled: true,
-      customKeys: [],
+      apiKey: null,
+      baseUrl: null,
     }),
   },
   () => {
