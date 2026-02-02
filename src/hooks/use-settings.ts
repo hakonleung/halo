@@ -16,7 +16,6 @@ export function useSettings() {
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-
   return {
     settings: settings ?? null,
     isLoading,

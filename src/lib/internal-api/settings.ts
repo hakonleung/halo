@@ -115,11 +115,9 @@ export const settingsApi = {
   async getSettings(): Promise<ClientSettings | null> {
     const response =
       await BaseApiService.fetchApi<ApiResponse<ServerUserSettings>>('/api/settings');
-
     if (response.error) {
       throw new Error(response.error);
     }
-
     return response.data ? convertSettings(response.data) : null;
   },
 
