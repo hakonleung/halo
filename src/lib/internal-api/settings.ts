@@ -115,10 +115,10 @@ export const settingsApi = {
   async getSettings(): Promise<ClientSettings | null> {
     const response =
       await BaseApiService.fetchApi<ApiResponse<ServerUserSettings>>('/api/settings');
-    if (response.error) {
+    if ('error' in response) {
       throw new Error(response.error);
     }
-    return response.data ? convertSettings(response.data) : null;
+    return convertSettings(response.data);
   },
 
   /**
@@ -135,8 +135,8 @@ export const settingsApi = {
       },
     );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to update settings');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertSettings(response.data);

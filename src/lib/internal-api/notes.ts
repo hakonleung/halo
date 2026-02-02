@@ -34,8 +34,8 @@ export const notesApi = {
   async getNotes(): Promise<ClientNote[]> {
     const response = await BaseApiService.fetchApi<ApiResponse<ServerNote[]>>('/api/notes');
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch notes');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return response.data.map(convertNote);
@@ -56,8 +56,8 @@ export const notesApi = {
       body: JSON.stringify(serverRequest),
     });
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to create note');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertNote(response.data);
@@ -78,8 +78,8 @@ export const notesApi = {
       body: JSON.stringify(serverRequest),
     });
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to update note');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertNote(response.data);
@@ -93,7 +93,7 @@ export const notesApi = {
       method: 'DELETE',
     });
 
-    if (response.error) {
+    if ('error' in response) {
       throw new Error(response.error);
     }
   },

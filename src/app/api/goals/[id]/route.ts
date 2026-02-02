@@ -1,37 +1,15 @@
-import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase-server';
+import { createApiHandler } from '@/lib/api-helpers';
 import { goalService } from '@/lib/goal-service';
 import { goalProgressService } from '@/lib/goal-progress-service';
 import type { GoalProgress as ClientGoalProgress } from '@/types/goal-client';
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
+export const GET = createApiHandler(
+  async (_request, params = Promise.resolve({ id: '' }), supabase, user) => {
     const { id } = await params;
-    const supabase = await getSupabaseClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json({ data: null, error: 'Not authenticated' }, { status: 401 });
-    }
-
-    const res = await goalService.getGoal(supabase, user.id, id);
-
-    if (res.error) {
-      if (res.error === 'Goal not found') {
-        return NextResponse.json({ data: null, error: res.error }, { status: 404 });
-      }
-      return NextResponse.json({ data: null, error: res.error }, { status: 500 });
-    }
-
-    if (!res.data) {
-      return NextResponse.json({ data: null, error: 'Goal not found' }, { status: 404 });
-    }
+    const goal = await goalService.getGoal(supabase, user.id, id);
 
     // Calculate progress
-    const progress = await goalProgressService.calculateProgress(supabase, user.id, res.data);
+    const progress = await goalProgressService.calculateProgress(supabase, user.id, goal);
 
     const clientProgress: ClientGoalProgress = {
       current: progress.current,
@@ -41,48 +19,27 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       remainingDays: progress.remainingDays,
     };
 
-    return NextResponse.json({
+    return {
       data: {
-        ...res.data,
+        ...goal,
         progress: clientProgress,
       },
-      error: null,
-    });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ data: null, error: message }, { status: 500 });
-  }
-}
+    };
+  },
+);
 
-export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const supabase = await getSupabaseClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json({ data: null, error: 'Not authenticated' }, { status: 401 });
-    }
-
+export const PATCH = createApiHandler(
+  async (request, params = Promise.resolve({ id: '' }), supabase, user) => {
     const body = await request.json();
 
     // Validate name length if provided
     if (body.name && body.name.length > 100) {
-      return NextResponse.json(
-        { data: null, error: 'Validation failed: name must be 100 characters or less' },
-        { status: 400 },
-      );
+      throw new Error('Validation failed: name must be 100 characters or less');
     }
 
     // Validate end date if provided
     if (body.endDate && body.startDate && new Date(body.endDate) < new Date(body.startDate)) {
-      return NextResponse.json(
-        { data: null, error: 'Validation failed: endDate must be after startDate' },
-        { status: 400 },
-      );
+      throw new Error('Validation failed: endDate must be after startDate');
     }
 
     // Convert Client types to Server types
@@ -104,51 +61,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       }));
     }
 
-    const res = await goalService.updateGoal(supabase, user.id, id, updates);
-
-    if (res.error) {
-      if (res.error === 'Goal not found') {
-        return NextResponse.json({ data: null, error: res.error }, { status: 404 });
-      }
-      return NextResponse.json({ data: null, error: res.error }, { status: 500 });
-    }
-
-    if (!res.data) {
-      return NextResponse.json({ data: null, error: 'Goal not found' }, { status: 404 });
-    }
-
-    return NextResponse.json({ data: res.data, error: null });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ data: null, error: message }, { status: 500 });
-  }
-}
-
-export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
     const { id } = await params;
-    const supabase = await getSupabaseClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const data = await goalService.updateGoal(supabase, user.id, id, updates);
+    return { data };
+  },
+);
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-    }
-
-    const res = await goalService.deleteGoal(supabase, user.id, id);
-
-    if (res.error) {
-      if (res.error === 'Goal not found') {
-        return NextResponse.json({ error: res.error }, { status: 404 });
-      }
-      return NextResponse.json({ error: res.error }, { status: 500 });
-    }
-
-    return NextResponse.json({ error: null });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
-}
+export const DELETE = createApiHandler(
+  async (_request, params = Promise.resolve({ id: '' }), supabase, user) => {
+    const { id } = await params;
+    await goalService.deleteGoal(supabase, user.id, id);
+    return { data: null };
+  },
+);

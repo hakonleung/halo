@@ -26,23 +26,22 @@ export const chatService = {
    * Get all conversations for a user
    */
   async getConversations(supabase: SupabaseClient<Database>, userId: string) {
-    if (!userId) return { data: null, error: 'User ID is required' };
+    if (!userId) throw new Error('User ID is required');
     const { data, error } = await supabase
       .from('neolog_conversations')
       .select('*')
       .eq('user_id', userId)
       .order('updated_at', { ascending: false });
 
-    if (error) return { data: null, error: error.message };
-    return { data: data.map(serverConvertConversation), error: null };
+    if (error) throw new Error(error.message);
+    return data.map(serverConvertConversation);
   },
 
   /**
    * Get messages for a conversation
    */
   async getMessages(supabase: SupabaseClient<Database>, userId: string, conversationId: string) {
-    if (!userId || !conversationId)
-      return { data: null, error: 'User ID and Conversation ID are required' };
+    if (!userId || !conversationId) throw new Error('User ID and Conversation ID are required');
     // Verify ownership first
     const { data: conv, error: convError } = await supabase
       .from('neolog_conversations')
@@ -52,7 +51,7 @@ export const chatService = {
       .single();
 
     if (convError || !conv) {
-      return { data: null, error: 'Conversation not found or access denied' };
+      throw new Error('Conversation not found or access denied');
     }
 
     const { data, error } = await supabase
@@ -61,15 +60,15 @@ export const chatService = {
       .eq('conversation_id', conversationId)
       .order('created_at', { ascending: true });
 
-    if (error) return { data: null, error: error.message };
-    return { data: data.map(serverConvertChatMessage), error: null };
+    if (error) throw new Error(error.message);
+    return data.map(serverConvertChatMessage);
   },
 
   /**
    * Create a new conversation
    */
   async createConversation(supabase: SupabaseClient<Database>, userId: string, title?: string) {
-    if (!userId) return { data: null, error: 'User ID is required' };
+    if (!userId) throw new Error('User ID is required');
     const { data, error } = await supabase
       .from('neolog_conversations')
       .insert({
@@ -79,8 +78,8 @@ export const chatService = {
       .select()
       .single();
 
-    if (error) return { data: null, error: error.message };
-    return { data: serverConvertConversation(data), error: null };
+    if (error) throw new Error(error.message);
+    return serverConvertConversation(data);
   },
 
   /**
@@ -97,7 +96,7 @@ export const chatService = {
       metadata?: Record<string, unknown>;
     },
   ) {
-    if (!userId) return { data: null, error: 'User ID is required' };
+    if (!userId) throw new Error('User ID is required');
     const { data, error } = await supabase
       .from('neolog_messages')
       .insert({
@@ -111,7 +110,7 @@ export const chatService = {
       .select()
       .single();
 
-    if (error) return { data: null, error: error.message };
+    if (error) throw new Error(error.message);
 
     // Update conversation timestamp
     await supabase
@@ -121,7 +120,7 @@ export const chatService = {
       })
       .eq('id', params.conversationId);
 
-    return { data: serverConvertChatMessage(data), error: null };
+    return serverConvertChatMessage(data);
   },
 
   /**
@@ -131,15 +130,14 @@ export const chatService = {
     supabase: SupabaseClient<Database>,
     userId: string,
     conversationId: string,
-  ) {
-    if (!userId || !conversationId) return { error: 'User ID and Conversation ID are required' };
+  ): Promise<void> {
+    if (!userId || !conversationId) throw new Error('User ID and Conversation ID are required');
     const { error } = await supabase
       .from('neolog_conversations')
       .delete()
       .eq('id', conversationId)
       .eq('user_id', userId);
 
-    if (error) return { error: error.message };
-    return { error: null };
+    if (error) throw new Error(error.message);
   },
 };

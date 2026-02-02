@@ -28,8 +28,7 @@ export async function POST(request: Request) {
     let currentConversationId = conversationId;
     if (!currentConversationId) {
       const conv = await chatService.createConversation(supabase, user.id);
-      if (conv.error || !conv.data) throw new Error(conv.error || 'Failed to create conversation');
-      currentConversationId = conv.data.id;
+      currentConversationId = conv.id;
     }
 
     // 2. Save user message
@@ -40,14 +39,11 @@ export async function POST(request: Request) {
     });
 
     // 3. Get chat history
-    const historyRes = await chatService.getMessages(supabase, user.id, currentConversationId);
-    const history = historyRes.data || [];
+    const history = await chatService.getMessages(supabase, user.id, currentConversationId);
 
     // 4. Initialize LLM and Tools
-    const settingsRes = await settingsService.getSettings(supabase, user.id);
-    if (!settingsRes.settings) throw new Error('Settings not found');
-
-    const llm = await createLLM(settingsRes.settings);
+    const settings = await settingsService.getSettings(supabase, user.id);
+    const llm = await createLLM(settings);
     const tools = createChatTools(supabase, user.id);
 
     // 5. Setup Agent

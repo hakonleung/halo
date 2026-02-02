@@ -2,6 +2,7 @@
  * Auth API
  */
 
+import type { ApiResponse } from './base';
 import { BaseApiService } from './base';
 import type { AuthResponse } from '@/types/auth';
 
@@ -9,8 +10,13 @@ export const authApi = {
   /**
    * Get current user
    */
-  async getCurrentUser(): Promise<AuthResponse> {
-    return BaseApiService.fetchApi<AuthResponse>('/api/auth/me');
+  async getCurrentUser() {
+    const response = await BaseApiService.fetchApi<ApiResponse<AuthResponse>>('/api/auth/me');
+
+    if ('error' in response) {
+      throw new Error(response.error);
+    }
+    return response;
   },
 
   /**

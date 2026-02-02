@@ -17,8 +17,8 @@ export function useUser() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const user = authData?.user ?? null;
-  const errorMessage = error?.message ?? authData?.error ?? null;
+  const user = authData?.data.user ?? null;
+  const errorMessage = error?.message ?? null;
   const isAuthenticated = !!user;
 
   return {

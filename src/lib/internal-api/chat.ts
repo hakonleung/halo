@@ -44,8 +44,8 @@ export const chatApi = {
     const response =
       await BaseApiService.fetchApi<ApiResponse<ServerConversation[]>>('/api/chat/conversations');
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch conversations');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return response.data.map(convertConversation);
@@ -59,8 +59,8 @@ export const chatApi = {
       `/api/chat/conversations/${conversationId}/messages`,
     );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch messages');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return response.data.map(convertChatMessage);

@@ -9,7 +9,6 @@ import {
   type BehaviorRecordWithDefinition as ServerBehaviorRecordWithDefinition,
   type BehaviorDefinitionCreateRequest as ServerBehaviorDefinitionCreateRequest,
   type BehaviorRecordCreateRequest as ServerBehaviorRecordCreateRequest,
-  type BehaviorResponse as ServerBehaviorResponse,
   BehaviorCategory,
 } from '@/types/behavior-server';
 import type {
@@ -66,11 +65,11 @@ export const behaviorsApi = {
    */
   async getBehaviorRecords(limit = 50, offset = 0): Promise<ClientBehaviorRecordWithDefinition[]> {
     const response = await BaseApiService.fetchApi<
-      ServerBehaviorResponse<ServerBehaviorRecordWithDefinition[]>
+      ApiResponse<ServerBehaviorRecordWithDefinition[]>
     >(`/api/behaviors/records?limit=${limit}&offset=${offset}`);
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch behavior records');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return response.data.map(convertBehaviorRecordWithDefinition);
@@ -89,7 +88,7 @@ export const behaviorsApi = {
       note: record.note,
     };
 
-    const response = await BaseApiService.fetchApi<ServerBehaviorResponse<ServerBehaviorRecord>>(
+    const response = await BaseApiService.fetchApi<ApiResponse<ServerBehaviorRecord>>(
       '/api/behaviors/records',
       {
         method: 'POST',
@@ -97,8 +96,8 @@ export const behaviorsApi = {
       },
     );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to create behavior record');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertBehaviorRecord(response.data);
@@ -118,7 +117,7 @@ export const behaviorsApi = {
       note: updates.note,
     };
 
-    const response = await BaseApiService.fetchApi<ServerBehaviorResponse<ServerBehaviorRecord>>(
+    const response = await BaseApiService.fetchApi<ApiResponse<ServerBehaviorRecord>>(
       `/api/behaviors/records/${recordId}`,
       {
         method: 'PATCH',
@@ -126,8 +125,8 @@ export const behaviorsApi = {
       },
     );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to update behavior record');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertBehaviorRecord(response.data);
@@ -144,7 +143,7 @@ export const behaviorsApi = {
       },
     );
 
-    if (response.error) {
+    if ('error' in response) {
       throw new Error(response.error);
     }
   },
@@ -153,12 +152,12 @@ export const behaviorsApi = {
    * Get behavior definitions
    */
   async getBehaviorDefinitions(): Promise<ClientBehaviorDefinition[]> {
-    const response = await BaseApiService.fetchApi<
-      ServerBehaviorResponse<ServerBehaviorDefinition[]>
-    >('/api/behaviors/definitions');
+    const response = await BaseApiService.fetchApi<ApiResponse<ServerBehaviorDefinition[]>>(
+      '/api/behaviors/definitions',
+    );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch behavior definitions');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return response.data.map(convertBehaviorDefinition);
@@ -177,15 +176,16 @@ export const behaviorsApi = {
       metadata_schema: definition.metadataSchema,
     };
 
-    const response = await BaseApiService.fetchApi<
-      ServerBehaviorResponse<ServerBehaviorDefinition>
-    >('/api/behaviors/definitions', {
-      method: 'POST',
-      body: JSON.stringify(serverRequest),
-    });
+    const response = await BaseApiService.fetchApi<ApiResponse<ServerBehaviorDefinition>>(
+      '/api/behaviors/definitions',
+      {
+        method: 'POST',
+        body: JSON.stringify(serverRequest),
+      },
+    );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to create behavior definition');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertBehaviorDefinition(response.data);
@@ -205,15 +205,16 @@ export const behaviorsApi = {
     if (updates.metadataSchema !== undefined)
       serverRequest.metadata_schema = updates.metadataSchema;
 
-    const response = await BaseApiService.fetchApi<
-      ServerBehaviorResponse<ServerBehaviorDefinition>
-    >(`/api/behaviors/definitions/${definitionId}`, {
-      method: 'PATCH',
-      body: JSON.stringify(serverRequest),
-    });
+    const response = await BaseApiService.fetchApi<ApiResponse<ServerBehaviorDefinition>>(
+      `/api/behaviors/definitions/${definitionId}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(serverRequest),
+      },
+    );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to update behavior definition');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertBehaviorDefinition(response.data);

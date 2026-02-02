@@ -10,22 +10,22 @@ export const noteService = {
    * Get all notes for a user
    */
   async getNotes(supabase: SupabaseClient<Database>, userId: string) {
-    if (!userId) return { data: null, error: 'User ID is required' };
+    if (!userId) throw new Error('User ID is required');
     const { data, error } = await supabase
       .from('neolog_notes')
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
-    if (error) return { data: null, error: error.message };
-    return { data, error: null };
+    if (error) throw new Error(error.message);
+    return data;
   },
 
   /**
    * Create a new note
    */
   async createNote(supabase: SupabaseClient<Database>, userId: string, note: NoteCreateRequest) {
-    if (!userId) return { data: null, error: 'User ID is required' };
+    if (!userId) throw new Error('User ID is required');
     const { data, error } = await supabase
       .from('neolog_notes')
       .insert({
@@ -35,8 +35,8 @@ export const noteService = {
       })
       .select()
       .single();
-    if (error) return { data: null, error: error.message };
-    return { data, error: null };
+    if (error) throw new Error(error.message);
+    return data;
   },
 
   /**
@@ -48,7 +48,7 @@ export const noteService = {
     noteId: string,
     updates: Partial<NoteCreateRequest>,
   ) {
-    if (!userId || !noteId) return { data: null, error: 'User ID and Note ID are required' };
+    if (!userId || !noteId) throw new Error('User ID and Note ID are required');
     const { data, error } = await supabase
       .from('neolog_notes')
       .update({
@@ -60,22 +60,25 @@ export const noteService = {
       .select()
       .single();
 
-    if (error) return { data: null, error: error.message };
-    return { data, error: null };
+    if (error) throw new Error(error.message);
+    return data;
   },
 
   /**
    * Delete a note
    */
-  async deleteNote(supabase: SupabaseClient<Database>, userId: string, noteId: string) {
-    if (!userId || !noteId) return { error: 'User ID and Note ID are required' };
+  async deleteNote(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+    noteId: string,
+  ): Promise<void> {
+    if (!userId || !noteId) throw new Error('User ID and Note ID are required');
     const { error } = await supabase
       .from('neolog_notes')
       .delete()
       .eq('id', noteId)
       .eq('user_id', userId);
 
-    if (error) return { error: error.message };
-    return { error: null };
+    if (error) throw new Error(error.message);
   },
 };

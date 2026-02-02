@@ -59,8 +59,8 @@ export const goalsApi = {
     const url = `/api/goals${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
     const response = await BaseApiService.fetchApi<ApiResponse<ServerGoal[]>>(url);
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch goals');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return response.data.map(convertGoal);
@@ -74,8 +74,8 @@ export const goalsApi = {
       ApiResponse<ServerGoal & { progress?: GoalProgress }>
     >(`/api/goals/${goalId}`);
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch goal');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     const { progress, ...goalData } = response.data;
@@ -111,8 +111,8 @@ export const goalsApi = {
       body: JSON.stringify(apiRequest),
     });
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to create goal');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertGoal(response.data);
@@ -149,8 +149,8 @@ export const goalsApi = {
       body: JSON.stringify(serverRequest),
     });
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to update goal');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertGoal(response.data);
@@ -164,7 +164,7 @@ export const goalsApi = {
       method: 'DELETE',
     });
 
-    if (response.error) {
+    if ('error' in response) {
       throw new Error(response.error);
     }
   },

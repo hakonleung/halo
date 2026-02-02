@@ -25,7 +25,7 @@ export const goalService = {
    * Get all goals for a user with optional filters and sorting
    */
   async getGoals(supabase: SupabaseClient<Database>, userId: string, params?: GetGoalsParams) {
-    if (!userId) return { data: null, error: 'User ID is required' };
+    if (!userId) throw new Error('User ID is required');
 
     let query = supabase.from('neolog_goals').select('*').eq('user_id', userId);
 
@@ -44,15 +44,15 @@ export const goalService = {
 
     const { data, error } = await query;
 
-    if (error) return { data: null, error: error.message };
-    return { data: data.map(serverConvertGoal), error: null };
+    if (error) throw new Error(error.message);
+    return data.map(serverConvertGoal);
   },
 
   /**
    * Get a single goal by ID
    */
   async getGoal(supabase: SupabaseClient<Database>, userId: string, goalId: string) {
-    if (!userId || !goalId) return { data: null, error: 'User ID and Goal ID are required' };
+    if (!userId || !goalId) throw new Error('User ID and Goal ID are required');
 
     const { data, error } = await supabase
       .from('neolog_goals')
@@ -63,18 +63,18 @@ export const goalService = {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        return { data: null, error: 'Goal not found' };
+        throw new Error('Goal not found');
       }
-      return { data: null, error: error.message };
+      throw new Error(error.message);
     }
-    return { data: serverConvertGoal(data), error: null };
+    return serverConvertGoal(data);
   },
 
   /**
    * Create a new goal
    */
   async createGoal(supabase: SupabaseClient<Database>, userId: string, goal: GoalCreateRequest) {
-    if (!userId) return { data: null, error: 'User ID is required' };
+    if (!userId) throw new Error('User ID is required');
     const { data, error } = await supabase
       .from('neolog_goals')
       // FIXME
@@ -87,8 +87,8 @@ export const goalService = {
       .select()
       .single();
 
-    if (error) return { data: null, error: error.message };
-    return { data: serverConvertGoal(data), error: null };
+    if (error) throw new Error(error.message);
+    return serverConvertGoal(data);
   },
 
   /**
@@ -100,7 +100,7 @@ export const goalService = {
     goalId: string,
     updates: Partial<GoalCreateRequest>,
   ) {
-    if (!userId || !goalId) return { data: null, error: 'User ID and Goal ID are required' };
+    if (!userId || !goalId) throw new Error('User ID and Goal ID are required');
     const { data, error } = await supabase
       .from('neolog_goals')
       .update({
@@ -111,22 +111,25 @@ export const goalService = {
       .eq('user_id', userId)
       .select()
       .single();
-    if (error) return { data: null, error: error.message };
-    return { data: serverConvertGoal(data), error: null };
+    if (error) throw new Error(error.message);
+    return serverConvertGoal(data);
   },
 
   /**
    * Delete a goal
    */
-  async deleteGoal(supabase: SupabaseClient<Database>, userId: string, goalId: string) {
-    if (!userId || !goalId) return { error: 'User ID and Goal ID are required' };
+  async deleteGoal(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+    goalId: string,
+  ): Promise<void> {
+    if (!userId || !goalId) throw new Error('User ID and Goal ID are required');
     const { error } = await supabase
       .from('neolog_goals')
       .delete()
       .eq('id', goalId)
       .eq('user_id', userId);
 
-    if (error) return { error: error.message };
-    return { error: null };
+    if (error) throw new Error(error.message);
   },
 };

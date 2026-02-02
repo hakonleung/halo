@@ -18,9 +18,8 @@ export function createChatTools(supabase: SupabaseClient, userId: string) {
         'Get all available behavior definitions (e.g., Running, Coffee, Daily Expense) to understand what metadata they require.',
       schema: z.object({}),
       func: async () => {
-        const res = await behaviorService.getDefinitions(supabase, userId);
-        if (res.error) return `Error fetching definitions: ${res.error}`;
-        return JSON.stringify(res.data);
+        const data = await behaviorService.getDefinitions(supabase, userId);
+        return JSON.stringify(data);
       },
     }),
 
@@ -40,15 +39,14 @@ export function createChatTools(supabase: SupabaseClient, userId: string) {
         note: z.string().optional().describe('An optional note for the record.'),
       }),
       func: async (params) => {
-        const res = await behaviorService.createRecord(
+        const data = await behaviorService.createRecord(
           supabase,
           userId,
           // FIXME
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           params as BehaviorRecordCreateRequest,
         );
-        if (res.error) return `Error creating record: ${res.error}`;
-        return `Record created successfully: ${JSON.stringify(res.data)}`;
+        return `Record created successfully: ${JSON.stringify(data)}`;
       },
     }),
 
@@ -68,15 +66,14 @@ export function createChatTools(supabase: SupabaseClient, userId: string) {
           ),
       }),
       func: async (params) => {
-        const res = await behaviorService.createDefinition(
+        const data = await behaviorService.createDefinition(
           supabase,
           userId,
           // FIXME
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           params as BehaviorDefinitionCreateRequest,
         );
-        if (res.error) return `Error creating definition: ${res.error}`;
-        return `Definition created successfully: ${JSON.stringify(res.data)}`;
+        return `Definition created successfully: ${JSON.stringify(data)}`;
       },
     }),
 
@@ -88,9 +85,13 @@ export function createChatTools(supabase: SupabaseClient, userId: string) {
         offset: z.number().default(0).describe('Pagination offset.'),
       }),
       func: async (params) => {
-        const res = await behaviorService.getRecords(supabase, userId, params.limit, params.offset);
-        if (res.error) return `Error querying records: ${res.error}`;
-        return JSON.stringify(res.data);
+        const data = await behaviorService.getRecords(
+          supabase,
+          userId,
+          params.limit,
+          params.offset,
+        );
+        return JSON.stringify(data);
       },
     }),
   ];

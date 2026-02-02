@@ -21,11 +21,11 @@ export const authService = {
     });
 
     if (error) {
-      return { user: null, session: null, error: error.message };
+      throw new Error(error.message);
     }
 
     if (!data.user) {
-      return { user: null, session: null, error: 'User not found' };
+      throw new Error('User not found');
     }
 
     // Get associated user settings
@@ -66,7 +66,7 @@ export const authService = {
     });
 
     if (error) {
-      return { user: null, session: null, error: error.message };
+      throw new Error(error.message);
     }
 
     return {
@@ -84,9 +84,11 @@ export const authService = {
   /**
    * Sign out
    */
-  async signOut(supabase: SupabaseClient<Database>): Promise<{ error: string | null }> {
+  async signOut(supabase: SupabaseClient<Database>): Promise<void> {
     const { error } = await supabase.auth.signOut();
-    return { error: error?.message ?? null };
+    if (error) {
+      throw new Error(error.message);
+    }
   },
 
   /**
@@ -99,7 +101,7 @@ export const authService = {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return { user: null, session: null, error: authError?.message ?? 'Not authenticated' };
+      throw new Error(authError?.message ?? 'Not authenticated');
     }
 
     const { data: settings, error: settingsError } = await supabase
@@ -123,13 +125,15 @@ export const authService = {
    * Sign in with GitHub (OAuth)
    * Note: OAuth is usually called directly from client for redirect
    */
-  async signInWithGitHub(supabase: SupabaseClient<Database>): Promise<{ error: string | null }> {
+  async signInWithGitHub(supabase: SupabaseClient<Database>): Promise<void> {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
         redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`,
       },
     });
-    return { error: error?.message ?? null };
+    if (error) {
+      throw new Error(error.message);
+    }
   },
 };

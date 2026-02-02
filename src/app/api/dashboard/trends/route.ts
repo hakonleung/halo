@@ -1,64 +1,34 @@
-import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase-server';
+import { createApiHandler } from '@/lib/api-helpers';
 import { dashboardService } from '@/lib/dashboard-service';
 import { DashboardRange } from '@/types/dashboard-server';
 
-export async function GET(request: Request) {
-  try {
-    const supabase = await getSupabaseClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+export const GET = createApiHandler(async (request, _params, supabase, user) => {
+  // Parse query parameters
+  const { searchParams } = new URL(request.url);
+  const rangeParam = searchParams.get('range') || DashboardRange.Last7Days;
+  // Validate and convert range parameter
+  const range =
+    Object.values(DashboardRange).find((r) => r === rangeParam) || DashboardRange.Last7Days;
+  const start = searchParams.get('start') || undefined;
+  const end = searchParams.get('end') || undefined;
+  const typesParam = searchParams.get('types');
+  const types = typesParam ? typesParam.split(',').filter(Boolean) : undefined;
 
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'UNAUTHORIZED', message: 'Authentication required' },
-        { status: 401 },
-      );
+  // Validate custom range
+  if (range === DashboardRange.Custom) {
+    if (!start || !end) {
+      throw new Error('Start and end dates are required');
     }
-
-    // Parse query parameters
-    const { searchParams } = new URL(request.url);
-    const rangeParam = searchParams.get('range') || DashboardRange.Last7Days;
-    // Validate and convert range parameter
-    const range =
-      Object.values(DashboardRange).find((r) => r === rangeParam) || DashboardRange.Last7Days;
-    const start = searchParams.get('start') || undefined;
-    const end = searchParams.get('end') || undefined;
-    const typesParam = searchParams.get('types');
-    const types = typesParam ? typesParam.split(',').filter(Boolean) : undefined;
-
-    // Validate custom range
-    if (range === DashboardRange.Custom) {
-      if (!start || !end) {
-        return NextResponse.json(
-          { error: 'INVALID_DATE_RANGE', message: 'Start and end dates required for custom range' },
-          { status: 400 },
-        );
-      }
-      if (new Date(start) > new Date(end)) {
-        return NextResponse.json(
-          { error: 'INVALID_DATE_RANGE', message: 'Start date must be before end date' },
-          { status: 400 },
-        );
-      }
+    if (new Date(start) > new Date(end)) {
+      throw new Error('Start date must be before end date');
     }
-
-    const { data, error } = await dashboardService.getTrends(supabase, user.id, {
-      range,
-      start,
-      end,
-      types,
-    });
-
-    if (error) {
-      return NextResponse.json({ error: 'INTERNAL_ERROR', message: error }, { status: 500 });
-    }
-
-    return NextResponse.json({ data });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: 'INTERNAL_ERROR', message }, { status: 500 });
   }
-}
+
+  const data = await dashboardService.getTrends(supabase, user.id, {
+    range,
+    start,
+    end,
+    types,
+  });
+  return { data };
+});

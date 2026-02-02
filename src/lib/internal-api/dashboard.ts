@@ -182,8 +182,8 @@ export const dashboardApi = {
     const response =
       await BaseApiService.fetchApi<ApiResponse<DashboardStatsModel>>('/api/dashboard/stats');
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch dashboard stats');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return convertDashboardStats(response.data);
@@ -218,8 +218,8 @@ export const dashboardApi = {
       `/api/dashboard/trends?${params.toString()}`,
     );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch trends');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return processTrendData(response.data);
@@ -233,8 +233,8 @@ export const dashboardApi = {
       `/api/dashboard/heatmap?months=${months}`,
     );
 
-    if (!response.data) {
-      throw new Error(response.error || 'Failed to fetch heatmap');
+    if ('error' in response) {
+      throw new Error(response.error);
     }
 
     return processHeatmapData(response.data);

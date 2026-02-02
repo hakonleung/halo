@@ -4,10 +4,7 @@
  */
 
 // Generic API Response wrapper
-export interface ApiResponse<T> {
-  data: T | null;
-  error: string | null;
-}
+export type ApiResponse<T> = { data: T } | { error: string };
 
 export class BaseApiService {
   /**

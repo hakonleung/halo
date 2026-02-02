@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
-import type { SettingsUpdateRequest, SettingsResponse } from '@/types/settings-server';
+import type { SettingsUpdateRequest } from '@/types/settings-server';
 
 /**
  * Settings service - Server-side logic for user settings
@@ -9,9 +9,9 @@ export const settingsService = {
   /**
    * Get user settings
    */
-  async getSettings(supabase: SupabaseClient<Database>, userId: string): Promise<SettingsResponse> {
+  async getSettings(supabase: SupabaseClient<Database>, userId: string) {
     if (!userId) {
-      return { settings: null, error: 'User ID is required' };
+      throw new Error('User ID is required');
     }
     const { data, error } = await supabase
       .from('neolog_user_settings')
@@ -19,9 +19,9 @@ export const settingsService = {
       .eq('id', userId)
       .single();
     if (error) {
-      return { settings: null, error: error.message };
+      throw new Error(error.message);
     }
-    return { settings: data, error: null };
+    return data;
   },
 
   /**
@@ -32,9 +32,9 @@ export const settingsService = {
     supabase: SupabaseClient<Database>,
     userId: string,
     updates: SettingsUpdateRequest,
-  ): Promise<SettingsResponse> {
+  ) {
     if (!userId) {
-      return { settings: null, error: 'User ID is required' };
+      throw new Error('User ID is required');
     }
 
     // Get existing settings to merge with updates (ignore error if not found)
@@ -62,8 +62,8 @@ export const settingsService = {
       .single();
 
     if (error) {
-      return { settings: null, error: error.message };
+      throw new Error(error.message);
     }
-    return { settings: data, error: null };
+    return data;
   },
 };
