@@ -45,6 +45,7 @@ src/
 
 - **类型安全**: 严格 TS，禁用 `as`/`!`/`any`/`export *`
 - **类型定义**: 优先使用 enum 替代字符串字面量联合类型，提升类型安全性和可维护性
+- **配置对象类型**: 使用 `Record<EnumType, ValueType>` 类型定义配置对象，确保类型安全
 - **文件大小**: < 300 行，大文件拆分（如 dashboard-service.ts 超过 300 行应拆分）
 - **脚本**: `tsc --noEmit` + `lint --fix` 每次生成后运行
 - **绕过**: 复杂类型用 `eslint-disable-next-line` 或 `@ts-expect-error`
@@ -107,3 +108,14 @@ src/
 - **文字对比度**: 确保所有文字颜色符合 WCAG AA 对比度标准（正常文字 ≥ 4.5:1，大文字 ≥ 3:1）
 - **输入框**: 使用 Chakra Input 组件，配置 placeholder 颜色和样式
 - **确认对话框**: 使用 Chakra 组件替代原生 confirm，提供更好的可访问性
+
+## 样式系统约定
+
+- **Slot Recipe**: 对于 Chakra UI 官方组件，使用 `anatomy.keys()` 替代硬编码 slots 数组，提升类型安全性和可维护性。自定义组件可以保持硬编码 slots
+- **统一组件高度**: 在 FilterBar 等组合组件中，统一所有 input 和 select 使用相同的高度，保持视觉一致性
+- **Size Variants**: 为组件添加 size variants 支持（sm, md, lg），确保不同场景下的尺寸一致性
+
+## 功能开关约定
+
+- **Feature Flag 模块**: 使用 enum 类型定义功能标识，配置对象使用 `Record<FeatureFlag, boolean>` 类型，确保类型安全
+- **性能优化**: 在组件中使用 `useMemo` 缓存基于 feature flag 的计算结果，使用 `useEffect` 处理状态切换逻辑
