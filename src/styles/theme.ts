@@ -41,7 +41,6 @@ export const config = defineConfig({
       fieldLabel,
       badge,
       skeleton,
-      switch: switchRecipe,
     },
     slotRecipes: {
       select,
@@ -50,6 +49,7 @@ export const config = defineConfig({
       popover,
       card,
       tabs,
+      switch: switchRecipe,
     },
   },
 });

@@ -1,19 +1,18 @@
 import { defineSlotRecipe } from '@chakra-ui/react';
+import { switchAnatomy } from '@chakra-ui/react/anatomy';
 
 export const switchRecipe = defineSlotRecipe({
   className: 'neo-switch',
-  slots: ['root', 'track', 'thumb', 'label'],
+  slots: switchAnatomy.keys(),
   base: {
     root: {
       display: 'flex',
       alignItems: 'center',
       gap: '8px',
     },
-    track: {
+    control: {
       position: 'relative',
-      borderRadius: '9999px',
       transition: 'all 200ms ease-out',
-      cursor: 'pointer',
       bg: 'bg.dark',
       borderWidth: '1px',
       borderStyle: 'solid',
@@ -32,8 +31,6 @@ export const switchRecipe = defineSlotRecipe({
       },
     },
     thumb: {
-      position: 'absolute',
-      borderRadius: '50%',
       transition: 'all 200ms ease-out',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
       bg: 'bg.carbon',
@@ -47,9 +44,9 @@ export const switchRecipe = defineSlotRecipe({
       },
     },
     label: {
-      fontFamily: 'body',
+      fontFamily: 'mono',
       fontSize: '14px',
-      color: 'text.neon',
+      color: 'text.mist',
       cursor: 'pointer',
       userSelect: 'none',
     },
@@ -57,7 +54,7 @@ export const switchRecipe = defineSlotRecipe({
   variants: {
     size: {
       sm: {
-        track: {
+        control: {
           width: '36px',
           height: '20px',
         },
@@ -74,7 +71,7 @@ export const switchRecipe = defineSlotRecipe({
         },
       },
       md: {
-        track: {
+        control: {
           width: '44px',
           height: '24px',
         },
@@ -91,7 +88,7 @@ export const switchRecipe = defineSlotRecipe({
         },
       },
       lg: {
-        track: {
+        control: {
           width: '52px',
           height: '28px',
         },

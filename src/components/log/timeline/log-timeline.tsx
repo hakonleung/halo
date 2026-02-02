@@ -13,7 +13,7 @@ interface LogTimelineProps {
 }
 
 export function LogTimeline({ timeRange }: LogTimelineProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>('split');
+  const [viewMode, setViewMode] = useState<ViewMode>('merge');
   const isMergeMode = viewMode === 'merge';
 
   return (
@@ -23,14 +23,19 @@ export function LogTimeline({ timeRange }: LogTimelineProps) {
         <Card.Root size="sm">
           <Card.Body p={2}>
             <HStack gap={3} justify="space-between">
-              <Text fontSize="xs" color="text.mist" fontFamily="mono">
-                {isMergeMode ? 'Merge' : 'Split'}
-              </Text>
               <Switch.Root
                 size="sm"
                 checked={isMergeMode}
-                onCheckedChange={(e) => setViewMode(e.checked ? 'merge' : 'split')}
+                onCheckedChange={(e) => {
+                  setViewMode(e.checked ? 'merge' : 'split');
+                }}
               >
+                <Switch.HiddenInput />
+                <Switch.Label>
+                  <Text fontSize="xs" color="text.mist" fontFamily="mono">
+                    {isMergeMode ? 'Merge' : 'Split'}
+                  </Text>
+                </Switch.Label>
                 <Switch.Control>
                   <Switch.Thumb />
                 </Switch.Control>
