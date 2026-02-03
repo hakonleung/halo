@@ -24,3 +24,14 @@ export interface ChatAttachment {
   url: string;
   mimeType: string;
 }
+
+// Request types
+export interface UpdateConversationRequest {
+  title: string;
+}
+
+export interface GenerateTitleParams {
+  messageContent: string;
+  maxLength?: number;
+  language?: 'en' | 'zh-CN';
+}

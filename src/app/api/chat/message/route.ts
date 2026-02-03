@@ -5,6 +5,7 @@ import { settingsService } from '@/lib/settings-service';
 import { chatService } from '@/lib/chat-service';
 import { createLLM } from '@/lib/agents/factory';
 import { createChatTools } from '@/lib/agents/tools';
+import { generateConversationTitle } from '@/lib/agents/title-generator';
 import { ChatRole } from '@/types/chat-server';
 import { createAgent } from 'langchain';
 
@@ -42,27 +43,35 @@ export async function POST(request: Request) {
       return new Response(JSON.stringify({ error: 'Content is required' }), { status: 400 });
     }
 
-    // 1. Get or create conversation
-    let currentConversationId = conversationId;
-    if (!currentConversationId) {
-      const conv = await chatService.createConversation(supabase, user.id);
-      currentConversationId = conv.id;
+    // 1. Initialize LLM and Tools (before creating conversation)
+    const settings = await settingsService.getSettings(supabase, user.id);
+    const llm = await createLLM(settings);
+    const tools = createChatTools(supabase, user.id);
+
+    // 2. Get or create conversation (frontend provides the ID)
+    if (!conversationId) {
+      throw new Error('Conversation ID is required');
     }
 
-    // 2. Save user message to DB
+    // Check if conversation exists, if not create it
+    const conversations = await chatService.getConversations(supabase, user.id);
+    const conversationExists = conversations.some((c) => c.id === conversationId);
+
+    if (!conversationExists) {
+      // Generate title for new conversation using user's LLM settings
+      const title = await generateConversationTitle(llm, userText);
+      await chatService.createConversation(supabase, user.id, title, conversationId);
+    }
+
+    // 3. Save user message to DB
     await chatService.saveMessage(supabase, user.id, {
-      conversationId: currentConversationId,
+      conversationId,
       role: ChatRole.User,
       content: userText,
     });
 
-    // 3. Load full history from DB (authoritative source)
-    const history = await chatService.getMessages(supabase, user.id, currentConversationId);
-
-    // 4. Initialize LLM and Tools
-    const settings = await settingsService.getSettings(supabase, user.id);
-    const llm = await createLLM(settings);
-    const tools = createChatTools(supabase, user.id);
+    // 4. Load full history from DB (authoritative source)
+    const history = await chatService.getMessages(supabase, user.id, conversationId);
 
     // 5. Setup Agent
     const systemPrompt = `You are NEO-LOG AI, an intelligent personal life tracking assistant with a cyberpunk aesthetic.
@@ -103,7 +112,7 @@ Current user ID: ${user.id}
 
         if (aiText) {
           await chatService.saveMessage(supabase, user.id, {
-            conversationId: currentConversationId,
+            conversationId,
             role: ChatRole.Assistant,
             content: aiText,
           });
@@ -114,7 +123,7 @@ Current user ID: ${user.id}
     return createUIMessageStreamResponse({
       stream,
       headers: {
-        'X-Conversation-Id': currentConversationId,
+        'X-Conversation-Id': conversationId,
       },
     });
   } catch (error: unknown) {

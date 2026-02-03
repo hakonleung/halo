@@ -65,4 +65,43 @@ export const chatApi = {
 
     return response.data.map(convertChatMessage);
   },
+
+  /**
+   * Delete a conversation
+   */
+  async deleteConversation(conversationId: string): Promise<void> {
+    const response = await BaseApiService.fetchApi<ApiResponse<null>>(
+      `/api/chat/conversations/${conversationId}`,
+      {
+        method: 'DELETE',
+      },
+    );
+
+    if ('error' in response) {
+      throw new Error(response.error);
+    }
+  },
+
+  /**
+   * Update a conversation
+   */
+  async updateConversation(
+    conversationId: string,
+    updates: { title: string },
+  ): Promise<ClientConversation> {
+    const response = await BaseApiService.fetchApi<ApiResponse<ServerConversation>>(
+      `/api/chat/conversations/${conversationId}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      },
+    );
+
+    if ('error' in response) {
+      throw new Error(response.error);
+    }
+
+    return convertConversation(response.data);
+  },
 };

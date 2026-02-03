@@ -16,6 +16,7 @@ import { popover } from './components/popover';
 import { tabs } from './components/tabs';
 import { skeleton } from './components/skeleton';
 import { switch_ } from './components/switch';
+import { menu } from './components/menu';
 
 export const config = defineConfig({
   theme: {
@@ -52,6 +53,7 @@ export const config = defineConfig({
       card,
       tabs,
       switch: switch_,
+      menu,
     },
   },
 });

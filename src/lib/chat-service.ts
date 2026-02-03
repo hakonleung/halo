@@ -67,11 +67,17 @@ export const chatService = {
   /**
    * Create a new conversation
    */
-  async createConversation(supabase: SupabaseClient<Database>, userId: string, title?: string) {
+  async createConversation(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+    title?: string,
+    id?: string,
+  ) {
     if (!userId) throw new Error('User ID is required');
     const { data, error } = await supabase
       .from('neolog_conversations')
       .insert({
+        id,
         user_id: userId,
         title: title || 'New Conversation',
       })
@@ -121,6 +127,34 @@ export const chatService = {
       .eq('id', params.conversationId);
 
     return serverConvertChatMessage(data);
+  },
+
+  /**
+   * Update a conversation (e.g. title)
+   */
+  async updateConversation(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+    conversationId: string,
+    updates: { title?: string },
+  ) {
+    if (!userId || !conversationId) {
+      throw new Error('User ID and Conversation ID are required');
+    }
+
+    const { data, error } = await supabase
+      .from('neolog_conversations')
+      .update({
+        title: updates.title,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', conversationId)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    return serverConvertConversation(data);
   },
 
   /**

@@ -1,0 +1,109 @@
+{
+  "id": "ITR_001",
+  "type": "iteration",
+  "base_prd": "Chat 基础功能",
+  "title": "Chat 功能增强",
+  "description": "支持删除/重命名对话、AI 生成标题、URL query 同步、用户消息右对齐等功能增强",
+  "created_at": "2026-02-03T00:00:00Z",
+  "updated_at": "2026-02-03T02:00:00Z",
+  "current_stage": "i4_validation",
+  "status": "completed",
+  "stages": {
+    "i1_analysis": {
+      "status": "completed",
+      "started_at": "2026-02-03T00:00:00Z",
+      "ended_at": "2026-02-03T00:30:00Z",
+      "duration_minutes": 30
+    },
+    "i2_design": {
+      "status": "completed",
+      "started_at": "2026-02-03T00:30:00Z",
+      "ended_at": "2026-02-03T01:00:00Z",
+      "duration_minutes": 30
+    },
+    "i3_implementation": {
+      "status": "completed",
+      "started_at": "2026-02-03T01:00:00Z",
+      "ended_at": "2026-02-03T01:45:00Z",
+      "duration_minutes": 45
+    },
+    "i4_validation": {
+      "status": "completed",
+      "started_at": "2026-02-03T01:45:00Z",
+      "ended_at": "2026-02-03T02:00:00Z",
+      "duration_minutes": 15
+    }
+  },
+  "features": [
+    {
+      "id": "ITR-001",
+      "title": "删除 conversation",
+      "status": "completed",
+      "priority": "P0"
+    },
+    {
+      "id": "ITR-002",
+      "title": "重命名 conversation",
+      "status": "completed",
+      "priority": "P0"
+    },
+    {
+      "id": "ITR-003",
+      "title": "消息加载优化",
+      "status": "completed",
+      "priority": "P0"
+    },
+    {
+      "id": "ITR-004",
+      "title": "AI 生成标题",
+      "status": "completed",
+      "priority": "P0"
+    },
+    {
+      "id": "ITR-005",
+      "title": "前端同步 conversation ID",
+      "status": "completed",
+      "priority": "P0"
+    },
+    {
+      "id": "ITR-006",
+      "title": "URL query 同步",
+      "status": "completed",
+      "priority": "P0"
+    },
+    {
+      "id": "ITR-007",
+      "title": "用户消息右对齐",
+      "status": "completed",
+      "priority": "P1"
+    }
+  ],
+  "files_changed": {
+    "added": [
+      "src/hooks/use-chat-url-query.ts",
+      "src/lib/agents/title-generator.ts",
+      "src/app/api/chat/conversations/[id]/route.ts"
+    ],
+    "modified": [
+      "src/types/chat-server.ts",
+      "src/lib/chat-service.ts",
+      "src/app/api/chat/message/route.ts",
+      "src/lib/internal-api/chat.ts",
+      "src/lib/internal-api/index.ts",
+      "src/hooks/use-chat.ts",
+      "src/components/global/chat/chat-modal.tsx"
+    ]
+  },
+  "quality": {
+    "typescript": "passed",
+    "eslint": "pending",
+    "file_size": "warning",
+    "test_coverage": "pending"
+  },
+  "notes": [
+    "chat-modal.tsx 文件略超 300 行限制（~450 行），建议后续拆分",
+    "所有 P0 功能已实现并通过类型检查",
+    "AI 标题生成使用 gpt-4o-mini，响应快速且成本低"
+  ]
+}
+
