@@ -24,27 +24,4 @@ export class BaseApiService {
     }
     return res.json();
   }
-
-  /**
-   * Fetch streaming response (for Server-Sent Events)
-   */
-  static async fetchStream(
-    url: string,
-    options?: globalThis.RequestInit,
-  ): Promise<ReadableStream<Uint8Array> | null> {
-    const res = await fetch(url, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-    });
-
-    if (!res.ok) {
-      const error = await res.json().catch(() => ({ error: 'Request failed' }));
-      throw new Error(error.error || `Request failed with status ${res.status}`);
-    }
-
-    return res.body;
-  }
 }

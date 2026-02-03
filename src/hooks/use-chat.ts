@@ -1,6 +1,21 @@
-import { useState, useCallback } from 'react';
+import { useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useChat as useAIChat, type UIMessage } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { internalApiService } from '@/lib/internal-api';
+import type { ChatMessage } from '@/types/chat-client';
+import { ChatRole } from '@/types/chat-server';
+
+/**
+ * Convert a DB ChatMessage to AI SDK UIMessage
+ */
+function dbToUIMessage(msg: ChatMessage): UIMessage {
+  return {
+    id: msg.id,
+    role: msg.role === ChatRole.Assistant ? 'assistant' : 'user',
+    parts: [{ type: 'text', text: msg.content }],
+  };
+}
 
 /**
  * Hook for managing chat conversations
@@ -23,14 +38,13 @@ export function useConversations() {
 }
 
 /**
- * Hook for managing messages in a conversation
+ * Hook for managing messages in a conversation using Vercel AI SDK
  */
 export function useChat(conversationId?: string) {
   const queryClient = useQueryClient();
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [streamingContent, setStreamingContent] = useState('');
 
-  const { data: messages, isLoading: loadingMessages } = useQuery({
+  // Load DB messages via TanStack Query
+  const { data: dbMessages, isLoading: loadingMessages } = useQuery({
     queryKey: ['messages', conversationId],
     queryFn: () => {
       if (!conversationId) throw new Error('Conversation ID is required');
@@ -39,57 +53,38 @@ export function useChat(conversationId?: string) {
     enabled: !!conversationId,
   });
 
-  const sendMessage = useCallback(
-    async (content: string) => {
-      setIsStreaming(true);
-      setStreamingContent('');
+  // Convert DB messages to UIMessage format
+  const initialMessages = useMemo(() => dbMessages?.map(dbToUIMessage) ?? [], [dbMessages]);
 
-      try {
-        const stream = await internalApiService.sendMessage(content, conversationId);
-
-        if (!stream) return;
-
-        const reader = stream.getReader();
-        let currentConversationId = conversationId;
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = new TextDecoder().decode(value);
-          const lines = chunk.split('\n');
-
-          for (const line of lines) {
-            if (line.startsWith('event: token')) {
-              const data = JSON.parse(line.replace('event: token\ndata: ', ''));
-              setStreamingContent((prev) => prev + data.content);
-            } else if (line.startsWith('event: done')) {
-              const data = JSON.parse(line.replace('event: done\ndata: ', ''));
-              currentConversationId = data.conversationId;
-              // Invalidate queries to refresh history
-              void queryClient.invalidateQueries({ queryKey: ['messages', currentConversationId] });
-              void queryClient.invalidateQueries({ queryKey: ['conversations'] });
-            } else if (line.startsWith('event: error')) {
-              const data = JSON.parse(line.replace('event: error\ndata: ', ''));
-              throw new Error(data.error);
-            }
-          }
-        }
-      } catch (err) {
-        console.error('Chat error:', err);
-      } finally {
-        setIsStreaming(false);
-        setStreamingContent('');
-      }
-    },
-    [conversationId, queryClient],
+  // Transport with custom API endpoint and body
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: '/api/chat/message',
+        body: { conversationId },
+      }),
+    [conversationId],
   );
 
+  // AI SDK useChat
+  const { messages, sendMessage, status, error, setMessages } = useAIChat({
+    id: conversationId ?? 'new',
+    messages: initialMessages,
+    transport,
+    onFinish: () => {
+      void queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      if (conversationId) {
+        void queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+      }
+    },
+  });
+
   return {
-    messages: messages ?? [],
+    messages,
     loadingMessages,
     sendMessage,
-    isStreaming,
-    streamingContent,
+    status,
+    error,
+    setMessages,
   };
 }

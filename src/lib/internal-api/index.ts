@@ -57,7 +57,6 @@ export const internalApiService = {
   // Chat API
   getConversations: chatApi.getConversations,
   getMessages: chatApi.getMessages,
-  sendMessage: chatApi.sendMessage,
 
   // Auth API
   getCurrentUser: authApi.getCurrentUser,

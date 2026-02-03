@@ -17,6 +17,7 @@ import {
 import { Send, Plus, MessageSquare, Image, Mic, ArrowLeft } from 'lucide-react';
 import { useConversations, useChat } from '@/hooks/use-chat';
 import { Avatar } from '@/components/shared/avatar';
+import { ChatMarkdown } from './chat-markdown';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -26,9 +27,11 @@ interface ChatModalProps {
 export function ChatModal({ isOpen, onClose }: ChatModalProps) {
   const { conversations } = useConversations();
   const [selectedConvId, setSelectedConvId] = useState<string | undefined>();
-  const { messages, sendMessage, isStreaming, streamingContent } = useChat(selectedConvId);
+  const { messages, sendMessage, status, error } = useChat(selectedConvId);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const isStreaming = status === 'streaming' || status === 'submitted';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,13 +39,17 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, streamingContent]);
+  }, [messages]);
 
   const handleSend = async () => {
     if (!input.trim() || isStreaming) return;
     const content = input;
     setInput('');
-    await sendMessage(content);
+    try {
+      await sendMessage({ text: content });
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    }
   };
 
   return (
@@ -155,7 +162,7 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
                         </VStack>
                       )}
 
-                      {messages.map((msg) => (
+                      {messages.map((msg, msgIdx) => (
                         <HStack key={msg.id} align="start" gap={4} maxW="800px" mx="auto" w="full">
                           <Avatar
                             name={msg.role === 'assistant' ? 'AI' : 'U'}
@@ -180,43 +187,46 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
                               color="text.neon"
                               w="full"
                             >
-                              <Text whiteSpace="pre-wrap">{msg.content}</Text>
+                              {msg.parts.map((part, i) =>
+                                part.type === 'text' ? (
+                                  msg.role === 'assistant' ? (
+                                    <ChatMarkdown key={i} content={part.text} />
+                                  ) : (
+                                    <Text key={i} whiteSpace="pre-wrap">
+                                      {part.text}
+                                    </Text>
+                                  )
+                                ) : null,
+                              )}
+                              {status === 'streaming' &&
+                                msg.role === 'assistant' &&
+                                msgIdx === messages.length - 1 && (
+                                  <Box as="span" animation="pulse 1s infinite">
+                                    ▌
+                                  </Box>
+                                )}
                             </Box>
                           </VStack>
                         </HStack>
                       ))}
 
-                      {isStreaming && (
-                        <HStack align="start" gap={4} maxW="800px" mx="auto" w="full">
-                          <Avatar name="AI" bg="brand.matrix" color="bg.deep" />
-                          <VStack align="start" gap={1} flex={1}>
-                            <Text
-                              fontSize="xs"
-                              color="text.mist"
-                              fontWeight="bold"
-                              fontFamily="mono"
-                            >
-                              NEO-LOG AI
-                            </Text>
-                            <Box
-                              bg="rgba(0, 255, 65, 0.05)"
-                              p={4}
-                              borderRadius="4px"
-                              borderLeft="3px solid"
-                              borderColor="brand.matrix"
-                              color="text.neon"
-                              w="full"
-                            >
-                              <Text whiteSpace="pre-wrap">
-                                {streamingContent}
-                                <Box as="span" animation="pulse 1s infinite">
-                                  ▌
-                                </Box>
-                              </Text>
-                            </Box>
-                          </VStack>
-                        </HStack>
+                      {error && (
+                        <Box
+                          maxW="800px"
+                          mx="auto"
+                          w="full"
+                          p={4}
+                          borderRadius="4px"
+                          bg="rgba(255, 107, 53, 0.1)"
+                          border="1px solid"
+                          borderColor="brand.alert"
+                        >
+                          <Text color="brand.alert" fontFamily="mono" fontSize="sm">
+                            [ ERROR ] {error.message}
+                          </Text>
+                        </Box>
                       )}
+
                       <div ref={messagesEndRef} />
                     </VStack>
                   </Box>

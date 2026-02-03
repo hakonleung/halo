@@ -65,18 +65,4 @@ export const chatApi = {
 
     return response.data.map(convertChatMessage);
   },
-
-  /**
-   * Send a message (streaming response)
-   * Returns a ReadableStream for Server-Sent Events
-   */
-  async sendMessage(
-    content: string,
-    conversationId?: string,
-  ): Promise<ReadableStream<Uint8Array> | null> {
-    return BaseApiService.fetchStream('/api/chat/message', {
-      method: 'POST',
-      body: JSON.stringify({ content, conversationId }),
-    });
-  },
 };

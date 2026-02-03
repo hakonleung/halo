@@ -1,11 +1,19 @@
+import { createUIMessageStreamResponse, createUIMessageStream, type UIMessage } from 'ai';
+import { toUIMessageStream, toBaseMessages } from '@ai-sdk/langchain';
 import { getSupabaseClient } from '@/lib/supabase-server';
 import { settingsService } from '@/lib/settings-service';
 import { chatService } from '@/lib/chat-service';
 import { createLLM } from '@/lib/agents/factory';
 import { createChatTools } from '@/lib/agents/tools';
-import { AIMessage, HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { ChatRole } from '@/types/chat-server';
+import { createAgent } from 'langchain';
+
+interface ChatRequestBody {
+  messages: UIMessage[];
+  conversationId?: string;
+}
+
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
@@ -19,8 +27,18 @@ export async function POST(request: Request) {
       return new Response(JSON.stringify({ error: 'Not authenticated' }), { status: 401 });
     }
 
-    const { content, conversationId } = await request.json();
-    if (!content) {
+    const body: ChatRequestBody = await request.json();
+    const { messages: uiMessages, conversationId } = body;
+
+    // Extract last user message text from parts
+    const lastUserMsg = [...uiMessages].reverse().find((m) => m.role === 'user');
+    const userText =
+      lastUserMsg?.parts
+        .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+        .map((p) => p.text)
+        .join('') ?? '';
+
+    if (!userText) {
       return new Response(JSON.stringify({ error: 'Content is required' }), { status: 400 });
     }
 
@@ -31,14 +49,14 @@ export async function POST(request: Request) {
       currentConversationId = conv.id;
     }
 
-    // 2. Save user message
+    // 2. Save user message to DB
     await chatService.saveMessage(supabase, user.id, {
       conversationId: currentConversationId,
       role: ChatRole.User,
-      content,
+      content: userText,
     });
 
-    // 3. Get chat history
+    // 3. Load full history from DB (authoritative source)
     const history = await chatService.getMessages(supabase, user.id, currentConversationId);
 
     // 4. Initialize LLM and Tools
@@ -55,90 +73,52 @@ If you need more information to record a behavior, ask the user.
 Current user ID: ${user.id}
 `;
 
-    const agent = createReactAgent({
-      llm,
+    const agent = createAgent({
+      model: llm,
       tools,
-      messageModifier: systemPrompt,
+      systemPrompt,
     });
 
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        try {
-          // Convert history to LangChain messages
-          const messages = history.map((m) => {
-            if (m.role === 'user') return new HumanMessage(m.content);
-            if (m.role === 'assistant') return new AIMessage(m.content);
-            return new SystemMessage(m.content);
+    // 6. Convert DB history to LangChain messages
+    const langchainMessages = await toBaseMessages(
+      history.map((m) => ({
+        id: m.id,
+        role: m.role === ChatRole.Assistant ? ('assistant' as const) : ('user' as const),
+        parts: [{ type: 'text' as const, text: m.content }],
+      })),
+    );
+
+    // 7. Stream response using AI SDK
+    const stream = createUIMessageStream({
+      execute: async ({ writer }) => {
+        const eventStream = agent.streamEvents({ messages: langchainMessages }, { version: 'v2' });
+        writer.merge(toUIMessageStream(eventStream));
+      },
+      onFinish: async ({ responseMessage }) => {
+        // Extract text from response message parts
+        const aiText = responseMessage.parts
+          .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+          .map((p) => p.text)
+          .join('');
+
+        if (aiText) {
+          await chatService.saveMessage(supabase, user.id, {
+            conversationId: currentConversationId,
+            role: ChatRole.Assistant,
+            content: aiText,
           });
-
-          // Add the latest user message if not already in history (though we just saved it)
-          // messages.push(new HumanMessage(content));
-
-          let fullAiResponse = '';
-
-          // Execute agent with streaming
-          const agentStream = await agent.stream({ messages }, { streamMode: 'messages' });
-
-          for await (const [message, metadata] of agentStream) {
-            // Only stream back the assistant's tokens/messages
-            if (message instanceof AIMessage && metadata.langgraph_node === 'agent') {
-              const content =
-                typeof message.content === 'string'
-                  ? message.content
-                  : JSON.stringify(message.content);
-
-              // Only send if it's not empty (sometimes we get tool call messages)
-              if (content && !message.tool_calls?.length) {
-                fullAiResponse += content;
-                controller.enqueue(
-                  encoder.encode(`event: token\ndata: ${JSON.stringify({ content })}\n\n`),
-                );
-              }
-            } else if (metadata.langgraph_node === 'tools') {
-              // Optionally send tool execution status
-              controller.enqueue(
-                encoder.encode(
-                  `event: status\ndata: ${JSON.stringify({ status: 'Executing tool...' })}\n\n`,
-                ),
-              );
-            }
-          }
-
-          // 6. Save AI response
-          if (fullAiResponse) {
-            await chatService.saveMessage(supabase, user.id, {
-              conversationId: currentConversationId,
-              role: ChatRole.Assistant,
-              content: fullAiResponse,
-            });
-          }
-
-          controller.enqueue(
-            encoder.encode(
-              `event: done\ndata: ${JSON.stringify({ conversationId: currentConversationId })}\n\n`,
-            ),
-          );
-          controller.close();
-        } catch (err: unknown) {
-          const errorMessage =
-            err instanceof Error ? err.message : 'An error occurred during streaming';
-          controller.enqueue(
-            encoder.encode(`event: error\ndata: ${JSON.stringify({ error: errorMessage })}\n\n`),
-          );
-          controller.close();
         }
       },
     });
 
-    return new Response(stream, {
+    return createUIMessageStreamResponse({
+      stream,
       headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
+        'X-Conversation-Id': currentConversationId,
       },
     });
   } catch (error: unknown) {
+    console.error('[Chat API Error]', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return new Response(JSON.stringify({ error: message }), { status: 500 });
   }
