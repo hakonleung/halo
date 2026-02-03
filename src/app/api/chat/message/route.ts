@@ -3,9 +3,12 @@ import { createUIMessageStreamResponse, createUIMessageStream, type UIMessage } 
 import { createAgent } from 'langchain';
 
 import { createLLM } from '@/server/agents/factory';
+import { runProfileAgent } from '@/server/agents/profile-agent';
+import { buildSystemPrompt } from '@/server/agents/system-prompt';
 import { generateConversationTitle } from '@/server/agents/title-generator';
 import { createChatTools } from '@/server/agents/tools';
 import { chatService } from '@/server/services/chat-service';
+import { profileService } from '@/server/services/profile-service';
 import { settingsService } from '@/server/services/settings-service';
 import { getSupabaseClient } from '@/server/services/supabase-server';
 import { ChatRole } from '@/server/types/chat-server';
@@ -44,9 +47,12 @@ export async function POST(request: Request) {
       return new Response(JSON.stringify({ error: 'Content is required' }), { status: 400 });
     }
 
-    // 1. Initialize LLM and Tools (before creating conversation)
+    // 1. Initialize LLM, Tools, and load user profile (in parallel)
     const settings = await settingsService.getSettings(supabase, user.id);
-    const llm = await createLLM(settings);
+    const [llm, profile] = await Promise.all([
+      createLLM(settings),
+      profileService.getOrCreateProfile(supabase, user.id),
+    ]);
     const tools = createChatTools(supabase, user.id);
 
     // 2. Get or create conversation (frontend provides the ID)
@@ -74,14 +80,8 @@ export async function POST(request: Request) {
     // 4. Load full history from DB (authoritative source)
     const history = await chatService.getMessages(supabase, user.id, conversationId);
 
-    // 5. Setup Agent
-    const systemPrompt = `You are NEO-LOG AI, an intelligent personal life tracking assistant with a cyberpunk aesthetic.
-Your goal is to help the user record behaviors, query trends, and provide insights.
-Always respond in a helpful, concise, and futuristic manner.
-Use tools when needed to interact with the database.
-If you need more information to record a behavior, ask the user.
-Current user ID: ${user.id}
-`;
+    // 5. Setup Agent with profile-aware system prompt
+    const systemPrompt = buildSystemPrompt(user.id, profile);
 
     const agent = createAgent({
       model: llm,
@@ -112,10 +112,17 @@ Current user ID: ${user.id}
           .join('');
 
         if (aiText) {
+          // Save assistant message to DB
           await chatService.saveMessage(supabase, user.id, {
             conversationId,
             role: ChatRole.Assistant,
             content: aiText,
+          });
+
+          // Run profile agent in background (non-blocking)
+          // Updates user portrait, emotions, and behaviors based on the conversation
+          runProfileAgent(llm, supabase, user.id, userText, aiText).catch((err) => {
+            console.error('[ProfileAgent] Background error:', err);
           });
         }
       },
