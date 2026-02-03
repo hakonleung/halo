@@ -1,0 +1,9 @@
+{
+  "id": "FEAT_008",
+  "title": "AI Setting 支持自定义 Provider URL",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-03T00:00:00Z",
+  "learned_summary": "统一数据结构管理（customKeys 数组）、LangChain baseURL 配置、扩展现有结构而非添加新字段"
+}
+

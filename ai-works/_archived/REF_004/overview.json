@@ -1,0 +1,9 @@
+{
+  "id": "REF_004",
+  "title": "API 重构 - 统一鉴权和响应格式",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-03T00:00:00Z",
+  "learned_summary": "高阶函数模式封装通用逻辑（withSupabaseAndAuth）、API 响应格式统一、渐进式重构、避免过度抽象"
+}
+
