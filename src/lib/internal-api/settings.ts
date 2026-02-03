@@ -36,7 +36,10 @@ export const convertAISettings = (server: unknown): AISettings => {
         : 'gpt-4o';
     ans.temperature =
       'temperature' in server && typeof server.temperature === 'number' ? server.temperature : 0.7;
-    ans.streamEnabled = 'streamEnabled' in server && server.streamEnabled === true;
+    ans.streamEnabled =
+      'streamEnabled' in server && typeof server.streamEnabled === 'boolean'
+        ? server.streamEnabled
+        : true;
     ans.apiKey =
       'apiKey' in server && (server.apiKey === null || typeof server.apiKey === 'string')
         ? server.apiKey
