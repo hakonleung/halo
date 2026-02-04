@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Text, VStack } from '@chakra-ui/react';
+
 import type { GoalProgress } from '@/client/types/dashboard-client';
 
 interface GoalProgressRingProps {

@@ -1,7 +1,9 @@
 'use client';
 
 import { Text, HStack, Card, Badge, Box } from '@chakra-ui/react';
+
 import { useViewportPosition } from '@/client/hooks/use-viewport-position';
+
 import type { BehaviorRecordWithDefinition } from '@/client/types/behavior-client';
 import type React from 'react';
 

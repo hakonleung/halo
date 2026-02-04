@@ -11,17 +11,20 @@ import {
   Badge,
   Tabs,
 } from '@chakra-ui/react';
+
+import { useActionGuard } from '@/client/hooks/use-action-guard';
+import { useBehaviorDefinitions } from '@/client/hooks/use-behavior-definitions';
+import { useBehaviorRecords, useDeleteBehaviorRecord } from '@/client/hooks/use-behavior-records';
+import { useUnifiedActionDrawerSync } from '@/client/hooks/use-unified-action-drawer-sync';
+import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
 import { ActionType } from '@/client/types/drawer';
-import { RecordForm } from './forms/record-form';
+import { formatDateTime } from '@/client/utils/date-format';
+
 import { DefinitionForm } from './forms/definition-form';
 import { DetailSection } from './forms/detail-section';
 import { FormButtonGroup } from './forms/form-button-group';
-import { useBehaviorRecords, useDeleteBehaviorRecord } from '@/client/hooks/use-behavior-records';
-import { useBehaviorDefinitions } from '@/client/hooks/use-behavior-definitions';
-import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
-import { useActionGuard } from '@/client/hooks/use-action-guard';
-import { useUnifiedActionDrawerSync } from '@/client/hooks/use-unified-action-drawer-sync';
-import { formatDateTime } from '@/client/utils/date-format';
+import { RecordForm } from './forms/record-form';
+
 import type { BehaviorRecordWithDefinition } from '@/client/types/behavior-client';
 
 export function RecordActionDrawerContent({

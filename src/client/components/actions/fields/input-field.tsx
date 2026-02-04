@@ -1,6 +1,7 @@
 'use client';
 
 import { Input, Field } from '@chakra-ui/react';
+
 import type { MetadataValue } from '@/client/types/behavior-client';
 
 export function InputField({

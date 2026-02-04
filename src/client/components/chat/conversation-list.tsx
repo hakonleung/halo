@@ -2,7 +2,9 @@
 
 import { Box, VStack, Text, Button } from '@chakra-ui/react';
 import { Plus } from 'lucide-react';
+
 import { ConversationItem } from './conversation-item';
+
 import type { Conversation } from '@/client/types/chat-client';
 
 interface ConversationListProps {

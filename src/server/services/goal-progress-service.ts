@@ -1,6 +1,6 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/server/types/database';
 import type { Goal, GoalProgress } from '@/server/types/goal-server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Calculate date range based on period

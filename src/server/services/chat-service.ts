@@ -1,8 +1,13 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/server/types/database';
-import type { Conversation, ChatMessage, ChatRole, ChatAttachment } from '@/server/types/chat-server';
-import type { InferSelectModel } from 'drizzle-orm';
 import type { neologConversations, neologMessages } from '@/server/db/schema';
+import type {
+  Conversation,
+  ChatMessage,
+  ChatRole,
+  ChatAttachment,
+} from '@/server/types/chat-server';
+import type { Database } from '@/server/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { InferSelectModel } from 'drizzle-orm';
 
 const serverConvertConversation = (
   server: InferSelectModel<typeof neologConversations>,

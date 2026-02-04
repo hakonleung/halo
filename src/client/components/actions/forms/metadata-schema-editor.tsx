@@ -1,10 +1,12 @@
 'use client';
 
 import { VStack, HStack, Text, Button } from '@chakra-ui/react';
-import { LuPlus } from 'react-icons/lu';
 import { useState } from 'react';
-import type { MetadataField } from '@/client/types/behavior-client';
+import { LuPlus } from 'react-icons/lu';
+
 import { MetadataFieldEditor, createDefaultField } from './metadata-field-editor';
+
+import type { MetadataField } from '@/client/types/behavior-client';
 
 export function MetadataSchemaEditor({
   value,

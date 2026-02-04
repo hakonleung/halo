@@ -1,10 +1,13 @@
 'use client';
 
 import { Text, SimpleGrid, Skeleton, Card } from '@chakra-ui/react';
-import { useGoals } from '@/client/hooks/use-goals';
-import { GoalProgressRing } from './goal-progress-ring';
-import type { GoalProgress } from '@/client/types/dashboard-client';
 import { useMemo } from 'react';
+
+import { useGoals } from '@/client/hooks/use-goals';
+
+import { GoalProgressRing } from './goal-progress-ring';
+
+import type { GoalProgress } from '@/client/types/dashboard-client';
 
 interface GoalProgressSectionProps {
   loading?: boolean;

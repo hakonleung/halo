@@ -1,11 +1,12 @@
 'use client';
 
 import { Box, HStack, Text, Link, IconButton } from '@chakra-ui/react';
+import { Plus } from 'lucide-react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useOpenChat } from '@/client/hooks/use-open-chat';
+
 import { ChatModal } from '@/client/components/chat';
-import { Plus } from 'lucide-react';
+import { useOpenChat } from '@/client/hooks/use-open-chat';
 import { useUrlQuery } from '@/client/hooks/use-url-query';
 
 /**

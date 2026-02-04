@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { Box, HStack, Text, Input, IconButton } from '@chakra-ui/react';
 import { MessageSquare, Edit, Trash, Check, X } from 'lucide-react';
+import { useState } from 'react';
+
 import type { Conversation } from '@/client/types/chat-client';
 
 interface ConversationItemProps {

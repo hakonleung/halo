@@ -1,6 +1,6 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/server/types/database';
 import type { SettingsUpdateRequest } from '@/server/types/settings-server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Settings service - Server-side logic for user settings

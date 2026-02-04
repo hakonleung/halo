@@ -4,6 +4,7 @@ import tsParser from '@typescript-eslint/parser';
 import globals from 'globals';
 import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
+import importPlugin from 'eslint-plugin-import';
 
 export default [
   {
@@ -38,6 +39,15 @@ export default [
     plugins: {
       '@typescript-eslint': ts,
       prettier,
+      import: importPlugin,
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './tsconfig.json',
+        },
+      },
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
@@ -58,6 +68,34 @@ export default [
           fixStyle: 'separate-type-imports',
         },
       ],
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+            'type',
+          ],
+          pathGroups: [
+            {
+              pattern: '@/**',
+              group: 'internal',
+              position: 'before',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['type'],
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+      'import/no-duplicates': ['error', { 'prefer-inline': false }],
       'prettier/prettier': 'error',
     },
   },

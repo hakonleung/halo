@@ -2,9 +2,10 @@
 
 import { Box, Text, VStack, Spinner } from '@chakra-ui/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useUser } from '@/client/hooks/use-user';
-import { AuthForm } from '@/client/components/auth/auth-form';
 import { useEffect } from 'react';
+
+import { AuthForm } from '@/client/components/auth/auth-form';
+import { useUser } from '@/client/hooks/use-user';
 
 export default function Home() {
   const router = useRouter();

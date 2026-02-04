@@ -1,6 +1,7 @@
 'use client';
 
 import { Box } from '@chakra-ui/react';
+
 import type { PositionedItem } from '@/client/types/timeline';
 
 interface TimelineItemsProps {

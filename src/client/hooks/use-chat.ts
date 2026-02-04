@@ -1,10 +1,12 @@
-import { useMemo, useEffect } from 'react';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { useChat as useAIChat, type UIMessage } from '@ai-sdk/react';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { DefaultChatTransport } from 'ai';
+import { useMemo, useEffect } from 'react';
+
 import { internalApiService } from '@/client/internal-api';
-import type { ChatMessage } from '@/client/types/chat-client';
 import { ChatRole } from '@/server/types/chat-server';
+
+import type { ChatMessage } from '@/client/types/chat-client';
 
 /**
  * Convert a DB ChatMessage to AI SDK UIMessage

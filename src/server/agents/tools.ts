@@ -1,11 +1,13 @@
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
-import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { behaviorService } from '@/server/services/behavior-service';
+
 import type {
   BehaviorRecordCreateRequest,
   BehaviorDefinitionCreateRequest,
 } from '@/server/types/behavior-server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Create tools for the AI agent

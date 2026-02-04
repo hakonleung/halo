@@ -1,7 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { GoalCreateRequest } from '@/client/types/goal-client';
 import { createToaster } from '@chakra-ui/react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { internalApiService } from '@/client/internal-api';
+
+import type { GoalCreateRequest } from '@/client/types/goal-client';
 
 const toaster = createToaster({
   placement: 'bottom-end',

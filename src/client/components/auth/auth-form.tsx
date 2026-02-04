@@ -11,18 +11,19 @@ import {
   Spinner,
   Field,
 } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { useLogin } from '@/client/components/auth/use-login';
+import { useSignup } from '@/client/components/auth/use-signup';
+import { checkPasswordStrength } from '@/client/utils/auth-pure';
 import {
   loginSchema,
   signupSchema,
   type LoginFormData,
   type SignupFormData,
 } from '@/client/utils/auth-schemas';
-import { checkPasswordStrength } from '@/client/utils/auth-pure';
-import { useLogin } from '@/client/components/auth/use-login';
-import { useSignup } from '@/client/components/auth/use-signup';
-import { useState } from 'react';
 
 enum AuthMode {
   Login = 'login',

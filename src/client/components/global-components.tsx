@@ -1,14 +1,14 @@
 'use client';
-import { AnimatedBackground } from '@/client/components/layout/animated-background';
-import { UnifiedActionDrawer } from '@/client/components/actions';
-import { EditorModal } from '@/client/components/editor';
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { system } from '@/client/theme';
 import { useState } from 'react';
 
+import { UnifiedActionDrawer } from '@/client/components/actions';
+import { EditorModal } from '@/client/components/editor';
+import { AnimatedBackground } from '@/client/components/layout/animated-background';
 import { ConfirmDialog } from '@/client/components/shared/confirm-dialog';
 import { useConfirmDialogStore } from '@/client/store/confirm-dialog-store';
+import { system } from '@/client/theme';
 
 /**
  * Global components wrapper that includes all global UI elements

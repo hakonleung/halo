@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { encryptPassword } from '@/client/utils/crypto';
+
 import { internalApiService } from '@/client/internal-api';
+import { encryptPassword } from '@/client/utils/crypto';
 
 /**
  * Hook for user login

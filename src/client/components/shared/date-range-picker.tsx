@@ -1,9 +1,11 @@
 'use client';
 
-import { HStack, Box } from '@chakra-ui/react';
-import { DatePicker } from '@/client/components/shared/date-picker';
-import type { TimeRange } from '@/client/types/dashboard-client';
 import { parseDate, type DatePickerValueChangeDetails } from '@ark-ui/react';
+import { HStack, Box } from '@chakra-ui/react';
+
+import { DatePicker } from '@/client/components/shared/date-picker';
+
+import type { TimeRange } from '@/client/types/dashboard-client';
 
 export function DateRangePicker({
   value,

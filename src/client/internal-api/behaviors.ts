@@ -2,7 +2,6 @@
  * Behaviors API
  */
 
-import { BaseApiService, type ApiResponse } from './base';
 import {
   type BehaviorDefinition as ServerBehaviorDefinition,
   type BehaviorRecord as ServerBehaviorRecord,
@@ -11,6 +10,9 @@ import {
   type BehaviorRecordCreateRequest as ServerBehaviorRecordCreateRequest,
   BehaviorCategory,
 } from '@/server/types/behavior-server';
+
+import { BaseApiService, type ApiResponse } from './base';
+
 import type {
   BehaviorDefinition as ClientBehaviorDefinition,
   BehaviorRecord as ClientBehaviorRecord,

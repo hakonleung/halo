@@ -1,18 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { parseDate, type DatePickerValueChangeDetails } from '@ark-ui/react';
 import { VStack, HStack, Text, Button, Box, Field } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import { LuPlus, LuTrash2 } from 'react-icons/lu';
+
+import { DatePicker } from '@/client/components/shared/date-picker';
+import { useBehaviorDefinitions } from '@/client/hooks/use-behavior-definitions';
+import { useCreateGoal, useUpdateGoal } from '@/client/hooks/use-goals';
+import { GoalMetric, GoalOperator, GoalPeriod, GoalCategory } from '@/client/types/goal-client';
+
 import { EditorField } from '../fields/editor-field';
 import { InputField } from '../fields/input-field';
 import { SelectField } from '../fields/select-field';
+
 import { FormButtonGroup } from './form-button-group';
-import { DatePicker } from '@/client/components/shared/date-picker';
-import { parseDate, type DatePickerValueChangeDetails } from '@ark-ui/react';
-import { LuPlus, LuTrash2 } from 'react-icons/lu';
-import { useBehaviorDefinitions } from '@/client/hooks/use-behavior-definitions';
-import { useCreateGoal, useUpdateGoal } from '@/client/hooks/use-goals';
+
 import type { Goal, GoalCriteria } from '@/client/types/goal-client';
-import { GoalMetric, GoalOperator, GoalPeriod, GoalCategory } from '@/client/types/goal-client';
 
 const categoryOptions = [
   { label: 'Health', value: GoalCategory.Health },

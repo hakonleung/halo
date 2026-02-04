@@ -1,13 +1,15 @@
 'use client';
 
 import { Box, VStack, HStack, Button, Card } from '@chakra-ui/react';
-import { ProfileSettings } from './profile-settings';
-import { AppearanceSettings } from './appearance-settings';
-import { NotificationSettings } from './notification-settings';
-import { LocaleSettings } from './locale-settings';
-import { AISettingsComponent } from './ai-settings';
 import { useState, useEffect, useMemo } from 'react';
+
 import { FeatureFlag, isFeatureEnabled } from '@/client/utils/feature-flags';
+
+import { AISettingsComponent } from './ai-settings';
+import { AppearanceSettings } from './appearance-settings';
+import { LocaleSettings } from './locale-settings';
+import { NotificationSettings } from './notification-settings';
+import { ProfileSettings } from './profile-settings';
 
 enum SettingsTab {
   Profile = 'profile',

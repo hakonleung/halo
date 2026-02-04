@@ -1,5 +1,5 @@
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import type { GenerateTitleParams } from '@/server/types/chat-server';
+import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 
 /**
  * Generate a conversation title based on the first user message

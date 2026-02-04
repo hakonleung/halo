@@ -1,9 +1,11 @@
 'use client';
 
-import type { GoalCriteria } from '@/client/types/goal-client';
-import type { BehaviorDefinition } from '@/client/types/behavior-client';
-import { DetailSection } from '../forms/detail-section';
 import { useMemo } from 'react';
+
+import { DetailSection } from '../forms/detail-section';
+
+import type { BehaviorDefinition } from '@/client/types/behavior-client';
+import type { GoalCriteria } from '@/client/types/goal-client';
 
 export function CriteriaDetail({
   criteria,

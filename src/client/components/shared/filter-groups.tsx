@@ -11,10 +11,12 @@ import {
   MenuRoot,
   Menu,
 } from '@chakra-ui/react';
-import { LuFilter, LuChevronRight } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo, useEffect } from 'react';
+import { LuFilter, LuChevronRight } from 'react-icons/lu';
+
 import { ActiveFilterChips } from './active-filter-chips';
+
 import type { FilterGroup } from '@/client/types/filter';
 
 export function FilterGroups({

@@ -1,8 +1,9 @@
 'use client';
 
-import { useUser } from '@/client/hooks/use-user';
-import { AuthForm } from '@/client/components/auth/auth-form';
 import { Box, Text } from '@chakra-ui/react';
+
+import { AuthForm } from '@/client/components/auth/auth-form';
+import { useUser } from '@/client/hooks/use-user';
 
 export function withAuth<P extends object>(Component: React.ComponentType<P>) {
   return function AuthenticatedComponent(props: P) {

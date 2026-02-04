@@ -1,6 +1,6 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/server/types/database';
 import type { NoteCreateRequest } from '@/server/types/note-server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Note service - Logic for user notes

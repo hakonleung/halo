@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+
 import { useUrlQuery } from '@/client/hooks/use-url-query';
 import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
 import { ActionType } from '@/client/types/drawer';

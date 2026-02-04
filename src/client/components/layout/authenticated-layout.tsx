@@ -1,8 +1,9 @@
 'use client';
 
 import { Box, Flex } from '@chakra-ui/react';
-import { TopNavbar } from './top-navbar';
+
 import { BottomNavbar } from './bottom-navbar';
+import { TopNavbar } from './top-navbar';
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;

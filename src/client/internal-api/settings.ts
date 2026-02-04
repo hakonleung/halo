@@ -2,13 +2,15 @@
  * Settings API
  */
 
-import { BaseApiService, type ApiResponse } from './base';
 import {
   type UserSettings as ServerUserSettings,
   type SettingsUpdateRequest as ServerSettingsUpdateRequest,
   type AISettings,
   AIProvider,
 } from '@/server/types/settings-server';
+
+import { BaseApiService, type ApiResponse } from './base';
+
 import type {
   Settings as ClientSettings,
   SettingsUpdateRequest as ClientSettingsUpdateRequest,

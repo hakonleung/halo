@@ -7,13 +7,13 @@
  * 3. 类型安全：定义 server side 数据类型，添加 convert 函数，返回 client side 数据类型
  */
 
-import { goalsApi } from './goals';
-import { dashboardApi } from './dashboard';
+import { authApi } from './auth';
 import { behaviorsApi } from './behaviors';
+import { chatApi } from './chat';
+import { dashboardApi } from './dashboard';
+import { goalsApi } from './goals';
 import { notesApi } from './notes';
 import { settingsApi } from './settings';
-import { chatApi } from './chat';
-import { authApi } from './auth';
 
 /**
  * Internal API Service - 统一导出所有 API 方法

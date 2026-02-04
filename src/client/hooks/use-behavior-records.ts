@@ -1,7 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { BehaviorRecordCreateRequest } from '@/client/types/behavior-client';
 import { createToaster } from '@chakra-ui/react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { internalApiService } from '@/client/internal-api';
+
+import type { BehaviorRecordCreateRequest } from '@/client/types/behavior-client';
 
 const toaster = createToaster({
   placement: 'bottom-end',

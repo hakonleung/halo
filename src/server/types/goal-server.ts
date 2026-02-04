@@ -1,6 +1,7 @@
-import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
-import type { neologGoals } from '@/server/db/schema';
 import { GoalMetric, GoalOperator, GoalPeriod, GoalStatus } from '../../client/types/goal-client';
+
+import type { neologGoals } from '@/server/db/schema';
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 // Re-export enums for server-side use
 export { GoalMetric, GoalOperator, GoalPeriod, GoalStatus };

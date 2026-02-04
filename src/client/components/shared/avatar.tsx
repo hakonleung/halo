@@ -1,6 +1,7 @@
-import * as React from 'react';
-import type { BoxProps } from '@chakra-ui/react';
 import { Box, Flex } from '@chakra-ui/react';
+import * as React from 'react';
+
+import type { BoxProps } from '@chakra-ui/react';
 
 interface AvatarProps extends BoxProps {
   name?: string;

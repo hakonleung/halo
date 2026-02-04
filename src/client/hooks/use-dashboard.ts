@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import type { TimeRange } from '@/client/types/dashboard-client';
+
 import { internalApiService } from '@/client/internal-api';
+
+import type { TimeRange } from '@/client/types/dashboard-client';
 
 /**
  * Hook for dashboard stats

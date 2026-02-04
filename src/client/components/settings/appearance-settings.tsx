@@ -14,9 +14,10 @@ import {
   createListCollection,
   Portal,
 } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+
 import { useSettings } from '@/client/hooks/use-settings';
 import { useUpdateSettings } from '@/client/hooks/use-update-settings';
-import { useState, useEffect } from 'react';
 import {
   AVAILABLE_THEMES,
   PRESET_ACCENT_COLORS,

@@ -2,8 +2,10 @@
 
 import { Box, Select, Portal, createListCollection } from '@chakra-ui/react';
 import { CaretDown, Calendar } from 'phosphor-react';
-import type { TimeRange } from '@/client/types/dashboard-client';
+
 import { TimeRangePreset } from '@/client/types/dashboard-client';
+
+import type { TimeRange } from '@/client/types/dashboard-client';
 
 interface TimeRangeSelectorProps {
   value: TimeRange;

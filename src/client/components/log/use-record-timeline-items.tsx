@@ -1,8 +1,10 @@
 'use client';
 
 import { useMemo } from 'react';
+
 import { RecordTimelineCard } from '@/client/components/log/record-timeline-card';
 import { useBehaviorRecords } from '@/client/hooks/use-behavior-records';
+
 import type {
   BehaviorCategory,
   BehaviorRecordWithDefinition,

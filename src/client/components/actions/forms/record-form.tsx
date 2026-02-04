@@ -1,18 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { VStack, Text, Box, Collapsible } from '@chakra-ui/react';
-import { EditorField } from '../fields/editor-field';
-import { InputField } from '../fields/input-field';
-import { SelectField } from '../fields/select-field';
-import { FormButtonGroup } from './form-button-group';
+import { useState, useEffect } from 'react';
+
 import {
   useBehaviorDefinitions,
   useCreateBehaviorDefinition,
 } from '@/client/hooks/use-behavior-definitions';
-import { useCreateBehaviorRecord, useUpdateBehaviorRecord } from '@/client/hooks/use-behavior-records';
-import { DefinitionFormFields } from './definition-form';
+import {
+  useCreateBehaviorRecord,
+  useUpdateBehaviorRecord,
+} from '@/client/hooks/use-behavior-records';
 import { BehaviorCategory } from '@/server/types/behavior-server';
+
+import { EditorField } from '../fields/editor-field';
+import { InputField } from '../fields/input-field';
+import { SelectField } from '../fields/select-field';
+
+import { DefinitionFormFields } from './definition-form';
+import { FormButtonGroup } from './form-button-group';
+
 import type {
   MetadataField,
   MetadataValue,

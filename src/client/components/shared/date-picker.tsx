@@ -2,8 +2,8 @@
 
 import { DatePicker as ArkDatePicker, Portal, type UseDatePickerContext } from '@ark-ui/react';
 import { Box, Button, IconButton, Input, Text, HStack, VStack } from '@chakra-ui/react';
-import { LuCalendar, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import * as React from 'react';
+import { LuCalendar, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 
 export const DatePicker = React.forwardRef<
   HTMLDivElement,

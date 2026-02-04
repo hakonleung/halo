@@ -1,6 +1,7 @@
 'use client';
 
 import { Textarea, Field } from '@chakra-ui/react';
+
 import { useEditorModalStore } from '@/client/store/editor-modal-store';
 
 export function EditorField({

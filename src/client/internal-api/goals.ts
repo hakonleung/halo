@@ -2,17 +2,19 @@
  * Goals API
  */
 
+import { GoalCategory, GoalStatus } from '@/client/types/goal-client';
+
 import { BaseApiService, type ApiResponse } from './base';
-import type {
-  Goal as ServerGoal,
-  GoalCreateRequest as ServerGoalCreateRequest,
-} from '@/server/types/goal-server';
+
 import type {
   Goal as ClientGoal,
   GoalCreateRequest as ClientGoalCreateRequest,
   GoalProgress,
 } from '@/client/types/goal-client';
-import { GoalCategory, GoalStatus } from '@/client/types/goal-client';
+import type {
+  Goal as ServerGoal,
+  GoalCreateRequest as ServerGoalCreateRequest,
+} from '@/server/types/goal-server';
 
 function convertGoal(server: ServerGoal): ClientGoal {
   return {

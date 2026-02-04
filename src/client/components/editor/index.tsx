@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Drawer, Portal, VStack, HStack, Button, Text, Box } from '@chakra-ui/react';
-import { Editor } from './editor';
+import { useState, useEffect } from 'react';
+
 import { useEditorModalStore } from '@/client/store/editor-modal-store';
+
+import { Editor } from './editor';
 
 export function EditorModal() {
   const { isOpen, value, placeholder, title, onChange, onSave, closeModal } = useEditorModalStore();

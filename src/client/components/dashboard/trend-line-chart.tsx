@@ -2,6 +2,7 @@
 
 import { Box, Text, Skeleton, HStack, Flex, Card } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
+
 import type { TrendData } from '@/client/types/dashboard-client';
 
 // Dynamic import for Recharts to avoid SSR issues

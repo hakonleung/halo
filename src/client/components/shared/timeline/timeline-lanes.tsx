@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Center } from '@chakra-ui/react';
+
 import type { Lane } from '@/client/types/timeline';
 
 interface TimelineLanesProps {

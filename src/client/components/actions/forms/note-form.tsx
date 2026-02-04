@@ -1,12 +1,16 @@
 'use client';
 
-import { useState } from 'react';
 import { VStack } from '@chakra-ui/react';
+import { useState } from 'react';
+
 import { useCreateNote, useUpdateNote } from '@/client/hooks/use-notes';
-import type { Note } from '@/client/types/note-client';
+
 import { EditorField } from '../fields/editor-field';
 import { InputField } from '../fields/input-field';
+
 import { FormButtonGroup } from './form-button-group';
+
+import type { Note } from '@/client/types/note-client';
 
 export function NoteForm({
   initialData,

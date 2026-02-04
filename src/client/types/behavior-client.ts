@@ -1,5 +1,6 @@
 // Client-side types for behaviors
 import { BehaviorCategory } from '../../server/types/behavior-server';
+
 import type {
   MetadataField,
   MetadataValue,

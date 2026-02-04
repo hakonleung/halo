@@ -1,5 +1,6 @@
-import type { TimeRange } from '@/client/types/dashboard-client';
 import { TimeRangePreset } from '@/client/types/dashboard-client';
+
+import type { TimeRange } from '@/client/types/dashboard-client';
 
 /**
  * Convert TimeRange to startDate and endDate strings

@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
 import { Select, Field, Portal, createListCollection } from '@chakra-ui/react';
+import { useMemo } from 'react';
+
 import type { MetadataValue } from '@/client/types/behavior-client';
 
 interface SelectOption {

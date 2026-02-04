@@ -2,13 +2,11 @@
  * Dashboard API
  */
 
-import { BaseApiService, type ApiResponse } from './base';
-import type {
-  DashboardStatsModel,
-  TrendDataModel,
-  HeatmapDataModel,
-} from '@/server/types/dashboard-server';
+import { TimeRangePreset } from '@/client/types/dashboard-client';
 import { DashboardRange } from '@/server/types/dashboard-server';
+
+import { BaseApiService, type ApiResponse } from './base';
+
 import type {
   DashboardStats,
   TrendData,
@@ -17,7 +15,11 @@ import type {
   HeatmapLevel,
   TimeRange,
 } from '@/client/types/dashboard-client';
-import { TimeRangePreset } from '@/client/types/dashboard-client';
+import type {
+  DashboardStatsModel,
+  TrendDataModel,
+  HeatmapDataModel,
+} from '@/server/types/dashboard-server';
 
 // Dashboard types are already compatible (no Date conversion needed)
 function convertDashboardStats(server: DashboardStatsModel): DashboardStats {

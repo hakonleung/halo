@@ -1,7 +1,9 @@
 'use client';
 
 import { Card, Center } from '@chakra-ui/react';
+
 import { useViewportPosition } from '@/client/hooks/use-viewport-position';
+
 import type React from 'react';
 
 interface FilterTimelineCardProps {

@@ -1,21 +1,24 @@
 'use client';
 
-import { useMemo, useState } from 'react';
 import { Box, HStack, Spinner, VStack } from '@chakra-ui/react';
-import type { TimeRange } from '@/client/types/dashboard-client';
-import { timeRangeToDateRange } from '@/client/utils/time-range';
-import { TimelineView } from '@/client/components/shared/timeline';
+import { useMemo, useState } from 'react';
+
 import { useGoalTimelineItems } from '@/client/components/log/use-goal-timeline-items';
-import { useRecordTimelineItems } from '@/client/components/log/use-record-timeline-items';
 import { useNoteTimelineItems } from '@/client/components/log/use-note-timeline-items';
-import { useGoals } from '@/client/hooks/use-goals';
+import { useRecordTimelineItems } from '@/client/components/log/use-record-timeline-items';
+import { FilterGroups } from '@/client/components/shared/filter-groups';
+import { TimelineView } from '@/client/components/shared/timeline';
 import { useBehaviorRecords } from '@/client/hooks/use-behavior-records';
+import { useGoals } from '@/client/hooks/use-goals';
 import { useNotes } from '@/client/hooks/use-notes';
+import { timeRangeToDateRange } from '@/client/utils/time-range';
+
+import { DateRangePicker } from '../shared/date-range-picker';
+
+import type { TimeRange } from '@/client/types/dashboard-client';
 import type { FilterGroup } from '@/client/types/filter';
 import type { GoalCategory, GoalStatus } from '@/client/types/goal-client';
 import type { BehaviorCategory } from '@/server/types/behavior-server';
-import { FilterGroups } from '@/client/components/shared/filter-groups';
-import { DateRangePicker } from '../shared/date-range-picker';
 
 function formatDate(date: Date): string {
   const year = date.getFullYear();

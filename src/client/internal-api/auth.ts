@@ -2,8 +2,9 @@
  * Auth API
  */
 
-import type { ApiResponse } from './base';
 import { BaseApiService } from './base';
+
+import type { ApiResponse } from './base';
 import type { AuthResponse } from '@/server/types/auth';
 
 export const authApi = {

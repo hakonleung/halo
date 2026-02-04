@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Text, Skeleton, HStack, Tooltip, Card } from '@chakra-ui/react';
+
 import type { HeatmapData } from '@/client/types/dashboard-client';
 
 interface CalendarHeatmapProps {

@@ -1,7 +1,9 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { SettingsUpdateRequest } from '@/client/types/settings-client';
 import { createToaster } from '@chakra-ui/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { internalApiService } from '@/client/internal-api';
+
+import type { SettingsUpdateRequest } from '@/client/types/settings-client';
 
 const toaster = createToaster({
   placement: 'top',

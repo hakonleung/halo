@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
 import { Box, Center, Text } from '@chakra-ui/react';
+import { useMemo } from 'react';
+
 import type { Lane } from '@/client/types/timeline';
 
 interface TimelineLabelsProps {

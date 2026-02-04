@@ -1,13 +1,15 @@
 'use client';
 
 import { Drawer, Portal } from '@chakra-ui/react';
-import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
+
 import { useUnifiedActionDrawerSync } from '@/client/hooks/use-unified-action-drawer-sync';
+import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
 import { ActionType } from '@/client/types/drawer';
+
 import { CreateActionDrawerContent } from './create-action-drawer-content';
-import { RecordActionDrawerContent } from './record-action-drawer-content';
 import { GoalActionDrawerContent } from './goal-action-drawer-content';
 import { NoteActionDrawerContent } from './note-action-drawer-content';
+import { RecordActionDrawerContent } from './record-action-drawer-content';
 
 const editButtonConfig: Record<
   ActionType,

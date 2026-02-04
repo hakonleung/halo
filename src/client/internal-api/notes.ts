@@ -3,14 +3,15 @@
  */
 
 import { BaseApiService, type ApiResponse } from './base';
-import type {
-  Note as ServerNote,
-  NoteCreateRequest as ServerNoteCreateRequest,
-} from '@/server/types/note-server';
+
 import type {
   Note as ClientNote,
   NoteCreateRequest as ClientNoteCreateRequest,
 } from '@/client/types/note-client';
+import type {
+  Note as ServerNote,
+  NoteCreateRequest as ServerNoteCreateRequest,
+} from '@/server/types/note-server';
 
 function convertNote(server: ServerNote): ClientNote {
   return {

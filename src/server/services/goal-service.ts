@@ -1,8 +1,8 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { neologGoals } from '@/server/db/schema';
 import type { Database } from '@/server/types/database';
 import type { Goal, GoalCreateRequest } from '@/server/types/goal-server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type { InferSelectModel } from 'drizzle-orm';
-import type { neologGoals } from '@/server/db/schema';
 
 export const serverConvertGoal = (server: InferSelectModel<typeof neologGoals>): Goal => {
   // FIXME

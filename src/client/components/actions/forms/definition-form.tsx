@@ -1,18 +1,22 @@
 'use client';
 
+import { VStack, Field } from '@chakra-ui/react';
 import { useState } from 'react';
+
+import { EmojiPicker } from '@/client/components/shared/emoji-picker';
 import {
   useCreateBehaviorDefinition,
   useUpdateBehaviorDefinition,
 } from '@/client/hooks/use-behavior-definitions';
 import { BehaviorCategory } from '@/server/types/behavior-server';
-import type { BehaviorDefinition, MetadataField } from '@/client/types/behavior-client';
-import { VStack, Field } from '@chakra-ui/react';
-import { MetadataSchemaEditor } from './metadata-schema-editor';
+
 import { InputField } from '../fields/input-field';
 import { SelectField } from '../fields/select-field';
+
 import { FormButtonGroup } from './form-button-group';
-import { EmojiPicker } from '@/client/components/shared/emoji-picker';
+import { MetadataSchemaEditor } from './metadata-schema-editor';
+
+import type { BehaviorDefinition, MetadataField } from '@/client/types/behavior-client';
 
 export function DefinitionForm({
   initialData,

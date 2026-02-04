@@ -2,12 +2,14 @@
  * Chat API
  */
 
-import { BaseApiService, type ApiResponse } from './base';
 import {
   type Conversation as ServerConversation,
   type ChatMessage as ServerChatMessage,
   ChatRole,
 } from '@/server/types/chat-server';
+
+import { BaseApiService, type ApiResponse } from './base';
+
 import type {
   Conversation as ClientConversation,
   ChatMessage as ClientChatMessage,

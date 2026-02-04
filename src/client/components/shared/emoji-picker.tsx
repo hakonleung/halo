@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import { Box, Input, Portal, Popover } from '@chakra-ui/react';
-import { LuSmile } from 'react-icons/lu';
-import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
+import Picker from '@emoji-mart/react';
+import { useState, useEffect, useRef } from 'react';
+import { LuSmile } from 'react-icons/lu';
 
 export function EmojiPicker({
   value,

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   VStack,
   HStack,
@@ -12,10 +11,13 @@ import {
   Collapsible,
   Button,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { LuTrash2, LuSettings, LuPlus } from 'react-icons/lu';
-import type { MetadataField } from '@/client/types/behavior-client';
+
 import { InputField } from '../fields/input-field';
 import { SelectField } from '../fields/select-field';
+
+import type { MetadataField } from '@/client/types/behavior-client';
 
 type SimpleFieldType =
   | 'text'

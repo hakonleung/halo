@@ -1,5 +1,5 @@
-import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import type { neologUserSettings } from '@/server/db/schema';
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 // Server-side types for settings (Inferred from Drizzle Entity)
 export type UserSettings = InferSelectModel<typeof neologUserSettings>;

@@ -1,9 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { TimelineItem } from '@/client/types/timeline';
+
 import { NoteTimelineCard } from '@/client/components/log/note-timeline-card';
 import { useNotes } from '@/client/hooks/use-notes';
+
+import type { TimelineItem } from '@/client/types/timeline';
 
 interface UseNoteTimelineItemsProps {
   timelineStart: Date;

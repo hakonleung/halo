@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import { Tabs } from '@chakra-ui/react';
+import { useState } from 'react';
+
 import { ActionType } from '@/client/types/drawer';
-import { RecordForm } from './forms/record-form';
+
 import { GoalForm } from './forms/goal-form';
 import { NoteForm } from './forms/note-form';
+import { RecordForm } from './forms/record-form';
 
 export function CreateActionDrawerContent({ onClose }: { onClose: () => void }) {
   const [createTab, setCreateTab] = useState<ActionType>(ActionType.Record);

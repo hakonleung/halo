@@ -1,7 +1,6 @@
 'use client';
 
 import { Box, HStack, IconButton, Separator } from '@chakra-ui/react';
-import type { Editor } from '@tiptap/react';
 import {
   Bold,
   Italic,
@@ -23,6 +22,8 @@ import {
   AlignRight,
   Table as TableIcon,
 } from 'lucide-react';
+
+import type { Editor } from '@tiptap/react';
 
 interface RichTextToolbarProps {
   editor: Editor | null;

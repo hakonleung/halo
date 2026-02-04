@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useRef, useEffect, useMemo } from 'react';
 import {
   Drawer,
   Portal,
@@ -14,6 +13,9 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { Menu } from 'lucide-react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+
+import { ConfirmDialog } from '@/client/components/shared/confirm-dialog';
 import {
   useConversations,
   useChat,
@@ -22,11 +24,11 @@ import {
 } from '@/client/hooks/use-chat';
 import { useChatUrlQuery } from '@/client/hooks/use-chat-url-query';
 import { useSettings } from '@/client/hooks/use-settings';
-import { ConfirmDialog } from '@/client/components/shared/confirm-dialog';
-import { ConversationList } from './conversation-list';
+
 import { ChatHeader } from './chat-header';
-import { ChatMessageArea } from './chat-message-area';
 import { ChatInputBar } from './chat-input-bar';
+import { ChatMessageArea } from './chat-message-area';
+import { ConversationList } from './conversation-list';
 
 const toaster = createToaster({
   placement: 'top',

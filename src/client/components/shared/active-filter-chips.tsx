@@ -1,8 +1,9 @@
 'use client';
 
 import { Box, HStack, Text, Portal, MenuRoot, Menu } from '@chakra-ui/react';
-import { LuChevronDown, LuX } from 'react-icons/lu';
 import { motion } from 'framer-motion';
+import { LuChevronDown, LuX } from 'react-icons/lu';
+
 import type { FilterGroup } from '@/client/types/filter';
 
 export function ActiveFilterChips({

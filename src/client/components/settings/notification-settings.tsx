@@ -11,9 +11,10 @@ import {
   FieldRoot,
   FieldLabel,
 } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+
 import { useSettings } from '@/client/hooks/use-settings';
 import { useUpdateSettings } from '@/client/hooks/use-update-settings';
-import { useState, useEffect } from 'react';
 import { validateDoNotDisturbTimeRange } from '@/client/utils/settings-pure';
 
 export function NotificationSettings() {

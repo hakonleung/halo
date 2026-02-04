@@ -1,13 +1,15 @@
 'use client';
 
 import { VStack, HStack, Text, Heading, Button, Skeleton, Box } from '@chakra-ui/react';
-import { NoteForm } from './forms/note-form';
-import { FormButtonGroup } from './forms/form-button-group';
-import { useNotes, useDeleteNote } from '@/client/hooks/use-notes';
-import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
+
 import { useActionGuard } from '@/client/hooks/use-action-guard';
+import { useNotes, useDeleteNote } from '@/client/hooks/use-notes';
 import { useUnifiedActionDrawerSync } from '@/client/hooks/use-unified-action-drawer-sync';
+import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
 import { formatDateTime } from '@/client/utils/date-format';
+
+import { FormButtonGroup } from './forms/form-button-group';
+import { NoteForm } from './forms/note-form';
 
 export function NoteActionDrawerContent({
   actionDataId,

@@ -1,7 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { NoteCreateRequest } from '@/client/types/note-client';
 import { createToaster } from '@chakra-ui/react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { internalApiService } from '@/client/internal-api';
+
+import type { NoteCreateRequest } from '@/client/types/note-client';
 
 const toaster = createToaster({
   placement: 'top',

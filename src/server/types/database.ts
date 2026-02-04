@@ -1,5 +1,5 @@
-import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import type * as schema from '@/server/db/schema';
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 type Simplify<T> = { [K in keyof T]: T[K] } & {};
 

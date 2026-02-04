@@ -1,10 +1,12 @@
 'use client';
 
-import { forwardRef } from 'react';
 import { Box, VStack, HStack, Text, Heading, Skeleton } from '@chakra-ui/react';
-import type { UIMessage } from '@ai-sdk/react';
-import { UserMessage } from './user-message';
+import { forwardRef } from 'react';
+
 import { AgentMessage } from './agent-message';
+import { UserMessage } from './user-message';
+
+import type { UIMessage } from '@ai-sdk/react';
 
 interface ChatMessageAreaProps {
   messages: UIMessage[];

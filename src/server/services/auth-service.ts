@@ -1,6 +1,6 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/server/types/database';
 import type { AuthResponse } from '@/server/types/auth';
+import type { Database } from '@/server/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Authentication service - Server-side logic encapsulation

@@ -1,9 +1,9 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import type { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+
 import type { Database } from '@/server/types/database';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { NextResponse, NextRequest } from 'next/server';
 
 /**
  * Get Supabase client for API routes (server-side)

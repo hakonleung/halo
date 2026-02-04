@@ -12,11 +12,13 @@ import {
   Portal,
   Field,
 } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+
 import { useSettings } from '@/client/hooks/use-settings';
 import { useUpdateSettings } from '@/client/hooks/use-update-settings';
-import { useState, useEffect } from 'react';
-import type { AISettings } from '@/client/types/settings-client';
 import { AIProvider } from '@/server/types/settings-server';
+
+import type { AISettings } from '@/client/types/settings-client';
 
 const providerOptions = createListCollection({
   items: [

@@ -1,5 +1,6 @@
 import { HStack, IconButton, Box, Text } from '@chakra-ui/react';
 import { ZoomIn, ZoomOut } from 'lucide-react';
+
 import type { TimeUnit } from '@/client/types/timeline';
 
 interface TimelineZoomControlsProps {

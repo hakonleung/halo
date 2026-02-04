@@ -1,9 +1,9 @@
 'use client';
 
 import { Box, HStack, Text, Link } from '@chakra-ui/react';
+import { LayoutDashboard, BarChart3, Settings } from 'lucide-react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, BarChart3, Settings } from 'lucide-react';
 
 /**
  * Bottom navigation bar component (mobile only)

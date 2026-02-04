@@ -2,6 +2,7 @@
 
 import { SimpleGrid, Card, Skeleton, Box, Text, HStack, VStack } from '@chakra-ui/react';
 import { ArrowUp, ArrowDown, Minus } from 'phosphor-react';
+
 import type { DashboardStats } from '@/client/types/dashboard-client';
 
 interface StatsCardGroupProps {

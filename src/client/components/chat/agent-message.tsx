@@ -1,6 +1,7 @@
 'use client';
 
 import { VStack, Text, Box } from '@chakra-ui/react';
+
 import { ChatMarkdown } from './chat-markdown';
 
 interface AgentMessageProps {

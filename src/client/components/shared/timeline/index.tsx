@@ -1,17 +1,21 @@
 'use client';
 
-import { useMemo, useRef, useEffect, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import type React from 'react';
-import type { TimelineItem, PositionedItem } from '@/client/types/timeline';
-import { generateLanes, calculatePositionedItems } from '@/client/utils/timeline';
+import { useMemo, useRef, useEffect, useState, useCallback } from 'react';
+
+import {
+  generateLanes,
+  calculatePositionedItems,
+  calculateTimeUnit,
+} from '@/client/utils/timeline';
+
+import { TimelineItems } from './timeline-items';
 import { TimelineLabels } from './timeline-labels';
 import { TimelineLanes } from './timeline-lanes';
-import { TimelineItems } from './timeline-items';
 import { TimelineZoomControls } from './timeline-zoom-controls';
-import { useCallback } from 'react';
-import type { TimeUnit } from '@/client/types/timeline';
-import { calculateTimeUnit } from '@/client/utils/timeline';
+
+import type { TimeUnit, TimelineItem, PositionedItem } from '@/client/types/timeline';
+import type React from 'react';
 
 const TIME_UNITS: TimeUnit[] = ['hour', 'day', 'week', 'month'];
 const MIN_LANE_WIDTH = 10;

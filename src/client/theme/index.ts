@@ -1,22 +1,23 @@
 import { createSystem, defineConfig, defaultConfig } from '@chakra-ui/react';
-import { colors, alphaColors } from './tokens/colors';
-import { fonts } from './tokens/fonts';
-import { keyframes } from './tokens/animations';
-import { glass, glow } from './tokens/glassmorphism';
-import { input } from './components/input';
-import { button } from './components/button';
-import { select } from './components/select';
-import { fieldLabel } from './components/field-label';
-import { field } from './components/field';
-import { drawer } from './components/drawer';
-import { card } from './components/card';
+
 import { badge } from './components/badge';
 import { bottomNav } from './components/bottom-nav';
+import { button } from './components/button';
+import { card } from './components/card';
+import { drawer } from './components/drawer';
+import { field } from './components/field';
+import { fieldLabel } from './components/field-label';
+import { input } from './components/input';
+import { menu } from './components/menu';
 import { popover } from './components/popover';
-import { tabs } from './components/tabs';
+import { select } from './components/select';
 import { skeleton } from './components/skeleton';
 import { switch_ } from './components/switch';
-import { menu } from './components/menu';
+import { tabs } from './components/tabs';
+import { keyframes } from './tokens/animations';
+import { colors, alphaColors } from './tokens/colors';
+import { fonts } from './tokens/fonts';
+import { glass, glow } from './tokens/glassmorphism';
 
 export const config = defineConfig({
   theme: {

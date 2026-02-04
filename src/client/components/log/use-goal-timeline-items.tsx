@@ -1,9 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { TimelineItem } from '@/client/types/timeline';
+
 import { GoalTimelineCard } from '@/client/components/log/goal-timeline-card';
 import { useGoals, type GetGoalsParams } from '@/client/hooks/use-goals';
+
+import type { TimelineItem } from '@/client/types/timeline';
 
 interface UseGoalTimelineItemsProps {
   timelineStart: Date;

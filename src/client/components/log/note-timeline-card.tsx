@@ -1,7 +1,9 @@
 'use client';
 
 import { Text, HStack, VStack, Card, Box } from '@chakra-ui/react';
+
 import { useViewportPosition } from '@/client/hooks/use-viewport-position';
+
 import type { Note } from '@/client/types/note-client';
 import type React from 'react';
 

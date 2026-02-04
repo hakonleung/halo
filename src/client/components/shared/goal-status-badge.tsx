@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge } from '@chakra-ui/react';
+
 import type { Goal } from '@/client/types/goal-client';
 
 export function GoalStatusBadge({ status }: { status: Goal['status'] }) {

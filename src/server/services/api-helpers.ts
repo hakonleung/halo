@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+
 import { getSupabaseClient } from '@/server/services/supabase-server';
-import type { Database } from '@/server/types/database';
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { User } from '@supabase/supabase-js';
+
 import type { ApiResponse } from '@/client/internal-api/base';
+import type { Database } from '@/server/types/database';
+import type { SupabaseClient, User } from '@supabase/supabase-js';
+import type { NextRequest } from 'next/server';
 
 /**
  * API Handler Factory: createApiHandler

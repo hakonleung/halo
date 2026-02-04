@@ -2,6 +2,7 @@
 
 import { Text, HStack, VStack, Card, Badge, Box } from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
+
 import type { BehaviorRecordWithDefinition } from '@/client/types/behavior-client';
 
 interface RecordCardProps {

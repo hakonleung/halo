@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import {
   pgTable,
   uuid,
@@ -9,7 +10,6 @@ import {
   time,
   pgPolicy,
 } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
 
 // User Settings Table
 export const neologUserSettings = pgTable(

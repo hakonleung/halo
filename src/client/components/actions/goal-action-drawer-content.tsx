@@ -1,16 +1,20 @@
 'use client';
 
 import { VStack, HStack, Text, Heading, Button, Skeleton, Box, Badge } from '@chakra-ui/react';
-import { GoalForm } from './forms/goal-form';
+
+import { useActionGuard } from '@/client/hooks/use-action-guard';
+import { useBehaviorDefinitions } from '@/client/hooks/use-behavior-definitions';
+import { useGoal, useUpdateGoal, useDeleteGoal } from '@/client/hooks/use-goals';
+import { useUnifiedActionDrawerSync } from '@/client/hooks/use-unified-action-drawer-sync';
+import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
+import { formatDate } from '@/client/utils/date-format';
+
+import { GoalStatusBadge } from '../shared/goal-status-badge';
+
 import { CriteriaDetail } from './fields/criteria-detail';
 import { FormButtonGroup } from './forms/form-button-group';
-import { GoalStatusBadge } from '../shared/goal-status-badge';
-import { useGoal, useUpdateGoal, useDeleteGoal } from '@/client/hooks/use-goals';
-import { useBehaviorDefinitions } from '@/client/hooks/use-behavior-definitions';
-import { useUnifiedActionDrawerStore } from '@/client/store/unified-action-drawer-store';
-import { useActionGuard } from '@/client/hooks/use-action-guard';
-import { useUnifiedActionDrawerSync } from '@/client/hooks/use-unified-action-drawer-sync';
-import { formatDate } from '@/client/utils/date-format';
+import { GoalForm } from './forms/goal-form';
+
 import type { GoalProgress as DashboardGoalProgress } from '@/client/types/dashboard-client';
 
 export function GoalActionDrawerContent({
