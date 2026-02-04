@@ -19,7 +19,17 @@ import {
 import { LuTrash2, LuSettings, LuPlus } from 'react-icons/lu';
 import type { MetadataField } from '@/types/behavior-client';
 
-type SimpleFieldType = 'text' | 'textarea' | 'number' | 'select' | 'rating' | 'currency';
+type SimpleFieldType =
+  | 'text'
+  | 'textarea'
+  | 'number'
+  | 'select'
+  | 'multiselect'
+  | 'date'
+  | 'time'
+  | 'datetime'
+  | 'rating'
+  | 'currency';
 
 const fieldTypeOptions = [
   { label: 'Text', value: 'text' },
@@ -27,6 +37,10 @@ const fieldTypeOptions = [
   { label: 'Number', value: 'number' },
   { label: 'Currency', value: 'currency' },
   { label: 'Select', value: 'select' },
+  { label: 'Multi-Select', value: 'multiselect' },
+  { label: 'Date', value: 'date' },
+  { label: 'Time', value: 'time' },
+  { label: 'Date & Time', value: 'datetime' },
   { label: 'Rating', value: 'rating' },
 ];
 
@@ -50,7 +64,12 @@ export function createDefaultField(type: SimpleFieldType): MetadataField {
     case 'currency':
       return { ...base, type, config: { currency: 'CNY' } };
     case 'select':
+    case 'multiselect':
       return { ...base, type, config: { options: [] } };
+    case 'date':
+    case 'time':
+    case 'datetime':
+      return { ...base, type, config: {} };
     case 'rating':
       return { ...base, type, config: { maxRating: 5 } };
   }
@@ -92,7 +111,14 @@ export function MetadataFieldEditor({
     onChange({ ...field, name, key: generateKey(name) });
   };
 
-  const hasPlaceholder = ['text', 'textarea', 'number', 'currency', 'select'].includes(field.type);
+  const hasPlaceholder = [
+    'text',
+    'textarea',
+    'number',
+    'currency',
+    'select',
+    'multiselect',
+  ].includes(field.type);
 
   return (
     <Box p={3} borderWidth="1px" borderColor="rgba(0, 255, 65, 0.2)" borderRadius="md">
@@ -118,6 +144,10 @@ export function MetadataFieldEditor({
                 value === 'textarea' ||
                 value === 'number' ||
                 value === 'select' ||
+                value === 'multiselect' ||
+                value === 'date' ||
+                value === 'time' ||
+                value === 'datetime' ||
                 value === 'rating' ||
                 value === 'currency'
               ) {
@@ -127,6 +157,7 @@ export function MetadataFieldEditor({
             size="sm"
             width="120px"
           >
+            <Select.HiddenSelect />
             <Select.Trigger>
               <Select.ValueText />
             </Select.Trigger>
@@ -223,7 +254,7 @@ export function MetadataFieldEditor({
         </HStack>
 
         {/* Select Options Editor */}
-        {field.type === 'select' && (
+        {(field.type === 'select' || field.type === 'multiselect') && (
           <SelectOptionsEditor
             options={field.config.options}
             onChange={(options) => updateConfig('options', options)}
@@ -342,7 +373,7 @@ function SelectOptionsEditor({
         )}
       </Text>
       {options.map((opt, idx) => (
-        <HStack key={idx} gap={2}>
+        <HStack key={opt.value} gap={2}>
           <Input size="sm" variant="outline" value={opt.label} readOnly flex={1} />
           <IconButton
             size="xs"

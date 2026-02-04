@@ -263,6 +263,7 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
                 if (matchedCategory) setCategory(matchedCategory);
               }}
             >
+              <Select.HiddenSelect />
               <Select.Trigger>
                 <Select.ValueText />
               </Select.Trigger>
@@ -365,6 +366,7 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
                   }}
                   disabled={loadingDefs}
                 >
+                  <Select.HiddenSelect />
                   <Select.Trigger>
                     <Select.ValueText placeholder="Select behavior..." />
                   </Select.Trigger>
@@ -403,6 +405,7 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
                       }
                     }}
                   >
+                    <Select.HiddenSelect />
                     <Select.Trigger>
                       <Select.ValueText />
                     </Select.Trigger>
@@ -442,6 +445,7 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
                       }
                     }}
                   >
+                    <Select.HiddenSelect />
                     <Select.Trigger>
                       <Select.ValueText />
                     </Select.Trigger>
@@ -493,6 +497,7 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
                       }
                     }}
                   >
+                    <Select.HiddenSelect />
                     <Select.Trigger>
                       <Select.ValueText />
                     </Select.Trigger>

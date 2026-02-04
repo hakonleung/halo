@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   VStack,
   HStack,
@@ -15,13 +15,12 @@ import {
   Collapsible,
   Portal,
 } from '@chakra-ui/react';
-import { LuPlus, LuChevronUp } from 'react-icons/lu';
 import {
   useBehaviorDefinitions,
   useCreateBehaviorDefinition,
 } from '@/hooks/use-behavior-definitions';
 import { useCreateBehaviorRecord, useUpdateBehaviorRecord } from '@/hooks/use-behavior-records';
-import { MetadataSchemaEditor } from './metadata-schema-editor';
+import { DefinitionFormFields } from './definition-form-fields';
 import { BehaviorCategory } from '@/types/behavior-server';
 import type { MetadataField, MetadataValue, MetadataRecord } from '@/types/behavior-client';
 import { useEditorModalStore } from '@/store/editor-modal-store';
@@ -40,17 +39,62 @@ interface RecordFormProps {
   onCancel?: () => void;
 }
 
-const categoryOptions = [
-  { label: 'Health', value: BehaviorCategory.Health },
-  { label: 'Expense', value: BehaviorCategory.Expense },
-  { label: 'Income', value: BehaviorCategory.Income },
-  { label: 'Habit', value: BehaviorCategory.Habit },
-  { label: 'Other', value: BehaviorCategory.Other },
-];
+interface MetadataSelectFieldProps {
+  field: MetadataField & { type: 'select' | 'multiselect' };
+  value: MetadataValue;
+  onChange: (value: MetadataValue) => void;
+}
 
-const categoryCollection = createListCollection({
-  items: categoryOptions.map((opt) => ({ label: opt.label, value: opt.value })),
-});
+function MetadataSelectField({ field, value, onChange }: MetadataSelectFieldProps) {
+  const collection = useMemo(
+    () =>
+      createListCollection({
+        items: field.config.options || [],
+      }),
+    [field.config.options],
+  );
+
+  const selectedValue = useMemo(() => {
+    if (Array.isArray(value)) return value.map(String);
+    if (value !== undefined && value !== null) return [String(value)];
+    return [];
+  }, [value]);
+
+  return (
+    <Select.Root
+      collection={collection}
+      value={selectedValue}
+      onValueChange={(e) => {
+        if (field.type === 'multiselect') {
+          onChange(e.value);
+        } else {
+          onChange(e.value[0]);
+        }
+      }}
+      multiple={field.type === 'multiselect'}
+    >
+      <Select.HiddenSelect />
+      <Select.Trigger>
+        <Select.ValueText
+          placeholder={
+            ('placeholder' in field.config && field.config.placeholder) || 'Choose an option...'
+          }
+        />
+      </Select.Trigger>
+      <Portal>
+        <Select.Positioner>
+          <Select.Content bg="bg.carbon" borderColor="brand.matrix" zIndex="popover">
+            {collection.items.map((item) => (
+              <Select.Item item={item} key={item.value} _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}>
+                {item.label}
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Positioner>
+      </Portal>
+    </Select.Root>
+  );
+}
 
 export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps) {
   const { definitions, isLoading: loadingDefs } = useBehaviorDefinitions();
@@ -74,6 +118,20 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
   const [newDefMetadataSchema, setNewDefMetadataSchema] = useState<MetadataField[]>([]);
 
   const selectedDef = definitions.find((d) => d.id === selectedDefId);
+
+  const definitionCollection = useMemo(
+    () =>
+      createListCollection({
+        items: [
+          { label: '+ Add New Definition', value: ADD_DEFINITION_VALUE },
+          ...definitions.map((d) => ({
+            label: `${d.icon ? d.icon + ' ' : ''}${d.name}`,
+            value: d.id,
+          })),
+        ],
+      }),
+    [definitions],
+  );
 
   // Initialize metadata with default values when definition changes
   useEffect(() => {
@@ -210,13 +268,6 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
     }
   };
 
-  const definitionCollection = createListCollection({
-    items: [
-      { label: '+ Add New Definition', value: ADD_DEFINITION_VALUE },
-      ...definitions.map((d) => ({ label: `${d.icon ? d.icon + ' ' : ''}${d.name}`, value: d.id })),
-    ],
-  });
-
   return (
     <VStack gap={6} align="stretch" w="full">
       <Field.Root invalid={!selectedDefId && !isAddingDefinition}>
@@ -229,6 +280,7 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
           onValueChange={(e) => handleSelectChange(e.value[0])}
           disabled={loadingDefs}
         >
+          <Select.HiddenSelect />
           <Select.Trigger>
             <Select.ValueText placeholder="Choose a behavior..." />
           </Select.Trigger>
@@ -243,7 +295,6 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
                     color={item.value === ADD_DEFINITION_VALUE ? 'brand.matrix' : undefined}
                     fontWeight={item.value === ADD_DEFINITION_VALUE ? 'bold' : undefined}
                   >
-                    {item.value === ADD_DEFINITION_VALUE && <LuPlus style={{ marginRight: 4 }} />}
                     {item.label}
                   </Select.Item>
                 ))}
@@ -263,93 +314,19 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
             borderRadius="md"
             bg="rgba(0, 255, 65, 0.02)"
           >
-            <VStack gap={4} align="stretch">
-              <HStack justify="space-between">
-                <Text color="brand.matrix" fontSize="sm" fontFamily="mono">
-                  NEW DEFINITION
-                </Text>
-                <Button size="xs" variant="ghost" onClick={handleCancelDefinition}>
-                  <LuChevronUp />
-                  Collapse
-                </Button>
-              </HStack>
-
-              <Field.Root required invalid={!newDefName.trim()}>
-                <Field.Label color="text.mist">Name</Field.Label>
-                <Input
-                  variant="outline"
-                  value={newDefName}
-                  onChange={(e) => setNewDefName(e.target.value)}
-                  placeholder="e.g., Running, Coffee, Daily Expense"
-                />
-              </Field.Root>
-
-              <HStack gap={4}>
-                <Field.Root flex={1}>
-                  <Field.Label color="text.mist">Category</Field.Label>
-                  <Select.Root
-                    collection={categoryCollection}
-                    value={[newDefCategory]}
-                    onValueChange={(e) => {
-                      const value = e.value[0];
-                      if (
-                        value === BehaviorCategory.Health ||
-                        value === BehaviorCategory.Expense ||
-                        value === BehaviorCategory.Income ||
-                        value === BehaviorCategory.Habit ||
-                        value === BehaviorCategory.Other
-                      ) {
-                        setNewDefCategory(value);
-                      }
-                    }}
-                  >
-                    <Select.Trigger>
-                      <Select.ValueText />
-                    </Select.Trigger>
-                    <Portal>
-                      <Select.Positioner>
-                        <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                          {categoryCollection.items.map((item) => (
-                            <Select.Item
-                              item={item}
-                              key={item.value}
-                              _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
-                            >
-                              {item.label}
-                            </Select.Item>
-                          ))}
-                        </Select.Content>
-                      </Select.Positioner>
-                    </Portal>
-                  </Select.Root>
-                </Field.Root>
-
-                <Field.Root width="100px">
-                  <Field.Label color="text.mist">Icon</Field.Label>
-                  <Input
-                    variant="outline"
-                    value={newDefIcon}
-                    onChange={(e) => setNewDefIcon(e.target.value)}
-                    placeholder="🏃"
-                    maxLength={2}
-                  />
-                </Field.Root>
-              </HStack>
-
-              <MetadataSchemaEditor
-                value={newDefMetadataSchema}
-                onChange={setNewDefMetadataSchema}
-              />
-
-              <Button
-                variant="primary"
-                onClick={handleSaveDefinition}
-                loading={savingDef}
-                disabled={!newDefName.trim()}
-              >
-                SAVE DEFINITION
-              </Button>
-            </VStack>
+            <DefinitionFormFields
+              name={newDefName}
+              category={newDefCategory}
+              icon={newDefIcon}
+              metadataSchema={newDefMetadataSchema}
+              onNameChange={setNewDefName}
+              onCategoryChange={setNewDefCategory}
+              onIconChange={setNewDefIcon}
+              onMetadataSchemaChange={setNewDefMetadataSchema}
+              onSubmit={handleSaveDefinition}
+              isLoading={savingDef}
+              onCancel={handleCancelDefinition}
+            />
           </Box>
         </Collapsible.Content>
       </Collapsible.Root>
@@ -402,6 +379,12 @@ export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps
                     _hover={{
                       borderColor: 'brand.matrix',
                     }}
+                  />
+                ) : field.type === 'select' || field.type === 'multiselect' ? (
+                  <MetadataSelectField
+                    field={field}
+                    value={metadata[field.key]}
+                    onChange={(val) => handleMetadataChange(field.key, val)}
                   />
                 ) : (
                   <Input
