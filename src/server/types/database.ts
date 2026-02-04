@@ -43,6 +43,12 @@ export interface Database {
         Update: Simplify<Partial<InferInsertModel<typeof schema.neologNotes>>>;
         Relationships: [];
       };
+      neolog_user_profiles: {
+        Row: Simplify<InferSelectModel<typeof schema.neologUserProfiles>>;
+        Insert: Simplify<InferInsertModel<typeof schema.neologUserProfiles>>;
+        Update: Simplify<Partial<InferInsertModel<typeof schema.neologUserProfiles>>>;
+        Relationships: [];
+      };
       neolog_conversations: {
         Row: Simplify<InferSelectModel<typeof schema.neologConversations>>;
         Insert: Simplify<InferInsertModel<typeof schema.neologConversations>>;

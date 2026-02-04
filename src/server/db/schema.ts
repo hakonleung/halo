@@ -233,6 +233,36 @@ export const neologNotes = pgTable(
   },
 );
 
+// User Profiles Table (AI-maintained user portrait + emotion tracking)
+export const neologUserProfiles = pgTable(
+  'neolog_user_profiles',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    user_id: uuid('user_id').notNull().unique(), // References auth.users, one per user
+    portrait: jsonb('portrait').notNull().default({}), // User portrait: personality, preferences, habits, etc.
+    recent_emotions: jsonb('recent_emotions').notNull().default([]), // Array of recent emotion entries
+    recent_behaviors: jsonb('recent_behaviors').notNull().default([]), // Array of recent behavior summaries
+    created_at: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+  },
+  () => {
+    return [
+      pgPolicy('Users can view their own profile.', {
+        for: 'select',
+        using: sql`auth.uid() = user_id`,
+      }),
+      pgPolicy('Users can insert their own profile.', {
+        for: 'insert',
+        withCheck: sql`auth.uid() = user_id`,
+      }),
+      pgPolicy('Users can update their own profile.', {
+        for: 'update',
+        using: sql`auth.uid() = user_id`,
+      }),
+    ];
+  },
+);
+
 // Conversations Table
 export const neologConversations = pgTable(
   'neolog_conversations',
