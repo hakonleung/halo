@@ -3,12 +3,15 @@
 import { Box, HStack, Text, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useOpenChat } from '@/hooks/use-open-chat';
+import { ChatModal } from '@/components/global/chat/chat-modal';
 
 /**
  * Top navigation bar component
  */
 export function TopNavbar() {
   const pathname = usePathname();
+  const { isOpen, openChat, closeChat } = useOpenChat();
 
   const navLinks = [
     { label: 'LOG', path: '/log' },
@@ -30,19 +33,22 @@ export function TopNavbar() {
     >
       <HStack h="full" justify="space-between">
         <HStack gap={8}>
-          <Link asChild _hover={{ textDecoration: 'none' }}>
-            <NextLink href="/log">
-              <Text
-                fontFamily="heading"
-                color="brand.matrix"
-                fontSize="xl"
-                textShadow="0 0 10px currentColor"
-                fontWeight="bold"
-              >
-                NEO-LOG
-              </Text>
-            </NextLink>
-          </Link>
+          <Box
+            onClick={openChat}
+            cursor="pointer"
+            _hover={{ opacity: 0.8 }}
+            transition="opacity 0.2s"
+          >
+            <Text
+              fontFamily="heading"
+              color="brand.matrix"
+              fontSize="xl"
+              textShadow="0 0 10px currentColor"
+              fontWeight="bold"
+            >
+              NEO-LOG
+            </Text>
+          </Box>
 
           <HStack gap={6} display={{ base: 'none', md: 'flex' }}>
             {navLinks.map((link) => (
@@ -82,6 +88,7 @@ export function TopNavbar() {
           {/* User profile / Logout placeholder */}
         </HStack>
       </HStack>
+      <ChatModal isOpen={isOpen} onClose={closeChat} />
     </Box>
   );
 }
