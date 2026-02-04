@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useOpenChat } from '@/hooks/use-open-chat';
 import { ChatModal } from '@/components/global/chat/chat-modal';
 import { Plus } from 'lucide-react';
-import { useActionDrawerStore } from '@/store/action-drawer-store';
+import { useUrlQuery } from '@/hooks/use-url-query';
 
 /**
  * Top navigation bar component
@@ -14,7 +14,7 @@ import { useActionDrawerStore } from '@/store/action-drawer-store';
 export function TopNavbar() {
   const pathname = usePathname();
   const { isOpen, openChat, closeChat } = useOpenChat();
-  const { openDrawer } = useActionDrawerStore();
+  const { setQuery } = useUrlQuery();
 
   const navLinks = [
     { label: 'LOG', path: '/log' },
@@ -98,7 +98,7 @@ export function TopNavbar() {
             bg: 'transparent',
           }}
           transition="all 0.2s"
-          onClick={() => openDrawer()}
+          onClick={() => setQuery('action', 'record')}
         >
           <Plus size={32} strokeWidth={3} />
         </IconButton>

@@ -1,7 +1,6 @@
 'use client';
 import { AnimatedBackground } from '@/components/layout/animated-background';
-import { DetailDrawers } from '@/components/global/action/detail-drawers';
-import { ActionDrawer } from '@/components/global/action-drawer';
+import { UnifiedActionDrawer } from '@/components/global/action/unified-action-drawer';
 import { EditorModal } from '@/components/global/editor/editor-modal';
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -11,8 +10,7 @@ import { useState } from 'react';
 /**
  * Global components wrapper that includes all global UI elements
  * - AnimatedBackground: Background animation
- * - DetailDrawers: Detail drawers synced with URL query
- * - ActionDrawer: Action drawer for creating records/goals/notes
+ * - UnifiedActionDrawer: Unified drawer for creating and viewing records/goals/notes
  * - EditorModal: Global editor modal for rich text and markdown editing
  * - ChatButton: Floating chat button in bottom right corner
  */
@@ -28,13 +26,13 @@ export function GlobalComponents({ children }: { children: React.ReactNode }) {
         },
       }),
   );
+
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider value={system}>
         {children}
         <AnimatedBackground />
-        <DetailDrawers />
-        <ActionDrawer />
+        <UnifiedActionDrawer />
         <EditorModal />
       </ChakraProvider>
     </QueryClientProvider>

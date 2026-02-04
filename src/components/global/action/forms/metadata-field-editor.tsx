@@ -6,18 +6,16 @@ import {
   HStack,
   Text,
   Input,
-  Field,
-  createListCollection,
-  Select,
   IconButton,
   Box,
   Checkbox,
   Collapsible,
   Button,
-  Portal,
 } from '@chakra-ui/react';
 import { LuTrash2, LuSettings, LuPlus } from 'react-icons/lu';
 import type { MetadataField } from '@/types/behavior-client';
+import { InputField } from '../fields/input-field';
+import { SelectField } from '../fields/select-field';
 
 type SimpleFieldType =
   | 'text'
@@ -43,8 +41,6 @@ const fieldTypeOptions = [
   { label: 'Date & Time', value: 'datetime' },
   { label: 'Rating', value: 'rating' },
 ];
-
-const fieldTypeCollection = createListCollection({ items: fieldTypeOptions });
 
 function generateKey(name: string): string {
   return name
@@ -75,21 +71,19 @@ export function createDefaultField(type: SimpleFieldType): MetadataField {
   }
 }
 
-interface Props {
-  field: MetadataField;
-  isConfigExpanded: boolean;
-  onToggleConfig: () => void;
-  onChange: (field: MetadataField) => void;
-  onRemove: () => void;
-}
-
 export function MetadataFieldEditor({
   field,
   isConfigExpanded,
   onToggleConfig,
   onChange,
   onRemove,
-}: Props) {
+}: {
+  field: MetadataField;
+  isConfigExpanded: boolean;
+  onToggleConfig: () => void;
+  onChange: (field: MetadataField) => void;
+  onRemove: () => void;
+}) {
   const updateConfig = (key: string, value: unknown) => {
     const newConfig = { ...field.config, [key]: value };
     if (value === '' || value === undefined) {
@@ -125,58 +119,27 @@ export function MetadataFieldEditor({
       <VStack gap={3} align="stretch">
         {/* Row 1: Name, Type, Actions */}
         <HStack gap={2}>
-          <Field.Root flex={1}>
-            <Input
-              size="sm"
-              variant="outline"
-              placeholder="Field name"
-              value={field.name}
-              onChange={(e) => handleNameChange(e.target.value)}
-            />
-          </Field.Root>
-          <Select.Root
-            collection={fieldTypeCollection}
-            value={[field.type]}
-            onValueChange={(e) => {
-              const value = e.value[0];
-              if (
-                value === 'text' ||
-                value === 'textarea' ||
-                value === 'number' ||
-                value === 'select' ||
-                value === 'multiselect' ||
-                value === 'date' ||
-                value === 'time' ||
-                value === 'datetime' ||
-                value === 'rating' ||
-                value === 'currency'
-              ) {
-                handleTypeChange(value);
-              }
+          <InputField
+            label=""
+            value={field.name}
+            onChange={(value) => handleNameChange(typeof value === 'string' ? value : '')}
+            type="text"
+            placeholder="Field name"
+            flex={1}
+          />
+          <SelectField
+            label=""
+            value={field.type}
+            onChange={(value) => {
+              const stringValue = typeof value === 'string' ? value : '';
+              // FIXME
+              // @ts-expect-error - stringValue is a valid SimpleFieldType
+              handleTypeChange(stringValue);
             }}
-            size="sm"
-            width="120px"
-          >
-            <Select.HiddenSelect />
-            <Select.Trigger>
-              <Select.ValueText />
-            </Select.Trigger>
-            <Portal>
-              <Select.Positioner>
-                <Select.Content bg="bg.carbon" borderColor="brand.matrix">
-                  {fieldTypeCollection.items.map((item) => (
-                    <Select.Item
-                      item={item}
-                      key={item.value}
-                      _hover={{ bg: 'rgba(0, 255, 65, 0.1)' }}
-                    >
-                      {item.label}
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Portal>
-          </Select.Root>
+            options={fieldTypeOptions}
+            flex="120px"
+            transformValue={(value) => value}
+          />
           <IconButton
             size="xs"
             variant="ghost"
@@ -216,40 +179,39 @@ export function MetadataFieldEditor({
           </Checkbox.Root>
 
           {field.type === 'rating' && (
-            <Field.Root width="120px">
-              <Input
-                size="sm"
-                variant="outline"
-                type="number"
-                placeholder="Max *"
-                value={field.config.maxRating}
-                onChange={(e) => updateConfig('maxRating', parseInt(e.target.value) || 5)}
-                min={1}
-                max={10}
-              />
-            </Field.Root>
+            <InputField
+              label=""
+              value={field.config.maxRating ?? 5}
+              onChange={(value) => updateConfig('maxRating', typeof value === 'number' ? value : 5)}
+              type="number"
+              placeholder="Max *"
+              min="1"
+              flex="120px"
+            />
           )}
           {field.type === 'currency' && (
-            <Field.Root width="100px">
-              <Input
-                size="sm"
-                variant="outline"
-                placeholder="Code *"
-                value={field.config.currency}
-                onChange={(e) => updateConfig('currency', e.target.value)}
-              />
-            </Field.Root>
+            <InputField
+              label=""
+              value={field.config.currency ?? 'CNY'}
+              onChange={(value) =>
+                updateConfig('currency', typeof value === 'string' ? value : 'CNY')
+              }
+              type="text"
+              placeholder="Code *"
+              flex="100px"
+            />
           )}
           {field.type === 'number' && (
-            <Field.Root width="100px">
-              <Input
-                size="sm"
-                variant="outline"
-                placeholder="Unit"
-                value={field.config.unit ?? ''}
-                onChange={(e) => updateConfig('unit', e.target.value || undefined)}
-              />
-            </Field.Root>
+            <InputField
+              label=""
+              value={field.config.unit ?? ''}
+              onChange={(value) =>
+                updateConfig('unit', typeof value === 'string' ? value : undefined)
+              }
+              type="text"
+              placeholder="Unit"
+              flex="100px"
+            />
           )}
         </HStack>
 
@@ -271,59 +233,82 @@ export function MetadataFieldEditor({
                 </Text>
 
                 {hasPlaceholder && (
-                  <ConfigInput
+                  <InputField
                     label="Placeholder"
                     value={('placeholder' in field.config ? field.config.placeholder : '') || ''}
-                    onChange={(v) => updateConfig('placeholder', v)}
+                    onChange={(value) =>
+                      updateConfig('placeholder', typeof value === 'string' ? value : '')
+                    }
+                    type="text"
+                    flex={1}
                   />
                 )}
 
                 {field.type === 'number' && (
                   <HStack gap={3}>
-                    <ConfigInput
+                    <InputField
                       label="Min"
-                      type="number"
                       value={field.config.min ?? ''}
-                      onChange={(v) => updateConfig('min', v ? parseFloat(v) : undefined)}
+                      onChange={(value) =>
+                        updateConfig('min', typeof value === 'number' ? value : undefined)
+                      }
+                      type="number"
+                      flex={1}
                     />
-                    <ConfigInput
+                    <InputField
                       label="Max"
-                      type="number"
                       value={field.config.max ?? ''}
-                      onChange={(v) => updateConfig('max', v ? parseFloat(v) : undefined)}
-                    />
-                    <ConfigInput
-                      label="Decimals"
+                      onChange={(value) =>
+                        updateConfig('max', typeof value === 'number' ? value : undefined)
+                      }
                       type="number"
+                      flex={1}
+                    />
+                    <InputField
+                      label="Decimals"
                       value={field.config.decimals ?? ''}
-                      onChange={(v) => updateConfig('decimals', v ? parseInt(v) : undefined)}
+                      onChange={(value) =>
+                        updateConfig('decimals', typeof value === 'number' ? value : undefined)
+                      }
+                      type="number"
+                      flex={1}
                     />
                   </HStack>
                 )}
 
                 {(field.type === 'text' || field.type === 'textarea') && (
-                  <ConfigInput
+                  <InputField
                     label="Default"
                     value={field.config.defaultValue ?? ''}
-                    onChange={(v) => updateConfig('defaultValue', v || undefined)}
+                    onChange={(value) =>
+                      updateConfig('defaultValue', typeof value === 'string' ? value : undefined)
+                    }
+                    type="text"
+                    flex={1}
                   />
                 )}
 
                 {(field.type === 'number' || field.type === 'currency') && (
-                  <ConfigInput
+                  <InputField
                     label="Default"
-                    type="number"
                     value={field.config.defaultValue ?? ''}
-                    onChange={(v) => updateConfig('defaultValue', v ? parseFloat(v) : undefined)}
+                    onChange={(value) =>
+                      updateConfig('defaultValue', typeof value === 'number' ? value : undefined)
+                    }
+                    type="number"
+                    flex={1}
                   />
                 )}
 
                 {field.type === 'rating' && (
-                  <ConfigInput
+                  <InputField
                     label={`Default (1-${field.config.maxRating})`}
-                    type="number"
                     value={field.config.defaultValue ?? ''}
-                    onChange={(v) => updateConfig('defaultValue', v ? parseInt(v) : undefined)}
+                    onChange={(value) =>
+                      updateConfig('defaultValue', typeof value === 'number' ? value : undefined)
+                    }
+                    type="number"
+                    flex={1}
                   />
                 )}
               </VStack>
@@ -387,46 +372,19 @@ function SelectOptionsEditor({
         </HStack>
       ))}
       <HStack gap={2}>
-        <Input
-          size="sm"
-          variant="outline"
-          placeholder="New option"
+        <InputField
+          label=""
           value={newOption}
-          onChange={(e) => setNewOption(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onChange={(value) => setNewOption(typeof value === 'string' ? value : '')}
+          type="text"
+          placeholder="New option"
           flex={1}
+          onKeyDown={handleKeyDown}
         />
         <Button size="xs" variant="ghost" onClick={handleAdd} disabled={!newOption.trim()}>
           <LuPlus />
         </Button>
       </HStack>
     </VStack>
-  );
-}
-
-function ConfigInput({
-  label,
-  value,
-  type = 'text',
-  onChange,
-}: {
-  label: string;
-  value: string | number;
-  type?: 'text' | 'number';
-  onChange: (v: string) => void;
-}) {
-  return (
-    <Field.Root flex={1}>
-      <Field.Label fontSize="xs" color="text.mist">
-        {label}
-      </Field.Label>
-      <Input
-        size="sm"
-        variant="outline"
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </Field.Root>
   );
 }

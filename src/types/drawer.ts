@@ -1,14 +1,8 @@
 // Drawer-related enums and types
 
-export enum ActionDrawerTab {
+export enum ActionType {
   Record = 'record',
   Goal = 'goal',
   Note = 'note',
-}
-
-export enum DetailDrawerType {
-  Goal = 'goal',
-  Record = 'record',
   Definition = 'definition',
-  Note = 'note',
 }
