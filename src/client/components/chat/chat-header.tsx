@@ -3,11 +3,9 @@ import { ArrowLeft } from 'lucide-react';
 
 interface ChatHeaderProps {
   onClose: () => void;
-  title: string;
-  mobileMenuTrigger?: React.ReactNode;
 }
 
-export function ChatHeader({ onClose, title, mobileMenuTrigger }: ChatHeaderProps) {
+export function ChatHeader({ onClose }: ChatHeaderProps) {
   return (
     <HStack justify="space-between" align="center" w="full">
       <HStack gap={3}>
@@ -21,12 +19,9 @@ export function ChatHeader({ onClose, title, mobileMenuTrigger }: ChatHeaderProp
           <ArrowLeft size={18} />
         </IconButton>
         <Heading color="brand.matrix" fontFamily="heading">
-          {title}
+          CHAT
         </Heading>
       </HStack>
-
-      {/* Mobile hamburger menu trigger */}
-      {mobileMenuTrigger}
     </HStack>
   );
 }

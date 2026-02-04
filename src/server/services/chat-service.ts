@@ -44,8 +44,14 @@ export const chatService = {
 
   /**
    * Get messages for a conversation
+   * @param count - Optional. If provided, returns only the last N messages. If not provided, returns all messages.
    */
-  async getMessages(supabase: SupabaseClient<Database>, userId: string, conversationId: string) {
+  async getMessages(
+    supabase: SupabaseClient<Database>,
+    userId: string,
+    conversationId: string,
+    count?: number,
+  ) {
     if (!userId || !conversationId) throw new Error('User ID and Conversation ID are required');
     // Verify ownership first
     const { data: conv, error: convError } = await supabase
@@ -59,6 +65,21 @@ export const chatService = {
       throw new Error('Conversation not found or access denied');
     }
 
+    if (count !== undefined) {
+      // Get last N messages (ordered by created_at desc, then reverse to chronological order)
+      const { data, error } = await supabase
+        .from('neolog_messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: false })
+        .limit(count);
+
+      if (error) throw new Error(error.message);
+      // Reverse to get chronological order (oldest first)
+      return data.reverse().map(serverConvertChatMessage);
+    }
+
+    // Get all messages in chronological order
     const { data, error } = await supabase
       .from('neolog_messages')
       .select('*')
@@ -67,6 +88,39 @@ export const chatService = {
 
     if (error) throw new Error(error.message);
     return data.map(serverConvertChatMessage);
+  },
+
+  /**
+   * Get or create the user's single conversation
+   * Each user has only one conversation
+   */
+  async getOrCreateConversation(supabase: SupabaseClient<Database>, userId: string) {
+    if (!userId) throw new Error('User ID is required');
+
+    // Try to get existing conversation
+    const { data: existing, error: selectError } = await supabase
+      .from('neolog_conversations')
+      .select('*')
+      .eq('user_id', userId)
+      .limit(1)
+      .single();
+
+    if (existing && !selectError) {
+      return serverConvertConversation(existing);
+    }
+
+    // Create new conversation if none exists
+    const { data: newConv, error: insertError } = await supabase
+      .from('neolog_conversations')
+      .insert({
+        user_id: userId,
+        title: null, // No title needed
+      })
+      .select()
+      .single();
+
+    if (insertError) throw new Error(insertError.message);
+    return serverConvertConversation(newConv);
   },
 
   /**

@@ -51,10 +51,8 @@ export const internalApiService = {
   updateSettings: settingsApi.updateSettings,
 
   // Chat API
-  getConversations: chatApi.getConversations,
+  getOrCreateConversation: chatApi.getOrCreateConversation,
   getMessages: chatApi.getMessages,
-  deleteConversation: chatApi.deleteConversation,
-  updateConversation: chatApi.updateConversation,
 
   // Auth API
   getCurrentUser: authApi.getCurrentUser,

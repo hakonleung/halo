@@ -5,7 +5,6 @@ import { createAgent } from 'langchain';
 import { createLLM } from '@/server/agents/factory';
 import { runProfileAgent } from '@/server/agents/profile-agent';
 import { buildSystemPrompt } from '@/server/agents/system-prompt';
-import { generateConversationTitle } from '@/server/agents/title-generator';
 import { createChatTools } from '@/server/agents/tools';
 import { chatService } from '@/server/services/chat-service';
 import { profileService } from '@/server/services/profile-service';
@@ -15,7 +14,6 @@ import { ChatRole } from '@/server/types/chat-server';
 
 interface ChatRequestBody {
   messages: UIMessage[];
-  conversationId?: string;
 }
 
 export const maxDuration = 60;
@@ -33,7 +31,15 @@ export async function POST(request: Request) {
     }
 
     const body: ChatRequestBody = await request.json();
-    const { messages: uiMessages, conversationId } = body;
+    const { messages: uiMessages } = body;
+
+    // 2. Get or create the user's single conversation
+    const conversation = await chatService.getOrCreateConversation(supabase, user.id);
+    const conversationId = conversation.id;
+
+    // Check if this is the first message (empty conversation)
+    const existingMessages = await chatService.getMessages(supabase, user.id, conversationId);
+    const isFirstMessage = existingMessages.length === 0;
 
     // Extract last user message text from parts
     const lastUserMsg = [...uiMessages].reverse().find((m) => m.role === 'user');
@@ -43,7 +49,8 @@ export async function POST(request: Request) {
         .map((p) => p.text)
         .join('') ?? '';
 
-    if (!userText) {
+    // For first message, allow empty userText to trigger greeting
+    if (!userText && !isFirstMessage) {
       return new Response(JSON.stringify({ error: 'Content is required' }), { status: 400 });
     }
 
@@ -55,30 +62,17 @@ export async function POST(request: Request) {
     ]);
     const tools = createChatTools(supabase, user.id);
 
-    // 2. Get or create conversation (frontend provides the ID)
-    if (!conversationId) {
-      throw new Error('Conversation ID is required');
+    // 3. Save user message to DB (skip if first message with empty text)
+    if (userText || !isFirstMessage) {
+      await chatService.saveMessage(supabase, user.id, {
+        conversationId,
+        role: ChatRole.User,
+        content: userText || '[首次打开聊天]',
+      });
     }
 
-    // Check if conversation exists, if not create it
-    const conversations = await chatService.getConversations(supabase, user.id);
-    const conversationExists = conversations.some((c) => c.id === conversationId);
-
-    if (!conversationExists) {
-      // Generate title for new conversation using user's LLM settings
-      const title = await generateConversationTitle(llm, userText);
-      await chatService.createConversation(supabase, user.id, title, conversationId);
-    }
-
-    // 3. Save user message to DB
-    await chatService.saveMessage(supabase, user.id, {
-      conversationId,
-      role: ChatRole.User,
-      content: userText,
-    });
-
-    // 4. Load full history from DB (authoritative source)
-    const history = await chatService.getMessages(supabase, user.id, conversationId);
+    // 4. Load last 20 messages for context (to limit token usage)
+    const history = await chatService.getMessages(supabase, user.id, conversationId, 20);
 
     // 5. Setup Agent with profile-aware system prompt
     const systemPrompt = buildSystemPrompt(user.id, profile);

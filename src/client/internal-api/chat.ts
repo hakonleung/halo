@@ -40,17 +40,17 @@ function convertChatMessage(server: ServerChatMessage): ClientChatMessage {
 
 export const chatApi = {
   /**
-   * Get conversations
+   * Get or create the user's single conversation
    */
-  async getConversations(): Promise<ClientConversation[]> {
+  async getOrCreateConversation(): Promise<ClientConversation> {
     const response =
-      await BaseApiService.fetchApi<ApiResponse<ServerConversation[]>>('/api/chat/conversations');
+      await BaseApiService.fetchApi<ApiResponse<ServerConversation>>('/api/chat/conversation');
 
     if ('error' in response) {
       throw new Error(response.error);
     }
 
-    return response.data.map(convertConversation);
+    return convertConversation(response.data);
   },
 
   /**
@@ -58,7 +58,7 @@ export const chatApi = {
    */
   async getMessages(conversationId: string): Promise<ClientChatMessage[]> {
     const response = await BaseApiService.fetchApi<ApiResponse<ServerChatMessage[]>>(
-      `/api/chat/conversations/${conversationId}/messages`,
+      `/api/chat/conversation/${conversationId}/messages`,
     );
 
     if ('error' in response) {
@@ -66,44 +66,5 @@ export const chatApi = {
     }
 
     return response.data.map(convertChatMessage);
-  },
-
-  /**
-   * Delete a conversation
-   */
-  async deleteConversation(conversationId: string): Promise<void> {
-    const response = await BaseApiService.fetchApi<ApiResponse<null>>(
-      `/api/chat/conversations/${conversationId}`,
-      {
-        method: 'DELETE',
-      },
-    );
-
-    if ('error' in response) {
-      throw new Error(response.error);
-    }
-  },
-
-  /**
-   * Update a conversation
-   */
-  async updateConversation(
-    conversationId: string,
-    updates: { title: string },
-  ): Promise<ClientConversation> {
-    const response = await BaseApiService.fetchApi<ApiResponse<ServerConversation>>(
-      `/api/chat/conversations/${conversationId}`,
-      {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
-      },
-    );
-
-    if ('error' in response) {
-      throw new Error(response.error);
-    }
-
-    return convertConversation(response.data);
   },
 };
