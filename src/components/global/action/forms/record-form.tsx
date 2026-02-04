@@ -13,23 +13,24 @@ import {
 import { useCreateBehaviorRecord, useUpdateBehaviorRecord } from '@/hooks/use-behavior-records';
 import { DefinitionFormFields } from './definition-form';
 import { BehaviorCategory } from '@/types/behavior-server';
-import type { MetadataField, MetadataValue, MetadataRecord } from '@/types/behavior-client';
+import type {
+  MetadataField,
+  MetadataValue,
+  MetadataRecord,
+  BehaviorRecordWithDefinition,
+} from '@/types/behavior-client';
 
 const ADD_DEFINITION_VALUE = '__add_definition__';
 
-interface RecordFormProps {
-  initialData?: {
-    id: string;
-    definitionId: string;
-    metadata: MetadataRecord;
-    note?: string;
-    recordedAt: string;
-  };
+export function RecordForm({
+  initialData,
+  onSuccess,
+  onCancel,
+}: {
+  initialData?: BehaviorRecordWithDefinition;
   onSuccess?: () => void;
   onCancel?: () => void;
-}
-
-export function RecordForm({ initialData, onSuccess, onCancel }: RecordFormProps) {
+}) {
   const { definitions, isLoading: loadingDefs } = useBehaviorDefinitions();
   const { createDefinition, isLoading: savingDef } = useCreateBehaviorDefinition();
   const { createRecord, isLoading: savingRecord } = useCreateBehaviorRecord();

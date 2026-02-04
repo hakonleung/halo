@@ -7,13 +7,8 @@ import { RecordForm } from './forms/record-form';
 import { GoalForm } from './forms/goal-form';
 import { NoteForm } from './forms/note-form';
 
-interface CreateActionDrawerContentProps {
-  onClose: () => void;
-}
-
-export function CreateActionDrawerContent({ onClose }: CreateActionDrawerContentProps) {
+export function CreateActionDrawerContent({ onClose }: { onClose: () => void }) {
   const [createTab, setCreateTab] = useState<ActionType>(ActionType.Record);
-
   return (
     <Tabs.Root
       value={createTab}
@@ -29,7 +24,6 @@ export function CreateActionDrawerContent({ onClose }: CreateActionDrawerContent
         <Tabs.Trigger value={ActionType.Goal}>Goal</Tabs.Trigger>
         <Tabs.Trigger value={ActionType.Note}>Note</Tabs.Trigger>
       </Tabs.List>
-
       <Tabs.Content value={ActionType.Record}>
         <RecordForm onSuccess={onClose} onCancel={onClose} />
       </Tabs.Content>

@@ -6,26 +6,22 @@ import {
   useUpdateBehaviorDefinition,
 } from '@/hooks/use-behavior-definitions';
 import { BehaviorCategory } from '@/types/behavior-server';
-import type { MetadataField } from '@/types/behavior-client';
+import type { BehaviorDefinition, MetadataField } from '@/types/behavior-client';
 import { VStack, Field } from '@chakra-ui/react';
 import { MetadataSchemaEditor } from './metadata-schema-editor';
 import { InputField } from '../fields/input-field';
 import { SelectField } from '../fields/select-field';
 import { FormButtonGroup } from './form-button-group';
 
-interface DefinitionFormProps {
-  initialData?: {
-    id: string;
-    name: string;
-    category: BehaviorCategory;
-    icon?: string;
-    metadataSchema: MetadataField[];
-  };
+export function DefinitionForm({
+  initialData,
+  onSuccess,
+  onCancel,
+}: {
+  initialData?: BehaviorDefinition;
   onSuccess?: () => void;
   onCancel: () => void;
-}
-
-export function DefinitionForm({ initialData, onSuccess, onCancel }: DefinitionFormProps) {
+}) {
   const { createDefinition, isLoading: savingDef } = useCreateBehaviorDefinition();
   const { updateDefinition, isLoading: updatingDef } = useUpdateBehaviorDefinition();
   const isEditing = !!initialData;

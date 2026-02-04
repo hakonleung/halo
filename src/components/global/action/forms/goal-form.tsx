@@ -9,22 +9,8 @@ import { FormButtonGroup } from './form-button-group';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import { useCreateGoal, useUpdateGoal } from '@/hooks/use-goals';
-import type { GoalCriteria } from '@/types/goal-client';
+import type { Goal, GoalCriteria } from '@/types/goal-client';
 import { GoalMetric, GoalOperator, GoalPeriod, GoalCategory } from '@/types/goal-client';
-
-interface GoalFormProps {
-  initialData?: {
-    id: string;
-    name: string;
-    description?: string;
-    category: GoalCategory;
-    startDate: string;
-    endDate?: string;
-    criteria: GoalCriteria[];
-  };
-  onSuccess?: () => void;
-  onCancel?: () => void;
-}
 
 const categoryOptions = [
   { label: 'Health', value: GoalCategory.Health },
@@ -63,7 +49,15 @@ const createEmptyCriterion = (): GoalCriteria => ({
   description: '',
 });
 
-export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
+export function GoalForm({
+  initialData,
+  onSuccess,
+  onCancel,
+}: {
+  initialData?: Goal;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}) {
   const { definitions } = useBehaviorDefinitions();
   const { createGoal, isLoading: saving } = useCreateGoal();
   const { updateGoal } = useUpdateGoal();
@@ -333,7 +327,7 @@ export function GoalForm({ initialData, onSuccess, onCancel }: GoalFormProps) {
                     ) {
                       return value;
                     }
-                    return GoalOperator.GreaterThanOrEqual;
+                    return GoalOperator.Equal;
                   }}
                 />
 

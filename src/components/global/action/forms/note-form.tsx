@@ -8,13 +8,15 @@ import { EditorField } from '../fields/editor-field';
 import { InputField } from '../fields/input-field';
 import { FormButtonGroup } from './form-button-group';
 
-interface NoteFormProps {
+export function NoteForm({
+  initialData,
+  onSuccess,
+  onCancel,
+}: {
   initialData?: Note;
   onSuccess?: () => void;
   onCancel?: () => void;
-}
-
-export function NoteForm({ initialData, onSuccess, onCancel }: NoteFormProps) {
+}) {
   const { mutateAsync: createNote, isPending: creating } = useCreateNote();
   const { mutateAsync: updateNote, isPending: updating } = useUpdateNote();
 

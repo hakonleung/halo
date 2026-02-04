@@ -4,29 +4,25 @@ import { VStack, Heading, Box, Text, Flex } from '@chakra-ui/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-interface DetailItem {
-  key: string;
-  label: string;
-  value?: string | number | null | undefined;
-  description?: string;
-  fields?: Array<{ label: string; value: string | number }>;
-  // For definition mode
-  type?: string;
-  required?: boolean;
-  // For criteria mode
-  codeBlock?: string;
-}
-
-type DetailSectionMode = 'definition' | 'record' | 'criteria';
-
 export function DetailSection({
   title,
   items,
   mode = 'record',
 }: {
   title: string;
-  items: DetailItem[];
-  mode?: DetailSectionMode;
+  items: {
+    key: string;
+    label: string;
+    value?: string | number | null | undefined;
+    description?: string;
+    fields?: Array<{ label: string; value: string | number }>;
+    // For definition mode
+    type?: string;
+    required?: boolean;
+    // For criteria mode
+    codeBlock?: string;
+  }[];
+  mode?: 'definition' | 'record' | 'criteria';
 }) {
   if (!items || items.length === 0) return null;
 

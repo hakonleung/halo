@@ -2,6 +2,7 @@
 import { AnimatedBackground } from '@/components/layout/animated-background';
 import { UnifiedActionDrawer } from '@/components/global/action/unified-action-drawer';
 import { EditorModal } from '@/components/global/editor/editor-modal';
+import { GlobalConfirmDialog } from '@/components/global/global-confirm-dialog';
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { system } from '@/styles/theme';
@@ -34,6 +35,7 @@ export function GlobalComponents({ children }: { children: React.ReactNode }) {
         <AnimatedBackground />
         <UnifiedActionDrawer />
         <EditorModal />
+        <GlobalConfirmDialog />
       </ChakraProvider>
     </QueryClientProvider>
   );

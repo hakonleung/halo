@@ -214,7 +214,6 @@ export function MetadataFieldEditor({
             />
           )}
         </HStack>
-
         {/* Select Options Editor */}
         {(field.type === 'select' || field.type === 'multiselect') && (
           <SelectOptionsEditor
@@ -222,7 +221,6 @@ export function MetadataFieldEditor({
             onChange={(options) => updateConfig('options', options)}
           />
         )}
-
         {/* Expandable Advanced Config */}
         <Collapsible.Root open={isConfigExpanded}>
           <Collapsible.Content>
@@ -231,7 +229,6 @@ export function MetadataFieldEditor({
                 <Text fontSize="xs" color="text.mist" fontFamily="mono">
                   ADVANCED CONFIG
                 </Text>
-
                 {hasPlaceholder && (
                   <InputField
                     label="Placeholder"
@@ -243,7 +240,6 @@ export function MetadataFieldEditor({
                     flex={1}
                   />
                 )}
-
                 {field.type === 'number' && (
                   <HStack gap={3}>
                     <InputField
@@ -275,7 +271,6 @@ export function MetadataFieldEditor({
                     />
                   </HStack>
                 )}
-
                 {(field.type === 'text' || field.type === 'textarea') && (
                   <InputField
                     label="Default"
@@ -287,7 +282,6 @@ export function MetadataFieldEditor({
                     flex={1}
                   />
                 )}
-
                 {(field.type === 'number' || field.type === 'currency') && (
                   <InputField
                     label="Default"
@@ -299,7 +293,6 @@ export function MetadataFieldEditor({
                     flex={1}
                   />
                 )}
-
                 {field.type === 'rating' && (
                   <InputField
                     label={`Default (1-${field.config.maxRating})`}
@@ -328,25 +321,21 @@ function SelectOptionsEditor({
   onChange: (options: { label: string; value: string }[]) => void;
 }) {
   const [newOption, setNewOption] = useState('');
-
   const handleAdd = () => {
     if (!newOption.trim()) return;
     const label = newOption.trim();
     onChange([...options, { label, value: generateKey(label) }]);
     setNewOption('');
   };
-
   const handleRemove = (index: number) => {
     onChange(options.filter((_, i) => i !== index));
   };
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleAdd();
     }
   };
-
   return (
     <VStack gap={2} align="stretch">
       <Text fontSize="xs" color="text.mist">
