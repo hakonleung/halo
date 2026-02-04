@@ -4,10 +4,12 @@ import { useMemo, useRef, useEffect, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import type React from 'react';
 import type { TimelineItem, PositionedItem } from '@/types/timeline';
-import { calculateTimeUnit, generateLanes, calculatePositionedItems } from '@/utils/timeline';
+import { generateLanes, calculatePositionedItems } from '@/utils/timeline';
+import { useTimelineZoom } from '@/hooks/use-timeline-zoom';
 import { TimelineLabels } from './timeline/timeline-labels';
 import { TimelineLanes } from './timeline/timeline-lanes';
 import { TimelineItems } from './timeline/timeline-items';
+import { TimelineZoomControls } from './timeline/timeline-zoom-controls';
 
 export function TimelineView({
   items,
@@ -27,19 +29,30 @@ export function TimelineView({
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; time: string } | null>(null);
 
-  // Calculate time unit based on time range
-  const timeUnit = useMemo(() => calculateTimeUnit(start, end), [start, end]);
+  // Zoom logic extracted to hook
+  const { currentLaneWidth, currentTimeUnit, handleZoomIn, handleZoomOut, canZoomIn, canZoomOut } =
+    useTimelineZoom({
+      start,
+      end,
+      defaultLaneWidth: laneWidth,
+    });
 
-  // Generate lanes
-  const lanes = useMemo(() => generateLanes(start, end, timeUnit), [start, end, timeUnit]);
+  // Generate lanes based on current zoom
+  const lanes = useMemo(
+    () => generateLanes(start, end, currentTimeUnit),
+    [start, end, currentTimeUnit],
+  );
 
-  // Calculate total width based on number of lanes
-  const totalWidth = useMemo(() => lanes.length * laneWidth, [lanes.length, laneWidth]);
+  // Calculate total width based on number of lanes and current lane width
+  const totalWidth = useMemo(
+    () => lanes.length * currentLaneWidth,
+    [lanes.length, currentLaneWidth],
+  );
 
   // Overlap detection and position calculation
   const positionedItems = useMemo<PositionedItem[]>(() => {
-    return calculatePositionedItems(items, lanes, timeUnit, laneWidth, minItemWidth);
-  }, [items, lanes, timeUnit, laneWidth, minItemWidth]);
+    return calculatePositionedItems(items, lanes, currentTimeUnit, currentLaneWidth, minItemWidth);
+  }, [items, lanes, currentTimeUnit, currentLaneWidth, minItemWidth]);
 
   const totalHeight = useMemo(() => {
     return positionedItems.length > 0
@@ -75,6 +88,16 @@ export function TimelineView({
 
   return (
     <Box position="relative" w="100%" flex={1} overflow="hidden">
+      {/* Zoom Controls */}
+      <TimelineZoomControls
+        currentTimeUnit={currentTimeUnit}
+        currentLaneWidth={currentLaneWidth}
+        handleZoomIn={handleZoomIn}
+        handleZoomOut={handleZoomOut}
+        canZoomIn={canZoomIn}
+        canZoomOut={canZoomOut}
+      />
+
       {/* Tooltip */}
       {tooltip && (
         <Box
@@ -105,12 +128,12 @@ export function TimelineView({
         overflowY="auto"
         position="relative"
       >
-        <TimelineLabels lanes={lanes} laneWidth={laneWidth} />
+        <TimelineLabels lanes={lanes} laneWidth={currentLaneWidth} />
 
         <Box pos="relative" h={`${totalHeight}px`} w={`${totalWidth}px`}>
           <TimelineLanes
             lanes={lanes}
-            laneWidth={laneWidth}
+            laneWidth={currentLaneWidth}
             totalHeight={totalHeight}
             onLaneMouseEnter={handleLaneMouseEnter}
             onLaneMouseLeave={handleLaneMouseLeave}

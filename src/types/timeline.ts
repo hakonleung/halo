@@ -18,7 +18,6 @@ export type TimeUnit = 'hour' | 'day' | 'week' | 'month';
 
 export interface Lane {
   time: Date;
-  spanLabel: string; // Label for the time span above the lane
 }
 
 export interface PositionedItem extends TimelineItem {

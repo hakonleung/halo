@@ -27,32 +27,6 @@ const DURATION_BY_TIME_UNIT = {
   month: 30 * 24 * 60 * 60 * 1000,
 };
 
-const formatSpanLabel = (date: Date, timeUnit: TimeUnit): string => {
-  switch (timeUnit) {
-    case 'hour':
-      return date.toLocaleString('en-US', {
-        weekday: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    case 'day':
-      return date.toLocaleDateString('en-US', { weekday: 'short' });
-    case 'week': {
-      const weekStart = new Date(date);
-      const dayOfWeek = weekStart.getDay();
-      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-      weekStart.setDate(weekStart.getDate() + diff);
-      const weekEnd = new Date(weekStart);
-      weekEnd.setDate(weekEnd.getDate() + 6);
-      const startWeekday = weekStart.toLocaleDateString('en-US', { weekday: 'short' });
-      const endWeekday = weekEnd.toLocaleDateString('en-US', { weekday: 'short' });
-      return `${startWeekday} - ${endWeekday}`;
-    }
-    case 'month':
-      return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  }
-};
-
 /**
  * Generate timeline lanes based on start/end dates and time unit
  */
@@ -63,7 +37,6 @@ export function generateLanes(start: Date, end: Date, timeUnit: TimeUnit): Lane[
   while (current <= end) {
     result.push({
       time: new Date(current),
-      spanLabel: formatSpanLabel(current, timeUnit),
     });
     current.setTime(current.getTime() + DURATION_BY_TIME_UNIT[timeUnit]);
   }
