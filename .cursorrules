@@ -26,17 +26,37 @@
 src/
 ├── app/                    # Next.js App Router
 │   ├── api/               # API 路由 (Route Handlers)
+│   │   ├── auth/          # 认证相关 API
+│   │   ├── behaviors/     # 行为记录 API
+│   │   ├── chat/          # Chat API (单对话模式)
+│   │   ├── dashboard/     # 仪表盘 API
+│   │   ├── goals/         # 目标 API
+│   │   ├── notes/         # 笔记 API
+│   │   └── settings/      # 设置 API
 │   └── [pages]/           # 页面组件
-├── components/            # React 组件
-├── db/                    # 数据库 Schema (Drizzle)
-├── hooks/                 # 自定义 Hooks
-├── lib/                   # 服务层 (Service Class)
-├── store/                 # Zustand Store
-├── types/                 # TypeScript 类型
-│   ├── *-client.ts       # 前端类型
-│   └── *-server.ts       # 后端类型
-├── utils/                 # 工具函数
-└── styles/                # Chakra Theme 配置
+├── client/                 # 前端代码
+│   ├── components/         # React 组件
+│   │   ├── actions/       # 操作抽屉组件
+│   │   ├── auth/          # 认证组件
+│   │   ├── chat/          # Chat 组件
+│   │   ├── dashboard/     # 仪表盘组件
+│   │   ├── editor/        # 编辑器组件
+│   │   ├── layout/        # 布局组件
+│   │   ├── log/           # 历史记录组件
+│   │   ├── settings/      # 设置组件
+│   │   └── shared/        # 共享组件
+│   ├── hooks/             # 自定义 Hooks
+│   ├── internal-api/      # 前端 API 调用层
+│   ├── store/             # Zustand Store
+│   ├── types/             # 前端 TypeScript 类型 (*-client.ts)
+│   ├── theme/              # Chakra Theme 配置
+│   └── utils/             # 前端工具函数
+└── server/                 # 后端代码
+    ├── agents/            # AI Agents (LangChain)
+    ├── db/                # 数据库 Schema (Drizzle)
+    ├── services/          # 服务层 (Service Class)
+    ├── types/             # 后端 TypeScript 类型 (*-server.ts)
+    └── utils/             # 后端工具函数
 ```
 
 ## 架构约定
@@ -44,9 +64,11 @@ src/
 | 层次 | 模式 | 路径 |
 |------|------|------|
 | API | Route Handlers | `src/app/api/[resource]/route.ts` |
-| 服务 | Service Class | `src/lib/[resource]-service.ts` |
-| Hooks | TanStack Query | `src/hooks/use-[resource].ts` |
-| 类型 | Client/Server 分离 | `src/types/[resource]-*.ts` |
+| 服务 | Service Class | `src/server/services/[resource]-service.ts` |
+| Hooks | TanStack Query | `src/client/hooks/use-[resource].ts` |
+| 类型 | Client/Server 分离 | `src/client/types/[resource]-client.ts`<br>`src/server/types/[resource]-server.ts` |
+| 组件 | React Components | `src/client/components/[module]/` |
+| 数据库 | Drizzle Schema | `src/server/db/schema.ts` |
 
 ## 代码质量
 
@@ -77,8 +99,9 @@ src/
 ## API 约定
 
 - **RESTful**: `/api/[resource]` (列表/创建), `/api/[resource]/[id]` (详情/更新/删除)
+- **Chat API**: `/api/chat/conversation` (单对话模式，每个用户只有一个 conversation), `/api/chat/message` (发送消息)
 - **响应格式统一**: 所有 API 使用统一的响应格式 `{ data: T | null, error: string | null }`，确保前端处理逻辑一致
-- **鉴权处理**: 使用 `withSupabaseAndAuth` 辅助函数统一处理鉴权逻辑，避免重复代码
+- **鉴权处理**: 使用 `createApiHandler` 辅助函数统一处理鉴权逻辑，避免重复代码
 - **错误处理**: 统一的错误处理逻辑，返回清晰的错误信息
 - **状态码语义化**: 使用语义化的 HTTP 状态码（200 成功、201 创建、400 请求错误、401 鉴权失败、404 未找到、500 服务器错误等）
 - **特殊 API**: 对于特殊需求（流式响应、cookie），保持原样，不强行统一
@@ -133,7 +156,7 @@ src/
 
 ## 重构最佳实践
 
-- **高阶函数模式**: 使用高阶函数（HOF）封装通用逻辑，避免重复代码（如 `withSupabaseAndAuth`）
+- **高阶函数模式**: 使用高阶函数（HOF）封装通用逻辑，避免重复代码（如 `createApiHandler`）
 - **泛型设计**: 使用 TypeScript 泛型确保类型安全，同时保持灵活性
 - **渐进式重构**: 先重构简单的部分，再重构复杂的，逐步验证，避免一次性改动过大
 - **特殊情况处理**: 对于特殊需求（流式响应、cookie 等），保持原样，不强行统一
