@@ -3,7 +3,6 @@ import { AnimatedBackground } from '@/components/layout/animated-background';
 import { DetailDrawers } from '@/components/global/action/detail-drawers';
 import { ActionDrawer } from '@/components/global/action-drawer';
 import { EditorModal } from '@/components/global/editor/editor-modal';
-import { GlobalAddButton } from '@/components/global/global-add-button';
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { system } from '@/styles/theme';
@@ -37,7 +36,6 @@ export function GlobalComponents({ children }: { children: React.ReactNode }) {
         <DetailDrawers />
         <ActionDrawer />
         <EditorModal />
-        <GlobalAddButton />
       </ChakraProvider>
     </QueryClientProvider>
   );

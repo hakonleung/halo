@@ -4,6 +4,7 @@ import { Box, HStack, Text, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, BarChart3, Settings } from 'lucide-react';
+import { GlobalAddButton } from '@/components/global/global-add-button';
 
 /**
  * Bottom navigation bar component (mobile only)
@@ -69,6 +70,7 @@ export function BottomNavbar() {
             </Link>
           );
         })}
+        <GlobalAddButton variant="mobile-nav" />
       </HStack>
     </Box>
   );

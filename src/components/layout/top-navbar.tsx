@@ -1,10 +1,12 @@
 'use client';
 
-import { Box, HStack, Text, Link } from '@chakra-ui/react';
+import { Box, HStack, Text, Link, IconButton } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useOpenChat } from '@/hooks/use-open-chat';
 import { ChatModal } from '@/components/global/chat/chat-modal';
+import { GlobalAddButton } from '@/components/global/global-add-button';
+import { Plus } from 'lucide-react';
 
 /**
  * Top navigation bar component
@@ -84,7 +86,24 @@ export function TopNavbar() {
           </HStack>
         </HStack>
 
+        <IconButton
+          aria-label="Create New"
+          variant="ghost"
+          size="xl"
+          color="brand.matrix"
+          _hover={{
+            color: 'brand.matrix',
+            transform: 'scale(1.2)',
+            bg: 'transparent',
+          }}
+          transition="all 0.2s"
+          onClick={() => openDrawer()}
+        >
+          <Plus size={32} strokeWidth={3} />
+        </IconButton>
+
         <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
+          <GlobalAddButton />
           {/* User profile / Logout placeholder */}
         </HStack>
       </HStack>
