@@ -75,9 +75,10 @@ src/
 - **类型安全**: 严格 TS，禁用 `as`/`!`/`any`/`export *`
 - **类型定义**: 优先使用 enum 替代字符串字面量联合类型，提升类型安全性和可维护性
 - **配置对象类型**: 使用 `Record<EnumType, ValueType>` 类型定义配置对象，确保类型安全
-- **文件大小**: < 300 行，大文件拆分（如 dashboard-service.ts 超过 300 行应拆分）
+- **文件大小**: < 300 行，大文件拆分（如 dashboard-service.ts 超过 300 行应拆分）。如果文件略超限制（如 350 行），应在后续迭代中优先拆分
 - **脚本**: `tsc --noEmit` + `lint --fix` 每次生成后运行
 - **绕过**: 复杂类型用 `eslint-disable-next-line` 或 `@ts-expect-error`
+- **代码复用**: 识别重复代码模式，提取共享组件或工具函数，提升可维护性
 
 ## 集成约定
 
@@ -100,17 +101,21 @@ src/
 
 - **RESTful**: `/api/[resource]` (列表/创建), `/api/[resource]/[id]` (详情/更新/删除)
 - **Chat API**: `/api/chat/conversation` (单对话模式，每个用户只有一个 conversation), `/api/chat/message` (发送消息)
+- **API 路径命名**: 单数资源使用单数路径（如 `/api/chat/conversation`），复数资源使用复数路径（如 `/api/behaviors`）
 - **响应格式统一**: 所有 API 使用统一的响应格式 `{ data: T | null, error: string | null }`，确保前端处理逻辑一致
 - **鉴权处理**: 使用 `createApiHandler` 辅助函数统一处理鉴权逻辑，避免重复代码
 - **错误处理**: 统一的错误处理逻辑，返回清晰的错误信息
 - **状态码语义化**: 使用语义化的 HTTP 状态码（200 成功、201 创建、400 请求错误、401 鉴权失败、404 未找到、500 服务器错误等）
 - **特殊 API**: 对于特殊需求（流式响应、cookie），保持原样，不强行统一
+- **性能优化**: 对于需要限制上下文长度的场景（如 Chat），后端只使用最近 N 条记录作为 context，前端仍可获取完整历史用于显示
 
 ## 数据库约定
 
 - 主键: `id` (UUID), 外键: `userId`
 - 时间戳: `createdAt`, `updatedAt`
 - 使用 Drizzle schema 定义，`drizzle-kit` 生成迁移
+- **JSONB 字段**: 利用 PostgreSQL JSONB 字段存储灵活配置（如用户画像、情绪记录），无需频繁迁移数据库
+- **最近 N 条记录模式**: 对于需要维护最近 N 条记录的字段（如最近 20 条情绪），使用 JSONB 数组，在添加新记录时自动截断到 N 条
 
 ## 测试约定
 
@@ -153,6 +158,13 @@ src/
 
 - **Feature Flag 模块**: 使用 enum 类型定义功能标识，配置对象使用 `Record<FeatureFlag, boolean>` 类型，确保类型安全
 - **性能优化**: 在组件中使用 `useMemo` 缓存基于 feature flag 的计算结果，使用 `useEffect` 处理状态切换逻辑
+
+## AI Agent 设计约定
+
+- **System Prompt 管理**: System Prompt 应独立为模块（如 `system-prompt.ts`），避免在 API route 中硬编码，支持动态生成
+- **后台异步处理**: 对于不阻塞主流程的 AI 分析任务（如用户画像更新），使用后台异步处理，在 `onFinish` 回调中触发
+- **Agent 模块化**: 每个 Agent 应独立为模块，职责单一，便于测试和维护
+- **异步操作不阻塞**: AI 生成标题等辅助功能应异步执行，不阻塞主要业务流程
 
 ## 重构最佳实践
 

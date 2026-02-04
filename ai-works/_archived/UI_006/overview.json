@@ -1,0 +1,8 @@
+{
+  "id": "UI_006",
+  "title": "select 类型元数据字段渲染",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-03T00:00:00Z",
+  "learned_summary": "代码复用：共享组件提取模式"
+}

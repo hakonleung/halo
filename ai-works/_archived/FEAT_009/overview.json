@@ -1,0 +1,8 @@
+{
+  "id": "FEAT_009",
+  "title": "用户画像与情绪追踪",
+  "status": "completed",
+  "learned": true,
+  "learned_at": "2026-02-03T00:00:00Z",
+  "learned_summary": "System Prompt 模块化、Profile Agent 后台异步处理、JSONB 数据结构设计"
+}

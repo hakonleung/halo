@@ -104,6 +104,9 @@
     "chat-modal.tsx 文件略超 300 行限制（~450 行），建议后续拆分",
     "所有 P0 功能已实现并通过类型检查",
     "AI 标题生成使用 gpt-4o-mini，响应快速且成本低"
-  ]
+  ],
+  "learned": true,
+  "learned_at": "2026-02-03T00:00:00Z",
+  "learned_summary": "AI 标题生成异步处理、URL Query 状态同步模式、内联编辑交互模式、文件大小控制"
 }
 
