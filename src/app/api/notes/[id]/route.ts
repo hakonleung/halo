@@ -1,5 +1,5 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { noteService } from '@/lib/note-service';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { noteService } from '@/server/services/note-service';
 
 export const PATCH = createApiHandler(
   async (request, params = Promise.resolve({ id: '' }), supabase, user) => {

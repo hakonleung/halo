@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { authService } from '@/lib/auth-service';
-import { getSupabaseClient } from '@/lib/supabase-server';
+import { authService } from '@/server/services/auth-service';
+import { getSupabaseClient } from '@/server/services/supabase-server';
 
 export async function POST() {
   try {

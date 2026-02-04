@@ -1,7 +1,7 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { goalService } from '@/lib/goal-service';
-import { goalProgressService } from '@/lib/goal-progress-service';
-import type { GoalProgress as ClientGoalProgress } from '@/types/goal-client';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { goalService } from '@/server/services/goal-service';
+import { goalProgressService } from '@/server/services/goal-progress-service';
+import type { GoalProgress as ClientGoalProgress } from '@/client/types/goal-client';
 
 export const GET = createApiHandler(
   async (_request, params = Promise.resolve({ id: '' }), supabase, user) => {

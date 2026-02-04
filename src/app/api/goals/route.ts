@@ -1,5 +1,5 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { goalService, type GetGoalsParams } from '@/lib/goal-service';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { goalService, type GetGoalsParams } from '@/server/services/goal-service';
 
 export const GET = createApiHandler(async (request, _params, supabase, user) => {
   // Parse query parameters

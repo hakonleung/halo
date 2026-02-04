@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { GlobalComponents } from '@/components/global/global-components';
+import { GlobalComponents } from '@/client/components/global-components';
 import './fonts.css';
 
 export const metadata: Metadata = {

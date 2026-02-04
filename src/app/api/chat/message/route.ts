@@ -1,12 +1,12 @@
 import { createUIMessageStreamResponse, createUIMessageStream, type UIMessage } from 'ai';
 import { toUIMessageStream, toBaseMessages } from '@ai-sdk/langchain';
-import { getSupabaseClient } from '@/lib/supabase-server';
-import { settingsService } from '@/lib/settings-service';
-import { chatService } from '@/lib/chat-service';
-import { createLLM } from '@/lib/agents/factory';
-import { createChatTools } from '@/lib/agents/tools';
-import { generateConversationTitle } from '@/lib/agents/title-generator';
-import { ChatRole } from '@/types/chat-server';
+import { getSupabaseClient } from '@/server/services/supabase-server';
+import { settingsService } from '@/server/services/settings-service';
+import { chatService } from '@/server/services/chat-service';
+import { createLLM } from '@/server/agents/factory';
+import { createChatTools } from '@/server/agents/tools';
+import { generateConversationTitle } from '@/server/agents/title-generator';
+import { ChatRole } from '@/server/types/chat-server';
 import { createAgent } from 'langchain';
 
 interface ChatRequestBody {

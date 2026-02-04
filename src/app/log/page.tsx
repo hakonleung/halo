@@ -1,9 +1,9 @@
 'use client';
 
 import { Container } from '@chakra-ui/react';
-import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
+import { AuthenticatedLayout } from '@/client/components/layout/authenticated-layout';
 
-import { MergeLogTimeline } from '@/components/log/merge-log-timeline';
+import { MergeLogTimeline } from '@/client/components/log';
 
 export default function LogPage() {
   return (

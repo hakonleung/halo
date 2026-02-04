@@ -1,6 +1,6 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { dashboardService } from '@/lib/dashboard-service';
-import { DashboardRange } from '@/types/dashboard-server';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { dashboardService } from '@/server/services/dashboard-service';
+import { DashboardRange } from '@/server/types/dashboard-server';
 
 export const GET = createApiHandler(async (request, _params, supabase, user) => {
   // Parse query parameters

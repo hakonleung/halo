@@ -1,5 +1,5 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { settingsService } from '@/lib/settings-service';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { settingsService } from '@/server/services/settings-service';
 
 export const GET = createApiHandler(async (_request, _params, supabase, user) => {
   const data = await settingsService.getSettings(supabase, user.id);

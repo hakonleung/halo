@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { authService } from '@/lib/auth-service';
-import { decryptPassword } from '@/utils/crypto';
-import { getSupabaseClientForApiRoute } from '@/lib/supabase-server';
+import { authService } from '@/server/services/auth-service';
+import { decryptPassword } from '@/server/utils/crypto';
+import { getSupabaseClientForApiRoute } from '@/server/services/supabase-server';
 
 export async function POST(request: Request) {
   try {

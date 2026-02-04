@@ -1,5 +1,5 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { chatService } from '@/lib/chat-service';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { chatService } from '@/server/services/chat-service';
 
 export const GET = createApiHandler(async (_request, _params, supabase, user) => {
   const data = await chatService.getConversations(supabase, user.id);

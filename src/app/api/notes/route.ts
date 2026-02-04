@@ -1,5 +1,5 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { noteService } from '@/lib/note-service';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { noteService } from '@/server/services/note-service';
 
 export const GET = createApiHandler(async (_request, _params, supabase, user) => {
   const data = await noteService.getNotes(supabase, user.id);

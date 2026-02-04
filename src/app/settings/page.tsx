@@ -1,8 +1,8 @@
 'use client';
 
-import { withAuth } from '@/components/auth/with-auth';
-import { SettingsPageContent } from '@/components/settings/settings-page-content';
-import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
+import { withAuth } from '@/client/components/auth/with-auth';
+import { SettingsPageContent } from '@/client/components/settings/settings-page-content';
+import { AuthenticatedLayout } from '@/client/components/layout/authenticated-layout';
 
 function SettingsPage() {
   return (

@@ -1,6 +1,6 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { chatService } from '@/lib/chat-service';
-import type { UpdateConversationRequest } from '@/types/chat-server';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { chatService } from '@/server/services/chat-service';
+import type { UpdateConversationRequest } from '@/server/types/chat-server';
 
 /**
  * PATCH /api/chat/conversations/[id]

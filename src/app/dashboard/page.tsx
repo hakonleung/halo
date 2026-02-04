@@ -2,17 +2,17 @@
 
 import { useState } from 'react';
 import { Box, Flex, SimpleGrid, VStack } from '@chakra-ui/react';
-import { withAuth } from '@/components/auth/with-auth';
-import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
+import { withAuth } from '@/client/components/auth/with-auth';
+import { AuthenticatedLayout } from '@/client/components/layout/authenticated-layout';
 
-import { useDashboardStats, useTrends, useHeatmap } from '@/hooks/use-dashboard';
-import type { TimeRange } from '@/types/dashboard-client';
-import { TimeRangePreset } from '@/types/dashboard-client';
-import { TimeRangeSelector } from '@/components/dashboard/time-range-selector';
-import { StatsCardGroup } from '@/components/dashboard/stats-card-group';
-import { CalendarHeatmap } from '@/components/dashboard/calendar-heatmap';
-import { TrendLineChart } from '@/components/dashboard/trend-line-chart';
-import { GoalProgressSection } from '@/components/dashboard/goal-progress-section';
+import { useDashboardStats, useTrends, useHeatmap } from '@/client/hooks/use-dashboard';
+import type { TimeRange } from '@/client/types/dashboard-client';
+import { TimeRangePreset } from '@/client/types/dashboard-client';
+import { TimeRangeSelector } from '@/client/components/dashboard/time-range-selector';
+import { StatsCardGroup } from '@/client/components/dashboard/stats-card-group';
+import { CalendarHeatmap } from '@/client/components/dashboard/calendar-heatmap';
+import { TrendLineChart } from '@/client/components/dashboard/trend-line-chart';
+import { GoalProgressSection } from '@/client/components/dashboard/goal-progress-section';
 
 function DashboardContent() {
   const [timeRange, setTimeRange] = useState<TimeRange>({

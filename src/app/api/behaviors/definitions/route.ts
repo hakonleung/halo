@@ -1,5 +1,5 @@
-import { createApiHandler } from '@/lib/api-helpers';
-import { behaviorService } from '@/lib/behavior-service';
+import { createApiHandler } from '@/server/services/api-helpers';
+import { behaviorService } from '@/server/services/behavior-service';
 
 export const GET = createApiHandler(async (_request, _params, supabase, user) => {
   const data = await behaviorService.getDefinitions(supabase, user.id);
