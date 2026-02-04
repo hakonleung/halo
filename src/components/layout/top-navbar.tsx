@@ -5,8 +5,8 @@ import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useOpenChat } from '@/hooks/use-open-chat';
 import { ChatModal } from '@/components/global/chat/chat-modal';
-import { GlobalAddButton } from '@/components/global/global-add-button';
 import { Plus } from 'lucide-react';
+import { useActionDrawerStore } from '@/store/action-drawer-store';
 
 /**
  * Top navigation bar component
@@ -14,6 +14,7 @@ import { Plus } from 'lucide-react';
 export function TopNavbar() {
   const pathname = usePathname();
   const { isOpen, openChat, closeChat } = useOpenChat();
+  const { openDrawer } = useActionDrawerStore();
 
   const navLinks = [
     { label: 'LOG', path: '/log' },
@@ -101,11 +102,6 @@ export function TopNavbar() {
         >
           <Plus size={32} strokeWidth={3} />
         </IconButton>
-
-        <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
-          <GlobalAddButton />
-          {/* User profile / Logout placeholder */}
-        </HStack>
       </HStack>
       <ChatModal isOpen={isOpen} onClose={closeChat} />
     </Box>
