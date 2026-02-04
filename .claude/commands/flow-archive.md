@@ -27,7 +27,11 @@
 2. 生成归档报告
 3. 保存到 `ai-works/_archived/[单号]/`
 4. 删除原始目录
-5. 提交到 Git
+5. 提取技术经验并更新配置文件（自动学习）
+6. 标记归档为 learned
+7. 提交到 Git
+
+**注意**：归档时会自动执行学习流程，提取技术经验并更新到 `tech-config.md`、`.cursorrules` 和 `CLAUDE.md`，无需单独执行 `/flow-learn` 指令。
 
 ## 参数说明
 
