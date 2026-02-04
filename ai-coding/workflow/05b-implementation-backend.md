@@ -25,7 +25,7 @@ flowchart LR
 ## 执行步骤
 
 1. **实现 Service 层**
-   - `src/lib/xxx-service.ts`
+   - `src/server/services/xxx-service.ts`
    - CRUD 方法、权限隔离
 
 2. **实现 API Routes**
@@ -34,7 +34,7 @@ flowchart LR
 
 3. **同步编写测试** (测试左移)
    - 每实现一个方法，立即编写测试
-   - `src/lib/__tests__/xxx-service.test.ts`
+   - `src/server/services/__tests__/xxx-service.test.ts`
 
 4. **运行验证**
    - `pnpm test && pnpm lint && pnpm tsc --noEmit`
@@ -52,10 +52,10 @@ flowchart LR
 - **操作历史**: `05b_backend/history.json`
 
 **代码产出**:
-- `src/lib/xxx-service.ts`
+- `src/server/services/xxx-service.ts`
 - `src/app/api/xxx/route.ts`
 - `src/app/api/xxx/[id]/route.ts`
-- `src/lib/__tests__/xxx-service.test.ts`
+- `src/server/services/__tests__/xxx-service.test.ts`
 
 ## AI 自验收
 

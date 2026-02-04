@@ -94,24 +94,25 @@ run_base_checks() {
 }
 
 check_05a() {
-  require_find "src/types" "*-server.ts" "server type files"
-  require_find "src/types" "*-client.ts" "client type files"
-  require_find "src/types/__tests__" "*.test.ts" "type tests"
-  require_file "src/db/schema.ts"
+  require_find "src/server/types" "*-server.ts" "server type files"
+  require_find "src/client/types" "*-client.ts" "client type files"
+  require_find "src/server/types/__tests__" "*.test.ts" "server type tests"
+  require_find "src/client/types/__tests__" "*.test.ts" "client type tests"
+  require_file "src/server/db/schema.ts"
   require_find "supabase/migrations" "*.sql" "migration files"
 }
 
 check_05b() {
-  require_find "src/lib" "*-service.ts" "service files"
+  require_find "src/server/services" "*-service.ts" "service files"
   require_find "src/app/api" "route.ts" "API routes"
-  require_find "src/lib/__tests__" "*.test.ts" "service tests"
+  require_find "src/server/services/__tests__" "*.test.ts" "service tests"
 }
 
 check_05c() {
-  require_find "src/hooks" "use-*.ts" "hooks"
-  require_find "src/components" "*.tsx" "components"
+  require_find "src/client/hooks" "use-*.ts" "hooks"
+  require_find "src/client/components" "*.tsx" "components"
   require_find "src/app" "page.tsx" "pages"
-  require_find "src/components" "*.test.tsx" "component tests"
+  require_find "src/client/components" "*.test.tsx" "component tests"
 }
 
 check_06() {

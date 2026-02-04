@@ -24,4 +24,4 @@
 - 基础: 0 | 悬浮: 100 | 导航: 200 | 下拉: 300 | 侧边栏遮罩: 400 | 侧边栏: 500 | 对话框遮罩: 600 | 对话框: 700 | Toast: 800 | 全局加载: 900
 
 ### 文件路径
-- Theme: `src/styles/theme.ts` | 组件样式: `src/styles/components/` | UI组件: `src/components/ui/` | 共享组件: `src/components/shared/` | 布局: `src/components/layout/`
+- Theme: `src/client/theme/index.ts` | 组件样式: `src/client/theme/components/` | UI组件: `src/client/components/shared/` | 共享组件: `src/client/components/shared/` | 布局: `src/client/components/layout/`

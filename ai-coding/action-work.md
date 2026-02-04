@@ -64,8 +64,8 @@ flowchart TB
 ### 同步检查矩阵
 
 - **api-spec.md**: API 端点 - `src/app/api/**`
-- **tech-design.md**: 数据模型 - `src/db/schema.ts`
-- **ui-design.md**: 组件清单 - `src/components/**`
+- **tech-design.md**: 数据模型 - `src/server/db/schema.ts`
+- **ui-design.md**: 组件清单 - `src/client/components/**`
 
 ### 检查触发时机
 
@@ -152,11 +152,12 @@ AI **自动连续执行**，根据风险等级决定暂停：
 
 ### 05b & 05c 职责边界
 
-- **`src/types/*`**: 05b 后端: 只读, 05c 前端: 只读
-- **`src/lib/*-service.ts`**: 05b 后端: 创建/修改, 05c 前端: -
+- **`src/server/types/*`**: 05b 后端: 只读, 05c 前端: 只读
+- **`src/client/types/*`**: 05b 后端: 只读, 05c 前端: 只读
+- **`src/server/services/*-service.ts`**: 05b 后端: 创建/修改, 05c 前端: -
 - **`src/app/api/**`**: 05b 后端: 创建/修改, 05c 前端: -
-- **`src/hooks/*`**: 05b 后端: -, 05c 前端: 创建/修改
-- **`src/components/**`**: 05b 后端: -, 05c 前端: 创建/修改
+- **`src/client/hooks/*`**: 05b 后端: -, 05c 前端: 创建/修改
+- **`src/client/components/**`**: 05b 后端: -, 05c 前端: 创建/修改
 
 ### 前端 Mock 策略
 

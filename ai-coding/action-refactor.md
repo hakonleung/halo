@@ -16,7 +16,7 @@
 /flow-refactor [范围] [目标]
 ```
 
-**示例**: `/flow-refactor src/lib/auth-service.ts 拆分为多个小文件`
+**示例**: `/flow-refactor src/server/services/auth-service.ts 拆分为多个小文件`
 
 ## 重构原则
 

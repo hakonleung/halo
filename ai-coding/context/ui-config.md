@@ -190,12 +190,13 @@
 
 ## 文件路径
 
-- **Theme配置**: `src/styles/theme.ts`
-- **组件样式**: `src/styles/components/`
-- **基础UI组件**: `src/components/ui/`
-- **共享业务组件**: `src/components/shared/`
-- **布局组件**: `src/components/layout/`
-- **认证组件**: `src/components/auth/`
+- **Theme配置**: `src/client/theme/index.ts`
+- **组件样式**: `src/client/theme/components/`
+- **基础UI组件**: `src/client/components/shared/`
+- **共享业务组件**: `src/client/components/shared/`
+- **布局组件**: `src/client/components/layout/`
+- **认证组件**: `src/client/components/auth/`
+- **Chat组件**: `src/client/components/chat/`
 
 ## Logo 规范
 

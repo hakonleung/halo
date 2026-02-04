@@ -46,8 +46,8 @@ return useQuery({ queryKey: ['xxx'], queryFn: fetcher });
 
 ## 执行步骤
 
-1. **实现 Hooks**: `src/hooks/use-xxx.ts`
-2. **实现 UI 组件**: `src/components/xxx/`
+1. **实现 Hooks**: `src/client/hooks/use-xxx.ts`
+2. **实现 UI 组件**: `src/client/components/xxx/`
 3. **实现页面**: `src/app/xxx/page.tsx`
 4. **同步编写测试**: 每实现一个组件，立即编写测试
 5. **视觉走查**: 对照 UI 设计检查
@@ -65,10 +65,10 @@ return useQuery({ queryKey: ['xxx'], queryFn: fetcher });
 - **操作历史**: `05c_frontend/history.json`
 
 **代码产出**:
-- `src/hooks/use-xxx.ts`
-- `src/components/xxx/*.tsx`
+- `src/client/hooks/use-xxx.ts`
+- `src/client/components/xxx/*.tsx`
 - `src/app/xxx/page.tsx`
-- `src/components/xxx/__tests__/*.test.tsx`
+- `src/client/components/xxx/__tests__/*.test.tsx`
 
 ## AI 自验收
 

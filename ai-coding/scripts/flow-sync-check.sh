@@ -79,10 +79,10 @@ api_doc_count="$(count_grep "^### (GET|POST|PUT|DELETE)" "$DOC_API")"
 api_code_count="$(count_find "src/app/api" "route.ts")"
 
 type_doc_count="$(count_grep "^(interface|type) " "$DOC_TECH")"
-type_code_count="$(grep -R -E "^(export )?(interface|type) " src/types --include="*.ts" 2>/dev/null | wc -l | tr -d ' ')"
+type_code_count="$(grep -R -E "^(export )?(interface|type) " src/server/types src/client/types --include="*.ts" 2>/dev/null | wc -l | tr -d ' ')"
 
 ui_doc_count="$(count_find "$DOC_UI_DIR" "*.md")"
-ui_code_count="$(find src/components -type f -name "*.tsx" ! -path "*/__tests__/*" 2>/dev/null | wc -l | tr -d ' ')"
+ui_code_count="$(find src/client/components -type f -name "*.tsx" ! -path "*/__tests__/*" 2>/dev/null | wc -l | tr -d ' ')"
 
 calc_ratio() {
   local doc="$1"

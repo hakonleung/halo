@@ -26,11 +26,11 @@ flowchart LR
 ## 执行步骤
 
 1. **创建 TypeScript 类型文件**
-   - 服务端: `src/types/xxx-server.ts`
-   - 客户端: `src/types/xxx-client.ts`
+   - 服务端: `src/server/types/xxx-server.ts`
+   - 客户端: `src/client/types/xxx-client.ts`
 
 2. **创建/更新数据库 Schema**
-   - 更新 `src/db/schema.ts`
+   - 更新 `src/server/db/schema.ts`
 
 3. **生成数据库迁移**
    - 检查 SQL 正确性
@@ -39,7 +39,8 @@ flowchart LR
    - Client ↔ Server ↔ Schema 映射
 
 5. **生成类型测试** (测试左移)
-   - `src/types/__tests__/xxx.test.ts`
+   - `src/server/types/__tests__/xxx.test.ts`
+   - `src/client/types/__tests__/xxx.test.ts`
 
 ## 产出物
 
@@ -48,18 +49,19 @@ flowchart LR
 - **操作历史**: `05a_prep/history.json`
 
 **代码产出**:
-- `src/types/xxx-server.ts`
-- `src/types/xxx-client.ts`
-- `src/db/schema.ts` (更新)
+- `src/server/types/xxx-server.ts`
+- `src/client/types/xxx-client.ts`
+- `src/server/db/schema.ts` (更新)
 - `supabase/migrations/xxx.sql`
-- `src/types/__tests__/*.test.ts`
+- `src/server/types/__tests__/*.test.ts`
+- `src/client/types/__tests__/*.test.ts`
 
 ## AI 自验收
 
-- **类型文件**: xxx-server.ts + xxx-client.ts 存在
-- **Schema**: schema.ts 已更新
+- **类型文件**: `src/server/types/xxx-server.ts` + `src/client/types/xxx-client.ts` 存在
+- **Schema**: `src/server/db/schema.ts` 已更新
 - **迁移**: 迁移文件已生成
-- **类型测试**: types/__tests__/ 存在且通过
+- **类型测试**: `src/server/types/__tests__/` 和 `src/client/types/__tests__/` 存在且通过
 - **编译**: `pnpm tsc --noEmit` 无错误
 
 > 验证命令详见 [validation-scripts.md](../shared/validation-scripts.md)

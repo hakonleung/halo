@@ -36,8 +36,8 @@
 
 **检查内容**:
 - **api-spec.md**: API 端点 - `src/app/api/**`
-- **tech-design.md**: 数据模型 - `src/db/schema.ts`
-- **ui-design.md**: 组件清单 - `src/components/**`
+- **tech-design.md**: 数据模型 - `src/server/db/schema.ts`
+- **ui-design.md**: 组件清单 - `src/client/components/**`
 
 **同步率门槛**:
 - **05 完成**: ≥ 90%

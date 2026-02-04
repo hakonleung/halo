@@ -55,16 +55,16 @@ pnpm test && pnpm lint && pnpm tsc --noEmit
 
 ```bash
 # 检查类型文件
-ls src/types/*-server.ts src/types/*-client.ts
+ls src/server/types/*-server.ts src/client/types/*-client.ts
 
 # 检查类型测试
-ls src/types/__tests__/*.test.ts
+ls src/server/types/__tests__/*.test.ts src/client/types/__tests__/*.test.ts
 
 # 运行类型测试
-pnpm test src/types/__tests__/
+pnpm test src/server/types/__tests__/ src/client/types/__tests__/
 
 # 检查 Schema 更新
-git diff src/db/schema.ts | head -20
+git diff src/server/db/schema.ts | head -20
 
 # 检查迁移文件
 ls supabase/migrations/*.sql | tail -1
@@ -74,7 +74,7 @@ ls supabase/migrations/*.sql | tail -1
 
 ```bash
 # 检查 Service 文件
-ls src/lib/*-service.ts
+ls src/server/services/*-service.ts
 
 # 检查 API 文件
 ls src/app/api/*/route.ts
@@ -84,10 +84,10 @@ ls src/app/api/*/route.ts
 
 ```bash
 # 检查 Hooks 文件
-ls src/hooks/use-*.ts
+ls src/client/hooks/use-*.ts
 
 # 检查组件目录
-ls -d src/components/*/
+ls -d src/client/components/*/
 
 # 检查页面文件
 ls src/app/*/page.tsx
