@@ -1,10 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { TimelineItem } from '@/components/shared/timeline-view';
+import type { TimelineItem } from '@/types/timeline';
 import { NoteTimelineCard } from '@/components/log/timeline/note-timeline-card';
-import { FilterTimelineCard } from '@/components/log/timeline/filter-timeline-card';
-import { FilterBar } from '@/components/shared/filter-bar';
 import { useNotes } from '@/hooks/use-notes';
 
 interface UseNoteTimelineItemsProps {
@@ -18,7 +16,6 @@ interface UseNoteTimelineItemsProps {
   onFilterChange: (key: string, value: string) => void;
   onNoteClick: (noteId: string) => void;
   blockOffset?: number;
-  includeFilter?: boolean;
 }
 
 export function useNoteTimelineItems({
@@ -32,7 +29,6 @@ export function useNoteTimelineItems({
   onFilterChange,
   onNoteClick,
   blockOffset = 0,
-  includeFilter = true,
 }: UseNoteTimelineItemsProps): TimelineItem[] {
   const { data: notesData } = useNotes();
   const allNotes = notesData || [];
@@ -71,41 +67,6 @@ export function useNoteTimelineItems({
   const items = useMemo<TimelineItem[]>(() => {
     const result: TimelineItem[] = [];
 
-    // Filter as first item if needed
-    if (includeFilter) {
-      result.push({
-        Renderer: ({ w, h, scrollContainerRef }) => (
-          <FilterTimelineCard width={w} height={h} scrollContainerRef={scrollContainerRef}>
-            <FilterBar
-              filters={[
-                {
-                  key: 'search',
-                  type: 'search',
-                  placeholder: 'Search...',
-                  value: noteSearchQuery,
-                  maxW: '150px',
-                },
-                {
-                  key: 'tag',
-                  type: 'select',
-                  placeholder: 'Tag',
-                  options: noteTagOptions,
-                  value: noteTagFilter,
-                  minW: '100px',
-                },
-              ]}
-              onChange={onFilterChange}
-            />
-          </FilterTimelineCard>
-        ),
-        h: 60,
-        w: 400,
-        start: timelineStart,
-        end: timelineEnd,
-        blockOffset,
-      });
-    }
-
     // Notes items
     filteredNotes.forEach((note) => {
       const noteDate = new Date(note.createdAt);
@@ -127,6 +88,7 @@ export function useNoteTimelineItems({
         start,
         end,
         blockOffset,
+        type: 'note',
       });
     });
 
@@ -141,7 +103,6 @@ export function useNoteTimelineItems({
     onFilterChange,
     onNoteClick,
     blockOffset,
-    includeFilter,
   ]);
 
   return items;

@@ -1,12 +1,17 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { TimelineItem } from '@/components/shared/timeline-view';
 import { RecordTimelineCard } from '@/components/log/timeline/record-timeline-card';
-import { FilterTimelineCard } from '@/components/log/timeline/filter-timeline-card';
-import { RecordFilters, type RecordFiltersType } from '@/components/log/record-filters';
 import { useBehaviorRecords } from '@/hooks/use-behavior-records';
-import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
+import type { BehaviorCategory, BehaviorRecordWithDefinition } from '@/types/behavior-client';
+import type { TimelineItem } from '@/types/timeline';
+
+interface RecordFiltersType {
+  category?: BehaviorCategory | 'all';
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+}
 
 interface UseRecordTimelineItemsProps {
   timelineStart: Date;
@@ -15,7 +20,6 @@ interface UseRecordTimelineItemsProps {
   onFilterChange: (newFilters: Partial<RecordFiltersType>) => void;
   onRecordClick: (recordId: string) => void;
   blockOffset?: number;
-  includeFilter?: boolean;
 }
 
 export function useRecordTimelineItems({
@@ -25,7 +29,6 @@ export function useRecordTimelineItems({
   onFilterChange,
   onRecordClick,
   blockOffset = 0,
-  includeFilter = true,
 }: UseRecordTimelineItemsProps): TimelineItem[] {
   const { records } = useBehaviorRecords(100, 0);
 
@@ -44,26 +47,6 @@ export function useRecordTimelineItems({
 
   const items = useMemo<TimelineItem[]>(() => {
     const result: TimelineItem[] = [];
-
-    // Filter as first item if needed
-    if (includeFilter) {
-      result.push({
-        Renderer: ({ w, h, scrollContainerRef }) => (
-          <FilterTimelineCard width={w} height={h} scrollContainerRef={scrollContainerRef}>
-            <RecordFilters
-              filters={recordFilters}
-              onFilterChange={onFilterChange}
-              hideDatePickers={true}
-            />
-          </FilterTimelineCard>
-        ),
-        h: 60,
-        w: 400,
-        start: timelineStart,
-        end: timelineEnd,
-        blockOffset,
-      });
-    }
 
     // Records items
     filteredRecords.forEach((record) => {
@@ -86,6 +69,7 @@ export function useRecordTimelineItems({
         start,
         end,
         blockOffset,
+        type: 'record',
       });
     });
 
@@ -98,7 +82,6 @@ export function useRecordTimelineItems({
     onFilterChange,
     onRecordClick,
     blockOffset,
-    includeFilter,
   ]);
 
   return items;

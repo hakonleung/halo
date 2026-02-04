@@ -11,6 +11,9 @@ dependencies:
   '@ai-sdk/react':
     specifier: ^3.0.70
     version: 3.0.70(react@19.2.3)(zod@4.3.5)
+  '@ark-ui/react':
+    specifier: ^5.30.0
+    version: 5.30.0(react-dom@19.2.3)(react@19.2.3)
   '@chakra-ui/react':
     specifier: ^3.31.0
     version: 3.31.0(@emotion/react@11.14.0)(react-dom@19.2.3)(react@19.2.3)

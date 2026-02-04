@@ -23,6 +23,7 @@
   "dependencies": {
     "@ai-sdk/langchain": "^2.0.73",
     "@ai-sdk/react": "^3.0.70",
+    "@ark-ui/react": "^5.30.0",
     "@chakra-ui/react": "^3.31.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
