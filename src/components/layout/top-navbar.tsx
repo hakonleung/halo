@@ -90,7 +90,6 @@ export function TopNavbar() {
         <IconButton
           aria-label="Create New"
           variant="ghost"
-          size="xl"
           color="brand.matrix"
           _hover={{
             color: 'brand.matrix',

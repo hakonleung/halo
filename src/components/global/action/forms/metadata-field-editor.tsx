@@ -115,8 +115,8 @@ export function MetadataFieldEditor({
   ].includes(field.type);
 
   return (
-    <Box p={3} borderWidth="1px" borderColor="rgba(0, 255, 65, 0.2)" borderRadius="md">
-      <VStack gap={3} align="stretch">
+    <Box p={2} borderWidth="1px" borderColor="rgba(0, 255, 65, 0.2)" borderRadius="4px">
+      <VStack gap={2} align="stretch">
         {/* Row 1: Name, Type, Actions */}
         <HStack gap={2}>
           <InputField
@@ -141,7 +141,6 @@ export function MetadataFieldEditor({
             transformValue={(value) => value}
           />
           <IconButton
-            size="xs"
             variant="ghost"
             onClick={onToggleConfig}
             aria-label="Config"
@@ -149,25 +148,18 @@ export function MetadataFieldEditor({
           >
             <LuSettings />
           </IconButton>
-          <IconButton
-            size="xs"
-            variant="ghost"
-            colorScheme="red"
-            onClick={onRemove}
-            aria-label="Remove"
-          >
+          <IconButton variant="ghost" colorScheme="red" onClick={onRemove} aria-label="Remove">
             <LuTrash2 />
           </IconButton>
         </HStack>
 
         {/* Row 2: Required + type-specific required config */}
-        <HStack gap={4}>
+        <HStack gap={2}>
           <Checkbox.Root
             checked={field.required}
             onCheckedChange={(e) => {
               onChange({ ...field, required: !!e.checked });
             }}
-            size="sm"
           >
             <Checkbox.HiddenInput />
             <Checkbox.Control />
@@ -224,8 +216,8 @@ export function MetadataFieldEditor({
         {/* Expandable Advanced Config */}
         <Collapsible.Root open={isConfigExpanded}>
           <Collapsible.Content>
-            <Box pt={3} mt={2} borderTopWidth="1px" borderColor="rgba(0, 255, 65, 0.1)">
-              <VStack gap={3} align="stretch">
+            <Box pt={2} mt={2} borderTopWidth="1px" borderColor="rgba(0, 255, 65, 0.1)">
+              <VStack gap={2} align="stretch">
                 <Text fontSize="xs" color="text.mist" fontFamily="mono">
                   ADVANCED CONFIG
                 </Text>
@@ -241,7 +233,7 @@ export function MetadataFieldEditor({
                   />
                 )}
                 {field.type === 'number' && (
-                  <HStack gap={3}>
+                  <HStack gap={2}>
                     <InputField
                       label="Min"
                       value={field.config.min ?? ''}
@@ -348,9 +340,8 @@ function SelectOptionsEditor({
       </Text>
       {options.map((opt, idx) => (
         <HStack key={opt.value} gap={2}>
-          <Input size="sm" variant="outline" value={opt.label} readOnly flex={1} />
+          <Input variant="outline" value={opt.label} readOnly flex={1} />
           <IconButton
-            size="xs"
             variant="ghost"
             colorScheme="red"
             onClick={() => handleRemove(idx)}
@@ -370,7 +361,7 @@ function SelectOptionsEditor({
           flex={1}
           onKeyDown={handleKeyDown}
         />
-        <Button size="xs" variant="ghost" onClick={handleAdd} disabled={!newOption.trim()}>
+        <Button variant="ghost" onClick={handleAdd} disabled={!newOption.trim()}>
           <LuPlus />
         </Button>
       </HStack>

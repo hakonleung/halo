@@ -69,7 +69,7 @@ export function SettingsPageContent() {
   return (
     <Box p={8}>
       <VStack gap={8} align="stretch" maxW="container.lg" mx="auto">
-        <Card.Root size="lg" borderColor="brand.matrix">
+        <Card.Root borderColor="brand.matrix">
           <Card.Body>
             <HStack
               gap={2}
@@ -83,7 +83,6 @@ export function SettingsPageContent() {
                 <Button
                   key={tab.id}
                   variant="ghost"
-                  size="sm"
                   onClick={() => setActiveTab(tab.id)}
                   color={activeTab === tab.id ? 'brand.matrix' : 'text.mist'}
                   borderBottom={activeTab === tab.id ? '2px solid' : 'none'}

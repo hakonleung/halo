@@ -31,7 +31,6 @@ export function TimelineZoomControls({
     >
       <IconButton
         aria-label="Zoom Out"
-        size="xs"
         variant="ghost"
         color="brand.matrix"
         onClick={handleZoomOut}
@@ -49,7 +48,6 @@ export function TimelineZoomControls({
       </Box>
       <IconButton
         aria-label="Zoom In"
-        size="xs"
         variant="ghost"
         color="brand.matrix"
         onClick={handleZoomIn}

@@ -14,14 +14,13 @@ export function ChatHeader({ onClose, title, mobileMenuTrigger }: ChatHeaderProp
         <IconButton
           aria-label="Back"
           variant="ghost"
-          size="sm"
           onClick={onClose}
           color="text.mist"
           _hover={{ color: 'brand.matrix' }}
         >
           <ArrowLeft size={18} />
         </IconButton>
-        <Heading size="md" color="brand.matrix" fontFamily="heading">
+        <Heading color="brand.matrix" fontFamily="heading">
           {title}
         </Heading>
       </HStack>

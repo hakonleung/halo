@@ -34,7 +34,6 @@ export function GoalTimelineCard({
 
   return (
     <Card.Root
-      size="sm"
       cursor={onClick ? 'pointer' : 'default'}
       onClick={onClick}
       borderColor={
@@ -69,9 +68,7 @@ export function GoalTimelineCard({
             <Text fontSize="xs" fontWeight="bold" color="text.neon" fontFamily="mono" lineClamp={1}>
               {goal.name}
             </Text>
-            <Badge colorScheme="success" size="sm">
-              {goal.category}
-            </Badge>
+            <Badge colorScheme="success">{goal.category}</Badge>
           </HStack>
           <Text fontSize="2xs" color="text.mist" fontFamily="mono">
             {progress?.current ?? 0}/{progress?.target ?? 0}

@@ -81,7 +81,7 @@ export function AppearanceSettings() {
 
   return (
     <VStack gap={6} align="stretch" p={6}>
-      <Heading size="md" color="text.neon" fontFamily="heading" mb={2}>
+      <Heading color="text.neon" fontFamily="heading" mb={2}>
         Appearance Settings
       </Heading>
 
@@ -119,7 +119,6 @@ export function AppearanceSettings() {
             {PRESET_ACCENT_COLORS.map((preset) => (
               <Button
                 key={preset.value}
-                size="sm"
                 bg={preset.value}
                 border="2px solid"
                 borderColor={accentColor === preset.value ? 'brand.matrix' : 'transparent'}

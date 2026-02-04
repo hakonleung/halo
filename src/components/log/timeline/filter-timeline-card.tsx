@@ -20,7 +20,7 @@ export function FilterTimelineCard({
   const { translateX, contentRef } = useViewportPosition(scrollContainerRef);
 
   return (
-    <Card.Root size="sm" w={`${width}px`} h={`${height}px`} borderColor="rgba(0, 255, 65, 0.2)">
+    <Card.Root w={`${width}px`} h={`${height}px`} borderColor="rgba(0, 255, 65, 0.2)">
       <Card.Body h="100%" display="flex" alignItems="center" justifyContent="center" p={2}>
         <Center
           ref={contentRef}

@@ -30,7 +30,7 @@ export function TrendLineChart({
 }: TrendLineChartProps) {
   if (loading) {
     return (
-      <Card.Root size="sm">
+      <Card.Root>
         <Card.Body>
           <Skeleton height="14px" width="120px" mb={2} />
           <Skeleton height="200px" />
@@ -41,7 +41,7 @@ export function TrendLineChart({
 
   if (!data || data.points.length === 0) {
     return (
-      <Card.Root size="sm" borderStyle="dashed">
+      <Card.Root borderStyle="dashed">
         <Card.Body h="240px" display="flex" alignItems="center" justifyContent="center">
           <Text color="text.mist" fontFamily="mono" fontSize="sm">
             No Trend Data
@@ -64,7 +64,7 @@ export function TrendLineChart({
       : data.types;
 
   return (
-    <Card.Root size="sm">
+    <Card.Root>
       <Card.Body>
         <Flex justify="space-between" align="center" mb={2}>
           <Text fontSize="sm" color="text.neon" fontFamily="mono">

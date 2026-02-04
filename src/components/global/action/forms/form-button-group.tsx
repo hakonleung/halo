@@ -1,26 +1,55 @@
 'use client';
 
-import { HStack, Button } from '@chakra-ui/react';
+import { HStack, IconButton } from '@chakra-ui/react';
+import { X, Check, Pencil } from 'lucide-react';
 
 export function FormButtonGroup({
   onCancel,
   onSubmit,
   isLoading = false,
   disabled = false,
+  onEdit,
+  showEdit = false,
 }: {
   onCancel: () => void;
   onSubmit: () => void;
   isLoading?: boolean;
   disabled?: boolean;
+  onEdit?: () => void;
+  showEdit?: boolean;
 }) {
   return (
-    <HStack gap={4} pt={4}>
-      <Button variant="ghost" flex={1} onClick={onCancel}>
-        CANCEL
-      </Button>
-      <Button variant="primary" flex={1} onClick={onSubmit} loading={isLoading} disabled={disabled}>
-        SAVE
-      </Button>
+    <HStack gap={2} pt={4} justify="flex-end">
+      {showEdit && onEdit && (
+        <IconButton
+          aria-label="Edit"
+          variant="ghost"
+          onClick={onEdit}
+          color="text.mist"
+          _hover={{ color: 'brand.cyber' }}
+        >
+          <Pencil size={16} />
+        </IconButton>
+      )}
+      <IconButton
+        aria-label="Cancel"
+        variant="ghost"
+        onClick={onCancel}
+        color="text.mist"
+        _hover={{ color: 'brand.cyber' }}
+      >
+        <X size={16} />
+      </IconButton>
+      <IconButton
+        aria-label="Save"
+        variant="solid"
+        colorScheme="green"
+        onClick={onSubmit}
+        loading={isLoading}
+        disabled={disabled}
+      >
+        <Check size={16} />
+      </IconButton>
     </HStack>
   );
 }

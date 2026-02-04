@@ -1,15 +1,16 @@
 'use client';
 
-import { VStack, HStack, Text, Heading, Button, Skeleton, Box } from '@chakra-ui/react';
+import { VStack, HStack, Text, Heading, Button, Skeleton, Box, Badge } from '@chakra-ui/react';
 import { GoalForm } from './forms/goal-form';
 import { CriteriaDetail } from './fields/criteria-detail';
-import { GoalProgressRing } from '@/components/dashboard/goal-progress-ring';
+import { FormButtonGroup } from './forms/form-button-group';
 import { GoalStatusBadge } from '../../goals/goal-status-badge';
 import { useGoal, useUpdateGoal, useDeleteGoal } from '@/hooks/use-goals';
 import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import { useUnifiedActionDrawerStore } from '@/store/unified-action-drawer-store';
 import { useActionGuard } from '@/hooks/use-action-guard';
 import { useUnifiedActionDrawerSync } from '@/hooks/use-unified-action-drawer-sync';
+import { formatDate } from '@/utils/date-format';
 import type { GoalProgress as DashboardGoalProgress } from '@/types/dashboard-client';
 
 export function GoalActionDrawerContent({
@@ -118,64 +119,66 @@ export function GoalActionDrawerContent({
           <GoalStatusBadge status={goal.status} />
         </HStack>
         {goal.description && <Text color="text.mist">{goal.description}</Text>}
-        <HStack gap={4} fontSize="sm" color="text.mist" fontFamily="mono">
-          <Text>Category: {goal.category}</Text>
-          <Text>|</Text>
-          <Text>Start: {new Date(goal.startDate).toLocaleDateString('en-US')}</Text>
-          {goal.endDate && (
-            <>
-              <Text>|</Text>
-              <Text>End: {new Date(goal.endDate).toLocaleDateString('en-US')}</Text>
-            </>
-          )}
+        <HStack gap={4} fontSize="sm" color="text.mist" fontFamily="mono" flexWrap="wrap">
+          <Badge colorPalette="green" variant="outline">
+            {goal.category}
+          </Badge>
+          <Text>Start: {formatDate(goal.startDate)}</Text>
+          {goal.endDate && <Text>End: {formatDate(goal.endDate)}</Text>}
         </HStack>
       </VStack>
 
       {progressData && (
-        <HStack align="center" gap={6}>
-          <GoalProgressRing goal={progressData} size="lg" />
-          <VStack align="flex-start" gap={1}>
-            <Text fontSize="xl" fontWeight="bold" color="text.neon">
+        <VStack align="stretch" gap={2}>
+          <HStack justify="space-between" fontSize="sm" color="text.mist" fontFamily="mono">
+            <Text>
               {progress?.current ?? 0} / {progress?.target ?? 0}
             </Text>
-            <Text fontSize="md" color="text.mist">
-              Progress: {progress?.progress ?? 0}%
+            <Text>{progress?.progress ?? 0}%</Text>
+          </HStack>
+          <Box
+            h="8px"
+            bg="rgba(0, 255, 65, 0.1)"
+            borderRadius="4px"
+            overflow="hidden"
+            position="relative"
+          >
+            <Box
+              h="100%"
+              bg="brand.matrix"
+              borderRadius="4px"
+              width={`${Math.min(progress?.progress ?? 0, 100)}%`}
+              transition="width 0.3s ease"
+            />
+          </Box>
+          {progress?.remainingDays !== undefined && (
+            <Text fontSize="xs" color="text.dim" fontFamily="mono">
+              Remaining: {progress.remainingDays} days
             </Text>
-            {progress?.remainingDays !== undefined && (
-              <Text fontSize="sm" color="text.mist">
-                Remaining: {progress.remainingDays} days
-              </Text>
-            )}
-          </VStack>
-        </HStack>
+          )}
+        </VStack>
       )}
 
       <CriteriaDetail criteria={goal.criteria} definitions={definitions} />
 
-      <HStack gap={2} pt={4}>
+      <FormButtonGroup
+        onCancel={() => {}}
+        onSubmit={() => {}}
+        showEdit={!isEditMode}
+        onEdit={() => setEditMode(true)}
+      />
+      <HStack gap={2} pt={2}>
         {goal.status === 'active' && (
           <>
-            <Button size="sm" onClick={handleMarkComplete} loading={isUpdatingGoal} flex={1}>
+            <Button onClick={handleMarkComplete} loading={isUpdatingGoal} flex={1}>
               Mark as Completed
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleAbandon}
-              loading={isUpdatingGoal}
-              flex={1}
-            >
+            <Button variant="outline" onClick={handleAbandon} loading={isUpdatingGoal} flex={1}>
               Abandon Goal
             </Button>
           </>
         )}
-        <Button
-          size="sm"
-          colorScheme="red"
-          onClick={handleDelete}
-          loading={isDeletingGoal}
-          flex={1}
-        >
+        <Button colorScheme="red" onClick={handleDelete} loading={isDeletingGoal} flex={1}>
           Delete
         </Button>
       </HStack>

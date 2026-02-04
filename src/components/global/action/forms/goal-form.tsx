@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { VStack, HStack, Text, Button, Box } from '@chakra-ui/react';
+import { VStack, HStack, Text, Button, Box, Field } from '@chakra-ui/react';
 import { EditorField } from '../fields/editor-field';
 import { InputField } from '../fields/input-field';
 import { SelectField } from '../fields/select-field';
 import { FormButtonGroup } from './form-button-group';
+import { DatePicker } from '@/components/shared/date-picker';
+import { parseDate, type DatePickerValueChangeDetails } from '@ark-ui/react';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import { useCreateGoal, useUpdateGoal } from '@/hooks/use-goals';
@@ -213,68 +215,77 @@ export function GoalForm({
             }}
           />
 
-          <InputField
-            label="Start Date"
-            value={startDate}
-            onChange={(value) => setStartDate(typeof value === 'string' ? value : '')}
-            type="date"
-            required
-            invalid={!startDate}
-            flex={1}
-          />
+          <Field.Root required={!startDate} invalid={!startDate} flex={1}>
+            <Field.Label color="text.mist">Start Date</Field.Label>
+            <DatePicker
+              placeholder="Start date"
+              value={startDate ? [parseDate(startDate)] : []}
+              onValueChange={(details: DatePickerValueChangeDetails) => {
+                const firstValue = details.value[0];
+                if (firstValue) {
+                  setStartDate(firstValue.toString().split('T')[0]);
+                }
+              }}
+            />
+          </Field.Root>
 
-          <InputField
-            label="End Date"
-            value={endDate}
-            onChange={(value) => setEndDate(typeof value === 'string' ? value : '')}
-            type="date"
-            min={startDate || undefined}
-            flex={1}
-          />
+          <Field.Root flex={1}>
+            <Field.Label color="text.mist">End Date</Field.Label>
+            <DatePicker
+              placeholder="End date"
+              value={endDate ? [parseDate(endDate)] : []}
+              onValueChange={(details: DatePickerValueChangeDetails) => {
+                const firstValue = details.value[0];
+                if (firstValue) {
+                  setEndDate(firstValue.toString().split('T')[0]);
+                } else {
+                  setEndDate('');
+                }
+              }}
+            />
+          </Field.Root>
         </HStack>
       </VStack>
 
       {/* Criteria */}
-      <VStack gap={4} align="stretch">
+      <VStack gap={2} align="stretch">
         <HStack justify="space-between">
           <Text
             color="brand.matrix"
-            fontSize="sm"
+            fontSize="xs"
             fontFamily="mono"
             borderBottom="1px solid"
             borderColor="rgba(0, 255, 65, 0.2)"
-            pb={2}
+            pb={1}
           >
             COMPLETION CRITERIA
           </Text>
-          <Button size="xs" variant="ghost" onClick={handleAddCriterion}>
-            <LuPlus style={{ marginRight: 4 }} />
-            Add Criterion
+          <Button variant="ghost" onClick={handleAddCriterion}>
+            <LuPlus size={12} />
           </Button>
         </HStack>
 
         {criteria.map((criterion, index) => (
           <Box
             key={index}
-            p={4}
+            p={3}
             borderWidth="1px"
             borderColor="brand.matrix"
-            borderRadius="md"
+            borderRadius="4px"
             bg="rgba(0, 255, 65, 0.02)"
           >
-            <VStack gap={3} align="stretch">
+            <VStack gap={2} align="stretch">
               <HStack justify="space-between">
-                <Text color="text.mist" fontSize="sm" fontFamily="mono">
+                <Text color="text.mist" fontSize="xs" fontFamily="mono">
                   Criterion {index + 1}
                 </Text>
                 {criteria.length > 1 && (
                   <Button
-                    size="xs"
                     variant="ghost"
                     colorScheme="red"
                     onClick={() => handleRemoveCriterion(index)}
                   >
-                    <LuTrash2 />
+                    <LuTrash2 size={12} />
                   </Button>
                 )}
               </HStack>
@@ -292,73 +303,81 @@ export function GoalForm({
                 invalid={!criterion.behaviorId}
               />
 
-              <HStack gap={2}>
-                <SelectField
-                  label="Metric"
-                  value={criterion.metric}
-                  onChange={(value) => handleCriterionChange(index, 'metric', value)}
-                  options={metricOptions}
-                  flex={2}
-                  transformValue={(value) => {
-                    if (
-                      value === GoalMetric.Count ||
-                      value === GoalMetric.Sum ||
-                      value === GoalMetric.Avg
-                    ) {
-                      return value;
-                    }
-                    return GoalMetric.Count;
-                  }}
-                />
+              <Box
+                p={2}
+                borderWidth="1px"
+                borderColor="rgba(0, 255, 65, 0.3)"
+                borderRadius="4px"
+                bg="rgba(0, 255, 65, 0.05)"
+              >
+                <HStack gap={1}>
+                  <SelectField
+                    label=""
+                    value={criterion.period}
+                    onChange={(value) => handleCriterionChange(index, 'period', value)}
+                    options={periodOptions}
+                    flex={1}
+                    transformValue={(value) => {
+                      if (
+                        value === GoalPeriod.Daily ||
+                        value === GoalPeriod.Weekly ||
+                        value === GoalPeriod.Monthly
+                      ) {
+                        return value;
+                      }
+                      return GoalPeriod.Daily;
+                    }}
+                  />
 
-                <SelectField
-                  label="Operator"
-                  value={criterion.operator}
-                  onChange={(value) => handleCriterionChange(index, 'operator', value)}
-                  options={operatorOptions}
-                  flex={1}
-                  transformValue={(value) => {
-                    if (
-                      value === GoalOperator.GreaterThan ||
-                      value === GoalOperator.GreaterThanOrEqual ||
-                      value === GoalOperator.LessThan ||
-                      value === GoalOperator.LessThanOrEqual ||
-                      value === GoalOperator.Equal
-                    ) {
-                      return value;
-                    }
-                    return GoalOperator.Equal;
-                  }}
-                />
+                  <SelectField
+                    label=""
+                    value={criterion.metric}
+                    onChange={(value) => handleCriterionChange(index, 'metric', value)}
+                    options={metricOptions}
+                    flex={1}
+                    transformValue={(value) => {
+                      if (
+                        value === GoalMetric.Count ||
+                        value === GoalMetric.Sum ||
+                        value === GoalMetric.Avg
+                      ) {
+                        return value;
+                      }
+                      return GoalMetric.Count;
+                    }}
+                  />
 
-                <InputField
-                  label="Value"
-                  value={criterion.value}
-                  onChange={(value) => handleCriterionChange(index, 'value', value)}
-                  type="number"
-                  min="0"
-                  step={0.01}
-                  flex={1}
-                />
+                  <SelectField
+                    label=""
+                    value={criterion.operator}
+                    onChange={(value) => handleCriterionChange(index, 'operator', value)}
+                    options={operatorOptions}
+                    flex={1}
+                    transformValue={(value) => {
+                      if (
+                        value === GoalOperator.GreaterThan ||
+                        value === GoalOperator.GreaterThanOrEqual ||
+                        value === GoalOperator.LessThan ||
+                        value === GoalOperator.LessThanOrEqual ||
+                        value === GoalOperator.Equal
+                      ) {
+                        return value;
+                      }
+                      return GoalOperator.Equal;
+                    }}
+                  />
 
-                <SelectField
-                  label="Period"
-                  value={criterion.period}
-                  onChange={(value) => handleCriterionChange(index, 'period', value)}
-                  options={periodOptions}
-                  flex={1}
-                  transformValue={(value) => {
-                    if (
-                      value === GoalPeriod.Daily ||
-                      value === GoalPeriod.Weekly ||
-                      value === GoalPeriod.Monthly
-                    ) {
-                      return value;
-                    }
-                    return GoalPeriod.Daily;
-                  }}
-                />
-              </HStack>
+                  <InputField
+                    label=""
+                    value={criterion.value}
+                    onChange={(value) => handleCriterionChange(index, 'value', value)}
+                    type="number"
+                    min="0"
+                    step={0.01}
+                    flex={1}
+                  />
+                </HStack>
+              </Box>
 
               <InputField
                 label="Description"

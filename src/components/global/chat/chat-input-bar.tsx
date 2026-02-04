@@ -39,7 +39,6 @@ export function ChatInputBar({ value, onChange, onSend, disabled }: ChatInputBar
           <IconButton
             aria-label="Upload image"
             variant="ghost"
-            size="sm"
             color="text.mist"
             _hover={{ color: 'brand.cyber' }}
           >
@@ -48,7 +47,6 @@ export function ChatInputBar({ value, onChange, onSend, disabled }: ChatInputBar
           <IconButton
             aria-label="Voice input"
             variant="ghost"
-            size="sm"
             color="text.mist"
             _hover={{ color: 'brand.cyber' }}
           >
@@ -69,7 +67,6 @@ export function ChatInputBar({ value, onChange, onSend, disabled }: ChatInputBar
             aria-label="Send message"
             bg="brand.matrix"
             color="bg.deep"
-            size="sm"
             onClick={onSend}
             loading={disabled}
             _hover={{ bg: '#00cc33' }}

@@ -106,7 +106,6 @@ export function AuthForm() {
           <Box textAlign="center">
             <Heading
               as="h1"
-              size="2xl"
               color="brand.matrix"
               fontFamily="heading"
               textShadow="0 0 10px currentColor"
@@ -122,7 +121,6 @@ export function AuthForm() {
           <HStack gap={2} justify="center" mb={4}>
             <Button
               variant={mode === AuthMode.Login ? 'solid' : 'outline'}
-              size="sm"
               onClick={() => {
                 setMode(AuthMode.Login);
                 loginForm.reset();
@@ -137,7 +135,6 @@ export function AuthForm() {
             </Button>
             <Button
               variant={mode === AuthMode.Signup ? 'solid' : 'outline'}
-              size="sm"
               onClick={() => {
                 setMode(AuthMode.Signup);
                 loginForm.reset();
@@ -238,7 +235,6 @@ export function AuthForm() {
                 <HStack mt={2} justify="flex-end">
                   <Button
                     variant="outline"
-                    size="xs"
                     onClick={() => setShowPassword(!showPassword)}
                     type="button"
                     borderColor="brand.matrix"
@@ -267,7 +263,6 @@ export function AuthForm() {
                   <HStack mt={2} justify="flex-end">
                     <Button
                       variant="outline"
-                      size="xs"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       type="button"
                       borderColor="brand.matrix"
@@ -296,13 +291,7 @@ export function AuthForm() {
               )}
 
               <Button type="submit" w="100%" disabled={isLoading}>
-                {isLoading ? (
-                  <Spinner size="sm" />
-                ) : mode === AuthMode.Login ? (
-                  'Sign In'
-                ) : (
-                  'Sign Up'
-                )}
+                {isLoading ? <Spinner /> : mode === AuthMode.Login ? 'Sign In' : 'Sign Up'}
               </Button>
             </VStack>
           </Box>

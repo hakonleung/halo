@@ -162,7 +162,6 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
                           <IconButton
                             aria-label="Open menu"
                             variant="ghost"
-                            size="sm"
                             color="text.mist"
                             _hover={{ color: 'brand.matrix' }}
                           >

@@ -26,7 +26,6 @@ export function RecordTimelineCard({
 
   return (
     <Card.Root
-      size="sm"
       cursor={onClick ? 'pointer' : 'default'}
       onClick={onClick}
       borderColor="rgba(0, 255, 65, 0.3)"
@@ -55,9 +54,7 @@ export function RecordTimelineCard({
             <Text fontSize="xs" fontWeight="bold" color="text.neon" fontFamily="mono" lineClamp={1}>
               {definition.name}
             </Text>
-            <Badge colorScheme="success" size="sm">
-              {definition.category}
-            </Badge>
+            <Badge colorScheme="success">{definition.category}</Badge>
           </HStack>
           {metadataEntries.length > 0 && (
             <Text

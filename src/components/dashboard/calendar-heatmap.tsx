@@ -37,7 +37,7 @@ const MONTH_ABBREVIATIONS = [
 export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapProps) {
   if (loading) {
     return (
-      <Card.Root size="sm">
+      <Card.Root>
         <Card.Body>
           <Skeleton height="14px" width="100px" mb={2} />
           <Skeleton height="100px" />
@@ -48,7 +48,7 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
 
   if (!data || data.length === 0) {
     return (
-      <Card.Root size="sm" borderStyle="dashed">
+      <Card.Root borderStyle="dashed">
         <Card.Body h="160px" display="flex" alignItems="center" justifyContent="center">
           <Text color="text.mist" fontFamily="mono" fontSize="sm">
             No Activity Data
@@ -138,7 +138,7 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
   };
 
   return (
-    <Card.Root size="sm" overflowX="auto">
+    <Card.Root overflowX="auto">
       <Card.Body>
         <Text fontSize="sm" color="text.neon" fontFamily="mono" mb={2}>
           Activity Heatmap

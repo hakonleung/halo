@@ -33,7 +33,7 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
 
   if (loading) {
     return (
-      <Card.Root size="sm">
+      <Card.Root>
         <Card.Body>
           <Skeleton height="14px" width="100px" mb={2} />
           <SimpleGrid columns={2} gap={3}>
@@ -49,7 +49,7 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
 
   if (activeGoals.length === 0) {
     return (
-      <Card.Root size="sm" borderStyle="dashed">
+      <Card.Root borderStyle="dashed">
         <Card.Body
           h="160px"
           display="flex"
@@ -70,14 +70,14 @@ export function GoalProgressSection({ loading: externalLoading }: GoalProgressSe
   }
 
   return (
-    <Card.Root size="sm">
+    <Card.Root>
       <Card.Body>
         <Text fontSize="sm" color="text.neon" fontFamily="mono" mb={2}>
           Goal Progress
         </Text>
         <SimpleGrid columns={{ base: 2, md: 2 }} gap={3} justifyItems="center">
           {activeGoals.slice(0, 4).map((goal) => (
-            <GoalProgressRing key={goal.id} goal={goal} size="sm" />
+            <GoalProgressRing key={goal.id} goal={goal} />
           ))}
         </SimpleGrid>
       </Card.Body>

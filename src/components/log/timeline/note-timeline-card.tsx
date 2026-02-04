@@ -24,7 +24,6 @@ export function NoteTimelineCard({
 
   return (
     <Card.Root
-      size="sm"
       cursor={onClick ? 'pointer' : 'default'}
       onClick={onClick}
       borderColor="rgba(0, 212, 255, 0.3)"

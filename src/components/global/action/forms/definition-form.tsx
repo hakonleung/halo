@@ -12,6 +12,7 @@ import { MetadataSchemaEditor } from './metadata-schema-editor';
 import { InputField } from '../fields/input-field';
 import { SelectField } from '../fields/select-field';
 import { FormButtonGroup } from './form-button-group';
+import { EmojiPicker } from '@/components/shared/emoji-picker';
 
 export function DefinitionForm({
   initialData,
@@ -137,13 +138,10 @@ export function DefinitionFormFields({
           return matchedCategory || value;
         }}
       />
-      <InputField
-        label="Icon"
-        value={icon}
-        onChange={(value) => onIconChange(typeof value === 'string' ? value : '')}
-        type="text"
-        placeholder="e.g., 🏃, ☕, 📝"
-      />
+      <Field.Root>
+        <Field.Label color="text.mist">Icon</Field.Label>
+        <EmojiPicker value={icon} onChange={onIconChange} placeholder="Select emoji" />
+      </Field.Root>
       <Field.Root>
         <Field.Label color="text.mist">Metadata Schema</Field.Label>
         <MetadataSchemaEditor value={metadataSchema} onChange={onMetadataSchemaChange} />

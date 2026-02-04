@@ -70,7 +70,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         {/* 撤销/重做 */}
         <IconButton
           aria-label="Undo"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
@@ -84,7 +83,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Redo"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
@@ -99,10 +97,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
 
         <Separator orientation="vertical" h={4} />
 
-        {/* 文本格式 */}
         <IconButton
           aria-label="Bold"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -117,7 +113,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Italic"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={!editor.can().chain().focus().toggleItalic().run()}
@@ -132,7 +127,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Code"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleCode().run()}
           disabled={!editor.can().chain().focus().toggleCode().run()}
@@ -151,7 +145,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         {/* 标题 */}
         <IconButton
           aria-label="Heading 1"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           color={editor.isActive('heading', { level: 1 }) ? 'brand.matrix' : 'text.mist'}
@@ -165,7 +158,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Heading 2"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           color={editor.isActive('heading', { level: 2 }) ? 'brand.matrix' : 'text.mist'}
@@ -179,7 +171,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Heading 3"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           color={editor.isActive('heading', { level: 3 }) ? 'brand.matrix' : 'text.mist'}
@@ -197,7 +188,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         {/* 列表 */}
         <IconButton
           aria-label="Bullet List"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           color={editor.isActive('bulletList') ? 'brand.matrix' : 'text.mist'}
@@ -211,7 +201,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Ordered List"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           color={editor.isActive('orderedList') ? 'brand.matrix' : 'text.mist'}
@@ -225,7 +214,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Blockquote"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           color={editor.isActive('blockquote') ? 'brand.matrix' : 'text.mist'}
@@ -243,7 +231,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         {/* 对齐方式 */}
         <IconButton
           aria-label="Align Left"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().setTextAlign('left').run()}
           color={editor.isActive({ textAlign: 'left' }) ? 'brand.matrix' : 'text.mist'}
@@ -257,7 +244,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Align Center"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().setTextAlign('center').run()}
           color={editor.isActive({ textAlign: 'center' }) ? 'brand.matrix' : 'text.mist'}
@@ -271,7 +257,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Align Right"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().setTextAlign('right').run()}
           color={editor.isActive({ textAlign: 'right' }) ? 'brand.matrix' : 'text.mist'}
@@ -289,7 +274,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         {/* 链接和图片 */}
         <IconButton
           aria-label="Link"
-          size="xs"
           variant="ghost"
           onClick={setLink}
           color={editor.isActive('link') ? 'brand.matrix' : 'text.mist'}
@@ -303,7 +287,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         </IconButton>
         <IconButton
           aria-label="Image"
-          size="xs"
           variant="ghost"
           onClick={setImage}
           color="text.mist"
@@ -321,7 +304,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         <Box position="relative" display="inline-block">
           <IconButton
             aria-label="Text Color"
-            size="xs"
             variant="ghost"
             color="text.mist"
             _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
@@ -366,7 +348,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         {/* Todo List */}
         <IconButton
           aria-label="Task List"
-          size="xs"
           variant="ghost"
           onClick={() => editor.chain().focus().toggleTaskList().run()}
           color={editor.isActive('taskList') ? 'brand.matrix' : 'text.mist'}
@@ -382,7 +363,6 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         {/* 表格 */}
         <IconButton
           aria-label="Insert Table"
-          size="xs"
           variant="ghost"
           onClick={() => {
             editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();

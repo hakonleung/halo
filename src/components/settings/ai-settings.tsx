@@ -119,7 +119,6 @@ export function AISettingsComponent() {
           Use Default API Key
         </Text>
         <Button
-          size="sm"
           variant={aiSettings.useDefaultKey ? 'toggle-active' : 'toggle'}
           onClick={() => setAiSettings((prev) => ({ ...prev, useDefaultKey: !prev.useDefaultKey }))}
           minW="60px"
@@ -273,7 +272,6 @@ export function AISettingsComponent() {
           Stream Responses
         </Text>
         <Button
-          size="sm"
           variant={aiSettings.streamEnabled ? 'toggle-active' : 'toggle'}
           onClick={() => setAiSettings((prev) => ({ ...prev, streamEnabled: !prev.streamEnabled }))}
           minW="60px"

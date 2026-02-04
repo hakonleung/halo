@@ -15,11 +15,13 @@ import { ActionType } from '@/types/drawer';
 import { RecordForm } from './forms/record-form';
 import { DefinitionForm } from './forms/definition-form';
 import { DetailSection } from './forms/detail-section';
+import { FormButtonGroup } from './forms/form-button-group';
 import { useBehaviorRecords, useDeleteBehaviorRecord } from '@/hooks/use-behavior-records';
 import { useBehaviorDefinitions } from '@/hooks/use-behavior-definitions';
 import { useUnifiedActionDrawerStore } from '@/store/unified-action-drawer-store';
 import { useActionGuard } from '@/hooks/use-action-guard';
 import { useUnifiedActionDrawerSync } from '@/hooks/use-unified-action-drawer-sync';
+import { formatDateTime } from '@/utils/date-format';
 import type { BehaviorRecordWithDefinition } from '@/types/behavior-client';
 
 export function RecordActionDrawerContent({
@@ -132,13 +134,15 @@ export function RecordActionDrawerContent({
             <VStack gap={6} align="stretch">
               <VStack align="flex-start" gap={2}>
                 <HStack justify="space-between" w="full">
-                  <Heading fontSize="20px" color="text.neon" fontFamily="mono">
-                    {definition?.name || 'Record'}
-                  </Heading>
-                  {definition?.icon && <Text fontSize="24px">{definition.icon}</Text>}
+                  <HStack gap={2}>
+                    {definition?.icon && <Text fontSize="24px">{definition.icon}</Text>}
+                    <Heading fontSize="20px" color="text.neon" fontFamily="mono">
+                      {definition?.name || 'Record'}
+                    </Heading>
+                  </HStack>
                 </HStack>
                 <Text fontSize="sm" color="text.mist" fontFamily="mono">
-                  Recorded: {new Date(record.recordedAt).toLocaleString('en-US')}
+                  {formatDateTime(record.recordedAt)}
                 </Text>
                 {record.note && (
                   <Box p={3} bg="bg.dark" borderRadius="4px" w="full">
@@ -164,9 +168,14 @@ export function RecordActionDrawerContent({
                 />
               )}
 
-              <HStack gap={2} pt={4}>
+              <FormButtonGroup
+                onCancel={() => {}}
+                onSubmit={() => {}}
+                showEdit={false}
+                onEdit={undefined}
+              />
+              <HStack gap={2} pt={2}>
                 <Button
-                  size="sm"
                   colorScheme="red"
                   onClick={handleDelete}
                   loading={isDeletingRecord}
@@ -192,10 +201,12 @@ export function RecordActionDrawerContent({
             <VStack gap={6} align="stretch">
               <VStack align="flex-start" gap={2}>
                 <HStack justify="space-between" w="full">
-                  <Heading fontSize="20px" color="text.neon" fontFamily="mono">
-                    {definition.name}
-                  </Heading>
-                  {definition.icon && <Text fontSize="24px">{definition.icon}</Text>}
+                  <HStack gap={2}>
+                    {definition.icon && <Text fontSize="24px">{definition.icon}</Text>}
+                    <Heading fontSize="20px" color="text.neon" fontFamily="mono">
+                      {definition.name}
+                    </Heading>
+                  </HStack>
                 </HStack>
                 <Badge colorPalette="green" variant="outline">
                   {definition.category}
@@ -214,6 +225,13 @@ export function RecordActionDrawerContent({
                   mode="definition"
                 />
               )}
+
+              <FormButtonGroup
+                onCancel={() => {}}
+                onSubmit={() => {}}
+                showEdit={!isEditMode}
+                onEdit={() => setEditMode(true)}
+              />
             </VStack>
           )}
         </Tabs.Content>

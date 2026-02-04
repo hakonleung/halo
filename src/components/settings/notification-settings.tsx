@@ -83,12 +83,12 @@ export function NotificationSettings() {
 
   return (
     <VStack gap={6} align="stretch" p={6}>
-      <Heading size="md" color="text.neon" fontFamily="heading" mb={2}>
+      <Heading color="text.neon" fontFamily="heading" mb={2}>
         Notification Settings
       </Heading>
 
       <Box>
-        <Heading size="sm" color="text.mist" fontFamily="mono" mb={4}>
+        <Heading color="text.mist" fontFamily="mono" mb={4}>
           Notification Channels
         </Heading>
         <VStack gap={3} align="stretch">
@@ -97,7 +97,6 @@ export function NotificationSettings() {
               In-App Notifications
             </Text>
             <Button
-              size="sm"
               variant={notificationsInApp ? 'toggle-active' : 'toggle'}
               onClick={() => setNotificationsInApp(!notificationsInApp)}
               minW="60px"
@@ -110,7 +109,6 @@ export function NotificationSettings() {
               Push Notifications
             </Text>
             <Button
-              size="sm"
               variant={notificationsPush ? 'toggle-active' : 'toggle'}
               onClick={() => setNotificationsPush(!notificationsPush)}
               minW="60px"
@@ -123,7 +121,6 @@ export function NotificationSettings() {
               Email Notifications
             </Text>
             <Button
-              size="sm"
               variant={notificationsEmail ? 'toggle-active' : 'toggle'}
               onClick={() => setNotificationsEmail(!notificationsEmail)}
               minW="60px"
@@ -135,7 +132,7 @@ export function NotificationSettings() {
       </Box>
 
       <Box>
-        <Heading size="sm" color="text.mist" fontFamily="mono" mb={4}>
+        <Heading color="text.mist" fontFamily="mono" mb={4}>
           Reminders
         </Heading>
         <VStack gap={3} align="stretch">
@@ -144,7 +141,6 @@ export function NotificationSettings() {
               Goal Reminders
             </Text>
             <Button
-              size="sm"
               variant={goalReminderEnabled ? 'toggle-active' : 'toggle'}
               onClick={() => setGoalReminderEnabled(!goalReminderEnabled)}
               minW="60px"
@@ -157,7 +153,6 @@ export function NotificationSettings() {
               Record Reminders
             </Text>
             <Button
-              size="sm"
               variant={recordReminderEnabled ? 'toggle-active' : 'toggle'}
               onClick={() => setRecordReminderEnabled(!recordReminderEnabled)}
               minW="60px"
@@ -170,7 +165,6 @@ export function NotificationSettings() {
               Insights Notifications
             </Text>
             <Button
-              size="sm"
               variant={insightsEnabled ? 'toggle-active' : 'toggle'}
               onClick={() => setInsightsEnabled(!insightsEnabled)}
               minW="60px"
@@ -182,7 +176,7 @@ export function NotificationSettings() {
       </Box>
 
       <Box>
-        <Heading size="sm" color="text.mist" fontFamily="mono" mb={4}>
+        <Heading color="text.mist" fontFamily="mono" mb={4}>
           Do Not Disturb
         </Heading>
         <VStack gap={3} align="stretch">
@@ -216,7 +210,6 @@ export function NotificationSettings() {
               Weekends
             </Text>
             <Button
-              size="sm"
               variant={doNotDisturbWeekends ? 'toggle-active' : 'toggle'}
               onClick={() => setDoNotDisturbWeekends(!doNotDisturbWeekends)}
               minW="60px"

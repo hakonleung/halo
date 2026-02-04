@@ -254,7 +254,7 @@ export function MergeLogTimeline() {
   if (isLoading) {
     return (
       <Box p={4} textAlign="center">
-        <Spinner size="xl" color="brand.matrix" />
+        <Spinner color="brand.matrix" />
       </Box>
     );
   }

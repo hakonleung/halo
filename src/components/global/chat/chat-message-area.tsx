@@ -34,7 +34,6 @@ export const ChatMessageArea = forwardRef<HTMLDivElement, ChatMessageAreaProps>(
               <VStack pt={20} gap={4}>
                 <Heading
                   color="brand.matrix"
-                  size="xl"
                   fontFamily="heading"
                   textShadow="0 0 10px currentColor"
                 >

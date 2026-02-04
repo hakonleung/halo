@@ -90,7 +90,7 @@ function StatItem({
 
 export function StatsCardGroup({ stats, loading }: StatsCardGroupProps) {
   return (
-    <Card.Root size="sm">
+    <Card.Root>
       <Card.Body>
         <SimpleGrid columns={{ base: 2, lg: 4 }} gap={{ base: 2, md: 3 }}>
           <StatItem title="Today's Records" value={stats?.today.total ?? 0} loading={loading} />

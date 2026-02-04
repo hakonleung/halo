@@ -25,9 +25,5 @@ export function GoalStatusBadge({ status }: GoalStatusBadgeProps) {
 
   const config = statusConfig[status];
 
-  return (
-    <Badge colorScheme={config.colorScheme} size="sm">
-      {config.text}
-    </Badge>
-  );
+  return <Badge colorScheme={config.colorScheme}>{config.text}</Badge>;
 }

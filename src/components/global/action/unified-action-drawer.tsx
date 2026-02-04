@@ -1,7 +1,6 @@
 'use client';
 
-import { Drawer, Portal, HStack, IconButton } from '@chakra-ui/react';
-import { Pencil } from 'lucide-react';
+import { Drawer, Portal } from '@chakra-ui/react';
 import { useUnifiedActionDrawerStore } from '@/store/unified-action-drawer-store';
 import { useUnifiedActionDrawerSync } from '@/hooks/use-unified-action-drawer-sync';
 import { ActionType } from '@/types/drawer';
@@ -26,7 +25,7 @@ const editButtonConfig: Record<
 export function UnifiedActionDrawer() {
   // Sync URL with store
   const { closeDrawer } = useUnifiedActionDrawerSync();
-  const { actionType, actionDataId, isEditMode, setEditMode } = useUnifiedActionDrawerStore();
+  const { actionType, actionDataId } = useUnifiedActionDrawerStore();
   const isOpen = actionType !== null;
   const isCreateMode = !actionDataId;
   if (!isOpen) return null;
@@ -42,23 +41,9 @@ export function UnifiedActionDrawer() {
           <Drawer.Positioner>
             <Drawer.Content width={{ base: 'full', md: '600px' }}>
               <Drawer.Header>
-                <HStack justify="space-between" w="full">
-                  <Drawer.Title>
-                    {isCreateMode ? 'NEW' : editButtonConfig[actionType].title}
-                  </Drawer.Title>
-                  {!isCreateMode && !isEditMode && actionType && actionDataId && (
-                    <IconButton
-                      aria-label={editButtonConfig[actionType].label}
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setEditMode(true)}
-                      color="text.mist"
-                      _hover={{ color: 'brand.cyber' }}
-                    >
-                      <Pencil size={16} />
-                    </IconButton>
-                  )}
-                </HStack>
+                <Drawer.Title>
+                  {isCreateMode ? 'NEW' : editButtonConfig[actionType].title}
+                </Drawer.Title>
               </Drawer.Header>
               <Drawer.Body>
                 {isCreateMode && <CreateActionDrawerContent onClose={closeDrawer} />}

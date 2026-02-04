@@ -64,7 +64,7 @@ export function LocaleSettings() {
 
   return (
     <VStack gap={6} align="stretch" p={6}>
-      <Heading size="md" color="text.neon" fontFamily="heading" mb={2}>
+      <Heading color="text.neon" fontFamily="heading" mb={2}>
         Locale Settings
       </Heading>
 

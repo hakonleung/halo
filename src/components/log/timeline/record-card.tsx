@@ -27,7 +27,6 @@ export function RecordCard({ record, onClick }: RecordCardProps) {
 
   return (
     <Card.Root
-      size="md"
       cursor={onClick ? 'pointer' : 'default'}
       onClick={onClick}
       borderColor="rgba(0, 255, 65, 0.3)"
@@ -44,7 +43,7 @@ export function RecordCard({ record, onClick }: RecordCardProps) {
               <Text fontSize="lg" fontWeight="bold" color="text.neon" fontFamily="mono">
                 {definition.name}
               </Text>
-              <Badge colorPalette="green" variant="outline" size="sm" mt={1}>
+              <Badge colorPalette="green" variant="outline" mt={1}>
                 {definition.category}
               </Badge>
             </VStack>

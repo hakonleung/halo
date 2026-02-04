@@ -18,7 +18,6 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>((pro
         <Box position="relative" display="inline-block">
           <ArkDatePicker.Input asChild>
             <Input
-              size="sm"
               pl="10"
               placeholder={placeholder || 'Select date'}
               bg="rgba(0, 0, 0, 0.3)"
@@ -65,7 +64,6 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>((pro
                       <HStack justify="space-between">
                         <ArkDatePicker.PrevTrigger asChild>
                           <IconButton
-                            size="xs"
                             variant="ghost"
                             color="brand.matrix"
                             aria-label="Previous month"
@@ -74,17 +72,12 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>((pro
                           </IconButton>
                         </ArkDatePicker.PrevTrigger>
                         <ArkDatePicker.ViewTrigger asChild>
-                          <Button size="xs" variant="ghost" color="brand.matrix" fontFamily="mono">
+                          <Button variant="ghost" color="brand.matrix" fontFamily="mono">
                             {api.visibleRangeText.start}
                           </Button>
                         </ArkDatePicker.ViewTrigger>
                         <ArkDatePicker.NextTrigger asChild>
-                          <IconButton
-                            size="xs"
-                            variant="ghost"
-                            color="brand.matrix"
-                            aria-label="Next month"
-                          >
+                          <IconButton variant="ghost" color="brand.matrix" aria-label="Next month">
                             <LuChevronRight />
                           </IconButton>
                         </ArkDatePicker.NextTrigger>
@@ -113,7 +106,6 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>((pro
                                 <ArkDatePicker.TableCell key={id} value={day}>
                                   <ArkDatePicker.TableCellTrigger asChild>
                                     <Button
-                                      size="xs"
                                       variant="ghost"
                                       w="8"
                                       h="8"

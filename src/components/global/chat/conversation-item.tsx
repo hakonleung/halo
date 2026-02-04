@@ -55,25 +55,12 @@ export function ConversationItem({
               if (e.key === 'Escape') handleCancel();
             }}
             autoFocus
-            size="sm"
             variant="subtle"
           />
-          <IconButton
-            aria-label="Save"
-            size="xs"
-            variant="ghost"
-            onClick={handleSave}
-            color="brand.matrix"
-          >
+          <IconButton aria-label="Save" variant="ghost" onClick={handleSave} color="brand.matrix">
             <Check size={14} />
           </IconButton>
-          <IconButton
-            aria-label="Cancel"
-            size="xs"
-            variant="ghost"
-            onClick={handleCancel}
-            color="text.mist"
-          >
+          <IconButton aria-label="Cancel" variant="ghost" onClick={handleCancel} color="text.mist">
             <X size={14} />
           </IconButton>
         </HStack>
@@ -88,7 +75,6 @@ export function ConversationItem({
           <HStack gap={1} _groupHover={{ display: 'flex' }}>
             <IconButton
               aria-label="Edit title"
-              size="xs"
               variant="ghost"
               onClick={(e) => {
                 e.stopPropagation();
@@ -101,7 +87,6 @@ export function ConversationItem({
             </IconButton>
             <IconButton
               aria-label="Delete conversation"
-              size="xs"
               variant="ghost"
               onClick={(e) => {
                 e.stopPropagation();

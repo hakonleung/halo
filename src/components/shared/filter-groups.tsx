@@ -56,7 +56,6 @@ export function FilterGroups({ activeFilters, onFilterChange, groups }: FilterGr
         <Menu.Trigger asChild>
           <IconButton
             variant="outline"
-            size="sm"
             aria-label="Add Filter"
             borderColor="rgba(0, 255, 65, 0.2)"
             color="brand.matrix"
@@ -195,7 +194,6 @@ export function FilterGroups({ activeFilters, onFilterChange, groups }: FilterGr
                               onChange={(e) =>
                                 onFilterChange(selectedFilterField.id, e.target.value)
                               }
-                              size="sm"
                               autoFocus
                               bg="rgba(0, 0, 0, 0.4)"
                               borderColor="brand.matrix"

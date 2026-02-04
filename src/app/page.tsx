@@ -33,7 +33,7 @@ export default function Home() {
         zIndex={1}
       >
         <VStack gap={4}>
-          <Spinner size="xl" color="brand.matrix" />
+          <Spinner color="brand.matrix" />
           <Text fontFamily="mono" color="text.mist">
             [ LOADING... ]
           </Text>
@@ -56,7 +56,7 @@ export default function Home() {
         zIndex={1}
       >
         <VStack gap={4}>
-          <Spinner size="xl" color="brand.matrix" />
+          <Spinner color="brand.matrix" />
           <Text fontFamily="mono" color="text.mist">
             [ REDIRECTING... ]
           </Text>

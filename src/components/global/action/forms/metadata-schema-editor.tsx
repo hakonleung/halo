@@ -42,14 +42,13 @@ export function MetadataSchemaEditor({
     onChange(newSchema);
   };
   return (
-    <VStack gap={4} align="stretch" w="full">
+    <VStack gap={2} align="stretch" w="full">
       <HStack justify="space-between">
-        <Text color="brand.matrix" fontSize="sm" fontFamily="mono">
+        <Text color="brand.matrix" fontSize="xs" fontFamily="mono">
           METADATA FIELDS
         </Text>
-        <Button size="xs" variant="ghost" onClick={handleAddField}>
-          <LuPlus />
-          Add Field
+        <Button variant="ghost" onClick={handleAddField}>
+          <LuPlus size={12} />
         </Button>
       </HStack>
       {value.map((field, index) => (

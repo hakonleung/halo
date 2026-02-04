@@ -24,7 +24,6 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
 
   return (
     <Card.Root
-      size="md"
       cursor={onClick ? 'pointer' : 'default'}
       onClick={onClick}
       borderColor={
@@ -66,7 +65,7 @@ export function GoalCard({ goal, progress, onClick }: GoalCardProps) {
         </HStack>
 
         <HStack align="center" gap={4}>
-          <GoalProgressRing goal={progressData} size="sm" />
+          <GoalProgressRing goal={progressData} />
           <VStack align="flex-start" gap={0} flex={1}>
             <Text fontSize="md" fontWeight="bold" color="text.neon">
               {progress?.current ?? 0} / {progress?.target ?? 0}

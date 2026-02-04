@@ -2,10 +2,12 @@
 
 import { VStack, HStack, Text, Heading, Button, Skeleton, Box } from '@chakra-ui/react';
 import { NoteForm } from './forms/note-form';
+import { FormButtonGroup } from './forms/form-button-group';
 import { useNotes, useDeleteNote } from '@/hooks/use-notes';
 import { useUnifiedActionDrawerStore } from '@/store/unified-action-drawer-store';
 import { useActionGuard } from '@/hooks/use-action-guard';
 import { useUnifiedActionDrawerSync } from '@/hooks/use-unified-action-drawer-sync';
+import { formatDateTime } from '@/utils/date-format';
 
 export function NoteActionDrawerContent({
   actionDataId,
@@ -98,23 +100,23 @@ export function NoteActionDrawerContent({
           </HStack>
         )}
         <Text fontSize="sm" color="text.dim" fontFamily="mono">
-          Created: {new Date(note.createdAt).toLocaleString('en-US')}
+          Created: {formatDateTime(note.createdAt)}
         </Text>
         {note.updatedAt !== note.createdAt && (
           <Text fontSize="sm" color="text.dim" fontFamily="mono">
-            Updated: {new Date(note.updatedAt).toLocaleString('en-US')}
+            Updated: {formatDateTime(note.updatedAt)}
           </Text>
         )}
       </VStack>
 
-      <HStack gap={2} pt={4}>
-        <Button
-          size="sm"
-          colorScheme="red"
-          onClick={handleDelete}
-          loading={isDeletingNote}
-          flex={1}
-        >
+      <FormButtonGroup
+        onCancel={() => {}}
+        onSubmit={() => {}}
+        showEdit={!isEditMode}
+        onEdit={() => setEditMode(true)}
+      />
+      <HStack gap={2} pt={2}>
+        <Button colorScheme="red" onClick={handleDelete} loading={isDeletingNote} flex={1}>
           Delete
         </Button>
       </HStack>
