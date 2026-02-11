@@ -29,7 +29,7 @@ export function TopNavbar() {
       background="transparent"
       backdropFilter="blur(16px)"
       borderBottom="1px solid"
-      borderColor="rgba(0, 255, 65, 0.2)"
+      borderColor="matrix/20"
       position="sticky"
       top={0}
       zIndex={200}
@@ -74,7 +74,7 @@ export function TopNavbar() {
                             width: '100%',
                             height: '2px',
                             bg: 'brand.matrix',
-                            boxShadow: '0 0 5px #00FF41',
+                            boxShadow: 'sm',
                           }
                         : {}
                     }

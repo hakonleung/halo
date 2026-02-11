@@ -78,7 +78,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Undo size={14} />
         </IconButton>
@@ -91,7 +91,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Redo size={14} />
         </IconButton>
@@ -108,7 +108,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Bold size={14} />
         </IconButton>
@@ -122,7 +122,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Italic size={14} />
         </IconButton>
@@ -136,7 +136,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Code size={14} />
         </IconButton>
@@ -153,7 +153,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Heading1 size={14} />
         </IconButton>
@@ -166,7 +166,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Heading2 size={14} />
         </IconButton>
@@ -179,7 +179,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Heading3 size={14} />
         </IconButton>
@@ -196,7 +196,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <List size={14} />
         </IconButton>
@@ -209,7 +209,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <ListOrdered size={14} />
         </IconButton>
@@ -222,7 +222,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <Quote size={14} />
         </IconButton>
@@ -239,7 +239,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <AlignLeft size={14} />
         </IconButton>
@@ -252,7 +252,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <AlignCenter size={14} />
         </IconButton>
@@ -265,7 +265,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <AlignRight size={14} />
         </IconButton>
@@ -282,7 +282,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <LinkIcon size={14} />
         </IconButton>
@@ -294,7 +294,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <ImageIcon size={14} />
         </IconButton>
@@ -307,7 +307,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
             aria-label="Text Color"
             variant="ghost"
             color="text.mist"
-            _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+            _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
             as="label"
             cursor="pointer"
             position="relative"
@@ -352,11 +352,11 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           variant="ghost"
           onClick={() => editor.chain().focus().toggleTaskList().run()}
           color={editor.isActive('taskList') ? 'brand.matrix' : 'text.mist'}
-          bg={editor.isActive('taskList') ? 'rgba(0, 255, 65, 0.1)' : 'transparent'}
+          bg={editor.isActive('taskList') ? 'matrix/10' : 'transparent'}
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <CheckSquare size={14} />
         </IconButton>
@@ -372,7 +372,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
           p={1}
           minW="auto"
           h="auto"
-          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.1)' }}
+          _hover={{ color: 'brand.matrix', bg: 'matrix/10' }}
         >
           <TableIcon size={14} />
         </IconButton>

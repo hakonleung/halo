@@ -18,6 +18,7 @@ import { keyframes } from './tokens/animations';
 import { colors, alphaColors } from './tokens/colors';
 import { fonts } from './tokens/fonts';
 import { glass, glow } from './tokens/glassmorphism';
+import { radii, fontSizes } from './tokens/spacing';
 
 export const config = defineConfig({
   theme: {
@@ -28,6 +29,8 @@ export const config = defineConfig({
       },
       fonts,
       shadows: glow,
+      radii,
+      fontSizes,
     },
     semanticTokens: {
       colors: {
@@ -55,6 +58,31 @@ export const config = defineConfig({
       tabs,
       switch: switch_,
       menu,
+    },
+  },
+  globalCss: {
+    'html, body': {
+      bg: 'bg.deep',
+      color: 'text.neon',
+      minHeight: '100vh',
+    },
+    '.neo-switch__control[data-state="checked"]': {
+      background: '{colors.brand.matrix} !important',
+      borderColor: '{colors.brand.matrix} !important',
+      boxShadow: '{shadows.md} !important',
+    },
+    '.neo-switch__control[data-state="unchecked"]': {
+      background: '{colors.bg.dark} !important',
+      borderColor: '{colors.bg.dark} !important',
+    },
+    '.neo-switch__thumb[data-state="checked"]': {
+      background: '{colors.bg.deep} !important',
+      borderColor: '{colors.brand.matrix} !important',
+      boxShadow: '{shadows.thumb} !important',
+    },
+    '.neo-switch__thumb[data-state="unchecked"]': {
+      background: '{colors.bg.carbon} !important',
+      borderColor: '{colors.bg.dark} !important',
     },
   },
 });

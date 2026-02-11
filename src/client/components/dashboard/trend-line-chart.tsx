@@ -3,6 +3,8 @@
 import { Box, Text, Skeleton, HStack, Flex, Card } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 
+import { RAW_COLORS, RAW_FONTS } from '@/client/theme/tokens';
+
 import type { TrendData } from '@/client/types/dashboard-client';
 
 // Dynamic import for Recharts to avoid SSR issues
@@ -108,17 +110,17 @@ export function TrendLineChart({
               <XAxis
                 dataKey="date"
                 tickFormatter={formatDate}
-                stroke="#555"
+                stroke={RAW_COLORS.bgAxis}
                 fontSize={11}
-                fontFamily="JetBrains Mono"
+                fontFamily={RAW_FONTS.mono}
               />
-              <YAxis stroke="#555" fontSize={11} fontFamily="JetBrains Mono" />
+              <YAxis stroke={RAW_COLORS.bgAxis} fontSize={11} fontFamily={RAW_FONTS.mono} />
               <Tooltip
                 contentStyle={{
-                  background: '#1A1A1A',
-                  border: '1px solid #00FF41',
+                  background: RAW_COLORS.bgCarbon,
+                  border: `1px solid ${RAW_COLORS.matrix}`,
                   borderRadius: '4px',
-                  fontFamily: 'JetBrains Mono',
+                  fontFamily: RAW_FONTS.mono,
                 }}
                 labelFormatter={(label) => {
                   if (typeof label === 'string' || typeof label === 'number')
@@ -129,10 +131,10 @@ export function TrendLineChart({
               <Line
                 type="monotone"
                 dataKey="total"
-                stroke="#00FF41"
+                stroke={RAW_COLORS.matrix}
                 strokeWidth={2}
-                dot={{ fill: '#00FF41', r: 3 }}
-                activeDot={{ r: 5, fill: '#00FF41' }}
+                dot={{ fill: RAW_COLORS.matrix, r: 3 }}
+                activeDot={{ r: 5, fill: RAW_COLORS.matrix }}
               />
               {visibleTypes.map((type) => (
                 <Line

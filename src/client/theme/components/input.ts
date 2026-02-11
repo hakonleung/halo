@@ -4,8 +4,8 @@ export const input = defineRecipe({
   className: 'neo-input',
   base: {
     fontFamily: 'body',
-    fontSize: '14px',
-    borderRadius: '4px',
+    fontSize: 'sm',
+    borderRadius: 'md',
     color: 'text.neon',
     transition: 'all 200ms ease-out',
     width: '100%',
@@ -27,12 +27,12 @@ export const input = defineRecipe({
         borderColor: 'bg.dark',
         _focus: {
           borderColor: 'brand.matrix',
-          boxShadow: '0 0 10px rgba(0, 255, 65, 0.3), 0 0 20px rgba(0, 255, 65, 0.1)',
+          boxShadow: 'md',
           outline: 'none',
         },
         _invalid: {
           borderColor: 'semantic.error',
-          boxShadow: '0 0 10px rgba(255, 51, 102, 0.3), 0 0 20px rgba(255, 51, 102, 0.1)',
+          boxShadow: 'error',
         },
       },
       solid: {
@@ -42,19 +42,19 @@ export const input = defineRecipe({
         borderColor: 'bg.dark',
         _focus: {
           borderColor: 'brand.matrix',
-          boxShadow: '0 0 10px rgba(0, 255, 65, 0.3), 0 0 20px rgba(0, 255, 65, 0.1)',
+          boxShadow: 'md',
           outline: 'none',
         },
         _invalid: {
           borderColor: 'semantic.error',
-          boxShadow: '0 0 10px rgba(255, 51, 102, 0.3)',
+          boxShadow: 'errorSm',
         },
       },
       subtle: {
         background: 'transparent',
         borderWidth: '0',
         _focus: {
-          boxShadow: '0 0 5px rgba(0, 255, 65, 0.3)',
+          boxShadow: 'sm',
           outline: 'none',
         },
       },
@@ -63,17 +63,17 @@ export const input = defineRecipe({
       sm: {
         height: '32px',
         px: '12px',
-        fontSize: '12px',
+        fontSize: 'xs',
       },
       md: {
         height: '40px',
         px: '16px',
-        fontSize: '14px',
+        fontSize: 'sm',
       },
       lg: {
         height: '48px',
         px: '16px',
-        fontSize: '16px',
+        fontSize: 'md',
       },
     },
   },

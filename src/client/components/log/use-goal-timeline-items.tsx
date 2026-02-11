@@ -30,13 +30,20 @@ export function useGoalTimelineItems({
 
   const filteredGoals = useMemo(() => {
     return goals.filter((goal) => {
+      // Filter by time range: goal should overlap with timeline
+      const goalStart = new Date(goal.startDate);
+      const goalEnd = goal.endDate ? new Date(goal.endDate) : new Date('2099-12-31');
+      if (goalStart > timelineEnd || goalEnd < timelineStart) return false;
+
+      // Filter by search
       if (goalSearchQuery) {
         const query = goalSearchQuery.toLowerCase();
         if (!goal.name.toLowerCase().includes(query)) return false;
       }
+
       return true;
     });
-  }, [goals, goalSearchQuery]);
+  }, [goals, goalSearchQuery, timelineStart, timelineEnd]);
 
   const items = useMemo<TimelineItem[]>(() => {
     const result: TimelineItem[] = [];

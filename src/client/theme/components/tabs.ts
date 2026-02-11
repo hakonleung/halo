@@ -13,7 +13,7 @@ export const tabs = defineSlotRecipe({
       position: 'relative',
       isolation: 'isolate',
       borderBottom: '1px solid',
-      borderColor: 'rgba(0, 255, 65, 0.2)',
+      borderColor: 'matrix/20',
       gap: 2,
     },
     trigger: {
@@ -54,7 +54,7 @@ export const tabs = defineSlotRecipe({
       bottom: 0,
       height: '2px',
       background: 'brand.matrix',
-      boxShadow: '0 0 8px rgba(0, 255, 65, 0.5)',
+      boxShadow: 'tabIndicator',
       transition: 'all 200ms ease-out',
       zIndex: 1,
     },
@@ -64,7 +64,7 @@ export const tabs = defineSlotRecipe({
       line: {
         list: {
           borderBottom: '1px solid',
-          borderColor: 'rgba(0, 255, 65, 0.2)',
+          borderColor: 'matrix/20',
         },
         trigger: {
           borderBottom: '2px solid',
@@ -82,17 +82,17 @@ export const tabs = defineSlotRecipe({
       enclosed: {
         list: {
           border: '1px solid',
-          borderColor: 'rgba(0, 255, 65, 0.2)',
-          borderRadius: '4px',
+          borderColor: 'matrix/20',
+          borderRadius: 'md',
           padding: 1,
-          background: 'rgba(0, 255, 65, 0.02)',
+          background: 'matrix/2',
         },
         trigger: {
-          borderRadius: '4px',
+          borderRadius: 'md',
           _selected: {
             color: 'brand.matrix',
-            background: 'rgba(0, 255, 65, 0.1)',
-            boxShadow: '0 0 10px rgba(0, 255, 65, 0.2)',
+            background: 'matrix/10',
+            boxShadow: '0 0 10px {colors.matrix/20}',
             textShadow: '0 0 5px currentColor',
           },
         },
@@ -104,21 +104,21 @@ export const tabs = defineSlotRecipe({
     size: {
       sm: {
         trigger: {
-          fontSize: '12px',
+          fontSize: 'xs',
           paddingX: 3,
           paddingY: 1.5,
         },
       },
       md: {
         trigger: {
-          fontSize: '14px',
+          fontSize: 'sm',
           paddingX: 4,
           paddingY: 2,
         },
       },
       lg: {
         trigger: {
-          fontSize: '16px',
+          fontSize: 'md',
           paddingX: 5,
           paddingY: 2.5,
         },

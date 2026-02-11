@@ -61,9 +61,9 @@ export function FilterGroups({
           <IconButton
             variant="outline"
             aria-label="Add Filter"
-            borderColor="rgba(0, 255, 65, 0.2)"
+            borderColor="matrix/20"
             color="brand.matrix"
-            _hover={{ bg: 'rgba(0, 255, 65, 0.1)', borderColor: 'brand.matrix' }}
+            _hover={{ bg: 'matrix/10', borderColor: 'brand.matrix' }}
           >
             <LuFilter size={14} />
           </IconButton>
@@ -85,13 +85,13 @@ export function FilterGroups({
                   align="stretch"
                   gap={0}
                   borderRight="1px solid"
-                  borderColor="rgba(0, 255, 65, 0.1)"
+                  borderColor="matrix/10"
                   py={1}
-                  bg="rgba(0, 255, 65, 0.02)"
+                  bg="matrix/2"
                   overflowY="auto"
                   css={{
                     '&::-webkit-scrollbar': { width: '2px' },
-                    '&::-webkit-scrollbar-thumb': { background: 'rgba(0, 255, 65, 0.2)' },
+                    '&::-webkit-scrollbar-thumb': { background: 'var(--chakra-colors-matrix-20)' },
                   }}
                 >
                   {groups.map((group) => (
@@ -104,7 +104,7 @@ export function FilterGroups({
                         fontFamily="mono"
                         textTransform="uppercase"
                         letterSpacing="widest"
-                        bg="rgba(0, 0, 0, 0.2)"
+                        bg="black/20"
                       >
                         {group.label}
                       </Text>
@@ -118,11 +118,9 @@ export function FilterGroups({
                             setHoveredGroupId(group.id);
                             setHoveredFilterId(filter.id);
                           }}
-                          bg={
-                            hoveredFilterId === filter.id ? 'rgba(0, 255, 65, 0.1)' : 'transparent'
-                          }
+                          bg={hoveredFilterId === filter.id ? 'matrix/10' : 'transparent'}
                           color={hoveredFilterId === filter.id ? 'brand.matrix' : 'text.mist'}
-                          _hover={{ color: 'brand.matrix', bg: 'rgba(0, 255, 65, 0.05)' }}
+                          _hover={{ color: 'brand.matrix', bg: 'matrix/5' }}
                           transition="all 0.2s"
                           position="relative"
                           display="flex"
@@ -144,7 +142,7 @@ export function FilterGroups({
                               bottom={0}
                               w="2px"
                               bg="brand.matrix"
-                              boxShadow="0 0 10px #00FF41"
+                              boxShadow="badge"
                             />
                           )}
                         </Box>
@@ -159,11 +157,11 @@ export function FilterGroups({
                   align="stretch"
                   gap={0}
                   py={1}
-                  bg="rgba(0, 0, 0, 0.2)"
+                  bg="black/20"
                   overflowY="auto"
                   css={{
                     '&::-webkit-scrollbar': { width: '2px' },
-                    '&::-webkit-scrollbar-thumb': { background: 'rgba(0, 255, 65, 0.2)' },
+                    '&::-webkit-scrollbar-thumb': { background: 'var(--chakra-colors-matrix-20)' },
                   }}
                 >
                   <Text
@@ -199,7 +197,7 @@ export function FilterGroups({
                                 onFilterChange(selectedFilterField.id, e.target.value)
                               }
                               autoFocus
-                              bg="rgba(0, 0, 0, 0.4)"
+                              bg="black/40"
                               borderColor="brand.matrix"
                               color="white"
                               fontFamily="mono"
@@ -224,7 +222,7 @@ export function FilterGroups({
                                 ? 'brand.matrix'
                                 : 'text.mist'
                             }
-                            _hover={{ bg: 'rgba(0, 255, 65, 0.1)', color: 'brand.matrix' }}
+                            _hover={{ bg: 'matrix/10', color: 'brand.matrix' }}
                             fontFamily="mono"
                             fontSize="xs"
                             borderRadius={0}
@@ -239,7 +237,7 @@ export function FilterGroups({
                                   h="6px"
                                   borderRadius="full"
                                   bg="brand.matrix"
-                                  boxShadow="0 0 8px #00FF41"
+                                  boxShadow="badge"
                                 />
                               )}
                             </HStack>

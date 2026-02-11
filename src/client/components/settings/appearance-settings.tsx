@@ -18,6 +18,7 @@ import { useState, useEffect } from 'react';
 
 import { useSettings } from '@/client/hooks/use-settings';
 import { useUpdateSettings } from '@/client/hooks/use-update-settings';
+import { RAW_COLORS } from '@/client/theme/tokens';
 import {
   AVAILABLE_THEMES,
   PRESET_ACCENT_COLORS,
@@ -41,7 +42,7 @@ export function AppearanceSettings() {
   useEffect(() => {
     if (settings) {
       setTheme(settings.theme ?? 'dark');
-      setAccentColor(settings.accentColor ?? '#00FF41');
+      setAccentColor(settings.accentColor ?? RAW_COLORS.matrix);
       setAnimationLevel(settings.animationLevel ?? 'full');
       setFontSize(settings.fontSize ?? 'medium');
       setCodeFont(settings.codeFont ?? 'JetBrains Mono');

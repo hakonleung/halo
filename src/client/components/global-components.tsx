@@ -33,8 +33,8 @@ export function GlobalComponents({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider value={system}>
-        {children}
         <AnimatedBackground />
+        {children}
         <UnifiedActionDrawer />
         <EditorModal />
         <GlobalConfirmDialog />

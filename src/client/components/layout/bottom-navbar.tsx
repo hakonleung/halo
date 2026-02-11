@@ -28,7 +28,7 @@ export function BottomNavbar() {
       background="transparent"
       backdropFilter="blur(16px)"
       borderTop="1px solid"
-      borderColor="rgba(0, 255, 65, 0.2)"
+      borderColor="matrix/20"
       zIndex={200}
       pb="env(safe-area-inset-bottom)"
     >
@@ -51,9 +51,11 @@ export function BottomNavbar() {
               <NextLink href={item.path}>
                 <Icon
                   size={20}
-                  color={isActive ? '#00FF41' : '#888888'}
+                  color={isActive ? 'brand.matrix' : 'text.mist'}
                   style={{
-                    filter: isActive ? 'drop-shadow(0 0 4px #00FF41)' : 'none',
+                    filter: isActive
+                      ? `drop-shadow(0 0 4px var(--chakra-colors-brand-matrix))`
+                      : 'none',
                   }}
                 />
                 <Text

@@ -14,7 +14,7 @@ export const bottomNav = defineSlotRecipe({
       background: 'transparent',
       backdropFilter: 'blur(16px)',
       borderTop: '1px solid',
-      borderColor: 'rgba(0, 255, 65, 0.2)',
+      borderColor: 'matrix/20',
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
@@ -42,7 +42,7 @@ export const bottomNav = defineSlotRecipe({
       fontSize: '24px',
       transition: 'filter 150ms',
       _groupActive: {
-        filter: 'drop-shadow(0 0 4px #00FF41)',
+        filter: 'drop-shadow(0 0 4px {colors.brand.matrix})',
       },
     },
     label: {

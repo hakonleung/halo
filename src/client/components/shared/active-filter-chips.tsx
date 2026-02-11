@@ -46,17 +46,17 @@ export function ActiveFilterChips({
 
         const chipContent = (
           <HStack
-            bg="rgba(0, 255, 65, 0.05)"
+            bg="matrix/5"
             border="1px solid"
-            borderColor="rgba(0, 255, 65, 0.3)"
+            borderColor="matrix/30"
             px={2}
             py={1}
             borderRadius="2px"
             cursor={isSearch ? 'default' : 'pointer'}
             _hover={{
-              bg: 'rgba(0, 255, 65, 0.1)',
+              bg: 'matrix/10',
               borderColor: 'brand.matrix',
-              boxShadow: '0 0 8px rgba(0, 255, 65, 0.1)',
+              boxShadow: 'badge',
             }}
             gap={1}
             transition="all 0.2s"
@@ -81,7 +81,7 @@ export function ActiveFilterChips({
               cursor="pointer"
               borderRadius="2px"
               color="brand.alert"
-              _hover={{ color: 'white', bg: 'rgba(255, 107, 53, 0.2)' }}
+              _hover={{ color: 'white', bg: 'alert/20' }}
             >
               <LuX size={10} />
             </Box>
@@ -119,7 +119,7 @@ export function ActiveFilterChips({
                             color={
                               activeFilters[id] === option.value ? 'brand.matrix' : 'text.mist'
                             }
-                            _hover={{ bg: 'rgba(0, 255, 65, 0.1)', color: 'brand.matrix' }}
+                            _hover={{ bg: 'matrix/10', color: 'brand.matrix' }}
                             fontFamily="mono"
                             fontSize="xs"
                           >

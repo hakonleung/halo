@@ -28,12 +28,12 @@ export function NoteTimelineCard({
     <Card.Root
       cursor={onClick ? 'pointer' : 'default'}
       onClick={onClick}
-      borderColor="rgba(0, 212, 255, 0.3)"
+      borderColor="cyber/30"
       w={`${width}px`}
       h={`${height}px`}
       _hover={{
         borderColor: 'brand.cyber',
-        boxShadow: '0 0 10px rgba(0, 212, 255, 0.2)',
+        boxShadow: 'cyber',
       }}
     >
       <Card.Body h="100%" display="flex" alignItems="center" justifyContent="center">

@@ -6,6 +6,8 @@ import Picker from '@emoji-mart/react';
 import { useState, useEffect, useRef } from 'react';
 import { LuSmile } from 'react-icons/lu';
 
+import { RAW_COLORS } from '@/client/theme/tokens';
+
 export function EmojiPicker({
   value,
   onChange,
@@ -23,12 +25,12 @@ export function EmojiPicker({
       // Apply custom styles to emoji-mart picker using CSS variables
       const emojiMartRoot = pickerRef.current.querySelector('.emoji-mart');
       if (emojiMartRoot && emojiMartRoot instanceof HTMLElement) {
-        emojiMartRoot.style.setProperty('--bg', '#1A1A1A');
-        emojiMartRoot.style.setProperty('--bg-hover', 'rgba(0, 255, 65, 0.1)');
-        emojiMartRoot.style.setProperty('--fg', '#E0E0E0');
-        emojiMartRoot.style.setProperty('--fg-secondary', '#888888');
-        emojiMartRoot.style.setProperty('--border', 'rgba(0, 255, 65, 0.3)');
-        emojiMartRoot.style.setProperty('--shadow', '0 0 20px rgba(0, 255, 65, 0.1)');
+        emojiMartRoot.style.setProperty('--bg', RAW_COLORS.bgCarbon);
+        emojiMartRoot.style.setProperty('--bg-hover', RAW_COLORS.matrix10);
+        emojiMartRoot.style.setProperty('--fg', RAW_COLORS.textNeon);
+        emojiMartRoot.style.setProperty('--fg-secondary', RAW_COLORS.textMist);
+        emojiMartRoot.style.setProperty('--border', RAW_COLORS.matrix30);
+        emojiMartRoot.style.setProperty('--shadow', RAW_COLORS.matrix10);
       }
     }
   }, [isOpen]);
@@ -42,11 +44,11 @@ export function EmojiPicker({
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             pl="10"
-            bg="rgba(0, 0, 0, 0.3)"
-            borderColor="rgba(0, 255, 65, 0.2)"
+            bg="black/30"
+            borderColor="matrix/20"
             _focus={{
               borderColor: 'brand.matrix',
-              boxShadow: '0 0 10px rgba(0, 255, 65, 0.2)',
+              boxShadow: 'badge',
             }}
             fontFamily="mono"
             readOnly
@@ -80,29 +82,29 @@ export function EmojiPicker({
               ref={pickerRef}
               css={{
                 '& .emoji-mart': {
-                  backgroundColor: '#1A1A1A',
-                  border: '1px solid rgba(0, 255, 65, 0.3)',
+                  backgroundColor: RAW_COLORS.bgCarbon,
+                  border: `1px solid ${RAW_COLORS.matrix30}`,
                   borderRadius: '4px',
-                  boxShadow: '0 0 20px rgba(0, 255, 65, 0.1)',
+                  boxShadow: RAW_COLORS.matrix10,
                   fontFamily: 'mono',
                 },
                 '& .emoji-mart-search input': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                  borderColor: 'rgba(0, 255, 65, 0.2)',
-                  color: '#E0E0E0',
+                  backgroundColor: RAW_COLORS.black30,
+                  borderColor: RAW_COLORS.matrix20,
+                  color: RAW_COLORS.textNeon,
                 },
                 '& .emoji-mart-search input:focus': {
-                  borderColor: '#00FF41',
-                  boxShadow: '0 0 10px rgba(0, 255, 65, 0.2)',
+                  borderColor: RAW_COLORS.matrix,
+                  boxShadow: RAW_COLORS.matrix10,
                 },
                 '& .emoji-mart-category-label span': {
-                  color: '#888888',
+                  color: RAW_COLORS.textMist,
                 },
                 '& .emoji-mart-emoji:hover': {
-                  backgroundColor: 'rgba(0, 255, 65, 0.1)',
+                  backgroundColor: RAW_COLORS.matrix10,
                 },
                 '& .emoji-mart-bar': {
-                  borderColor: 'rgba(0, 255, 65, 0.2)',
+                  borderColor: RAW_COLORS.matrix20,
                 },
               }}
             >

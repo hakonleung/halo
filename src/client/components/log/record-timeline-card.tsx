@@ -30,12 +30,12 @@ export function RecordTimelineCard({
     <Card.Root
       cursor={onClick ? 'pointer' : 'default'}
       onClick={onClick}
-      borderColor="rgba(0, 255, 65, 0.3)"
+      borderColor="matrix/30"
       w={`${width}px`}
       h={`${height}px`}
       _hover={{
         borderColor: 'brand.matrix',
-        boxShadow: '0 0 10px rgba(0, 255, 65, 0.2)',
+        boxShadow: 'badge',
       }}
     >
       <Card.Body h="100%" display="flex" alignItems="center" justifyContent="center">

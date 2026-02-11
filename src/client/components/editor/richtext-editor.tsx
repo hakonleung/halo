@@ -128,7 +128,7 @@ export function RichTextEditor({ editor }: RichTextEditorProps) {
             right: 0,
             top: 0,
             bottom: 0,
-            background: 'rgba(0, 255, 65, 0.1)',
+            background: 'var(--chakra-colors-matrix-10)',
             pointerEvents: 'none',
           },
           '& .column-resize-handle': {

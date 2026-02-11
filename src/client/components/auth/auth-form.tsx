@@ -101,7 +101,7 @@ export function AuthForm() {
         p={8}
         maxW="400px"
         w="100%"
-        boxShadow="0 0 15px rgba(0, 255, 65, 0.1)"
+        boxShadow="subtle"
       >
         <VStack gap={6} align="stretch">
           <Box textAlign="center">
@@ -130,7 +130,7 @@ export function AuthForm() {
               borderColor="brand.matrix"
               color={mode === AuthMode.Login ? 'bg.deep' : 'brand.matrix'}
               bg={mode === AuthMode.Login ? 'brand.matrix' : 'transparent'}
-              _hover={{ bg: mode === AuthMode.Login ? 'brand.matrix' : 'rgba(0, 255, 65, 0.1)' }}
+              _hover={{ bg: mode === AuthMode.Login ? 'brand.matrix' : 'matrix/10' }}
             >
               Sign In
             </Button>
@@ -279,7 +279,7 @@ export function AuthForm() {
               {error && (
                 <Box
                   p={3}
-                  bg="rgba(255, 51, 102, 0.1)"
+                  bg="error/10"
                   border="1px solid"
                   borderColor="red.500"
                   borderRadius="4px"

@@ -39,16 +39,24 @@ export function useRecordTimelineItems({
 
   const filteredRecords = useMemo(() => {
     return records.filter((record: BehaviorRecordWithDefinition) => {
+      // Filter by time range
+      const recordDate = new Date(record.recordedAt);
+      if (recordDate < timelineStart || recordDate > timelineEnd) return false;
+
+      // Filter by category
       if (recordFilters.category && recordFilters.category !== 'all') {
         if (record.behaviorDefinitions.category !== recordFilters.category) return false;
       }
+
+      // Filter by search
       if (recordFilters.search) {
         const query = recordFilters.search.toLowerCase();
         if (!record.behaviorDefinitions.name.toLowerCase().includes(query)) return false;
       }
+
       return true;
     });
-  }, [records, recordFilters]);
+  }, [records, recordFilters, timelineStart, timelineEnd]);
 
   const items = useMemo<TimelineItem[]>(() => {
     const result: TimelineItem[] = [];

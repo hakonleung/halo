@@ -33,7 +33,7 @@ export function ChatInputBar({ value, onChange, onSend, disabled }: ChatInputBar
           borderRadius="8px"
           border="1px solid"
           borderColor="brand.matrix"
-          boxShadow="0 0 15px rgba(0, 255, 65, 0.1)"
+          boxShadow="subtle"
           gap={2}
         >
           <IconButton
@@ -69,7 +69,7 @@ export function ChatInputBar({ value, onChange, onSend, disabled }: ChatInputBar
             color="bg.deep"
             onClick={onSend}
             loading={disabled}
-            _hover={{ bg: '#00cc33' }}
+            _hover={{ bg: 'brand.matrixDark' }}
           >
             <Send size={18} />
           </IconButton>

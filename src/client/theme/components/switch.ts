@@ -13,14 +13,24 @@ export const switch_ = defineSlotRecipe({
     control: {
       position: 'relative',
       transition: 'all 200ms ease-out',
-      bg: 'bg.dark',
+      background: 'bg.dark',
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: 'bg.dark',
-      _checked: {
-        bg: 'brand.matrix',
+      borderRadius: 'full',
+      '&[data-state="unchecked"]': {
+        background: 'bg.dark',
+        borderColor: 'bg.dark',
+      },
+      '&[data-state="checked"]': {
+        background: 'brand.matrix',
         borderColor: 'brand.matrix',
-        boxShadow: '0 0 10px rgba(0, 255, 65, 0.3), 0 0 20px rgba(0, 255, 65, 0.1)',
+        boxShadow: 'md',
+      },
+      _checked: {
+        background: 'brand.matrix',
+        borderColor: 'brand.matrix',
+        boxShadow: 'md',
       },
       _hover: {
         borderColor: 'brand.matrix',
@@ -32,26 +42,74 @@ export const switch_ = defineSlotRecipe({
     },
     thumb: {
       transition: 'all 200ms ease-out',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-      bg: 'bg.carbon',
+      boxShadow: 'drop',
+      background: 'bg.carbon',
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: 'bg.dark',
-      _checked: {
-        bg: 'bg.deep',
+      borderRadius: 'full',
+      '&[data-state="unchecked"]': {
+        background: 'bg.carbon',
+        borderColor: 'bg.dark',
+      },
+      '&[data-state="checked"]': {
+        background: 'bg.deep',
         borderColor: 'brand.matrix',
-        boxShadow: '0 0 8px rgba(0, 255, 65, 0.5)',
+        boxShadow: 'thumb',
+      },
+      _checked: {
+        background: 'bg.deep',
+        borderColor: 'brand.matrix',
+        boxShadow: 'thumb',
       },
     },
     label: {
       fontFamily: 'mono',
-      fontSize: '14px',
+      fontSize: 'sm',
       color: 'text.mist',
       cursor: 'pointer',
       userSelect: 'none',
     },
   },
   variants: {
+    variant: {
+      solid: {
+        control: {
+          '&[data-state="unchecked"]': {
+            background: 'bg.dark',
+          },
+          '&[data-state="checked"]': {
+            background: 'brand.matrix',
+            borderColor: 'brand.matrix',
+            boxShadow: 'md',
+          },
+        },
+        thumb: {
+          '&[data-state="checked"]': {
+            background: 'bg.deep',
+            borderColor: 'brand.matrix',
+          },
+        },
+      },
+      raised: {
+        control: {
+          '&[data-state="unchecked"]': {
+            background: 'bg.dark',
+          },
+          '&[data-state="checked"]': {
+            background: 'brand.matrix',
+            borderColor: 'brand.matrix',
+            boxShadow: 'md',
+          },
+        },
+        thumb: {
+          '&[data-state="checked"]': {
+            background: 'bg.deep',
+            borderColor: 'brand.matrix',
+          },
+        },
+      },
+    },
     size: {
       sm: {
         control: {
@@ -67,7 +125,7 @@ export const switch_ = defineSlotRecipe({
           },
         },
         label: {
-          fontSize: '12px',
+          fontSize: 'xs',
         },
       },
       md: {
@@ -84,7 +142,7 @@ export const switch_ = defineSlotRecipe({
           },
         },
         label: {
-          fontSize: '14px',
+          fontSize: 'sm',
         },
       },
       lg: {
@@ -101,7 +159,7 @@ export const switch_ = defineSlotRecipe({
           },
         },
         label: {
-          fontSize: '16px',
+          fontSize: 'md',
         },
       },
     },

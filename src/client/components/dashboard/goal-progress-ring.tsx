@@ -2,6 +2,8 @@
 
 import { Box, Text, VStack } from '@chakra-ui/react';
 
+import { RAW_COLORS } from '@/client/theme/tokens';
+
 import type { GoalProgress } from '@/client/types/dashboard-client';
 
 interface GoalProgressRingProps {
@@ -17,10 +19,10 @@ const SIZES = {
 };
 
 function getProgressColor(progress: number): string {
-  if (progress >= 100) return '#00FF41';
-  if (progress >= 70) return '#00FF41';
-  if (progress >= 30) return '#00D4FF';
-  return '#FF6B35';
+  if (progress >= 100) return RAW_COLORS.matrix;
+  if (progress >= 70) return RAW_COLORS.matrix;
+  if (progress >= 30) return RAW_COLORS.cyber;
+  return RAW_COLORS.alert;
 }
 
 export function GoalProgressRing({ goal, size = 'md', onClick }: GoalProgressRingProps) {
@@ -47,7 +49,7 @@ export function GoalProgressRing({ goal, size = 'md', onClick }: GoalProgressRin
             cy={ring / 2}
             r={radius}
             fill="none"
-            stroke="#2A2A2A"
+            stroke={RAW_COLORS.bgDark}
             strokeWidth={stroke}
           />
           {/* Progress circle */}

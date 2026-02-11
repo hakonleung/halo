@@ -29,6 +29,11 @@ next-env.d.ts
 /coverage
 /.nyc_output
 
+# playwright
+/playwright-report/
+/test-results/
+tests/screenshots/
+
 # misc
 .DS_Store
 *.pem

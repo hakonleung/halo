@@ -2,6 +2,8 @@
 
 import { Box, Text, Skeleton, HStack, Tooltip, Card } from '@chakra-ui/react';
 
+import { RAW_COLORS } from '@/client/theme/tokens';
+
 import type { HeatmapData } from '@/client/types/dashboard-client';
 
 interface CalendarHeatmapProps {
@@ -11,11 +13,11 @@ interface CalendarHeatmapProps {
 }
 
 const LEVEL_COLORS = [
-  '#1A1A1A',
-  'rgba(0, 255, 65, 0.2)',
-  'rgba(0, 255, 65, 0.4)',
-  'rgba(0, 255, 65, 0.6)',
-  'rgba(0, 255, 65, 0.9)',
+  RAW_COLORS.bgCarbon,
+  RAW_COLORS.matrix20,
+  RAW_COLORS.matrix40,
+  RAW_COLORS.matrix60,
+  RAW_COLORS.matrix90,
 ];
 
 const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
@@ -203,20 +205,17 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
                               <Box
                                 w="12px"
                                 h="12px"
-                                borderRadius="2px"
+                                borderRadius="sm"
                                 bg={day.date ? LEVEL_COLORS[day.level] : 'transparent'}
-                                border={
-                                  day.date && day.level === 0
-                                    ? '1px solid rgba(255, 255, 255, 0.1)'
-                                    : 'none'
-                                }
+                                border={day.date && day.level === 0 ? '1px solid' : 'none'}
+                                borderColor={day.date && day.level === 0 ? 'white/10' : undefined}
                                 cursor={day.date && onDayClick ? 'pointer' : 'default'}
                                 transition="all 0.15s ease"
                                 _hover={
                                   day.date
                                     ? {
                                         transform: 'scale(1.3)',
-                                        boxShadow: '0 0 8px #00FF41',
+                                        boxShadow: 'badge',
                                       }
                                     : undefined
                                 }
@@ -251,9 +250,10 @@ export function CalendarHeatmap({ data, loading, onDayClick }: CalendarHeatmapPr
               key={i}
               w="10px"
               h="10px"
-              borderRadius="2px"
+              borderRadius="sm"
               bg={color}
-              border={i === 0 ? '1px solid #333' : 'none'}
+              border={i === 0 ? '1px solid' : 'none'}
+              borderColor={i === 0 ? 'bg.grid' : undefined}
             />
           ))}
           <Text fontSize="xs" color="text.mist" fontFamily="mono">

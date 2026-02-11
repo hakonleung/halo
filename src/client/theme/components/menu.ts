@@ -13,15 +13,15 @@ export const menu = defineSlotRecipe({
       backdropFilter: 'blur(16px)',
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'rgba(0, 255, 65, 0.2)',
-      borderRadius: '4px',
-      boxShadow: '0 0 15px rgba(0, 255, 65, 0.1)',
+      borderColor: 'matrix/20',
+      borderRadius: 'md',
+      boxShadow: 'subtle',
       color: 'text.neon',
       p: 2,
       minWidth: '200px',
     },
     item: {
-      borderRadius: '4px',
+      borderRadius: 'md',
       color: 'text.neon',
       cursor: 'pointer',
       px: 3,
@@ -30,11 +30,11 @@ export const menu = defineSlotRecipe({
       fontFamily: 'mono',
       transition: 'all 150ms',
       _hover: {
-        bg: 'rgba(0, 255, 65, 0.1)',
+        bg: 'matrix/10',
         color: 'brand.matrix',
       },
       _focus: {
-        bg: 'rgba(0, 255, 65, 0.1)',
+        bg: 'matrix/10',
         color: 'brand.matrix',
       },
       _disabled: {
@@ -47,7 +47,7 @@ export const menu = defineSlotRecipe({
       flex: 1,
     },
     separator: {
-      borderColor: 'rgba(0, 255, 65, 0.2)',
+      borderColor: 'matrix/20',
       my: 2,
     },
     itemGroupLabel: {

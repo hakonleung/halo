@@ -5,7 +5,7 @@ export const button = defineRecipe({
   base: {
     fontFamily: 'body',
     fontWeight: '600',
-    borderRadius: '4px',
+    borderRadius: 'md',
     cursor: 'pointer',
     transition: 'all 150ms ease-out',
     display: 'inline-flex',
@@ -21,10 +21,10 @@ export const button = defineRecipe({
   variants: {
     variant: {
       primary: {
-        background: 'linear-gradient(135deg, #00FF41, #00CC33)',
+        background: 'linear-gradient(135deg, {colors.brand.matrix}, {colors.brand.matrixDark})',
         color: 'bg.deep',
         _hover: {
-          boxShadow: '0 0 15px rgba(0, 255, 65, 0.4), 0 0 30px rgba(0, 255, 65, 0.2)',
+          boxShadow: 'lg',
           animation: 'pulse-glow 2s ease-in-out infinite',
         },
         _active: {
@@ -37,10 +37,10 @@ export const button = defineRecipe({
         borderStyle: 'solid',
         borderColor: 'brand.matrix',
         color: 'brand.matrix',
-        boxShadow: '0 0 5px rgba(0, 255, 65, 0.3)',
+        boxShadow: 'sm',
         _hover: {
-          background: 'rgba(0, 255, 65, 0.1)',
-          boxShadow: '0 0 10px rgba(0, 255, 65, 0.3), 0 0 20px rgba(0, 255, 65, 0.1)',
+          background: 'matrix/10',
+          boxShadow: 'md',
         },
       },
       danger: {
@@ -49,17 +49,17 @@ export const button = defineRecipe({
         borderStyle: 'solid',
         borderColor: 'semantic.error',
         color: 'semantic.error',
-        boxShadow: '0 0 5px rgba(255, 51, 102, 0.3)',
+        boxShadow: '0 0 5px {colors.error/30}',
         _hover: {
-          background: 'rgba(255, 51, 102, 0.1)',
-          boxShadow: '0 0 10px rgba(255, 51, 102, 0.3), 0 0 20px rgba(255, 51, 102, 0.1)',
+          background: 'error/10',
+          boxShadow: 'error',
         },
       },
       ghost: {
         background: 'transparent',
         color: 'text.neon',
         _hover: {
-          background: 'rgba(255, 255, 255, 0.05)',
+          background: 'white/5',
         },
       },
       toggle: {
@@ -72,7 +72,7 @@ export const button = defineRecipe({
       'toggle-active': {
         bg: 'brand.matrix',
         color: 'bg.deep',
-        boxShadow: '0 0 10px rgba(0, 255, 65, 0.3)',
+        boxShadow: '0 0 10px {colors.matrix/30}',
         _hover: {
           opacity: 0.9,
         },
@@ -82,17 +82,17 @@ export const button = defineRecipe({
       sm: {
         height: '32px',
         px: '16px',
-        fontSize: '12px',
+        fontSize: 'xs',
       },
       md: {
         height: '40px',
         px: '20px',
-        fontSize: '14px',
+        fontSize: 'sm',
       },
       lg: {
         height: '48px',
         px: '24px',
-        fontSize: '16px',
+        fontSize: 'md',
       },
     },
   },
