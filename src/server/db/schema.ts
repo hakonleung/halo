@@ -62,6 +62,12 @@ export const neologUserSettings = pgTable(
       apiKey: null,
       baseUrl: null,
     }),
+
+    // Background settings
+    background_type: text('background_type', {
+      enum: ['tron-grid', 'matrix-rain', 'particle-field', 'data-flow'],
+    }).default('tron-grid'),
+    renderer_type: text('renderer_type', { enum: ['auto', 'webgl', 'webgpu'] }).default('auto'),
   },
   () => {
     return [

@@ -143,7 +143,31 @@ ALTER TABLE "neolog_user_settings" ALTER COLUMN "ai_settings" SET DEFAULT '{"use
 ALTER TABLE "neolog_user_settings" DROP COLUMN "shortcuts";--> statement-breakpoint
 CREATE POLICY "Users can view their own profile." ON "neolog_user_profiles" AS PERMISSIVE FOR SELECT TO public USING (auth.uid() = user_id);--> statement-breakpoint
 CREATE POLICY "Users can insert their own profile." ON "neolog_user_profiles" AS PERMISSIVE FOR INSERT TO public WITH CHECK (auth.uid() = user_id);--> statement-breakpoint
-CREATE POLICY "Users can update their own profile." ON "neolog_user_profiles" AS PERMISSIVE FOR UPDATE TO public USING (auth.uid() = user_id);-- Handle new user creation - create user settings
+CREATE POLICY "Users can update their own profile." ON "neolog_user_profiles" AS PERMISSIVE FOR UPDATE TO public USING (auth.uid() = user_id);-- 安全地添加 background_type 字段（如果不存在）
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'neolog_user_settings'
+    AND column_name = 'background_type'
+  ) THEN
+    ALTER TABLE "neolog_user_settings" ADD COLUMN "background_type" text DEFAULT 'tron-grid';
+  END IF;
+END $$;
+
+--> statement-breakpoint
+
+-- 安全地添加 renderer_type 字段（如果不存在）
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'neolog_user_settings'
+    AND column_name = 'renderer_type'
+  ) THEN
+    ALTER TABLE "neolog_user_settings" ADD COLUMN "renderer_type" text DEFAULT 'auto';
+  END IF;
+END $$;-- Handle new user creation - create user settings
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN

@@ -32,6 +32,9 @@ export interface Settings {
   currency?: string | null;
   // AI Settings
   aiSettings?: AISettings | null;
+  // Background settings
+  backgroundType?: 'tron-grid' | 'matrix-rain' | 'particle-field' | 'data-flow' | null;
+  rendererType?: 'auto' | 'webgl' | 'webgpu' | null;
 }
 
 // Client-side update request with camelCase
@@ -59,6 +62,8 @@ export type SettingsUpdateRequest = {
   dateFormat?: 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY';
   currency?: string;
   aiSettings?: AISettings;
+  backgroundType?: 'tron-grid' | 'matrix-rain' | 'particle-field' | 'data-flow';
+  rendererType?: 'auto' | 'webgl' | 'webgpu';
 };
 
 export type { AISettings };

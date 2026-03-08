@@ -5,14 +5,16 @@ import { useState } from 'react';
 
 import { UnifiedActionDrawer } from '@/client/components/actions';
 import { EditorModal } from '@/client/components/editor';
-import { AnimatedBackground } from '@/client/components/layout/animated-background';
+import { ThreeBackground } from '@/client/components/layout/background';
 import { ConfirmDialog } from '@/client/components/shared/confirm-dialog';
+import { useSettings } from '@/client/hooks/use-settings';
 import { useConfirmDialogStore } from '@/client/store/confirm-dialog-store';
 import { system } from '@/client/theme';
+import { BackgroundType } from '@/client/types/background-client';
 
 /**
  * Global components wrapper that includes all global UI elements
- * - AnimatedBackground: Background animation
+ * - ThreeBackground: Three.js background animation
  * - UnifiedActionDrawer: Unified drawer for creating and viewing records/goals/notes
  * - EditorModal: Global editor modal for rich text and markdown editing
  * - ChatButton: Floating chat button in bottom right corner
@@ -33,7 +35,7 @@ export function GlobalComponents({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider value={system}>
-        <AnimatedBackground />
+        <BackgroundWrapper />
         {children}
         <UnifiedActionDrawer />
         <EditorModal />
@@ -41,6 +43,14 @@ export function GlobalComponents({ children }: { children: React.ReactNode }) {
       </ChakraProvider>
     </QueryClientProvider>
   );
+}
+
+function BackgroundWrapper() {
+  const { settings } = useSettings();
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const backgroundType = (settings?.backgroundType as BackgroundType) ?? BackgroundType.TRON_GRID;
+
+  return <ThreeBackground type={backgroundType} />;
 }
 
 export function GlobalConfirmDialog() {

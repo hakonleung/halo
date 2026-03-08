@@ -14,6 +14,8 @@
     "typegen": "chakra typegen ./src/client/theme/index.ts",
     "db:generate": "drizzle-kit generate && cat supabase/migrations/*.sql supabase/custom.sql > supabase/schema.sql",
     "db:migrate": "node scripts/migrate-db.js",
+    "db:migrate:auto": "node scripts/auto-migrate.js",
+    "db:copy": "node scripts/copy-migration.js",
     "analyze-deps": "tsx scripts/analyze-dependencies.ts"
   },
   "keywords": [],
@@ -56,6 +58,7 @@
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/three": "^0.183.1",
     "ai": "^6.0.68",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.1",
@@ -75,6 +78,7 @@
     "react-syntax-highlighter": "^16.1.0",
     "recharts": "^3.7.0",
     "remark-gfm": "^4.0.1",
+    "three": "^0.183.2",
     "typescript": "^5.9.3",
     "zod": "^4.3.5",
     "zustand": "^5.0.10"

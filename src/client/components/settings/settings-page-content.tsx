@@ -7,6 +7,7 @@ import { FeatureFlag, isFeatureEnabled } from '@/client/utils/feature-flags';
 
 import { AISettingsComponent } from './ai-settings';
 import { AppearanceSettings } from './appearance-settings';
+import { BackgroundSettings } from './background-settings';
 import { LocaleSettings } from './locale-settings';
 import { NotificationSettings } from './notification-settings';
 import { ProfileSettings } from './profile-settings';
@@ -14,6 +15,7 @@ import { ProfileSettings } from './profile-settings';
 enum SettingsTab {
   Profile = 'profile',
   Appearance = 'appearance',
+  Background = 'background',
   Notifications = 'notifications',
   Locale = 'locale',
   AI = 'ai',
@@ -28,6 +30,7 @@ export function SettingsPageContent() {
     const allTabs: Array<{ id: SettingsTab; label: string }> = [
       { id: SettingsTab.Profile, label: 'Profile' },
       { id: SettingsTab.Appearance, label: 'Appearance' },
+      { id: SettingsTab.Background, label: 'Background' },
       { id: SettingsTab.Notifications, label: 'Notifications' },
       { id: SettingsTab.Locale, label: 'Locale' },
       { id: SettingsTab.AI, label: 'AI' },
@@ -54,6 +57,8 @@ export function SettingsPageContent() {
         return <ProfileSettings />;
       case SettingsTab.Appearance:
         return <AppearanceSettings />;
+      case SettingsTab.Background:
+        return <BackgroundSettings />;
       case SettingsTab.Notifications:
         if (!isNotificationsEnabled) {
           return <ProfileSettings />;

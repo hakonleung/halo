@@ -81,6 +81,8 @@ export function convertSettings(server: ServerUserSettings): ClientSettings {
     dateFormat: server.date_format ?? null,
     currency: server.currency ?? null,
     aiSettings: convertAISettings(server.ai_settings),
+    backgroundType: server.background_type ?? null,
+    rendererType: server.renderer_type ?? null,
   };
 }
 
@@ -117,6 +119,8 @@ function convertSettingsUpdateRequest(
   if (client.dateFormat !== undefined) server.date_format = client.dateFormat;
   if (client.currency !== undefined) server.currency = client.currency;
   if (client.aiSettings !== undefined) server.ai_settings = client.aiSettings;
+  if (client.backgroundType !== undefined) server.background_type = client.backgroundType;
+  if (client.rendererType !== undefined) server.renderer_type = client.rendererType;
   return server;
 }
 
