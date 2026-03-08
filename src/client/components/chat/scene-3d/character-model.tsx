@@ -48,7 +48,7 @@ export function CharacterModel({
       CHARACTER_CONFIG.position.z,
     );
     characterGroup.scale.setScalar(customization.scale);
-    characterGroup.rotation.y = -Math.PI / 2; // Rotate 90° right (face +X direction)
+    characterGroup.rotation.y = -Math.PI / 4; // Rotate 45° right from forward (45° angle)
     characterGroup.name = 'character';
 
     scene.add(characterGroup);
