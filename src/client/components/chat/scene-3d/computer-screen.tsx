@@ -181,6 +181,7 @@ function extractText(message: UIMessage): string {
 
 /**
  * Update canvas texture with chat messages
+ * Messages are aligned to bottom and scroll up
  */
 function updateScreenTexture(canvas: HTMLCanvasElement, messages: UIMessage[]): void {
   const ctx = canvas.getContext('2d');
@@ -204,28 +205,32 @@ function updateScreenTexture(canvas: HTMLCanvasElement, messages: UIMessage[]): 
   ctx.lineWidth = 2;
   ctx.strokeRect(10, 10, width - 20, height - 20);
 
-  // Draw messages
+  // Setup text rendering
   const fontSize = Math.floor(width / 32); // Responsive font size
   ctx.font = `${fontSize}px ${RAW_FONTS.mono}`;
   ctx.textBaseline = 'top';
 
   const padding = 20;
   const lineHeight = fontSize * 1.5;
-  let y = padding;
+  const maxWidth = width - padding * 2;
+  const availableHeight = height - padding * 2;
+
+  // First pass: calculate total height needed for all messages
+  interface RenderedLine {
+    text: string;
+    color: string;
+    isRole: boolean;
+  }
+  const linesToRender: RenderedLine[] = [];
 
   messages.forEach((message) => {
     // Role label
     const roleColor = message.role === 'user' ? RAW_COLORS.cyber : RAW_COLORS.matrix;
     const roleLabel = message.role === 'user' ? '> USER:' : '> AI:';
+    linesToRender.push({ text: roleLabel, color: roleColor, isRole: true });
 
-    ctx.fillStyle = roleColor;
-    ctx.fillText(roleLabel, padding, y);
-    y += lineHeight;
-
-    // Message content (word wrap)
+    // Message content with word wrap
     const content = extractText(message);
-    ctx.fillStyle = RAW_COLORS.textNeon;
-    const maxWidth = width - padding * 2;
     const words = content.split(' ');
     let line = '';
 
@@ -234,24 +239,49 @@ function updateScreenTexture(canvas: HTMLCanvasElement, messages: UIMessage[]): 
       const metrics = ctx.measureText(testLine);
 
       if (metrics.width > maxWidth && line !== '') {
-        ctx.fillText(line, padding, y);
-        y += lineHeight;
+        linesToRender.push({ text: line, color: RAW_COLORS.textNeon, isRole: false });
         line = word + ' ';
       } else {
         line = testLine;
       }
 
       // Last word
-      if (index === words.length - 1) {
-        ctx.fillText(line, padding, y);
-        y += lineHeight;
+      if (index === words.length - 1 && line.trim()) {
+        linesToRender.push({ text: line, color: RAW_COLORS.textNeon, isRole: false });
       }
     });
 
-    // Spacing between messages
-    y += lineHeight / 2;
-
-    // Stop if we're running out of space
-    if (y > height - padding) return;
+    // Add spacing line between messages
+    linesToRender.push({ text: '', color: '', isRole: false });
   });
+
+  // Second pass: render from bottom up
+  const totalHeight = linesToRender.length * lineHeight;
+  let startY: number;
+
+  if (totalHeight > availableHeight) {
+    // More content than fits - show only latest lines from bottom
+    startY = height - padding;
+    const linesToShow = Math.floor(availableHeight / lineHeight);
+    const visibleLines = linesToRender.slice(-linesToShow);
+
+    // Render from bottom
+    visibleLines.reverse().forEach((lineData, index) => {
+      const y = startY - (index + 1) * lineHeight;
+      if (lineData.text) {
+        ctx.fillStyle = lineData.color;
+        ctx.fillText(lineData.text, padding, y);
+      }
+    });
+  } else {
+    // Content fits - align to bottom
+    startY = height - padding - totalHeight;
+    linesToRender.forEach((lineData, index) => {
+      const y = startY + index * lineHeight;
+      if (lineData.text) {
+        ctx.fillStyle = lineData.color;
+        ctx.fillText(lineData.text, padding, y);
+      }
+    });
+  }
 }

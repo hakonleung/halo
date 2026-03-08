@@ -21,6 +21,7 @@ import { ComputerScreen } from './computer-screen';
 import { CyberpunkRoom } from './cyberpunk-room';
 import { applyMobileOptimizations } from './mobile-optimizations';
 import { SpeechBubble } from './speech-bubble';
+import { useCameraControls } from './use-camera-controls';
 import { useClickDetection, useHoverDetection } from './use-click-detection';
 import { useSceneSetup } from './use-scene-setup';
 
@@ -159,6 +160,18 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
     enabled: true,
     onHoverStart: () => setIsHovering(true),
     onHoverEnd: () => setIsHovering(false),
+  });
+
+  // Camera controls (zoom and rotate)
+  useCameraControls({
+    camera,
+    canvas: canvasElementRef.current,
+    enabled: true,
+    enableZoom: true,
+    enableRotate: true,
+    enablePan: false,
+    minDistance: 3,
+    maxDistance: 15,
   });
 
   // Handle message send from speech bubble
