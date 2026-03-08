@@ -33,28 +33,7 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
 
     const objects: THREE.Object3D[] = [];
 
-    // Screen frame (embedded in wall)
-    const frameThickness = 0.05;
-    const frameWidth = COMPUTER_CONFIG.screenSize.width + 0.2;
-    const frameHeight = COMPUTER_CONFIG.screenSize.height + 0.2;
-
-    const frameGeometry = new THREE.BoxGeometry(frameWidth, frameHeight, frameThickness);
-    const frameMaterial = new THREE.MeshStandardMaterial({
-      color: RAW_COLORS.bgCarbon,
-      emissive: RAW_COLORS.matrix,
-      emissiveIntensity: 0.1,
-      roughness: 0.3,
-      metalness: 0.7,
-    });
-    const frame = new THREE.Mesh(frameGeometry, frameMaterial);
-    frame.position.set(
-      COMPUTER_CONFIG.position.x,
-      COMPUTER_CONFIG.position.y,
-      COMPUTER_CONFIG.position.z,
-    );
-    objects.push(frame);
-
-    // Screen (canvas texture) - slightly in front of frame
+    // Screen (canvas texture) - no frame, directly on wall
     const resolution = isMobile
       ? COMPUTER_CONFIG.screenResolution.mobile
       : COMPUTER_CONFIG.screenResolution.desktop;
@@ -80,7 +59,7 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
     screen.position.set(
       COMPUTER_CONFIG.position.x,
       COMPUTER_CONFIG.position.y,
-      COMPUTER_CONFIG.position.z + frameThickness / 2 + 0.01,
+      COMPUTER_CONFIG.position.z,
     );
     screenMeshRef.current = screen;
     objects.push(screen);
