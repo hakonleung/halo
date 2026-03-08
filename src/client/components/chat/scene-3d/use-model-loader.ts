@@ -4,7 +4,8 @@
  * Loads and caches 3D character models using GLTFLoader.
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import { CharacterPreset } from '@/client/types/chat-3d-client';
@@ -13,6 +14,21 @@ import { CHARACTER_CONFIG } from './configs';
 
 // Global cache to persist across component unmounts
 const modelCache = new Map<CharacterPreset, GLTF>();
+
+// Global loader instance with decoder configured
+let globalLoader: GLTFLoader | null = null;
+
+/**
+ * Get or create a configured GLTFLoader with decoders
+ */
+function getLoader(): GLTFLoader {
+  if (!globalLoader) {
+    globalLoader = new GLTFLoader();
+    // Set Meshopt decoder for compressed models
+    globalLoader.setMeshoptDecoder(MeshoptDecoder);
+  }
+  return globalLoader;
+}
 
 interface ModelLoaderResult {
   model: GLTF | null;
@@ -27,7 +43,6 @@ export function useModelLoader(preset: CharacterPreset): ModelLoaderResult {
   const [model, setModel] = useState<GLTF | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const loaderRef = useRef<GLTFLoader | null>(null);
 
   useEffect(() => {
     // Check cache first
@@ -38,12 +53,8 @@ export function useModelLoader(preset: CharacterPreset): ModelLoaderResult {
       return;
     }
 
-    // Initialize loader
-    if (!loaderRef.current) {
-      loaderRef.current = new GLTFLoader();
-    }
-
-    const loader = loaderRef.current;
+    // Get configured loader
+    const loader = getLoader();
     const modelPath = `${CHARACTER_CONFIG.modelPath}${preset}.glb`;
 
     setLoading(true);
@@ -79,7 +90,7 @@ export function useModelLoader(preset: CharacterPreset): ModelLoaderResult {
  * Preload all character models
  */
 export function preloadAllModels(): void {
-  const loader = new GLTFLoader();
+  const loader = getLoader();
 
   Object.values(CharacterPreset).forEach((preset) => {
     if (!modelCache.has(preset)) {
