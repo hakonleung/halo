@@ -27,7 +27,7 @@ export const CAMERA_CONFIG = {
  * Wall-mounted screen configuration
  */
 export const COMPUTER_CONFIG = {
-  position: { x: 0, y: 1.5, z: -4.85 }, // Center of back wall, slightly forward
+  position: { x: 0, y: 1.5, z: -2 }, // Closer to camera for better visibility
   screenSize: { width: 3, height: 2 }, // Larger screen on wall
   screenResolution: {
     desktop: 1024,
