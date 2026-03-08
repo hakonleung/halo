@@ -53,6 +53,15 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
     }
   };
 
+  const handleSendMessage = async (text: string) => {
+    if (!text.trim() || isStreaming) return;
+    try {
+      await sendMessage({ text });
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    }
+  };
+
   return (
     <Drawer.Root open={isOpen} onOpenChange={(e) => (!e.open ? onClose() : undefined)} size="full">
       <Portal>
@@ -74,7 +83,7 @@ export function ChatModal({ isOpen, onClose }: ChatModalProps) {
               {is3DMode ? (
                 <Flex h="full" bg="transparent" position="relative" w="full">
                   <Suspense fallback={<Flex h="full" w="full" bg="bg.deep" />}>
-                    <Scene3D messages={messages} />
+                    <Scene3D messages={messages} onSendMessage={handleSendMessage} />
                   </Suspense>
                 </Flex>
               ) : (

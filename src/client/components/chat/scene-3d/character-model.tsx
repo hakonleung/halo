@@ -1,0 +1,242 @@
+/**
+ * Character Model Component
+ *
+ * Renders a 3D character model with customization and hover effects.
+ */
+
+import { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+
+import { RAW_COLORS } from '@/client/theme/tokens/raw-values';
+
+import { CHARACTER_CONFIG } from './configs';
+import { useModelLoader } from './use-model-loader';
+
+import type { CharacterPreset, CharacterCustomization } from '@/client/types/chat-3d-client';
+
+interface CharacterModelProps {
+  scene: THREE.Scene;
+  preset: CharacterPreset;
+  customization: CharacterCustomization;
+  isHovering?: boolean;
+}
+
+export function CharacterModel({
+  scene,
+  preset,
+  customization,
+  isHovering = false,
+}: CharacterModelProps) {
+  const { model, loading, error } = useModelLoader(preset);
+  const characterGroupRef = useRef<THREE.Group | null>(null);
+  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
+  const clockRef = useRef(new THREE.Clock());
+  const [animationFrame, setAnimationFrame] = useState<number | null>(null);
+
+  // Initialize character model
+  useEffect(() => {
+    if (!scene) return;
+
+    const characterGroup = new THREE.Group();
+    characterGroup.position.set(
+      CHARACTER_CONFIG.position.x,
+      CHARACTER_CONFIG.position.y,
+      CHARACTER_CONFIG.position.z,
+    );
+    characterGroup.scale.setScalar(customization.scale);
+    characterGroup.name = 'character';
+
+    scene.add(characterGroup);
+    characterGroupRef.current = characterGroup;
+
+    return () => {
+      scene.remove(characterGroup);
+      characterGroupRef.current = null;
+    };
+  }, [scene, customization.scale]);
+
+  // Load model or create fallback
+  useEffect(() => {
+    if (!characterGroupRef.current) return;
+
+    const group = characterGroupRef.current;
+
+    // Clear existing children
+    while (group.children.length > 0) {
+      const child = group.children[0];
+      group.remove(child);
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        if (Array.isArray(child.material)) {
+          child.material.forEach((mat) => mat.dispose());
+        } else {
+          child.material.dispose();
+        }
+      }
+    }
+
+    if (loading) {
+      // Show loading placeholder
+      createPlaceholder(group, 'loading');
+      return;
+    }
+
+    if (error || !model) {
+      // Show error placeholder
+      createPlaceholder(group, 'error');
+      return;
+    }
+
+    // Clone the loaded model
+    const modelClone = model.scene.clone();
+    group.add(modelClone);
+
+    // Apply customization
+    applyCustomization(modelClone, customization);
+
+    // Setup animations if available
+    if (model.animations && model.animations.length > 0) {
+      const mixer = new THREE.AnimationMixer(modelClone);
+      mixerRef.current = mixer;
+
+      // Play idle animation (first animation)
+      const action = mixer.clipAction(model.animations[0]);
+      action.play();
+    }
+  }, [model, loading, error, customization]);
+
+  // Update hover effect
+  useEffect(() => {
+    if (!characterGroupRef.current) return;
+
+    const group = characterGroupRef.current;
+
+    group.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const mat = child.material as THREE.MeshStandardMaterial;
+        if (mat.emissive) {
+          mat.emissiveIntensity = isHovering ? 0.3 : 0.1;
+        }
+      }
+    });
+  }, [isHovering]);
+
+  // Animation loop
+  useEffect(() => {
+    if (!mixerRef.current) return;
+
+    const animate = () => {
+      const delta = clockRef.current.getDelta();
+      mixerRef.current?.update(delta);
+      setAnimationFrame(requestAnimationFrame(animate));
+    };
+
+    const frame = requestAnimationFrame(animate);
+    setAnimationFrame(frame);
+
+    return () => {
+      if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
+      }
+      mixerRef.current = null;
+    };
+  }, [model]);
+
+  return null; // This component doesn't render React elements
+}
+
+/**
+ * Create a placeholder geometry when model is not available
+ */
+function createPlaceholder(group: THREE.Group, type: 'loading' | 'error'): void {
+  // Simple humanoid shape made of primitives
+  const color = type === 'error' ? RAW_COLORS.error : RAW_COLORS.matrix;
+
+  // Body
+  const bodyGeometry = new THREE.CapsuleGeometry(0.3, 1.0, 4, 8);
+  const bodyMaterial = new THREE.MeshStandardMaterial({
+    color,
+    emissive: color,
+    emissiveIntensity: 0.1,
+    roughness: 0.7,
+    metalness: 0.3,
+  });
+  const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  body.position.y = 1.0;
+  group.add(body);
+
+  // Head
+  const headGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+  const headMaterial = new THREE.MeshStandardMaterial({
+    color,
+    emissive: color,
+    emissiveIntensity: 0.2,
+    roughness: 0.6,
+    metalness: 0.4,
+  });
+  const head = new THREE.Mesh(headGeometry, headMaterial);
+  head.position.y = 1.8;
+  group.add(head);
+
+  // Arms
+  const armGeometry = new THREE.CapsuleGeometry(0.1, 0.6, 4, 8);
+  const armMaterial = bodyMaterial.clone();
+
+  const leftArm = new THREE.Mesh(armGeometry, armMaterial);
+  leftArm.position.set(-0.4, 1.0, 0);
+  leftArm.rotation.z = Math.PI / 6;
+  group.add(leftArm);
+
+  const rightArm = new THREE.Mesh(armGeometry, armMaterial.clone());
+  rightArm.position.set(0.4, 1.0, 0);
+  rightArm.rotation.z = -Math.PI / 6;
+  group.add(rightArm);
+
+  // Legs
+  const legGeometry = new THREE.CapsuleGeometry(0.12, 0.8, 4, 8);
+  const legMaterial = bodyMaterial.clone();
+
+  const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
+  leftLeg.position.set(-0.15, 0.4, 0);
+  group.add(leftLeg);
+
+  const rightLeg = new THREE.Mesh(legGeometry, legMaterial.clone());
+  rightLeg.position.set(0.15, 0.4, 0);
+  group.add(rightLeg);
+}
+
+/**
+ * Apply customization to character model
+ */
+function applyCustomization(model: THREE.Object3D, customization: CharacterCustomization): void {
+  model.traverse((child) => {
+    if (child instanceof THREE.Mesh) {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const mat = child.material as THREE.MeshStandardMaterial;
+
+      // Apply colors
+      mat.color.set(customization.primaryColor);
+      mat.emissive.set(customization.secondaryColor);
+      mat.emissiveIntensity = 0.1;
+
+      // Apply material type
+      switch (customization.materialType) {
+        case 'glossy':
+          mat.roughness = 0.2;
+          mat.metalness = 0.1;
+          break;
+        case 'matte':
+          mat.roughness = 0.8;
+          mat.metalness = 0.0;
+          break;
+        case 'metallic':
+          mat.roughness = 0.3;
+          mat.metalness = 1.0;
+          break;
+      }
+
+      mat.needsUpdate = true;
+    }
+  });
+}
