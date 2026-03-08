@@ -218,31 +218,34 @@ function createPlaceholder(group: THREE.Group, type: 'loading' | 'error'): void 
 function applyCustomization(model: THREE.Object3D, customization: CharacterCustomization): void {
   model.traverse((child) => {
     if (child instanceof THREE.Mesh) {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const mat = child.material as THREE.MeshStandardMaterial;
+      // Create new MeshStandardMaterial with custom colors
+      const newMaterial = new THREE.MeshStandardMaterial({
+        color: customization.primaryColor,
+        emissive: customization.secondaryColor,
+        emissiveIntensity: 0.2,
+        roughness:
+          customization.materialType === 'glossy'
+            ? 0.2
+            : customization.materialType === 'matte'
+              ? 0.8
+              : 0.3,
+        metalness:
+          customization.materialType === 'metallic'
+            ? 1.0
+            : customization.materialType === 'glossy'
+              ? 0.1
+              : 0.0,
+      });
 
-      // Apply colors
-      mat.color.set(customization.primaryColor);
-      mat.emissive.set(customization.secondaryColor);
-      mat.emissiveIntensity = 0.1;
-
-      // Apply material type
-      switch (customization.materialType) {
-        case 'glossy':
-          mat.roughness = 0.2;
-          mat.metalness = 0.1;
-          break;
-        case 'matte':
-          mat.roughness = 0.8;
-          mat.metalness = 0.0;
-          break;
-        case 'metallic':
-          mat.roughness = 0.3;
-          mat.metalness = 1.0;
-          break;
+      // Dispose old material if it's not an array
+      if (child.material && !Array.isArray(child.material)) {
+        child.material.dispose();
       }
 
-      mat.needsUpdate = true;
+      // Apply new material
+      child.material = newMaterial;
+      child.castShadow = true;
+      child.receiveShadow = true;
     }
   });
 }

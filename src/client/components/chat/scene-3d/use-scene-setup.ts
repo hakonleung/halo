@@ -105,17 +105,19 @@ export function useSceneSetup(): SceneSetupResult {
  * Setup scene lighting
  */
 function setupLighting(scene: THREE.Scene): void {
-  // Ambient light
-  const ambientLight = new THREE.AmbientLight(
-    LIGHTING_CONFIG.ambient.color,
-    LIGHTING_CONFIG.ambient.intensity,
-  );
+  // Stronger ambient light for better visibility
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
   scene.add(ambientLight);
+
+  // Main directional light (simulates sun/key light)
+  const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  mainLight.position.set(5, 5, 5);
+  scene.add(mainLight);
 
   // Matrix green point light
   const matrixLight = new THREE.PointLight(
     LIGHTING_CONFIG.matrixLight.color,
-    LIGHTING_CONFIG.matrixLight.intensity,
+    1.2, // Increased intensity
     LIGHTING_CONFIG.matrixLight.distance,
   );
   matrixLight.position.set(
@@ -128,7 +130,7 @@ function setupLighting(scene: THREE.Scene): void {
   // Cyber blue point light
   const cyberLight = new THREE.PointLight(
     LIGHTING_CONFIG.cyberLight.color,
-    LIGHTING_CONFIG.cyberLight.intensity,
+    1.0, // Increased intensity
     LIGHTING_CONFIG.cyberLight.distance,
   );
   cyberLight.position.set(
@@ -137,4 +139,13 @@ function setupLighting(scene: THREE.Scene): void {
     LIGHTING_CONFIG.cyberLight.position.z,
   );
   scene.add(cyberLight);
+
+  // Character spotlight (illuminates character on the left)
+  const characterLight = new THREE.SpotLight(0xffffff, 1.5);
+  characterLight.position.set(-2, 3, 3);
+  characterLight.target.position.set(-2, 1, 0); // Point at character position
+  characterLight.angle = Math.PI / 6;
+  characterLight.penumbra = 0.3;
+  scene.add(characterLight);
+  scene.add(characterLight.target);
 }
