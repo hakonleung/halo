@@ -24,6 +24,8 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
   const textureRef = useRef<THREE.CanvasTexture | null>(null);
   const screenMeshRef = useRef<THREE.Mesh | null>(null);
   const objectsRef = useRef<THREE.Object3D[]>([]);
+  const animationFrameRef = useRef<number | null>(null);
+  const lastMessageContentRef = useRef<string>('');
 
   // Initialize computer hardware (desk + monitor)
   useEffect(() => {
@@ -128,13 +130,38 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
     };
   }, [scene, isMobile]);
 
-  // Update screen texture when messages change
+  // Update screen texture continuously to support streaming messages
   useEffect(() => {
     if (!canvasRef.current || !textureRef.current) return;
 
-    const latestMessages = messages.slice(-COMPUTER_CONFIG.maxVisibleMessages);
-    updateScreenTexture(canvasRef.current, latestMessages);
-    textureRef.current.needsUpdate = true;
+    const updateLoop = () => {
+      if (!canvasRef.current || !textureRef.current) return;
+
+      const latestMessages = messages.slice(-COMPUTER_CONFIG.maxVisibleMessages);
+
+      // Get current message content for comparison
+      const currentContent = latestMessages.map((m) => extractText(m)).join('|');
+
+      // Only update if content has changed (supports streaming)
+      if (currentContent !== lastMessageContentRef.current) {
+        updateScreenTexture(canvasRef.current, latestMessages);
+        textureRef.current.needsUpdate = true;
+        lastMessageContentRef.current = currentContent;
+      }
+
+      // Continue animation loop
+      animationFrameRef.current = requestAnimationFrame(updateLoop);
+    };
+
+    // Start update loop
+    animationFrameRef.current = requestAnimationFrame(updateLoop);
+
+    return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    };
   }, [messages]);
 
   return null; // This component doesn't render React elements
