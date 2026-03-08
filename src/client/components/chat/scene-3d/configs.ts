@@ -42,9 +42,11 @@ export const COMPUTER_CONFIG = {
  * Character configuration
  */
 export const CHARACTER_CONFIG = {
-  position: { x: -2, y: 0, z: 0 }, // Left of computer
+  position: { x: -2, y: 0, z: 0 }, // Left of computer (y=0 is floor level)
   scale: 1.0,
   modelPath: '/models/characters/',
+  // Characters that should keep their original materials/colors
+  keepOriginalMaterials: ['gugugaga'],
 } as const;
 
 /**

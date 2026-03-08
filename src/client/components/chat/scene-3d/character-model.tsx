@@ -48,6 +48,7 @@ export function CharacterModel({
       CHARACTER_CONFIG.position.z,
     );
     characterGroup.scale.setScalar(customization.scale);
+    characterGroup.rotation.y = Math.PI / 4; // Rotate 45° to face toward camera
     characterGroup.name = 'character';
 
     scene.add(characterGroup);
@@ -99,18 +100,37 @@ export function CharacterModel({
     console.log('[CharacterModel] Model loaded successfully, cloning...');
     const modelClone = model.scene.clone();
 
+    // Calculate bounding box to position model on ground
+    const box = new THREE.Box3().setFromObject(modelClone);
+    const minY = box.min.y;
+
+    // Adjust model position so bottom touches the ground (y=0)
+    if (minY < 0) {
+      modelClone.position.y = -minY; // Lift model up
+      console.log('[CharacterModel] Adjusted model Y position:', -minY);
+    }
+
     // Log model structure
     console.log('[CharacterModel] Model structure:', {
       children: modelClone.children.length,
-      position: modelClone.position,
-      scale: modelClone.scale,
+      boundingBox: { min: box.min, max: box.max },
+      adjustedPosition: modelClone.position,
     });
 
     group.add(modelClone);
 
-    // Apply customization
-    console.log('[CharacterModel] Applying customization:', customization);
-    applyCustomization(modelClone, customization);
+    // Apply customization only if not in keepOriginalMaterials list
+    const shouldKeepOriginal = (CHARACTER_CONFIG.keepOriginalMaterials as readonly string[]).includes(
+      preset,
+    );
+    if (shouldKeepOriginal) {
+      console.log('[CharacterModel] Keeping original materials for:', preset);
+      // Just ensure materials are visible
+      ensureMaterialsVisible(modelClone);
+    } else {
+      console.log('[CharacterModel] Applying customization:', customization);
+      applyCustomization(modelClone, customization);
+    }
 
     // Setup animations if available
     if (model.animations && model.animations.length > 0) {
@@ -229,6 +249,27 @@ function createPlaceholder(group: THREE.Group, type: 'loading' | 'error'): void 
   const rightLeg = new THREE.Mesh(legGeometry, legMaterial.clone());
   rightLeg.position.set(0.15, 0.4, 0);
   group.add(rightLeg);
+}
+
+/**
+ * Ensure materials are visible without changing colors
+ * Used for models that should keep their original appearance
+ */
+function ensureMaterialsVisible(model: THREE.Object3D): void {
+  model.traverse((child) => {
+    if (child instanceof THREE.Mesh) {
+      // Keep original material but ensure it's visible
+      if (child.material) {
+        const materials = Array.isArray(child.material) ? child.material : [child.material];
+        materials.forEach((mat) => {
+          mat.visible = true;
+          mat.needsUpdate = true;
+        });
+      }
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
 }
 
 /**

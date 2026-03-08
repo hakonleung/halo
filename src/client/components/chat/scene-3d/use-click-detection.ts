@@ -103,6 +103,7 @@ export function useHoverDetection({
   const raycasterRef = useRef(new THREE.Raycaster());
   const mouseRef = useRef(new THREE.Vector2());
   const isHoveringRef = useRef(false);
+  const hoverTimeoutRef = useRef<number | null>(null);
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
@@ -127,14 +128,23 @@ export function useHoverDetection({
       const wasHovering = isHoveringRef.current;
       const isNowHovering = intersects.length > 0;
 
+      // Clear any pending timeout
+      if (hoverTimeoutRef.current !== null) {
+        clearTimeout(hoverTimeoutRef.current);
+        hoverTimeoutRef.current = null;
+      }
+
       if (isNowHovering && !wasHovering) {
-        // Hover started
+        // Hover started - trigger immediately
         isHoveringRef.current = true;
         onHoverStart?.();
       } else if (!isNowHovering && wasHovering) {
-        // Hover ended
-        isHoveringRef.current = false;
-        onHoverEnd?.();
+        // Hover ended - add small delay to prevent flickering
+        hoverTimeoutRef.current = window.setTimeout(() => {
+          isHoveringRef.current = false;
+          onHoverEnd?.();
+          hoverTimeoutRef.current = null;
+        }, 50); // 50ms delay before ending hover
       }
     },
     [camera, target, canvas, enabled, onHoverStart, onHoverEnd],
@@ -148,6 +158,13 @@ export function useHoverDetection({
 
     return () => {
       currentCanvas.removeEventListener('mousemove', handleMouseMove);
+
+      // Clear any pending timeout
+      if (hoverTimeoutRef.current !== null) {
+        clearTimeout(hoverTimeoutRef.current);
+        hoverTimeoutRef.current = null;
+      }
+
       // Reset hover state on cleanup
       if (isHoveringRef.current) {
         isHoveringRef.current = false;
