@@ -2,7 +2,7 @@
 
 /**
  * Auto Migration Script
- * 
+ *
  * Automatically executes database migrations using direct PostgreSQL connection
  */
 
@@ -13,22 +13,24 @@ const path = require('path');
 function loadEnv() {
   const envPath = path.join(__dirname, '../.env.local');
   const env = {};
-  
+
   if (!fs.existsSync(envPath)) {
     console.error('❌ .env.local not found');
     process.exit(1);
   }
 
   const content = fs.readFileSync(envPath, 'utf-8');
-  content.split('\n').forEach(line => {
+  content.split('\n').forEach((line) => {
     const trimmed = line.trim();
     if (trimmed && !trimmed.startsWith('#')) {
       const match = trimmed.match(/^([^=]+)=(.*)$/);
       if (match) {
         const key = match[1].trim();
         let value = match[2].trim();
-        if ((value.startsWith('"') && value.endsWith('"')) || 
-            (value.startsWith("'") && value.endsWith("'"))) {
+        if (
+          (value.startsWith('"') && value.endsWith('"')) ||
+          (value.startsWith("'") && value.endsWith("'"))
+        ) {
           value = value.slice(1, -1);
         }
         env[key] = value;
@@ -42,21 +44,21 @@ function loadEnv() {
 async function executeWithPostgres(connectionString, sql) {
   // Use postgres package
   const { default: postgres } = await import('postgres');
-  
+
   const pg = postgres(connectionString, {
     max: 1,
-    ssl: 'require'
+    ssl: 'require',
   });
 
   try {
     console.log('📦 Executing migration...\n');
-    
+
     // Execute the SQL
     await pg.unsafe(sql);
-    
+
     console.log('✅ Migration completed successfully!\n');
     console.log('💡 You can now use the background settings feature.\n');
-    
+
     await pg.end();
     return true;
   } catch (error) {
@@ -71,7 +73,7 @@ async function main() {
 
   // Load env
   const env = loadEnv();
-  
+
   // Read migration SQL
   const migrationPath = path.join(__dirname, '../supabase/migrations/0002_sharp_oracle.sql');
   if (!fs.existsSync(migrationPath)) {
@@ -83,7 +85,7 @@ async function main() {
   console.log('📄 Found migration: 0002_sharp_oracle.sql\n');
 
   // Try different connection methods
-  
+
   // Method 1: Direct DATABASE_URL
   if (env.DATABASE_URL) {
     console.log('🔗 Using DATABASE_URL...\n');
@@ -99,14 +101,14 @@ async function main() {
   // Method 2: Construct from Supabase URL
   const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
   const dbPassword = env.SUPABASE_DB_PASSWORD || env.DATABASE_PASSWORD;
-  
+
   if (supabaseUrl && dbPassword) {
     // Extract project ref from URL
     const match = supabaseUrl.match(/https?:\/\/([^.]+)\.supabase\.co/);
     if (match) {
       const projectRef = match[1];
       const connectionString = `postgresql://postgres.${projectRef}:${dbPassword}@aws-0-us-west-1.pooler.supabase.com:6543/postgres`;
-      
+
       console.log('🔗 Using constructed connection string...\n');
       try {
         await executeWithPostgres(connectionString, sql);

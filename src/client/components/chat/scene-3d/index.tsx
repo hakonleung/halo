@@ -54,6 +54,16 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
   const [isHovering, setIsHovering] = useState(false);
   const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
   const characterRef = useRef<THREE.Object3D | null>(null);
+  const canvasElementRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Capture canvas element from callback ref
+  const handleCanvasRef = useCallback(
+    (canvas: HTMLCanvasElement | null) => {
+      canvasElementRef.current = canvas;
+      canvasRef(canvas);
+    },
+    [canvasRef],
+  );
 
   // Load saved settings on mount
   useEffect(() => {
@@ -95,7 +105,7 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
   useClickDetection({
     camera,
     target: characterRef.current,
-    canvas: canvasRef.current,
+    canvas: canvasElementRef.current,
     enabled: true,
     onHit: handleCharacterClick,
   });
@@ -104,7 +114,7 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
   useHoverDetection({
     camera,
     target: characterRef.current,
-    canvas: canvasRef.current,
+    canvas: canvasElementRef.current,
     enabled: true,
     onHoverStart: () => setIsHovering(true),
     onHoverEnd: () => setIsHovering(false),
@@ -169,7 +179,7 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
     <>
       <Box
         as="canvas"
-        ref={canvasRef}
+        ref={handleCanvasRef}
         position="absolute"
         top={0}
         left={0}

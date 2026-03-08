@@ -4,7 +4,7 @@
  * Initializes and manages Three.js scene, camera, renderer, and lighting.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 
 import { CAMERA_CONFIG, LIGHTING_CONFIG } from './configs';
@@ -13,17 +13,17 @@ interface SceneSetupResult {
   scene: THREE.Scene | null;
   camera: THREE.PerspectiveCamera | null;
   renderer: THREE.WebGLRenderer | null;
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  canvasRef: (canvas: HTMLCanvasElement | null) => void;
 }
 
 export function useSceneSetup(): SceneSetupResult {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [scene, setScene] = useState<THREE.Scene | null>(null);
   const [camera, setCamera] = useState<THREE.PerspectiveCamera | null>(null);
   const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
+  // Use callback ref to initialize when canvas mounts
+  const canvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
+    if (!canvas) return;
 
     // Initialize scene
     const newScene = new THREE.Scene();
@@ -45,7 +45,7 @@ export function useSceneSetup(): SceneSetupResult {
 
     // Initialize renderer
     const newRenderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
+      canvas,
       antialias: true,
       alpha: false,
     });
@@ -55,41 +55,48 @@ export function useSceneSetup(): SceneSetupResult {
     // Add lighting
     setupLighting(newScene);
 
-    // Handle window resize
-    const handleResize = () => {
-      if (!newCamera || !newRenderer) return;
+    setScene(newScene);
+    setCamera(newCamera);
+    setRenderer(newRenderer);
+  }, []);
 
-      newCamera.aspect = window.innerWidth / window.innerHeight;
-      newCamera.updateProjectionMatrix();
-      newRenderer.setSize(window.innerWidth, window.innerHeight);
+  // Handle window resize
+  useEffect(() => {
+    if (!camera || !renderer) return;
+
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     };
 
     window.addEventListener('resize', handleResize);
 
-    setScene(newScene);
-    setCamera(newCamera);
-    setRenderer(newRenderer);
-
-    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
-
-      // Dispose renderer
-      newRenderer.dispose();
-
-      // Dispose scene resources
-      newScene.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
-          object.geometry.dispose();
-          if (Array.isArray(object.material)) {
-            object.material.forEach((mat) => mat.dispose());
-          } else {
-            object.material.dispose();
-          }
-        }
-      });
     };
-  }, []);
+  }, [camera, renderer]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (renderer) {
+        renderer.dispose();
+      }
+      if (scene) {
+        scene.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            object.geometry.dispose();
+            if (Array.isArray(object.material)) {
+              object.material.forEach((mat) => mat.dispose());
+            } else {
+              object.material.dispose();
+            }
+          }
+        });
+      }
+    };
+  }, [renderer, scene]);
 
   return { scene, camera, renderer, canvasRef };
 }
