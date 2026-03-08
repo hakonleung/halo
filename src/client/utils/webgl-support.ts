@@ -21,7 +21,7 @@ export function checkWebGLSupport(): boolean {
 
     // If we got a context, WebGL is supported
     return !!gl;
-  } catch (error) {
+  } catch {
     // If any error occurs, WebGL is not supported
     return false;
   }
@@ -47,11 +47,13 @@ export function getWebGLInfo(): WebGLInfo {
     const canvas = document.createElement('canvas');
 
     // Try WebGL 2 first
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     let gl = canvas.getContext('webgl2') as WebGL2RenderingContext | null;
     let version: 'webgl' | 'webgl2' | null = gl ? 'webgl2' : null;
 
     // Fallback to WebGL 1
     if (!gl) {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       gl = (canvas.getContext('webgl') ||
         canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
       if (gl) {
@@ -65,9 +67,7 @@ export function getWebGLInfo(): WebGLInfo {
 
     // Get renderer info
     const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-    const renderer = debugInfo
-      ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
-      : undefined;
+    const renderer = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : undefined;
     const vendor = debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : undefined;
 
     // Get capabilities
@@ -80,7 +80,7 @@ export function getWebGLInfo(): WebGLInfo {
       vendor,
       maxTextureSize,
     };
-  } catch (error) {
+  } catch {
     return { supported: false, version: null };
   }
 }

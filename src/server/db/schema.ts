@@ -72,7 +72,7 @@ export const neologUserSettings = pgTable(
     // 3D Chat settings
     chat_3d_settings: jsonb('chat_3d_settings').default({
       enabled: false,
-      selectedCharacter: 'hacker',
+      selectedCharacter: 'gugugaga',
       customization: {
         primaryColor: '#00FF41',
         secondaryColor: '#00D4FF',

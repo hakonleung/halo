@@ -207,7 +207,7 @@ AS PERMISSIVE
 FOR UPDATE
 TO public
 USING (auth.uid() = user_id);
--- Handle new user creation - create user settings
+ALTER TABLE "neolog_user_settings" ALTER COLUMN "chat_3d_settings" SET DEFAULT '{"enabled":false,"selectedCharacter":"gugugaga","customization":{"primaryColor":"#00FF41","secondaryColor":"#00D4FF","materialType":"glossy","scale":1}}'::jsonb;-- Handle new user creation - create user settings
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN

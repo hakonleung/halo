@@ -8,6 +8,7 @@
  * Available character preset models
  */
 export enum CharacterPreset {
+  GUGUGAGA = 'gugugaga',
   HACKER = 'hacker',
   ANDROID = 'android',
   CYBORG = 'cyborg',
@@ -61,6 +62,6 @@ export const DEFAULT_CUSTOMIZATION: CharacterCustomization = {
  */
 export const DEFAULT_3D_SETTINGS: Chat3DSettings = {
   enabled: false,
-  selectedCharacter: CharacterPreset.HACKER,
+  selectedCharacter: CharacterPreset.GUGUGAGA,
   customization: DEFAULT_CUSTOMIZATION,
 };

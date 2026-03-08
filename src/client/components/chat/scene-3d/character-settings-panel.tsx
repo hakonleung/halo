@@ -43,6 +43,7 @@ export function CharacterSettingsPanel({ isOpen, onClose }: CharacterSettingsPan
 
   // Character preset options
   const characterOptions: { value: CharacterPreset; label: string; description: string }[] = [
+    { value: CharacterPreset.GUGUGAGA, label: 'Gugugaga', description: 'Cute character' },
     { value: CharacterPreset.HACKER, label: 'Hacker', description: 'Cyberpunk hacker' },
     { value: CharacterPreset.ANDROID, label: 'Android', description: 'AI robot' },
     { value: CharacterPreset.CYBORG, label: 'Cyborg', description: 'Half-mechanical' },

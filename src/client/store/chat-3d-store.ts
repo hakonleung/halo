@@ -41,7 +41,7 @@ interface Chat3DStore {
 
 const initialState = {
   is3DMode: false,
-  selectedCharacter: CharacterPreset.HACKER,
+  selectedCharacter: CharacterPreset.GUGUGAGA,
   characterCustomization: DEFAULT_CUSTOMIZATION,
   inputBoxVisible: false,
 };

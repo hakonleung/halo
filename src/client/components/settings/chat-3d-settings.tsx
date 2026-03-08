@@ -16,7 +16,7 @@ export function Chat3DSettings() {
   const { updateSettings, isLoading: isUpdating } = useUpdateSettings();
 
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterPreset>(
-    CharacterPreset.HACKER,
+    CharacterPreset.GUGUGAGA,
   );
 
   // Sync form values when settings load
@@ -27,6 +27,7 @@ export function Chat3DSettings() {
   }, [settings]);
 
   const characterOptions: { value: CharacterPreset; label: string }[] = [
+    { value: CharacterPreset.GUGUGAGA, label: 'Gugugaga' },
     { value: CharacterPreset.HACKER, label: 'Hacker' },
     { value: CharacterPreset.ANDROID, label: 'Android' },
     { value: CharacterPreset.CYBORG, label: 'Cyborg' },
