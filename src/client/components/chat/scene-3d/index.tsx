@@ -170,7 +170,7 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
     enableZoom: true,
     enableRotate: true,
     enablePan: false,
-    minDistance: 3,
+    minDistance: 1, // Allow zooming in much closer
     maxDistance: 15,
   });
 
