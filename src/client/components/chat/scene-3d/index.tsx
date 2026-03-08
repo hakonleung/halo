@@ -7,7 +7,8 @@
 
 'use client';
 
-import { Box, Spinner, Center } from '@chakra-ui/react';
+import { Box, Spinner, Center, IconButton } from '@chakra-ui/react';
+import { Settings } from 'lucide-react';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 import { useDeviceDetection } from '@/client/hooks/use-device-detection';
@@ -15,6 +16,7 @@ import { useSettings } from '@/client/hooks/use-settings';
 import { useChat3DStore } from '@/client/store/chat-3d-store';
 
 import { CharacterModel } from './character-model';
+import { CharacterSettingsPanel } from './character-settings-panel';
 import { ComputerScreen } from './computer-screen';
 import { CyberpunkRoom } from './cyberpunk-room';
 import { SpeechBubble } from './speech-bubble';
@@ -50,6 +52,7 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
 
   // Character interaction state
   const [isHovering, setIsHovering] = useState(false);
+  const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
   const characterRef = useRef<THREE.Object3D | null>(null);
 
   // Load saved settings on mount
@@ -187,6 +190,35 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
         visible={inputBoxVisible}
         onSend={handleSend}
         onClose={handleCloseBubble}
+      />
+
+      {/* Floating settings button */}
+      <IconButton
+        aria-label="Character settings"
+        position="fixed"
+        bottom={6}
+        right={6}
+        onClick={() => setSettingsPanelOpen(true)}
+        size="lg"
+        variant="solid"
+        bg="rgba(0, 255, 65, 0.1)"
+        borderWidth="1px"
+        borderColor="brand.matrix"
+        color="brand.matrix"
+        _hover={{
+          bg: 'rgba(0, 255, 65, 0.2)',
+          boxShadow: '0 0 15px rgba(0, 255, 65, 0.5)',
+        }}
+        boxShadow="0 0 10px rgba(0, 255, 65, 0.3)"
+        zIndex={100}
+      >
+        <Settings size={20} />
+      </IconButton>
+
+      {/* Character settings panel */}
+      <CharacterSettingsPanel
+        isOpen={settingsPanelOpen}
+        onClose={() => setSettingsPanelOpen(false)}
       />
     </>
   );

@@ -8,6 +8,7 @@ import { FeatureFlag, isFeatureEnabled } from '@/client/utils/feature-flags';
 import { AISettingsComponent } from './ai-settings';
 import { AppearanceSettings } from './appearance-settings';
 import { BackgroundSettings } from './background-settings';
+import { Chat3DSettings } from './chat-3d-settings';
 import { LocaleSettings } from './locale-settings';
 import { NotificationSettings } from './notification-settings';
 import { ProfileSettings } from './profile-settings';
@@ -16,6 +17,7 @@ enum SettingsTab {
   Profile = 'profile',
   Appearance = 'appearance',
   Background = 'background',
+  Chat3D = 'chat-3d',
   Notifications = 'notifications',
   Locale = 'locale',
   AI = 'ai',
@@ -31,6 +33,7 @@ export function SettingsPageContent() {
       { id: SettingsTab.Profile, label: 'Profile' },
       { id: SettingsTab.Appearance, label: 'Appearance' },
       { id: SettingsTab.Background, label: 'Background' },
+      { id: SettingsTab.Chat3D, label: '3D Chat' },
       { id: SettingsTab.Notifications, label: 'Notifications' },
       { id: SettingsTab.Locale, label: 'Locale' },
       { id: SettingsTab.AI, label: 'AI' },
@@ -59,6 +62,8 @@ export function SettingsPageContent() {
         return <AppearanceSettings />;
       case SettingsTab.Background:
         return <BackgroundSettings />;
+      case SettingsTab.Chat3D:
+        return <Chat3DSettings />;
       case SettingsTab.Notifications:
         if (!isNotificationsEnabled) {
           return <ProfileSettings />;
