@@ -30,7 +30,7 @@ export function SpeechBubble({ camera, visible, onSend, onClose }: SpeechBubbleP
       // Character head position in world space
       const characterPos = new THREE.Vector3(
         CHARACTER_CONFIG.position.x,
-        CHARACTER_CONFIG.position.y + 1.6, // Above character head (closer)
+        CHARACTER_CONFIG.position.y + 1.0, // Much closer to short character
         CHARACTER_CONFIG.position.z,
       );
 

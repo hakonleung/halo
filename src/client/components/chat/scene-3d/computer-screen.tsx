@@ -52,8 +52,12 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
       COMPUTER_CONFIG.screenSize.width,
       COMPUTER_CONFIG.screenSize.height,
     );
-    const screenMaterial = new THREE.MeshBasicMaterial({
+    const screenMaterial = new THREE.MeshStandardMaterial({
       map: texture,
+      roughness: 0.8, // Matte/frosted effect
+      metalness: 0.1,
+      emissive: RAW_COLORS.matrix,
+      emissiveIntensity: 0.05, // Subtle glow
     });
     const screen = new THREE.Mesh(screenGeometry, screenMaterial);
     screen.position.set(
