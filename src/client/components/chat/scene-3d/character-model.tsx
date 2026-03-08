@@ -79,35 +79,54 @@ export function CharacterModel({
       }
     }
 
+    console.log('[CharacterModel] State:', { loading, error, hasModel: !!model, preset });
+
     if (loading) {
       // Show loading placeholder
+      console.log('[CharacterModel] Showing loading placeholder');
       createPlaceholder(group, 'loading');
       return;
     }
 
     if (error || !model) {
       // Show error placeholder
+      console.log('[CharacterModel] Showing error placeholder:', error);
       createPlaceholder(group, 'error');
       return;
     }
 
     // Clone the loaded model
+    console.log('[CharacterModel] Model loaded successfully, cloning...');
     const modelClone = model.scene.clone();
+
+    // Log model structure
+    console.log('[CharacterModel] Model structure:', {
+      children: modelClone.children.length,
+      position: modelClone.position,
+      scale: modelClone.scale,
+    });
+
     group.add(modelClone);
 
     // Apply customization
+    console.log('[CharacterModel] Applying customization:', customization);
     applyCustomization(modelClone, customization);
 
     // Setup animations if available
     if (model.animations && model.animations.length > 0) {
+      console.log('[CharacterModel] Setting up animations:', model.animations.length);
       const mixer = new THREE.AnimationMixer(modelClone);
       mixerRef.current = mixer;
 
       // Play idle animation (first animation)
       const action = mixer.clipAction(model.animations[0]);
       action.play();
+    } else {
+      console.log('[CharacterModel] No animations found in model');
     }
-  }, [model, loading, error, customization]);
+
+    console.log('[CharacterModel] Model setup complete, group children:', group.children.length);
+  }, [model, loading, error, customization, preset]);
 
   // Update hover effect
   useEffect(() => {
