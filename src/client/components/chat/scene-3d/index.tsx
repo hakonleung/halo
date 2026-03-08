@@ -7,9 +7,9 @@
 
 'use client';
 
-import { Box, Spinner, Center, IconButton } from '@chakra-ui/react';
+import { Box, Spinner, Center, IconButton, VisuallyHidden } from '@chakra-ui/react';
 import { Settings } from 'lucide-react';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 import { useDeviceDetection } from '@/client/hooks/use-device-detection';
 import { useSettings } from '@/client/hooks/use-settings';
@@ -19,6 +19,7 @@ import { CharacterModel } from './character-model';
 import { CharacterSettingsPanel } from './character-settings-panel';
 import { ComputerScreen } from './computer-screen';
 import { CyberpunkRoom } from './cyberpunk-room';
+import { applyMobileOptimizations } from './mobile-optimizations';
 import { SpeechBubble } from './speech-bubble';
 import { useClickDetection, useHoverDetection } from './use-click-detection';
 import { useSceneSetup } from './use-scene-setup';
@@ -37,6 +38,12 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
   const isMobile = deviceInfo.isMobile;
   const animationFrameRef = useRef<number | undefined>(undefined);
 
+  // Detect reduced motion preference for accessibility
+  const prefersReducedMotion = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }, []);
+
   // Load user settings
   const { settings } = useSettings();
 
@@ -53,6 +60,7 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
   // Character interaction state
   const [isHovering, setIsHovering] = useState(false);
   const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
+  const [contextLost, setContextLost] = useState(false);
   const characterRef = useRef<THREE.Object3D | null>(null);
   const canvasElementRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -77,6 +85,39 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
       }
     }
   }, [settings, setCharacter, setCustomization]);
+
+  // Apply mobile optimizations when scene is ready
+  useEffect(() => {
+    if (!scene || !renderer) return;
+    applyMobileOptimizations(scene, renderer, isMobile);
+  }, [scene, renderer, isMobile]);
+
+  // Handle WebGL context lost/restored
+  useEffect(() => {
+    const canvas = canvasElementRef.current;
+    if (!canvas) return;
+
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      setContextLost(true);
+      console.warn('WebGL context lost');
+    };
+
+    const handleContextRestored = () => {
+      setContextLost(false);
+      console.log('WebGL context restored');
+      // Reload page to reinitialize scene
+      window.location.reload();
+    };
+
+    canvas.addEventListener('webglcontextlost', handleContextLost);
+    canvas.addEventListener('webglcontextrestored', handleContextRestored);
+
+    return () => {
+      canvas.removeEventListener('webglcontextlost', handleContextLost);
+      canvas.removeEventListener('webglcontextrestored', handleContextRestored);
+    };
+  }, []);
 
   // Get character object from scene
   useEffect(() => {
@@ -104,8 +145,8 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
 
   useClickDetection({
     camera,
-    target: characterRef.current,
-    canvas: canvasElementRef.current,
+    target: characterRef,
+    canvas: canvasElementRef,
     enabled: true,
     onHit: handleCharacterClick,
   });
@@ -113,8 +154,8 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
   // Hover detection
   useHoverDetection({
     camera,
-    target: characterRef.current,
-    canvas: canvasElementRef.current,
+    target: characterRef,
+    canvas: canvasElementRef,
     enabled: true,
     onHoverStart: () => setIsHovering(true),
     onHoverEnd: () => setIsHovering(false),
@@ -166,17 +207,17 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
     };
   }, [scene, camera, renderer, isMobile]);
 
-  // Loading state
-  if (!scene || !camera || !renderer) {
-    return (
-      <Center h="full" w="full">
-        <Spinner color="brand.matrix" size="lg" />
-      </Center>
-    );
-  }
+  // Check if scene is ready
+  const isLoading = !scene || !camera || !renderer;
 
   return (
     <>
+      {/* Screen reader announcement */}
+      <VisuallyHidden role="status" aria-live="polite">
+        3D chat scene active. Click on character to send a message.
+      </VisuallyHidden>
+
+      {/* Always render canvas so handleCanvasRef can fire */}
       <Box
         as="canvas"
         ref={handleCanvasRef}
@@ -186,50 +227,91 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
         w="full"
         h="full"
         style={{ touchAction: 'none', cursor: isHovering ? 'pointer' : 'default' }}
-      />
-      <CyberpunkRoom scene={scene} />
-      <ComputerScreen scene={scene} messages={messages} isMobile={isMobile} />
-      <CharacterModel
-        scene={scene}
-        preset={selectedCharacter}
-        customization={characterCustomization}
-        isHovering={isHovering}
-      />
-      <SpeechBubble
-        camera={camera}
-        visible={inputBoxVisible}
-        onSend={handleSend}
-        onClose={handleCloseBubble}
+        aria-label="3D chat scene"
+        role="img"
       />
 
-      {/* Floating settings button */}
-      <IconButton
-        aria-label="Character settings"
-        position="fixed"
-        bottom={6}
-        right={6}
-        onClick={() => setSettingsPanelOpen(true)}
-        size="lg"
-        variant="solid"
-        bg="rgba(0, 255, 65, 0.1)"
-        borderWidth="1px"
-        borderColor="brand.matrix"
-        color="brand.matrix"
-        _hover={{
-          bg: 'rgba(0, 255, 65, 0.2)',
-          boxShadow: '0 0 15px rgba(0, 255, 65, 0.5)',
-        }}
-        boxShadow="0 0 10px rgba(0, 255, 65, 0.3)"
-        zIndex={100}
-      >
-        <Settings size={20} />
-      </IconButton>
+      {/* Loading overlay */}
+      {isLoading && (
+        <Center position="absolute" top={0} left={0} w="full" h="full" zIndex={10}>
+          <Spinner color="brand.matrix" size="lg" />
+        </Center>
+      )}
 
-      {/* Character settings panel */}
-      <CharacterSettingsPanel
-        isOpen={settingsPanelOpen}
-        onClose={() => setSettingsPanelOpen(false)}
-      />
+      {/* Context lost overlay */}
+      {contextLost && (
+        <Center
+          position="absolute"
+          top={0}
+          left={0}
+          w="full"
+          h="full"
+          zIndex={20}
+          bg="rgba(0, 0, 0, 0.9)"
+        >
+          <Box textAlign="center" p={6}>
+            <Box color="brand.error" mb={4} fontSize="xl">
+              ⚠️
+            </Box>
+            <Box color="text.neon" mb={2} fontWeight="bold">
+              WebGL Context Lost
+            </Box>
+            <Box color="text.mist" fontSize="sm">
+              The 3D scene will reload automatically when context is restored.
+            </Box>
+          </Box>
+        </Center>
+      )}
+
+      {/* 3D scene components - only render when ready */}
+      {!isLoading && (
+        <>
+          <CyberpunkRoom scene={scene} />
+          <ComputerScreen scene={scene} messages={messages} isMobile={isMobile} />
+          <CharacterModel
+            scene={scene}
+            preset={selectedCharacter}
+            customization={characterCustomization}
+            isHovering={isHovering}
+            prefersReducedMotion={prefersReducedMotion}
+          />
+          <SpeechBubble
+            camera={camera}
+            visible={inputBoxVisible}
+            onSend={handleSend}
+            onClose={handleCloseBubble}
+          />
+
+          {/* Floating settings button */}
+          <IconButton
+            aria-label="Character settings"
+            position="fixed"
+            bottom={6}
+            right={6}
+            onClick={() => setSettingsPanelOpen(true)}
+            size="lg"
+            variant="solid"
+            bg="rgba(0, 255, 65, 0.1)"
+            borderWidth="1px"
+            borderColor="brand.matrix"
+            color="brand.matrix"
+            _hover={{
+              bg: 'rgba(0, 255, 65, 0.2)',
+              boxShadow: '0 0 15px rgba(0, 255, 65, 0.5)',
+            }}
+            boxShadow="0 0 10px rgba(0, 255, 65, 0.3)"
+            zIndex={100}
+          >
+            <Settings size={20} />
+          </IconButton>
+
+          {/* Character settings panel */}
+          <CharacterSettingsPanel
+            isOpen={settingsPanelOpen}
+            onClose={() => setSettingsPanelOpen(false)}
+          />
+        </>
+      )}
     </>
   );
 }

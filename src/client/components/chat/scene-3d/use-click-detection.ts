@@ -4,13 +4,13 @@
  * Uses Three.js Raycaster to detect clicks on 3D objects.
  */
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, type RefObject } from 'react';
 import * as THREE from 'three';
 
 interface ClickDetectionOptions {
   camera: THREE.Camera | null;
-  target: THREE.Object3D | null;
-  canvas: HTMLCanvasElement | null;
+  target: RefObject<THREE.Object3D | null>;
+  canvas: RefObject<HTMLCanvasElement | null>;
   enabled?: boolean;
   onHit?: () => void;
 }
@@ -30,10 +30,14 @@ export function useClickDetection({
 
   const handleClick = useCallback(
     (event: MouseEvent | TouchEvent) => {
-      if (!camera || !target || !canvas || !enabled) return;
+      // Read current values from refs
+      const currentTarget = target.current;
+      const currentCanvas = canvas.current;
+
+      if (!camera || !currentTarget || !currentCanvas || !enabled) return;
 
       // Get canvas bounding rect
-      const rect = canvas.getBoundingClientRect();
+      const rect = currentCanvas.getBoundingClientRect();
 
       // Get pointer position (mouse or touch)
       let clientX: number;
@@ -57,7 +61,7 @@ export function useClickDetection({
       raycasterRef.current.setFromCamera(mouseRef.current, camera);
 
       // Check for intersections
-      const intersects = raycasterRef.current.intersectObject(target, true);
+      const intersects = raycasterRef.current.intersectObject(currentTarget, true);
 
       if (intersects.length > 0) {
         // Hit detected!
@@ -68,15 +72,16 @@ export function useClickDetection({
   );
 
   useEffect(() => {
-    if (!canvas || !enabled) return;
+    const currentCanvas = canvas.current;
+    if (!currentCanvas || !enabled) return;
 
     // Add event listeners
-    canvas.addEventListener('click', handleClick);
-    canvas.addEventListener('touchend', handleClick);
+    currentCanvas.addEventListener('click', handleClick);
+    currentCanvas.addEventListener('touchend', handleClick);
 
     return () => {
-      canvas.removeEventListener('click', handleClick);
-      canvas.removeEventListener('touchend', handleClick);
+      currentCanvas.removeEventListener('click', handleClick);
+      currentCanvas.removeEventListener('touchend', handleClick);
     };
   }, [canvas, enabled, handleClick]);
 }
@@ -101,9 +106,13 @@ export function useHoverDetection({
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
-      if (!camera || !target || !canvas || !enabled) return;
+      // Read current values from refs
+      const currentTarget = target.current;
+      const currentCanvas = canvas.current;
 
-      const rect = canvas.getBoundingClientRect();
+      if (!camera || !currentTarget || !currentCanvas || !enabled) return;
+
+      const rect = currentCanvas.getBoundingClientRect();
 
       // Convert to normalized device coordinates
       mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -113,7 +122,7 @@ export function useHoverDetection({
       raycasterRef.current.setFromCamera(mouseRef.current, camera);
 
       // Check for intersections
-      const intersects = raycasterRef.current.intersectObject(target, true);
+      const intersects = raycasterRef.current.intersectObject(currentTarget, true);
 
       const wasHovering = isHoveringRef.current;
       const isNowHovering = intersects.length > 0;
@@ -132,12 +141,13 @@ export function useHoverDetection({
   );
 
   useEffect(() => {
-    if (!canvas || !enabled) return;
+    const currentCanvas = canvas.current;
+    if (!currentCanvas || !enabled) return;
 
-    canvas.addEventListener('mousemove', handleMouseMove);
+    currentCanvas.addEventListener('mousemove', handleMouseMove);
 
     return () => {
-      canvas.removeEventListener('mousemove', handleMouseMove);
+      currentCanvas.removeEventListener('mousemove', handleMouseMove);
       // Reset hover state on cleanup
       if (isHoveringRef.current) {
         isHoveringRef.current = false;

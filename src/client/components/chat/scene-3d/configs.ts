@@ -111,3 +111,15 @@ export const WINDOW_CONFIG = {
   size: { width: 2, height: 1.5 },
   emissiveIntensity: 0.2,
 } as const;
+
+/**
+ * Combined scene configuration
+ * Used by mobile-optimizations.ts
+ */
+export const SCENE_CONFIGS = {
+  ROOM_SIZE,
+  CAMERA: CAMERA_CONFIG,
+  COMPUTER: COMPUTER_CONFIG,
+  PERFORMANCE: PERFORMANCE_TARGETS,
+  MOBILE_OPTIMIZATIONS,
+} as const;

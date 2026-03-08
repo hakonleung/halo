@@ -4,11 +4,12 @@
  * Renders a 3D character model with customization and hover effects.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 import { RAW_COLORS } from '@/client/theme/tokens/raw-values';
 
+import { IdleAnimation, applyHoverGlow } from './animations';
 import { CHARACTER_CONFIG } from './configs';
 import { useModelLoader } from './use-model-loader';
 
@@ -19,6 +20,7 @@ interface CharacterModelProps {
   preset: CharacterPreset;
   customization: CharacterCustomization;
   isHovering?: boolean;
+  prefersReducedMotion?: boolean;
 }
 
 export function CharacterModel({
@@ -26,12 +28,14 @@ export function CharacterModel({
   preset,
   customization,
   isHovering = false,
+  prefersReducedMotion = false,
 }: CharacterModelProps) {
   const { model, loading, error } = useModelLoader(preset);
   const characterGroupRef = useRef<THREE.Group | null>(null);
   const mixerRef = useRef<THREE.AnimationMixer | null>(null);
+  const idleAnimationRef = useRef(new IdleAnimation());
   const clockRef = useRef(new THREE.Clock());
-  const [animationFrame, setAnimationFrame] = useState<number | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
   // Initialize character model
   useEffect(() => {
@@ -108,36 +112,38 @@ export function CharacterModel({
   // Update hover effect
   useEffect(() => {
     if (!characterGroupRef.current) return;
-
-    const group = characterGroupRef.current;
-
-    group.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const mat = child.material as THREE.MeshStandardMaterial;
-        if (mat.emissive) {
-          mat.emissiveIntensity = isHovering ? 0.3 : 0.1;
-        }
-      }
-    });
+    applyHoverGlow(characterGroupRef.current, isHovering);
   }, [isHovering]);
 
   // Animation loop
   useEffect(() => {
-    if (!mixerRef.current) return;
+    if (!characterGroupRef.current) return;
 
     const animate = () => {
       const delta = clockRef.current.getDelta();
-      mixerRef.current?.update(delta);
-      setAnimationFrame(requestAnimationFrame(animate));
+
+      // Update GLTF animations if available
+      if (!prefersReducedMotion) {
+        mixerRef.current?.update(delta);
+      }
+
+      // Update idle animation (breathing, swaying) - skip if reduced motion
+      if (characterGroupRef.current && !prefersReducedMotion) {
+        idleAnimationRef.current.update(characterGroupRef.current, delta);
+      }
+
+      // Store frame ID in ref (not state) to avoid re-renders
+      animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    const frame = requestAnimationFrame(animate);
-    setAnimationFrame(frame);
+    // Start animation loop
+    animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
-      if (animationFrame !== null) {
-        cancelAnimationFrame(animationFrame);
+      // Cancel animation on cleanup
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
       }
       mixerRef.current = null;
     };

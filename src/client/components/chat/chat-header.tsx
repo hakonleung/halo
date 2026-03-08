@@ -1,7 +1,9 @@
 import { HStack, IconButton, Heading } from '@chakra-ui/react';
 import { ArrowLeft, Box, MonitorSmartphone } from 'lucide-react';
+import { useMemo } from 'react';
 
 import { useChat3DStore } from '@/client/store/chat-3d-store';
+import { checkWebGLSupport } from '@/client/utils/webgl-support';
 
 interface ChatHeaderProps {
   onClose: () => void;
@@ -9,6 +11,9 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ onClose }: ChatHeaderProps) {
   const { is3DMode, toggle3DMode } = useChat3DStore();
+
+  // Check WebGL support once
+  const webGLSupported = useMemo(() => checkWebGLSupport(), []);
 
   return (
     <HStack justify="space-between" align="center" w="full">
@@ -26,15 +31,18 @@ export function ChatHeader({ onClose }: ChatHeaderProps) {
           CHAT
         </Heading>
       </HStack>
-      <IconButton
-        aria-label={is3DMode ? 'Switch to 2D view' : 'Switch to 3D view'}
-        variant="ghost"
-        onClick={toggle3DMode}
-        color={is3DMode ? 'brand.cyber' : 'text.mist'}
-        _hover={{ color: 'brand.matrix' }}
-      >
-        {is3DMode ? <Box size={18} /> : <MonitorSmartphone size={18} />}
-      </IconButton>
+      {/* Only show 3D toggle if WebGL is supported */}
+      {webGLSupported && (
+        <IconButton
+          aria-label={is3DMode ? 'Switch to 2D view' : 'Switch to 3D view'}
+          variant="ghost"
+          onClick={toggle3DMode}
+          color={is3DMode ? 'brand.cyber' : 'text.mist'}
+          _hover={{ color: 'brand.matrix' }}
+        >
+          {is3DMode ? <Box size={18} /> : <MonitorSmartphone size={18} />}
+        </IconButton>
+      )}
     </HStack>
   );
 }
