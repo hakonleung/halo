@@ -24,13 +24,11 @@ export const CAMERA_CONFIG = {
 } as const;
 
 /**
- * Computer screen configuration
+ * Wall-mounted screen configuration
  */
 export const COMPUTER_CONFIG = {
-  position: { x: 0, y: 0.8, z: 0 }, // Desk height
-  deskSize: { width: 2, height: 0.1, depth: 1 },
-  monitorSize: { width: 1.6, height: 1, depth: 0.1 },
-  screenSize: { width: 1.5, height: 0.9 },
+  position: { x: 0, y: 1.5, z: -4.85 }, // Center of back wall, slightly forward
+  screenSize: { width: 3, height: 2 }, // Larger screen on wall
   screenResolution: {
     desktop: 1024,
     mobile: 512,

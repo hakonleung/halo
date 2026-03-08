@@ -1,7 +1,7 @@
 /**
- * Computer Screen Component
+ * Wall Screen Component
  *
- * Renders a desk with computer monitor displaying chat messages on a canvas texture.
+ * Renders a wall-mounted screen displaying chat messages on a canvas texture.
  */
 
 import { useEffect, useRef } from 'react';
@@ -27,55 +27,34 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
   const animationFrameRef = useRef<number | null>(null);
   const lastMessageContentRef = useRef<string>('');
 
-  // Initialize computer hardware (desk + monitor)
+  // Initialize wall-mounted screen
   useEffect(() => {
     if (!scene) return;
 
     const objects: THREE.Object3D[] = [];
 
-    // Desk
-    const deskGeometry = new THREE.BoxGeometry(
-      COMPUTER_CONFIG.deskSize.width,
-      COMPUTER_CONFIG.deskSize.height,
-      COMPUTER_CONFIG.deskSize.depth,
-    );
-    const deskMaterial = new THREE.MeshStandardMaterial({
-      color: RAW_COLORS.bgDark,
-      roughness: 0.6,
-      metalness: 0.3,
+    // Screen frame (embedded in wall)
+    const frameThickness = 0.05;
+    const frameWidth = COMPUTER_CONFIG.screenSize.width + 0.2;
+    const frameHeight = COMPUTER_CONFIG.screenSize.height + 0.2;
+
+    const frameGeometry = new THREE.BoxGeometry(frameWidth, frameHeight, frameThickness);
+    const frameMaterial = new THREE.MeshStandardMaterial({
+      color: RAW_COLORS.bgCarbon,
+      emissive: RAW_COLORS.matrix,
+      emissiveIntensity: 0.1,
+      roughness: 0.3,
+      metalness: 0.7,
     });
-    const desk = new THREE.Mesh(deskGeometry, deskMaterial);
-    desk.position.set(
+    const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+    frame.position.set(
       COMPUTER_CONFIG.position.x,
       COMPUTER_CONFIG.position.y,
       COMPUTER_CONFIG.position.z,
     );
-    objects.push(desk);
+    objects.push(frame);
 
-    // Monitor frame
-    const monitorGeometry = new THREE.BoxGeometry(
-      COMPUTER_CONFIG.monitorSize.width,
-      COMPUTER_CONFIG.monitorSize.height,
-      COMPUTER_CONFIG.monitorSize.depth,
-    );
-    const monitorMaterial = new THREE.MeshStandardMaterial({
-      color: RAW_COLORS.bgCarbon,
-      roughness: 0.4,
-      metalness: 0.6,
-    });
-    const monitor = new THREE.Mesh(monitorGeometry, monitorMaterial);
-    monitor.position.set(
-      COMPUTER_CONFIG.position.x,
-      COMPUTER_CONFIG.position.y +
-        COMPUTER_CONFIG.deskSize.height +
-        COMPUTER_CONFIG.monitorSize.height / 2,
-      COMPUTER_CONFIG.position.z -
-        COMPUTER_CONFIG.deskSize.depth / 2 +
-        COMPUTER_CONFIG.monitorSize.depth / 2,
-    );
-    objects.push(monitor);
-
-    // Screen (canvas texture)
+    // Screen (canvas texture) - slightly in front of frame
     const resolution = isMobile
       ? COMPUTER_CONFIG.screenResolution.mobile
       : COMPUTER_CONFIG.screenResolution.desktop;
@@ -99,9 +78,9 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
     });
     const screen = new THREE.Mesh(screenGeometry, screenMaterial);
     screen.position.set(
-      monitor.position.x,
-      monitor.position.y,
-      monitor.position.z + COMPUTER_CONFIG.monitorSize.depth / 2 + 0.01,
+      COMPUTER_CONFIG.position.x,
+      COMPUTER_CONFIG.position.y,
+      COMPUTER_CONFIG.position.z + frameThickness / 2 + 0.01,
     );
     screenMeshRef.current = screen;
     objects.push(screen);
