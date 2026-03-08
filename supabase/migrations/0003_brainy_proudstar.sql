@@ -1,0 +1,1 @@
+ALTER TABLE "neolog_user_settings" ADD COLUMN "chat_3d_settings" jsonb DEFAULT '{"enabled":false,"selectedCharacter":"hacker","customization":{"primaryColor":"#00FF41","secondaryColor":"#00D4FF","materialType":"glossy","scale":1}}'::jsonb;

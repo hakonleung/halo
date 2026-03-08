@@ -11,6 +11,7 @@ import { Box, Spinner, Center } from '@chakra-ui/react';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 import { useDeviceDetection } from '@/client/hooks/use-device-detection';
+import { useSettings } from '@/client/hooks/use-settings';
 import { useChat3DStore } from '@/client/store/chat-3d-store';
 
 import { CharacterModel } from './character-model';
@@ -34,13 +35,35 @@ export function Scene3D({ messages, onSendMessage }: Scene3DProps) {
   const isMobile = deviceInfo.isMobile;
   const animationFrameRef = useRef<number | undefined>(undefined);
 
+  // Load user settings
+  const { settings } = useSettings();
+
   // 3D chat state
-  const { selectedCharacter, characterCustomization, inputBoxVisible, toggleInputBox } =
-    useChat3DStore();
+  const {
+    selectedCharacter,
+    characterCustomization,
+    inputBoxVisible,
+    toggleInputBox,
+    setCharacter,
+    setCustomization,
+  } = useChat3DStore();
 
   // Character interaction state
   const [isHovering, setIsHovering] = useState(false);
   const characterRef = useRef<THREE.Object3D | null>(null);
+
+  // Load saved settings on mount
+  useEffect(() => {
+    if (settings?.chat3DSettings) {
+      const saved = settings.chat3DSettings;
+      if (saved.selectedCharacter) {
+        setCharacter(saved.selectedCharacter);
+      }
+      if (saved.customization) {
+        setCustomization(saved.customization);
+      }
+    }
+  }, [settings, setCharacter, setCustomization]);
 
   // Get character object from scene
   useEffect(() => {

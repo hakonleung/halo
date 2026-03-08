@@ -167,7 +167,7 @@ BEGIN
   ) THEN
     ALTER TABLE "neolog_user_settings" ADD COLUMN "renderer_type" text DEFAULT 'auto';
   END IF;
-END $$;-- Handle new user creation - create user settings
+END $$;ALTER TABLE "neolog_user_settings" ADD COLUMN "chat_3d_settings" jsonb DEFAULT '{"enabled":false,"selectedCharacter":"hacker","customization":{"primaryColor":"#00FF41","secondaryColor":"#00D4FF","materialType":"glossy","scale":1}}'::jsonb;-- Handle new user creation - create user settings
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN

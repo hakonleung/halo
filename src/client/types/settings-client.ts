@@ -1,3 +1,4 @@
+import type { Chat3DSettings } from './chat-3d-client';
 import type { AISettings } from '../../server/types/settings-server';
 
 // Client-side Settings type with camelCase
@@ -35,6 +36,8 @@ export interface Settings {
   // Background settings
   backgroundType?: 'tron-grid' | 'matrix-rain' | 'particle-field' | 'data-flow' | null;
   rendererType?: 'auto' | 'webgl' | 'webgpu' | null;
+  // 3D Chat settings
+  chat3DSettings?: Chat3DSettings | null;
 }
 
 // Client-side update request with camelCase
@@ -64,6 +67,7 @@ export type SettingsUpdateRequest = {
   aiSettings?: AISettings;
   backgroundType?: 'tron-grid' | 'matrix-rain' | 'particle-field' | 'data-flow';
   rendererType?: 'auto' | 'webgl' | 'webgpu';
+  chat3DSettings?: Chat3DSettings;
 };
 
 export type { AISettings };
