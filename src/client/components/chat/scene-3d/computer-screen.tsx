@@ -54,10 +54,10 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
     );
     const screenMaterial = new THREE.MeshStandardMaterial({
       map: texture,
-      roughness: 0.8, // Matte/frosted effect
+      roughness: 0.5,
       metalness: 0.1,
       emissive: RAW_COLORS.matrix,
-      emissiveIntensity: 0.05, // Subtle glow
+      emissiveIntensity: 0.25, // Stronger screen glow
     });
     const screen = new THREE.Mesh(screenGeometry, screenMaterial);
     screen.position.set(
@@ -67,6 +67,25 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
     );
     screenMeshRef.current = screen;
     objects.push(screen);
+
+    // Neon border frame around the screen
+    const { position: sp, screenSize: ss } = COMPUTER_CONFIG;
+    const fz = sp.z + 0.06;
+    const neonFrameMat = new THREE.MeshStandardMaterial({
+      color: 0x00ff41,
+      emissive: new THREE.Color(0x00ff41),
+      emissiveIntensity: 1.8,
+      roughness: 0.1,
+    });
+    const frameTop = new THREE.Mesh(new THREE.BoxGeometry(ss.width + 0.12, 0.06, 0.05), neonFrameMat);
+    frameTop.position.set(sp.x, sp.y + ss.height / 2, fz);
+    const frameBot = new THREE.Mesh(new THREE.BoxGeometry(ss.width + 0.12, 0.06, 0.05), neonFrameMat);
+    frameBot.position.set(sp.x, sp.y - ss.height / 2, fz);
+    const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(0.06, ss.height + 0.12, 0.05), neonFrameMat);
+    frameLeft.position.set(sp.x - ss.width / 2, sp.y, fz);
+    const frameRight = new THREE.Mesh(new THREE.BoxGeometry(0.06, ss.height + 0.12, 0.05), neonFrameMat);
+    frameRight.position.set(sp.x + ss.width / 2, sp.y, fz);
+    objects.push(frameTop, frameBot, frameLeft, frameRight);
 
     // Add objects to scene
     objects.forEach((obj) => scene.add(obj));

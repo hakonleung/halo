@@ -28,6 +28,7 @@ export function useSceneSetup(): SceneSetupResult {
     // Initialize scene
     const newScene = new THREE.Scene();
     newScene.background = new THREE.Color(0x0a0a0a); // Deep space black
+    newScene.fog = new THREE.FogExp2(0x0a0a0a, 0.035); // Atmospheric depth fog
 
     // Initialize camera
     const newCamera = new THREE.PerspectiveCamera(
@@ -51,6 +52,9 @@ export function useSceneSetup(): SceneSetupResult {
     });
     newRenderer.setSize(window.innerWidth, window.innerHeight);
     newRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Tone mapping enhances neon glow contrast
+    newRenderer.toneMapping = THREE.ReinhardToneMapping;
+    newRenderer.toneMappingExposure = 1.1;
 
     // Add lighting
     setupLighting(newScene);
@@ -105,19 +109,19 @@ export function useSceneSetup(): SceneSetupResult {
  * Setup scene lighting
  */
 function setupLighting(scene: THREE.Scene): void {
-  // Stronger ambient light for better visibility
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  // Low ambient — let neon emissives do the work
+  const ambientLight = new THREE.AmbientLight(0x111122, 0.4);
   scene.add(ambientLight);
 
-  // Main directional light (simulates sun/key light)
-  const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  mainLight.position.set(5, 5, 5);
+  // Soft fill light from above
+  const mainLight = new THREE.DirectionalLight(0x334455, 0.5);
+  mainLight.position.set(0, 6, 4);
   scene.add(mainLight);
 
-  // Matrix green point light
+  // Matrix green point light (back-left, strong)
   const matrixLight = new THREE.PointLight(
     LIGHTING_CONFIG.matrixLight.color,
-    1.2, // Increased intensity
+    2.5,
     LIGHTING_CONFIG.matrixLight.distance,
   );
   matrixLight.position.set(
@@ -127,10 +131,10 @@ function setupLighting(scene: THREE.Scene): void {
   );
   scene.add(matrixLight);
 
-  // Cyber blue point light
+  // Cyber blue point light (back-right)
   const cyberLight = new THREE.PointLight(
     LIGHTING_CONFIG.cyberLight.color,
-    1.0, // Increased intensity
+    2.0,
     LIGHTING_CONFIG.cyberLight.distance,
   );
   cyberLight.position.set(
@@ -140,12 +144,22 @@ function setupLighting(scene: THREE.Scene): void {
   );
   scene.add(cyberLight);
 
-  // Character spotlight (illuminates character on the left)
-  const characterLight = new THREE.SpotLight(0xffffff, 1.5);
-  characterLight.position.set(-2, 3, 3);
-  characterLight.target.position.set(-2, 1, 0); // Point at character position
-  characterLight.angle = Math.PI / 6;
-  characterLight.penumbra = 0.3;
+  // Alert orange accent (front-right corner, low)
+  const orangeLight = new THREE.PointLight(0xff6b35, 1.5, 8);
+  orangeLight.position.set(4, 0.5, 4);
+  scene.add(orangeLight);
+
+  // Character spotlight
+  const characterLight = new THREE.SpotLight(0xffffff, 2.0);
+  characterLight.position.set(-2, 3.5, 3);
+  characterLight.target.position.set(-2, 1, 0);
+  characterLight.angle = Math.PI / 5;
+  characterLight.penumbra = 0.4;
   scene.add(characterLight);
   scene.add(characterLight.target);
+
+  // Under-floor neon bounce (green, below the grid)
+  const floorBounce = new THREE.PointLight(0x00ff41, 0.8, 6);
+  floorBounce.position.set(0, -0.5, 0);
+  scene.add(floorBounce);
 }
