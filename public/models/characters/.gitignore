@@ -1,0 +1,7 @@
+# Ignore all GLB model files (they can be large)
+# *.glb
+# *.gltf
+
+# But keep the directory structure
+!.gitkeep
+!.gitignore

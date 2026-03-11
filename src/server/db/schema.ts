@@ -68,6 +68,18 @@ export const neologUserSettings = pgTable(
       enum: ['tron-grid', 'matrix-rain', 'particle-field', 'data-flow'],
     }).default('tron-grid'),
     renderer_type: text('renderer_type', { enum: ['auto', 'webgl', 'webgpu'] }).default('auto'),
+
+    // 3D Chat settings
+    chat_3d_settings: jsonb('chat_3d_settings').default({
+      enabled: false,
+      selectedCharacter: 'gugugaga',
+      customization: {
+        primaryColor: '#00FF41',
+        secondaryColor: '#00D4FF',
+        materialType: 'glossy',
+        scale: 1.0,
+      },
+    }),
   },
   () => {
     return [

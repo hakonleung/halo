@@ -11,6 +11,7 @@ import {
 
 import { BaseApiService, type ApiResponse } from './base';
 
+import type { Chat3DSettings } from '@/client/types/chat-3d-client';
 import type {
   Settings as ClientSettings,
   SettingsUpdateRequest as ClientSettingsUpdateRequest,
@@ -83,6 +84,8 @@ export function convertSettings(server: ServerUserSettings): ClientSettings {
     aiSettings: convertAISettings(server.ai_settings),
     backgroundType: server.background_type ?? null,
     rendererType: server.renderer_type ?? null,
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    chat3DSettings: (server.chat_3d_settings as Chat3DSettings | null) ?? null,
   };
 }
 
@@ -121,6 +124,7 @@ function convertSettingsUpdateRequest(
   if (client.aiSettings !== undefined) server.ai_settings = client.aiSettings;
   if (client.backgroundType !== undefined) server.background_type = client.backgroundType;
   if (client.rendererType !== undefined) server.renderer_type = client.rendererType;
+  if (client.chat3DSettings !== undefined) server.chat_3d_settings = client.chat3DSettings;
   return server;
 }
 
