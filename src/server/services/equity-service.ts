@@ -1,3 +1,6 @@
+import { spawn } from 'child_process';
+import path from 'path';
+
 import type { Database } from '@/server/types/database';
 import type {
   AddStockRequest,
@@ -6,77 +9,67 @@ import type {
 } from '@/server/types/equity-server';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-// ── Eastmoney helpers ──────────────────────────────────────────────────────
+// ── Python bridge ──────────────────────────────────────────────────────────
 
-const EM_HEADERS = { 'User-Agent': 'Mozilla/5.0', Referer: 'https://finance.eastmoney.com' };
+const SCRIPT = path.resolve(process.cwd(), 'scripts/equity_bridge.py');
 
-/** Convert YYYY-MM-DD → YYYYMMDD for Eastmoney API */
-function toEmDate(date: string): string {
-  return date.replace(/-/g, '');
+/** Run Python script with JSON args, return parsed stdout */
+function runPython<T>(args: string[]): Promise<T> {
+  return new Promise((resolve, reject) => {
+    console.log('[equity] runPython:', SCRIPT, args);
+    const py = spawn('python3', [SCRIPT, ...args], { env: process.env });
+
+    let stdout = '';
+    let stderr = '';
+    py.stdout.on('data', (d: Buffer) => {
+      stdout += d.toString();
+    });
+    py.stderr.on('data', (d: Buffer) => {
+      stderr += d.toString();
+    });
+
+    py.on('close', (code) => {
+      if (stderr) console.error('[equity] python stderr:', stderr);
+      if (code !== 0) {
+        reject(new Error(`Python script exited ${code}: ${stderr || stdout}`));
+        return;
+      }
+      try {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        resolve(JSON.parse(stdout) as T);
+      } catch {
+        reject(new Error(`Python stdout not valid JSON: ${stdout}`));
+      }
+    });
+  });
 }
 
-/** N days ago → YYYY-MM-DD */
-function daysAgo(n: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return d.toISOString().slice(0, 10);
+function runPythonSync(code: string): Promise<SyncResult> {
+  return runPython<SyncResult>(['sync', code]);
 }
 
-interface EmKlineResponse {
-  data?: {
-    code: string;
-    name: string;
-    klines?: string[];
-  };
-}
-
-/** Fetch daily K-line (前复权) from Eastmoney */
-async function fetchKlines(secid: string, beginDate: string, endDate: string): Promise<string[]> {
-  const url =
-    `https://push2his.eastmoney.com/api/qt/stock/kline/get` +
-    `?secid=${secid}&fields1=f1,f2,f3,f4,f5,f6` +
-    `&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61` +
-    `&klt=101&fqt=1&beg=${toEmDate(beginDate)}&end=${toEmDate(endDate)}`;
-
-  const res = await fetch(url, { headers: EM_HEADERS });
-  if (!res.ok) throw new Error(`Eastmoney kline fetch failed: ${res.status}`);
-  const json: EmKlineResponse = await res.json();
-  return json.data?.klines ?? [];
-}
-
-/** Parse one kline string → row object */
-function parseKline(line: string, code: string) {
-  // format: date,open,close,high,low,volume,amount,amplitude%,change%,changeAmt,turnover%
-  const parts = line.split(',');
-  return {
-    code,
-    trade_date: parts[0],
-    open: parseFloat(parts[1]),
-    close: parseFloat(parts[2]),
-    high: parseFloat(parts[3]),
-    low: parseFloat(parts[4]),
-    volume: parseInt(parts[5], 10),
-    amount: parseFloat(parts[6]) || null,
-    amplitude: parseFloat(parts[7]) || null,
-    change_pct: parseFloat(parts[8]) || null,
-    change_amount: parseFloat(parts[9]) || null,
-    turnover_rate: parseFloat(parts[10]) || null,
-  };
+function runPythonSearch(query: string): Promise<EastmoneySearchItem[]> {
+  return runPython<EastmoneySearchItem[]>(['search', query]);
 }
 
 // ── Service ────────────────────────────────────────────────────────────────
 
 export const equityService = {
   async getStocks(supabase: SupabaseClient<Database>) {
+    console.log('[equity] getStocks');
     const { data, error } = await supabase
       .from('neolog_equity_list')
       .select('*')
       .order('created_at', { ascending: false });
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error('[equity] getStocks error:', error);
+      throw new Error(error.message);
+    }
     return data;
   },
 
   async addStock(supabase: SupabaseClient<Database>, req: AddStockRequest) {
+    console.log('[equity] addStock:', req.code, req.name);
     const { data, error } = await supabase
       .from('neolog_equity_list')
       .insert({
@@ -89,7 +82,10 @@ export const equityService = {
       })
       .select()
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error('[equity] addStock error:', error);
+      throw new Error(error.message);
+    }
     return data;
   },
 
@@ -111,7 +107,7 @@ export const equityService = {
     return data;
   },
 
-  /** Sync one stock: fetch missing dates and upsert */
+  /** Sync one stock via Python akshare script */
   async syncStock(
     supabase: SupabaseClient<Database>,
     stock: {
@@ -120,39 +116,9 @@ export const equityService = {
       name: string;
     },
   ): Promise<SyncResult> {
-    // Get latest date in DB
-    const { data: latest } = await supabase
-      .from('neolog_equity_daily')
-      .select('trade_date')
-      .eq('code', stock.code)
-      .order('trade_date', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    const today = new Date().toISOString().slice(0, 10);
-    const beginDate = latest?.trade_date
-      ? (() => {
-          const d = new Date(latest.trade_date);
-          d.setDate(d.getDate() + 1);
-          return d.toISOString().slice(0, 10);
-        })()
-      : daysAgo(365);
-
-    if (beginDate > today) {
-      return { code: stock.code, inserted: 0, latestDate: latest?.trade_date ?? null };
-    }
-
-    const klines = await fetchKlines(stock.secid, beginDate, today);
-    if (klines.length === 0) {
-      return { code: stock.code, inserted: 0, latestDate: latest?.trade_date ?? null };
-    }
-
-    const rows = klines.map((line) => parseKline(line, stock.code));
-
-    const { error } = await supabase
-      .from('neolog_equity_daily')
-      .upsert(rows, { onConflict: 'code,trade_date', ignoreDuplicates: true });
-    if (error) throw new Error(error.message);
+    console.log('[equity] syncStock:', stock.code, stock.name);
+    const result = await runPythonSync(stock.code);
+    console.log('[equity] syncStock result:', result);
 
     // Update last_synced_at
     await supabase
@@ -160,16 +126,19 @@ export const equityService = {
       .update({ last_synced_at: new Date().toISOString(), updated_at: new Date().toISOString() })
       .eq('code', stock.code);
 
-    const latestDate = rows.at(-1)?.trade_date ?? null;
-    return { code: stock.code, inserted: rows.length, latestDate };
+    return result;
   },
 
   /** Sync all tracked stocks */
   async syncAll(supabase: SupabaseClient<Database>): Promise<SyncResult[]> {
+    console.log('[equity] syncAll');
     const { data: stocks, error } = await supabase
       .from('neolog_equity_list')
       .select('code,secid,name');
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error('[equity] syncAll error:', error);
+      throw new Error(error.message);
+    }
 
     const results: SyncResult[] = [];
     for (const stock of stocks) {
@@ -179,39 +148,10 @@ export const equityService = {
     return results;
   },
 
-  /** Search stocks via Eastmoney suggest API */
+  /** Search stocks via Python akshare script */
   async searchStocks(query: string): Promise<EastmoneySearchItem[]> {
     if (!query.trim()) return [];
-    const url =
-      `https://searchapi.eastmoney.com/api/suggest/get` +
-      `?input=${encodeURIComponent(query)}&type=14&token=D43BF722C8E33BDC906FB84D85E326278B09BBB2&markettype=&mktNum=`;
-
-    const res = await fetch(url, { headers: EM_HEADERS });
-    if (!res.ok) return [];
-
-    const json: {
-      QuotationCodeTable?: {
-        Data?: Array<{
-          Code: string;
-          Name: string;
-          MktNum: string;
-          Classify?: string;
-        }>;
-      };
-    } = await res.json();
-
-    const items = json.QuotationCodeTable?.Data ?? [];
-    return items
-      .filter((d) => d.Classify === 'ASHARE_SZ' || d.Classify === 'ASHARE_SH')
-      .map((d) => {
-        const market: 'SH' | 'SZ' = d.Classify === 'ASHARE_SH' ? 'SH' : 'SZ';
-        const mktPrefix = market === 'SH' ? '1' : '0';
-        return {
-          code: d.Code,
-          name: d.Name,
-          market,
-          secid: `${mktPrefix}.${d.Code}`,
-        };
-      });
+    console.log('[equity] searchStocks:', query);
+    return runPythonSearch(query);
   },
 };
