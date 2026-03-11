@@ -36,6 +36,13 @@
       "when": 1772978043049,
       "tag": "0004_abandoned_solo",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1773237359277,
+      "tag": "0005_serious_gamma_corps",
+      "breakpoints": true
     }
   ]
 }

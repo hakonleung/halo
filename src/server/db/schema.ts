@@ -9,6 +9,9 @@ import {
   integer,
   time,
   pgPolicy,
+  doublePrecision,
+  bigint,
+  unique,
 } from 'drizzle-orm/pg-core';
 
 // User Settings Table
@@ -311,6 +314,74 @@ export const neologConversations = pgTable(
       }),
     ];
   },
+);
+
+// Equity List Table (global, not user-specific — tracks user's watchlist)
+export const neologEquityList = pgTable(
+  'neolog_equity_list',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    code: text('code').notNull().unique(), // e.g. '000001'
+    name: text('name').notNull(), // e.g. '平安银行'
+    market: text('market', { enum: ['SH', 'SZ'] }).notNull(),
+    secid: text('secid').notNull().unique(), // e.g. '0.000001'
+    industry: text('industry'),
+    last_synced_at: timestamp('last_synced_at', { withTimezone: true, mode: 'string' }),
+    created_at: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+  },
+  () => [
+    pgPolicy('Anyone can view equity list.', { for: 'select', using: sql`true` }),
+    pgPolicy('Authenticated users can insert equity.', {
+      for: 'insert',
+      withCheck: sql`(select auth.role()) = 'authenticated'`,
+    }),
+    pgPolicy('Authenticated users can update equity.', {
+      for: 'update',
+      using: sql`(select auth.role()) = 'authenticated'`,
+    }),
+    pgPolicy('Authenticated users can delete equity.', {
+      for: 'delete',
+      using: sql`(select auth.role()) = 'authenticated'`,
+    }),
+  ],
+);
+
+// Equity Daily K-Line Table (前复权)
+export const neologEquityDaily = pgTable(
+  'neolog_equity_daily',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    code: text('code').notNull(),
+    trade_date: text('trade_date').notNull(), // YYYY-MM-DD
+    open: doublePrecision('open').notNull(),
+    high: doublePrecision('high').notNull(),
+    low: doublePrecision('low').notNull(),
+    close: doublePrecision('close').notNull(),
+    volume: bigint('volume', { mode: 'number' }).notNull(), // lots (手)
+    amount: doublePrecision('amount'), // RMB
+    amplitude: doublePrecision('amplitude'), // % 振幅
+    change_pct: doublePrecision('change_pct'), // % 涨跌幅
+    change_amount: doublePrecision('change_amount'), // 涨跌额
+    turnover_rate: doublePrecision('turnover_rate'), // % 换手率
+    created_at: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+  },
+  (t) => [
+    unique('equity_daily_code_date_unique').on(t.code, t.trade_date),
+    pgPolicy('Anyone can view equity daily data.', { for: 'select', using: sql`true` }),
+    pgPolicy('Authenticated users can insert equity daily.', {
+      for: 'insert',
+      withCheck: sql`(select auth.role()) = 'authenticated'`,
+    }),
+    pgPolicy('Authenticated users can update equity daily.', {
+      for: 'update',
+      using: sql`(select auth.role()) = 'authenticated'`,
+    }),
+    pgPolicy('Authenticated users can delete equity daily.', {
+      for: 'delete',
+      using: sql`(select auth.role()) = 'authenticated'`,
+    }),
+  ],
 );
 
 // Messages Table

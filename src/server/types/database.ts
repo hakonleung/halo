@@ -68,6 +68,18 @@ export interface Database {
           },
         ];
       };
+      neolog_equity_list: {
+        Row: Simplify<InferSelectModel<typeof schema.neologEquityList>>;
+        Insert: Simplify<InferInsertModel<typeof schema.neologEquityList>>;
+        Update: Simplify<Partial<InferInsertModel<typeof schema.neologEquityList>>>;
+        Relationships: [];
+      };
+      neolog_equity_daily: {
+        Row: Simplify<InferSelectModel<typeof schema.neologEquityDaily>>;
+        Insert: Simplify<InferInsertModel<typeof schema.neologEquityDaily>>;
+        Update: Simplify<Partial<InferInsertModel<typeof schema.neologEquityDaily>>>;
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
