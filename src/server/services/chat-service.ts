@@ -1,11 +1,11 @@
-import type { neologConversations, neologMessages } from '@/server/db/schema';
+import type { neologConversations, neologMessages } from '@neo-log/be-core';
 import type {
   Conversation,
   ChatMessage,
   ChatRole,
   ChatAttachment,
 } from '@/server/types/chat-server';
-import type { Database } from '@/server/types/database';
+import type { Database } from '@neo-log/be-core';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { InferSelectModel } from 'drizzle-orm';
 

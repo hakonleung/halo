@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import path from 'path';
 
-import { getSupabaseClient } from '@/server/services/supabase-server';
+import { getSupabaseClient } from '@neo-log/be-core';
 
 import type { NextRequest } from 'next/server';
 

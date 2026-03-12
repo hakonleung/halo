@@ -1,4 +1,4 @@
-import { createApiHandler } from '@/server/services/api-helpers';
+import { createApiHandler } from '@neo-log/be-core';
 
 import type { EquityStockSummary } from '@neo-log/equity';
 

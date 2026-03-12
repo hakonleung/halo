@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { getSupabaseClientForMiddleware } from '@/server/services/supabase-server';
+import { getSupabaseClientForMiddleware } from '@neo-log/be-core';
 
 import type { NextRequest } from 'next/server';
 

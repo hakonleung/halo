@@ -1,4 +1,4 @@
-import { createApiHandler } from '@/server/services/api-helpers';
+import { createApiHandler } from '@neo-log/be-core';
 import { dashboardService } from '@/server/services/dashboard-service';
 import { DashboardRange } from '@/server/types/dashboard-server';
 

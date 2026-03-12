@@ -1,4 +1,4 @@
-import type { neologEquityDaily, neologEquityList } from '@/server/db/schema';
+import type { neologEquityDaily, neologEquityList } from '@neo-log/be-core';
 import type { InferSelectModel } from 'drizzle-orm';
 
 export type EquityStockModel = InferSelectModel<typeof neologEquityList>;

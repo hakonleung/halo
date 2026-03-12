@@ -1,5 +1,5 @@
-import type { neologUserProfiles } from '@/server/db/schema';
-import type { Database } from '@/server/types/database';
+import type { neologUserProfiles } from '@neo-log/be-core';
+import type { Database } from '@neo-log/be-core';
 import type {
   UserProfileModel,
   UserPortrait,

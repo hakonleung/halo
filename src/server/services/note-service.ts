@@ -1,4 +1,4 @@
-import type { Database } from '@/server/types/database';
+import type { Database } from '@neo-log/be-core';
 import type { NoteCreateRequest } from '@/server/types/note-server';
 import type { SupabaseClient } from '@supabase/supabase-js';
 

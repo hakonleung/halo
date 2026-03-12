@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 
-import { getSupabaseClient } from '@/server/services/supabase-server';
+import { getSupabaseClient } from './supabase-server';
 
-import type { ApiResponse } from '@/client/internal-api/base';
-import type { Database } from '@/server/types/database';
+import type { Database } from '../types/database';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 import type { NextRequest } from 'next/server';
+
+export type ApiResponse<T> = { data: T } | { error: string };
 
 /**
  * API Handler Factory: createApiHandler

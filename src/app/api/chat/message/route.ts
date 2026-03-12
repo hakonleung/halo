@@ -9,7 +9,7 @@ import { createChatTools } from '@/server/agents/tools';
 import { chatService } from '@/server/services/chat-service';
 import { profileService } from '@/server/services/profile-service';
 import { settingsService } from '@/server/services/settings-service';
-import { getSupabaseClient } from '@/server/services/supabase-server';
+import { getSupabaseClient } from '@neo-log/be-core';
 import { ChatRole } from '@/server/types/chat-server';
 
 interface ChatRequestBody {

@@ -1,4 +1,4 @@
-import type { neologUserSettings } from '@/server/db/schema';
+import type { neologUserSettings } from '@neo-log/be-core';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 // Server-side types for settings (Inferred from Drizzle Entity)

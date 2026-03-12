@@ -1,4 +1,4 @@
-import type { neologUserProfiles } from '@/server/db/schema';
+import type { neologUserProfiles } from '@neo-log/be-core';
 import type { InferSelectModel } from 'drizzle-orm';
 
 // Server-side types for user profile (Inferred from Drizzle Entity)

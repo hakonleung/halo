@@ -1,4 +1,4 @@
-import { createApiHandler } from '@/server/services/api-helpers';
+import { createApiHandler } from '@neo-log/be-core';
 
 export const GET = createApiHandler(async (req, _params, supabase) => {
   const { searchParams } = new URL(req.url);

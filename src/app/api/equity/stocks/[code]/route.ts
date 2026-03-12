@@ -1,4 +1,4 @@
-import { createApiHandler } from '@/server/services/api-helpers';
+import { createApiHandler } from '@neo-log/be-core';
 import { equityService } from '@/server/services/equity-service';
 
 export const DELETE = createApiHandler(async (_req, params, supabase) => {

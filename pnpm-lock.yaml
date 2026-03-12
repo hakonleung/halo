@@ -53,6 +53,9 @@ importers:
       '@langchain/openai':
         specifier: ^1.2.3
         version: 1.2.3(@langchain/core@1.1.16)
+      '@neo-log/be-core':
+        specifier: workspace:*
+        version: link:packages/be-core
       '@neo-log/equity':
         specifier: workspace:*
         version: link:packages/equity
@@ -249,6 +252,25 @@ importers:
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
+
+  packages/be-core:
+    dependencies:
+      '@supabase/ssr':
+        specifier: '*'
+        version: 0.8.0(@supabase/supabase-js@2.90.1)
+      '@supabase/supabase-js':
+        specifier: '*'
+        version: 2.90.1
+      drizzle-orm:
+        specifier: '*'
+        version: 0.45.1(postgres@3.4.8)
+      next:
+        specifier: '*'
+        version: 16.1.4(@babel/core@7.28.6)(@playwright/test@1.58.2)(react-dom@19.2.3)(react@19.2.3)
+    devDependencies:
+      drizzle-kit:
+        specifier: '*'
+        version: 0.31.8
 
   packages/equity:
     dependencies:
