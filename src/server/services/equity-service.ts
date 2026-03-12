@@ -14,10 +14,12 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 const SCRIPT = path.resolve(process.cwd(), 'scripts/equity_bridge.py');
 
 /** Run Python script with JSON args, return parsed stdout */
-function runPython<T>(args: string[]): Promise<T> {
+function runPython<T>(args: string[], accessToken = ''): Promise<T> {
   return new Promise((resolve, reject) => {
     console.log('[equity] runPython:', SCRIPT, args);
-    const py = spawn('python3', [SCRIPT, ...args], { env: process.env });
+    const py = spawn('python3', [SCRIPT, ...args], {
+      env: { ...process.env, SUPABASE_ACCESS_TOKEN: accessToken },
+    });
 
     let stdout = '';
     let stderr = '';
@@ -44,12 +46,12 @@ function runPython<T>(args: string[]): Promise<T> {
   });
 }
 
-function runPythonSync(code: string): Promise<SyncResult> {
-  return runPython<SyncResult>(['sync', code]);
+function runPythonSync(code: string, accessToken = ''): Promise<SyncResult> {
+  return runPython<SyncResult>(['sync', code], accessToken);
 }
 
-function runPythonSearch(query: string): Promise<EastmoneySearchItem[]> {
-  return runPython<EastmoneySearchItem[]>(['search', query]);
+function runPythonSearch(query: string, accessToken = ''): Promise<EastmoneySearchItem[]> {
+  return runPython<EastmoneySearchItem[]>(['search', query], accessToken);
 }
 
 // ── Service ────────────────────────────────────────────────────────────────
@@ -72,14 +74,17 @@ export const equityService = {
     console.log('[equity] addStock:', req.code, req.name);
     const { data, error } = await supabase
       .from('neolog_equity_list')
-      .insert({
-        code: req.code,
-        name: req.name,
-        market: req.market,
-        secid: req.secid,
-        industry: req.industry ?? null,
-        updated_at: new Date().toISOString(),
-      })
+      .upsert(
+        {
+          code: req.code,
+          name: req.name,
+          market: req.market,
+          secid: req.secid,
+          industry: req.industry ?? null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'code' },
+      )
       .select()
       .single();
     if (error) {
@@ -107,51 +112,22 @@ export const equityService = {
     return data;
   },
 
-  /** Sync one stock via Python akshare script */
+  /** Sync one stock via Python (called when adding a new stock). Python handles last_synced_at. */
   async syncStock(
-    supabase: SupabaseClient<Database>,
-    stock: {
-      code: string;
-      secid: string;
-      name: string;
-    },
+    _supabase: SupabaseClient<Database>,
+    stock: { code: string; secid: string; name: string },
+    accessToken = '',
   ): Promise<SyncResult> {
     console.log('[equity] syncStock:', stock.code, stock.name);
-    const result = await runPythonSync(stock.code);
+    const result = await runPythonSync(stock.code, accessToken);
     console.log('[equity] syncStock result:', result);
-
-    // Update last_synced_at
-    await supabase
-      .from('neolog_equity_list')
-      .update({ last_synced_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-      .eq('code', stock.code);
-
     return result;
   },
 
-  /** Sync all tracked stocks */
-  async syncAll(supabase: SupabaseClient<Database>): Promise<SyncResult[]> {
-    console.log('[equity] syncAll');
-    const { data: stocks, error } = await supabase
-      .from('neolog_equity_list')
-      .select('code,secid,name');
-    if (error) {
-      console.error('[equity] syncAll error:', error);
-      throw new Error(error.message);
-    }
-
-    const results: SyncResult[] = [];
-    for (const stock of stocks) {
-      const result = await equityService.syncStock(supabase, stock);
-      results.push(result);
-    }
-    return results;
-  },
-
   /** Search stocks via Python akshare script */
-  async searchStocks(query: string): Promise<EastmoneySearchItem[]> {
+  async searchStocks(query: string, accessToken = ''): Promise<EastmoneySearchItem[]> {
     if (!query.trim()) return [];
     console.log('[equity] searchStocks:', query);
-    return runPythonSearch(query);
+    return runPythonSearch(query, accessToken);
   },
 };

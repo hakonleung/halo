@@ -1,232 +1,212 @@
 'use client';
 
-import { Box, Flex, HStack, VStack, Text, Button, IconButton, Spinner } from '@chakra-ui/react';
-import { RefreshCw, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Box, Flex, HStack, Text, Button, Spinner } from '@chakra-ui/react';
+import { RefreshCw, RotateCcw } from 'lucide-react';
+import { useState, useCallback } from 'react';
 
 import { withAuth } from '@/client/components/auth/with-auth';
-import { EquityKlineChart, StockSearchBar } from '@/client/components/equity';
+import { StockSearchBar, EquityList, EquityDrawer } from '@/client/components/equity';
 import { AuthenticatedLayout } from '@/client/components/layout/authenticated-layout';
-import {
-  useEquityStocks,
-  useEquityDailyBars,
-  useAddEquityStock,
-  useDeleteEquityStock,
-  useSyncEquity,
-} from '@/client/hooks/use-equity';
+import { useAddEquityStock, useSyncEquity, useEquitySummary } from '@/client/hooks/use-equity';
 
-import type { EquityRange, EquitySearchResult } from '@/client/types/equity-client';
+import type {
+  EquitySearchResult,
+  EquityStockSummary,
+  SyncEvent,
+} from '@/client/types/equity-client';
+
+// ── Sync log ───────────────────────────────────────────────────────────────
+
+function eventText(e: SyncEvent): string {
+  if (e.type === 'status') return e.message;
+  if (e.type === 'init_progress') return `初始化 ${e.batch}/${e.total_batches} 批次...`;
+  if (e.type === 'init_done') return `✓ 已导入 ${e.total} 只股票`;
+  if (e.type === 'progress') {
+    if (e.error) return `❌ ${e.code} ${e.name}: ${e.error}`;
+    if (e.inserted === 0) return `${e.code} ${e.name} skip`;
+    return `${e.code} ${e.name} +${e.inserted} bars → ${e.latestDate ?? '-'}`;
+  }
+  if (e.type === 'error') return `❌ ${e.code}: ${e.message}`;
+  if (e.type === 'done') return `✓ 同步完成，共 ${e.synced} 只`;
+  return '';
+}
+
+function eventColor(e: SyncEvent): string {
+  if (e.type === 'error') return 'red.400';
+  if (e.type === 'progress' && e.error) return 'red.400';
+  if (e.type === 'progress' && e.inserted === 0) return 'text.mist';
+  return 'brand.matrix';
+}
+
+interface SyncLogProps {
+  lastEvent: SyncEvent | null;
+  progressCount: { index: number; total: number } | null;
+}
+
+function SyncLog({ lastEvent, progressCount }: SyncLogProps) {
+  if (!lastEvent) return null;
+
+  const pct =
+    lastEvent.type === 'done'
+      ? 100
+      : progressCount && progressCount.total > 0
+        ? Math.round((progressCount.index / progressCount.total) * 100)
+        : null;
+
+  const pctText =
+    pct !== null
+      ? `${pct}%${progressCount ? ` (${progressCount.index}/${progressCount.total})` : ''}`
+      : null;
+
+  return (
+    <Box
+      mt={3}
+      px={3}
+      py={2}
+      bg="#0A0A0A"
+      border="1px solid rgba(0,255,65,0.2)"
+      borderRadius="4px"
+      fontFamily="mono"
+      fontSize="11px"
+    >
+      <Box h="2px" bg="whiteAlpha.100" borderRadius="full" overflow="hidden" mb={2}>
+        <Box h="100%" w={`${pct ?? 0}%`} bg="brand.matrix" transition="width 0.3s ease" />
+      </Box>
+      <Text color={eventColor(lastEvent)}>
+        {pctText && (
+          <Text as="span" color="brand.matrix" mr={2}>
+            {pctText}
+          </Text>
+        )}
+        {eventText(lastEvent)}
+      </Text>
+    </Box>
+  );
+}
+
+// ── Page ───────────────────────────────────────────────────────────────────
 
 function EquityPage() {
-  const [selectedCode, setSelectedCode] = useState<string | null>(null);
-  const [range, setRange] = useState<EquityRange>('3M');
-
-  const { stocks, isLoading: stocksLoading } = useEquityStocks();
-  const { bars, isLoading: barsLoading } = useEquityDailyBars(selectedCode);
+  const { stocks, isLoading: stocksLoading } = useEquitySummary();
   const addStock = useAddEquityStock();
-  const deleteStock = useDeleteEquityStock();
-  const sync = useSyncEquity();
+  const { startSync, syncing, lastEvent, progressCount, resumeFrom } = useSyncEquity();
 
-  const selectedStock = stocks.find((s) => s.code === selectedCode);
+  // Drawer state
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleSelect = async (result: EquitySearchResult) => {
-    // Check if already tracked
-    const existing = stocks.find((s) => s.code === result.code);
-    if (existing) {
-      setSelectedCode(result.code);
-      return;
-    }
+  // sorted stocks come from EquityList; we need to track them to support arrow nav
+  // We pass a stable ref down via onSelect which includes the sorted index
+  const [sortedStocks, setSortedStocks] = useState<EquityStockSummary[]>([]);
+
+  const selectedStock = selectedIndex !== null ? (sortedStocks[selectedIndex] ?? null) : null;
+
+  const handleSelect = useCallback(
+    (_stock: EquityStockSummary, index: number, sorted: EquityStockSummary[]) => {
+      setSortedStocks(sorted);
+      setSelectedIndex(index);
+      setDrawerOpen(true);
+    },
+    [],
+  );
+
+  const handleSearchSelect = async (result: EquitySearchResult) => {
     await addStock.mutateAsync(result);
-    setSelectedCode(result.code);
   };
 
-  const handleDelete = async (code: string) => {
-    await deleteStock.mutateAsync(code);
-    if (selectedCode === code) setSelectedCode(null);
-  };
-
-  const lastSyncedAt = selectedStock?.last_synced_at
-    ? new Date(selectedStock.last_synced_at).toLocaleString('zh-CN')
-    : null;
+  const handlePrev = () => setSelectedIndex((i) => (i != null && i > 0 ? i - 1 : i));
+  const handleNext = () =>
+    setSelectedIndex((i) => (i != null && i < sortedStocks.length - 1 ? i + 1 : i));
 
   return (
     <AuthenticatedLayout>
-      <Box px={{ base: 4, md: 8 }} py={6} maxW="1400px" mx="auto">
+      <Box
+        px={{ base: 3, md: 6 }}
+        py={4}
+        maxW="1400px"
+        mx="auto"
+        h="calc(100vh - 64px)"
+        display="flex"
+        flexDir="column"
+      >
         {/* Header */}
-        <Flex align="center" justify="space-between" mb={6} wrap="wrap" gap={3}>
-          <VStack align="flex-start" gap={0}>
-            <Text
-              fontFamily="heading"
-              fontSize="2xl"
-              color="brand.matrix"
-              textShadow="0 0 10px currentColor"
-            >
-              EQUITY
-            </Text>
-            {lastSyncedAt && (
-              <Text fontSize="xs" color="text.mist" fontFamily="mono">
-                最近同步: {lastSyncedAt}
-              </Text>
-            )}
-          </VStack>
-
+        <Flex align="center" justify="space-between" mb={3} wrap="wrap" gap={3} flexShrink={0}>
+          <Text
+            fontFamily="heading"
+            fontSize="2xl"
+            color="brand.matrix"
+            textShadow="0 0 10px currentColor"
+          >
+            EQUITY
+          </Text>
           <HStack gap={3}>
-            <StockSearchBar onSelect={handleSelect} />
-            <Button
-              size="sm"
-              variant="outline"
-              colorScheme="green"
-              borderColor="brand.matrix"
-              color="brand.matrix"
-              fontFamily="mono"
-              fontSize="xs"
-              loading={sync.isPending}
-              onClick={() => sync.mutate()}
-              _hover={{ bg: 'rgba(0,255,65,0.08)' }}
-            >
-              <RefreshCw size={14} />
-              强制同步
-            </Button>
+            <StockSearchBar onSelect={handleSearchSelect} />
+            {resumeFrom !== null && !syncing ? (
+              <Button
+                size="sm"
+                variant="outline"
+                borderColor="red.400"
+                color="red.400"
+                fontFamily="mono"
+                fontSize="xs"
+                onClick={() => void startSync(resumeFrom)}
+                _hover={{ bg: 'rgba(255,68,68,0.08)' }}
+              >
+                <RotateCcw size={14} />
+                重试 (从第 {resumeFrom + 1} 只)
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                borderColor="brand.matrix"
+                color="brand.matrix"
+                fontFamily="mono"
+                fontSize="xs"
+                disabled={syncing}
+                onClick={() => void startSync()}
+                _hover={{ bg: 'rgba(0,255,65,0.08)' }}
+              >
+                {syncing ? <Spinner size="xs" /> : <RefreshCw size={14} />}
+                {syncing ? '同步中...' : '强制同步'}
+              </Button>
+            )}
           </HStack>
         </Flex>
 
-        <Flex gap={4} direction={{ base: 'column', lg: 'row' }}>
-          {/* Watchlist sidebar */}
-          <Box
-            w={{ base: '100%', lg: '200px' }}
-            flexShrink={0}
-            bg="#1A1A1A"
-            border="1px solid rgba(0,255,65,0.15)"
-            borderRadius="4px"
-            p={3}
-          >
-            <Text
-              fontSize="xs"
-              color="text.mist"
-              fontFamily="mono"
-              mb={3}
-              textTransform="uppercase"
-            >
-              自选股
-            </Text>
-            {stocksLoading ? (
-              <Spinner size="sm" color="brand.matrix" />
-            ) : stocks.length === 0 ? (
-              <Text fontSize="xs" color="text.dim" fontFamily="mono">
-                搜索并添加股票
-              </Text>
-            ) : (
-              <VStack gap={1} align="stretch">
-                {stocks.map((s) => (
-                  <HStack
-                    key={s.code}
-                    px={2}
-                    py={1.5}
-                    borderRadius="4px"
-                    cursor="pointer"
-                    bg={selectedCode === s.code ? 'rgba(0,255,65,0.1)' : 'transparent'}
-                    border="1px solid"
-                    borderColor={selectedCode === s.code ? 'brand.matrix' : 'transparent'}
-                    _hover={{ bg: 'rgba(0,255,65,0.06)' }}
-                    onClick={() => setSelectedCode(s.code)}
-                    justify="space-between"
-                  >
-                    <VStack gap={0} align="flex-start">
-                      <Text fontSize="xs" fontFamily="mono" color="brand.matrix">
-                        {s.code}
-                      </Text>
-                      <Text
-                        fontSize="10px"
-                        color="text.mist"
-                        overflow="hidden"
-                        whiteSpace="nowrap"
-                        maxW="120px"
-                        textOverflow="ellipsis"
-                      >
-                        {s.name}
-                      </Text>
-                    </VStack>
-                    <IconButton
-                      aria-label="Remove"
-                      size="xs"
-                      variant="ghost"
-                      color="text.dim"
-                      _hover={{ color: 'red.400' }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        void handleDelete(s.code);
-                      }}
-                    >
-                      <Trash2 size={12} />
-                    </IconButton>
-                  </HStack>
-                ))}
-              </VStack>
-            )}
-          </Box>
+        <SyncLog lastEvent={lastEvent} progressCount={progressCount} />
 
-          {/* Chart area */}
-          <Box
-            flex={1}
-            bg="#1A1A1A"
-            border="1px solid rgba(0,255,65,0.15)"
-            borderRadius="4px"
-            p={4}
-            minH="540px"
-          >
-            {!selectedCode ? (
-              <Flex align="center" justify="center" h="100%" minH="400px">
-                <Text color="text.mist" fontFamily="mono" fontSize="sm">
-                  选择或搜索股票查看 K 线
-                </Text>
-              </Flex>
-            ) : barsLoading ? (
-              <Flex align="center" justify="center" h="100%" minH="400px">
-                <VStack gap={3}>
-                  <Spinner color="brand.matrix" size="lg" />
-                  <Text color="text.mist" fontFamily="mono" fontSize="sm">
-                    加载中...
-                  </Text>
-                </VStack>
-              </Flex>
-            ) : bars.length === 0 ? (
-              <Flex align="center" justify="center" h="100%" minH="400px">
-                <VStack gap={3}>
-                  <Text color="text.mist" fontFamily="mono" fontSize="sm">
-                    暂无数据，请点击"强制同步"
-                  </Text>
-                </VStack>
-              </Flex>
-            ) : (
-              <Box>
-                <HStack mb={4} gap={3}>
-                  <Text fontFamily="mono" fontSize="lg" color="brand.matrix" fontWeight="bold">
-                    {selectedStock?.code}
-                  </Text>
-                  <Text fontFamily="mono" fontSize="sm" color="text.mist">
-                    {selectedStock?.name}
-                  </Text>
-                  {selectedStock?.market && (
-                    <Text
-                      fontFamily="mono"
-                      fontSize="10px"
-                      px={2}
-                      py={0.5}
-                      border="1px solid"
-                      borderColor="whiteAlpha.300"
-                      borderRadius="2px"
-                      color="text.mist"
-                    >
-                      {selectedStock.market}
-                    </Text>
-                  )}
-                </HStack>
-                <EquityKlineChart bars={bars} range={range} onRangeChange={setRange} />
-              </Box>
-            )}
-          </Box>
-        </Flex>
+        {/* Stock list */}
+        <Box flex="1" minH="0" mt={3}>
+          {stocksLoading ? (
+            <Flex justify="center" align="center" h="100%">
+              <Spinner color="brand.matrix" />
+            </Flex>
+          ) : stocks.length === 0 ? (
+            <Flex justify="center" align="center" h="100%">
+              <Text color="#555" fontFamily="mono" fontSize="sm">
+                暂无数据，请先同步
+              </Text>
+            </Flex>
+          ) : (
+            <EquityList
+              stocks={stocks}
+              selectedCode={selectedStock?.code ?? null}
+              onSelect={handleSelect}
+            />
+          )}
+        </Box>
       </Box>
+
+      <EquityDrawer
+        stock={selectedStock}
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onPrev={handlePrev}
+        onNext={handleNext}
+        hasPrev={selectedIndex !== null && selectedIndex > 0}
+        hasNext={selectedIndex !== null && selectedIndex < sortedStocks.length - 1}
+      />
     </AuthenticatedLayout>
   );
 }

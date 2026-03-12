@@ -5,7 +5,7 @@ import type {
   EquityDailyBar,
   EquitySearchResult,
   EquityStock,
-  EquitySyncResult,
+  EquityStockSummary,
 } from '@/client/types/equity-client';
 
 export const equityApi = {
@@ -42,19 +42,17 @@ export const equityApi = {
     return res.data;
   },
 
-  async syncAll(): Promise<EquitySyncResult> {
-    const res: ApiResponse<EquitySyncResult> = await BaseApiService.fetchApi('/api/equity/sync', {
-      method: 'POST',
-      body: JSON.stringify({}),
-    });
-    if ('error' in res) throw new Error(res.error);
-    return res.data;
-  },
-
   async searchStocks(q: string): Promise<EquitySearchResult[]> {
     const res: ApiResponse<EquitySearchResult[]> = await BaseApiService.fetchApi(
       `/api/equity/search?q=${encodeURIComponent(q)}`,
     );
+    if ('error' in res) throw new Error(res.error);
+    return res.data;
+  },
+
+  async getSummary(): Promise<EquityStockSummary[]> {
+    const res: ApiResponse<EquityStockSummary[]> =
+      await BaseApiService.fetchApi('/api/equity/summary');
     if ('error' in res) throw new Error(res.error);
     return res.data;
   },

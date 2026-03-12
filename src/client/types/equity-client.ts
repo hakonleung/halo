@@ -44,3 +44,46 @@ export interface EquitySyncResult {
 }
 
 export type EquityRange = '1M' | '3M' | '6M' | '1Y';
+
+export interface EquityStockSummary {
+  code: string;
+  name: string;
+  market: 'SH' | 'SZ';
+  close: number | null;
+  change_pct_1d: number | null;
+  change_pct_5d: number | null;
+  change_pct_10d: number | null;
+  change_pct_20d: number | null;
+  change_pct_50d: number | null;
+  change_pct_250d: number | null;
+  turnover_rate: number | null;
+  sparkline: number[];
+}
+
+export type SortKey =
+  | 'change_1d'
+  | 'change_5d'
+  | 'change_10d'
+  | 'change_20d'
+  | 'change_50d'
+  | 'change_250d'
+  | 'turnover';
+
+export type SortDir = 'asc' | 'desc';
+
+export type SyncEvent =
+  | { type: 'status'; message: string }
+  | { type: 'init_progress'; batch: number; total_batches: number }
+  | { type: 'init_done'; total: number }
+  | {
+      type: 'progress';
+      code: string;
+      name: string;
+      inserted: number;
+      latestDate: string | null;
+      error: string | null;
+      index: number;
+      total: number;
+    }
+  | { type: 'error'; code: string; message: string; resume_from: number }
+  | { type: 'done'; synced: number };

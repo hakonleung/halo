@@ -12,7 +12,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Customized,
 } from 'recharts';
 
 import type {
@@ -31,85 +30,84 @@ function calcMA(bars: EquityDailyBar[], period: number): (number | null)[] {
   });
 }
 
-function enrichBars(bars: EquityDailyBar[]): EquityDailyBarWithMA[] {
+interface ChartBar extends EquityDailyBarWithMA {
+  wickRange: [number, number];
+}
+
+function enrichBars(bars: EquityDailyBar[]): ChartBar[] {
   const ma5 = calcMA(bars, 5);
   const ma10 = calcMA(bars, 10);
   const ma20 = calcMA(bars, 20);
-  return bars.map((b, i) => ({ ...b, ma5: ma5[i], ma10: ma10[i], ma20: ma20[i] }));
+  return bars.map((b, i) => ({
+    ...b,
+    ma5: ma5[i],
+    ma10: ma10[i],
+    ma20: ma20[i],
+    wickRange: [b.low, b.high] satisfies [number, number],
+  }));
 }
 
-function filterByRange(bars: EquityDailyBarWithMA[], range: EquityRange): EquityDailyBarWithMA[] {
+function filterByRange(bars: ChartBar[], range: EquityRange): ChartBar[] {
   const days = range === '1M' ? 30 : range === '3M' ? 90 : range === '6M' ? 180 : 365;
   return bars.slice(-days);
 }
 
-// ── Candlestick custom layer ───────────────────────────────────────────────
+// ── Candlestick bar shape ──────────────────────────────────────────────────
+// Uses recharts range-bar: dataKey="wickRange" gives y=pixel(high), y+height=pixel(low).
+// Body positions are interpolated within the wick range.
 
-interface ChartInternals {
-  xAxisMap?: Record<
-    string,
-    {
-      scale: ((v: string) => number | undefined) & { bandwidth?: () => number };
-    }
-  >;
-  yAxisMap?: Record<string, { scale: (v: number) => number }>;
-  data?: EquityDailyBarWithMA[];
+interface CandlestickShapeProps {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  payload?: ChartBar;
 }
 
-const CandlestickLayer = (props: ChartInternals) => {
-  const { xAxisMap, yAxisMap, data } = props;
-  if (!xAxisMap || !yAxisMap || !data) return null;
+const CandlestickShape = ({
+  x = 0,
+  y = 0,
+  width = 0,
+  height = 0,
+  payload,
+}: CandlestickShapeProps) => {
+  if (!payload) return null;
+  const { open, close, high, low } = payload;
 
-  const xAxis = xAxisMap['0'];
-  const yAxis = yAxisMap['0'];
-  if (!xAxis?.scale || !yAxis?.scale) return null;
+  const isGain = close >= open;
+  const color = isGain ? '#FF4444' : '#00FF41';
+  const cx = x + width / 2;
+  const candleWidth = Math.max(width * 0.7, 2);
 
-  const bandwidth = xAxis.scale.bandwidth?.() ?? 6;
-  const candleWidth = Math.max(bandwidth * 0.7, 2);
+  // Interpolate open/close pixel positions within the wick span
+  const wickSpan = high - low;
+  let yOpen: number;
+  let yClose: number;
+  if (wickSpan <= 0) {
+    yOpen = y;
+    yClose = y;
+  } else {
+    yOpen = y + height * ((high - open) / wickSpan);
+    yClose = y + height * ((high - close) / wickSpan);
+  }
+
+  const bodyTop = Math.min(yOpen, yClose);
+  const bodyHeight = Math.max(Math.abs(yClose - yOpen), 1);
 
   return (
     <g>
-      {data.map((d) => {
-        const cx = (xAxis.scale(d.trade_date) ?? 0) + bandwidth / 2;
-        const isGain = d.close >= d.open;
-        const upColor = '#00FF41';
-        const downColor = '#FF4444';
-        const color = isGain ? upColor : downColor;
-
-        const yHigh = yAxis.scale(d.high);
-        const yLow = yAxis.scale(d.low);
-        const yOpen = yAxis.scale(d.open);
-        const yClose = yAxis.scale(d.close);
-
-        const bodyTop = Math.min(yOpen, yClose);
-        const bodyHeight = Math.max(Math.abs(yClose - yOpen), 1);
-
-        return (
-          <g key={d.trade_date}>
-            {/* Upper wick */}
-            <line x1={cx} y1={yHigh} x2={cx} y2={bodyTop} stroke={color} strokeWidth={1} />
-            {/* Body */}
-            <rect
-              x={cx - candleWidth / 2}
-              y={bodyTop}
-              width={candleWidth}
-              height={bodyHeight}
-              fill={isGain ? 'transparent' : color}
-              stroke={color}
-              strokeWidth={1}
-            />
-            {/* Lower wick */}
-            <line
-              x1={cx}
-              y1={bodyTop + bodyHeight}
-              x2={cx}
-              y2={yLow}
-              stroke={color}
-              strokeWidth={1}
-            />
-          </g>
-        );
-      })}
+      {/* Wick (full high-low line) */}
+      <line x1={cx} y1={y} x2={cx} y2={y + height} stroke={color} strokeWidth={1} />
+      {/* Body */}
+      <rect
+        x={cx - candleWidth / 2}
+        y={bodyTop}
+        width={candleWidth}
+        height={bodyHeight}
+        fill={color}
+        stroke={color}
+        strokeWidth={1}
+      />
     </g>
   );
 };
@@ -117,7 +115,7 @@ const CandlestickLayer = (props: ChartInternals) => {
 // ── Custom tooltip ─────────────────────────────────────────────────────────
 
 interface TooltipPayload {
-  payload?: EquityDailyBarWithMA;
+  payload?: ChartBar;
 }
 
 const KlineTooltip = ({ payload }: { payload?: TooltipPayload[] }) => {
@@ -125,7 +123,7 @@ const KlineTooltip = ({ payload }: { payload?: TooltipPayload[] }) => {
   if (!d) return null;
 
   const isGain = d.close >= d.open;
-  const color = isGain ? '#00FF41' : '#FF4444';
+  const color = isGain ? '#FF4444' : '#00FF41';
   const fmt = (v: number | null) => (v != null ? v.toFixed(2) : '-');
 
   return (
@@ -182,7 +180,7 @@ const VolumeBar = (props: {
   open?: number;
 }) => {
   const { x = 0, y = 0, width = 0, height = 0, close = 0, open = 0 } = props;
-  const fill = close >= open ? 'rgba(0,255,65,0.6)' : 'rgba(255,68,68,0.6)';
+  const fill = close >= open ? 'rgba(255,68,68,0.6)' : 'rgba(0,255,65,0.6)';
   return <rect x={x} y={y} width={width} height={height} fill={fill} />;
 };
 
@@ -200,7 +198,7 @@ interface Props {
 
 export function EquityKlineChart({ bars, range, onRangeChange }: Props) {
   const enriched = useMemo(() => enrichBars(bars), [bars]);
-  const visible = useMemo(() => filterByRange(enriched, range), [enriched, range]);
+  const visible: ChartBar[] = useMemo(() => filterByRange(enriched, range), [enriched, range]);
 
   const priceMin = useMemo(() => Math.min(...visible.map((d) => d.low)) * 0.995, [visible]);
   const priceMax = useMemo(() => Math.max(...visible.map((d) => d.high)) * 1.005, [visible]);
@@ -264,17 +262,19 @@ export function EquityKlineChart({ bars, range, onRangeChange }: Props) {
             formatter={(value) => <span style={{ color: '#888' }}>{value}</span>}
           />
 
-          {/* Invisible bar to anchor band scale for candlestick positioning */}
-          <Bar dataKey="close" fill="transparent" isAnimationActive={false} legendType="none" />
-
-          {/* Candlestick layer */}
-          {/* eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any */}
-          <Customized component={CandlestickLayer as any} />
+          {/* Candlestick bars via range dataKey [low, high] */}
+          <Bar
+            dataKey="wickRange"
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
+            shape={(<CandlestickShape />) as any}
+            isAnimationActive={false}
+            legendType="none"
+          />
 
           <Line
             dataKey="ma5"
             dot={false}
-            stroke="#FFD700"
+            stroke="rgba(255,215,0,0.55)"
             strokeWidth={1}
             name="MA5"
             isAnimationActive={false}
@@ -282,7 +282,7 @@ export function EquityKlineChart({ bars, range, onRangeChange }: Props) {
           <Line
             dataKey="ma10"
             dot={false}
-            stroke="#FF6B35"
+            stroke="rgba(255,107,53,0.55)"
             strokeWidth={1}
             name="MA10"
             isAnimationActive={false}
@@ -290,7 +290,7 @@ export function EquityKlineChart({ bars, range, onRangeChange }: Props) {
           <Line
             dataKey="ma20"
             dot={false}
-            stroke="#00D4FF"
+            stroke="rgba(0,212,255,0.55)"
             strokeWidth={1}
             name="MA20"
             isAnimationActive={false}
@@ -335,7 +335,7 @@ export function EquityKlineChart({ bars, range, onRangeChange }: Props) {
           <Tooltip
             content={({ payload }) => {
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              const d = payload?.[0]?.payload as EquityDailyBarWithMA | undefined;
+              const d = payload?.[0]?.payload as ChartBar | undefined;
               if (!d) return null;
               return (
                 <Box

@@ -66,6 +66,6 @@ export const internalApiService = {
   addEquityStock: equityApi.addStock,
   deleteEquityStock: equityApi.deleteStock,
   getEquityDailyBars: equityApi.getDailyBars,
-  syncEquity: equityApi.syncAll,
   searchEquityStocks: equityApi.searchStocks,
+  getEquitySummary: equityApi.getSummary,
 };
