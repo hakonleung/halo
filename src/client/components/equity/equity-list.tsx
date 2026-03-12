@@ -29,7 +29,7 @@ function sortValue(s: EquityStockSummary, key: SortKey): number {
     change_10d: s.change_pct_10d,
     change_20d: s.change_pct_20d,
     change_50d: s.change_pct_50d,
-    change_250d: s.change_pct_250d,
+    change_120d: s.change_pct_120d,
     turnover: s.turnover_rate,
   };
   return map[key] ?? -Infinity;
@@ -43,7 +43,7 @@ const SORT_COLS: { key: SortKey; label: string }[] = [
   { key: 'change_10d', label: '10日' },
   { key: 'change_20d', label: '20日' },
   { key: 'change_50d', label: '50日' },
-  { key: 'change_250d', label: '250日' },
+  { key: 'change_120d', label: '120日' },
   { key: 'turnover', label: '换手率' },
 ];
 
@@ -52,13 +52,14 @@ const ROW_H = 36;
 // ── components ─────────────────────────────────────────────────────────────
 
 interface RowProps {
+  index: number;
   stock: EquityStockSummary;
   selected: boolean;
   sortKey: SortKey;
   onClick: () => void;
 }
 
-function StockRow({ stock: s, selected, sortKey, onClick }: RowProps) {
+function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
   const bg = selected ? 'rgba(0,255,65,0.08)' : 'transparent';
   const border = selected ? 'rgba(0,255,65,0.4)' : 'transparent';
 
@@ -78,6 +79,10 @@ function StockRow({ stock: s, selected, sortKey, onClick }: RowProps) {
       fontFamily="mono"
       flexShrink={0}
     >
+      {/* Index */}
+      <Text w="36px" color="#444" flexShrink={0} textAlign="right" pr={3}>
+        {index + 1}
+      </Text>
       {/* Code */}
       <Text w="60px" color="brand.matrix" flexShrink={0}>
         {s.code}
@@ -99,7 +104,7 @@ function StockRow({ stock: s, selected, sortKey, onClick }: RowProps) {
                   ? s.change_pct_20d
                   : key === 'change_50d'
                     ? s.change_pct_50d
-                    : s.change_pct_250d;
+                    : s.change_pct_120d;
         const isActive = key === sortKey;
         return (
           <Text
@@ -111,7 +116,7 @@ function StockRow({ stock: s, selected, sortKey, onClick }: RowProps) {
             fontWeight={isActive ? 'bold' : 'normal'}
             opacity={isActive ? 1 : 0.75}
           >
-            {key === 'turnover' ? '-' : fmtPct(val)}
+            {fmtPct(val)}
           </Text>
         );
       })}
@@ -151,7 +156,14 @@ function HeaderRow({ sortKey, sortDir, onSort }: HeaderProps) {
       fontSize="11px"
       fontFamily="mono"
       flexShrink={0}
+      position="sticky"
+      top={0}
+      bg="#0F0F0F"
+      zIndex={1}
     >
+      <Text w="36px" color="#555" flexShrink={0} textAlign="right" pr={3}>
+        #
+      </Text>
       <Text w="60px" color="#555" flexShrink={0}>
         代码
       </Text>
@@ -233,6 +245,7 @@ export function EquityList({ stocks, selectedCode, onSelect }: Props) {
 
   return (
     <Box
+      h="100%"
       bg="#0F0F0F"
       border="1px solid rgba(0,255,65,0.15)"
       borderRadius="4px"
@@ -240,8 +253,17 @@ export function EquityList({ stocks, selectedCode, onSelect }: Props) {
       flexDir="column"
       overflow="hidden"
     >
-      <HeaderRow sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-      <Box ref={scrollRef} flex="1" overflowY="auto" minH="0">
+      <Box
+        ref={scrollRef}
+        flex="1"
+        overflowY="auto"
+        minH="0"
+        css={{
+          '&::-webkit-scrollbar': { width: '4px' },
+          '&::-webkit-scrollbar-thumb': { background: 'rgba(0,255,65,0.2)', borderRadius: '2px' },
+        }}
+      >
+        <HeaderRow sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
         <Box h={`${virtualizer.getTotalSize()}px`} position="relative">
           {virtualizer.getVirtualItems().map((vi) => {
             const s = sorted[vi.index];
@@ -255,6 +277,7 @@ export function EquityList({ stocks, selectedCode, onSelect }: Props) {
                 transform={`translateY(${vi.start}px)`}
               >
                 <StockRow
+                  index={vi.index}
                   stock={s}
                   selected={s.code === selectedCode}
                   sortKey={sortKey}

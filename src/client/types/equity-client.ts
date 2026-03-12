@@ -55,7 +55,7 @@ export interface EquityStockSummary {
   change_pct_10d: number | null;
   change_pct_20d: number | null;
   change_pct_50d: number | null;
-  change_pct_250d: number | null;
+  change_pct_120d: number | null;
   turnover_rate: number | null;
   sparkline: number[];
 }
@@ -66,7 +66,7 @@ export type SortKey =
   | 'change_10d'
   | 'change_20d'
   | 'change_50d'
-  | 'change_250d'
+  | 'change_120d'
   | 'turnover';
 
 export type SortDir = 'asc' | 'desc';

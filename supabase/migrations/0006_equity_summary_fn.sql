@@ -11,7 +11,7 @@ RETURNS TABLE (
   change_pct_10d DOUBLE PRECISION,
   change_pct_20d DOUBLE PRECISION,
   change_pct_50d DOUBLE PRECISION,
-  change_pct_250d DOUBLE PRECISION,
+  change_pct_120d DOUBLE PRECISION,
   turnover_rate DOUBLE PRECISION,
   sparkline     DOUBLE PRECISION[]
 )
@@ -33,14 +33,14 @@ LANGUAGE sql STABLE SECURITY INVOKER AS $$
       MAX(CASE WHEN rn = 11  THEN close END)         AS c11,
       MAX(CASE WHEN rn = 21  THEN close END)         AS c21,
       MAX(CASE WHEN rn = 51  THEN close END)         AS c51,
-      MAX(CASE WHEN rn = 251 THEN close END)         AS c251,
+      MAX(CASE WHEN rn = 121 THEN close END)         AS c121,
       MAX(CASE WHEN rn = 1   THEN change_pct END)    AS chg1,
       MAX(CASE WHEN rn = 1   THEN turnover_rate END) AS tr,
       -- sparkline: oldest→newest (rn DESC = oldest first)
       ARRAY_AGG(close ORDER BY rn DESC)
         FILTER (WHERE rn <= 50)                      AS sparkline
     FROM recent
-    WHERE rn <= 251
+    WHERE rn <= 121
     GROUP BY code
   )
   SELECT
@@ -53,7 +53,7 @@ LANGUAGE sql STABLE SECURITY INVOKER AS $$
     CASE WHEN a.c11  > 0 THEN (a.c1 - a.c11)  / a.c11  * 100 END   AS change_pct_10d,
     CASE WHEN a.c21  > 0 THEN (a.c1 - a.c21)  / a.c21  * 100 END   AS change_pct_20d,
     CASE WHEN a.c51  > 0 THEN (a.c1 - a.c51)  / a.c51  * 100 END   AS change_pct_50d,
-    CASE WHEN a.c251 > 0 THEN (a.c1 - a.c251) / a.c251 * 100 END   AS change_pct_250d,
+    CASE WHEN a.c121 > 0 THEN (a.c1 - a.c121) / a.c121 * 100 END   AS change_pct_120d,
     a.tr                                                              AS turnover_rate,
     a.sparkline
   FROM neolog_equity_list l
