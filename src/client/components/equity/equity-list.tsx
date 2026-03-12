@@ -39,12 +39,12 @@ function sortValue(s: EquityStockSummary, key: SortKey): number {
 
 const SORT_COLS: { key: SortKey; label: string }[] = [
   { key: 'change_1d', label: '今日' },
+  { key: 'turnover', label: '换手率' },
   { key: 'change_5d', label: '5日' },
   { key: 'change_10d', label: '10日' },
   { key: 'change_20d', label: '20日' },
   { key: 'change_50d', label: '50日' },
   { key: 'change_120d', label: '120日' },
-  { key: 'turnover', label: '换手率' },
 ];
 
 const ROW_H = 36;
@@ -68,6 +68,7 @@ function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
       h={`${ROW_H}px`}
       px={3}
       gap={0}
+      w="100%"
       bg={bg}
       borderLeft="2px solid"
       borderColor={border}
@@ -88,11 +89,26 @@ function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
         {s.code}
       </Text>
       {/* Name */}
-      <Text w="96px" color="text.fog" flexShrink={0} overflow="hidden" whiteSpace="nowrap">
+      <Text flex="1" minW="80px" color="text.fog" overflow="hidden" whiteSpace="nowrap">
         {s.name}
       </Text>
-      {/* Change cols */}
-      {SORT_COLS.slice(0, 6).map(({ key }) => {
+      {/* Sortable cols */}
+      {SORT_COLS.map(({ key }) => {
+        const isActive = key === sortKey;
+        if (key === 'turnover') {
+          return (
+            <Text
+              key={key}
+              w="64px"
+              flexShrink={0}
+              textAlign="right"
+              color={isActive ? 'brand.matrix' : '#888'}
+              fontWeight={isActive ? 'bold' : 'normal'}
+            >
+              {s.turnover_rate != null ? `${s.turnover_rate.toFixed(2)}%` : '-'}
+            </Text>
+          );
+        }
         const val =
           key === 'change_1d'
             ? s.change_pct_1d
@@ -105,7 +121,6 @@ function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
                   : key === 'change_50d'
                     ? s.change_pct_50d
                     : s.change_pct_120d;
-        const isActive = key === sortKey;
         return (
           <Text
             key={key}
@@ -120,18 +135,8 @@ function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
           </Text>
         );
       })}
-      {/* Turnover */}
-      <Text
-        w="64px"
-        flexShrink={0}
-        textAlign="right"
-        color={sortKey === 'turnover' ? 'brand.matrix' : '#888'}
-        fontWeight={sortKey === 'turnover' ? 'bold' : 'normal'}
-      >
-        {s.turnover_rate != null ? `${s.turnover_rate.toFixed(2)}%` : '-'}
-      </Text>
       {/* Sparkline */}
-      <Box w="88px" flexShrink={0} display="flex" justifyContent="flex-end">
+      <Box w="120px" flexShrink={0} display="flex" justifyContent="flex-end">
         <EquitySparkline prices={s.sparkline} />
       </Box>
     </HStack>
@@ -152,6 +157,7 @@ function HeaderRow({ sortKey, sortDir, onSort }: HeaderProps) {
       h="32px"
       px={3}
       gap={0}
+      w="100%"
       borderBottom="1px solid rgba(0,255,65,0.15)"
       fontSize="11px"
       fontFamily="mono"
@@ -167,10 +173,10 @@ function HeaderRow({ sortKey, sortDir, onSort }: HeaderProps) {
       <Text w="60px" color="#555" flexShrink={0}>
         代码
       </Text>
-      <Text w="96px" color="#555" flexShrink={0}>
+      <Text flex="1" minW="80px" color="#555">
         名称
       </Text>
-      {SORT_COLS.slice(0, 6).map(({ key, label }) => (
+      {SORT_COLS.map(({ key, label }) => (
         <Text
           key={key}
           w="64px"
@@ -186,19 +192,7 @@ function HeaderRow({ sortKey, sortDir, onSort }: HeaderProps) {
           {sortKey === key ? (sortDir === 'desc' ? ' ↓' : ' ↑') : ''}
         </Text>
       ))}
-      <Text
-        w="64px"
-        flexShrink={0}
-        textAlign="right"
-        cursor="pointer"
-        color={sortKey === 'turnover' ? 'brand.matrix' : '#555'}
-        _hover={{ color: 'brand.matrix' }}
-        onClick={() => onSort('turnover')}
-        userSelect="none"
-      >
-        换手率{sortKey === 'turnover' ? (sortDir === 'desc' ? ' ↓' : ' ↑') : ''}
-      </Text>
-      <Text w="88px" flexShrink={0} textAlign="right" color="#555">
+      <Text w="120px" flexShrink={0} textAlign="right" color="#555">
         近50日
       </Text>
     </HStack>
