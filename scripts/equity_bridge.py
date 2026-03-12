@@ -29,8 +29,11 @@ import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
+from itertools import groupby
+from operator import itemgetter
 
 import akshare as ak
+import numpy as np
 from dotenv import load_dotenv
 from supabase import create_client
 
@@ -326,6 +329,118 @@ def cmd_sync_all(start_offset: int = 0):
     emit({"type": "done", "synced": sync_total})
 
 
+# ── pattern similarity ─────────────────────────────────────────────────────
+
+def _zscore(arr: np.ndarray) -> np.ndarray:
+    std = arr.std()
+    if std == 0:
+        return np.zeros_like(arr)
+    return (arr - arr.mean()) / std
+
+
+def _sliding_pearson(closes: np.ndarray, query_norm: np.ndarray, window_len: int):
+    """Vectorized sliding-window Pearson correlation via stride_tricks.
+
+    Returns (best_idx, best_r). best_idx == -1 means too short.
+    """
+    n = len(closes)
+    if n < window_len:
+        return -1, -1.0
+
+    shape = (n - window_len + 1, window_len)
+    strides = (closes.strides[0], closes.strides[0])
+    windows = np.lib.stride_tricks.as_strided(closes, shape=shape, strides=strides)
+
+    means = windows.mean(axis=1, keepdims=True)
+    stds = windows.std(axis=1, keepdims=True)
+    stds[stds == 0] = 1.0
+    windows_norm = (windows - means) / stds
+
+    correlations = windows_norm @ query_norm / window_len
+    best_idx = int(np.argmax(correlations))
+    best_r = float(correlations[best_idx])
+    return best_idx, best_r
+
+
+def cmd_find_similar(query_code: str, start_date: str, end_date: str, top_n: int = 50):
+    sb = get_supabase()
+
+    # 1. Query bars for selected range
+    query_rows = (
+        sb.table("neolog_equity_daily")
+        .select("trade_date,close")
+        .eq("code", query_code)
+        .gte("trade_date", start_date)
+        .lte("trade_date", end_date)
+        .order("trade_date")
+        .execute()
+        .data
+    )
+    window_len = len(query_rows)
+    if window_len < 2:
+        emit({"type": "done", "total": 0})
+        return
+
+    query_norm = _zscore(np.array([r["close"] for r in query_rows], dtype=float))
+
+    # 2. Name map from tracked list (best-effort; untracked stocks fall back to code)
+    name_rows = sb.table("neolog_equity_list").select("code,name").execute().data
+    name_map = {r["code"]: r["name"] for r in name_rows}
+
+    # 3. Fetch all bars from last 6 months across ALL stocks in DB (full universe)
+    six_months_ago = (datetime.today() - timedelta(days=180)).strftime("%Y-%m-%d")
+    emit({"type": "status", "message": f"正在加载全量股票近6个月数据（从 {six_months_ago}）..."})
+
+    all_bars = []
+    page_size = 9999
+    offset = 0
+    while True:
+        res = (
+            sb.table("neolog_equity_daily")
+            .select("code,trade_date,close")
+            .neq("code", query_code)
+            .gte("trade_date", six_months_ago)
+            .order("code")
+            .order("trade_date")
+            .range(offset, offset + page_size - 1)
+            .execute()
+        )
+        batch = res.data or []
+        all_bars.extend(batch)
+        if len(batch) < page_size:
+            break
+        offset += page_size
+
+    unique_codes = len({r["code"] for r in all_bars})
+    emit({"type": "status", "message": f"正在计算相似度，共 {unique_codes} 只股票..."})
+
+    # 4. Sliding-window Pearson per stock — emit each match immediately
+    results = []
+    for code, group_iter in groupby(all_bars, key=itemgetter("code")):
+        rows_list = list(group_iter)
+        if len(rows_list) < window_len:
+            continue
+        dates = [r["trade_date"] for r in rows_list]
+        closes = np.array([r["close"] for r in rows_list], dtype=float)
+        best_idx, best_r = _sliding_pearson(closes, query_norm, window_len)
+        if best_idx < 0:
+            continue
+        match = {
+            "type": "match",
+            "code": code,
+            "name": name_map.get(code, ""),
+            "startDate": dates[best_idx],
+            "endDate": dates[best_idx + window_len - 1],
+            "similarity": round(best_r, 4),
+        }
+        results.append(match)
+        emit(match)
+
+    # Emit sorted top N summary
+    results.sort(key=lambda x: -x["similarity"])
+    emit({"type": "done", "total": len(results), "topMatches": results[:top_n]})
+
+
 # ── search ─────────────────────────────────────────────────────────────────
 
 def cmd_search(query: str):
@@ -392,6 +507,10 @@ def main():
             if len(sys.argv) < 3:
                 raise ValueError("search requires <query>")
             cmd_search(sys.argv[2])
+        elif cmd == "find_similar":
+            if len(sys.argv) < 5:
+                raise ValueError("find_similar requires <code> <start_date> <end_date>")
+            cmd_find_similar(sys.argv[2], sys.argv[3], sys.argv[4])
         else:
             raise ValueError(f"unknown command: {cmd}")
     except Exception as e:

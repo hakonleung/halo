@@ -6,7 +6,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { internalApiService } from '@/client/internal-api';
 import { useEquityStore } from '@/client/store/equity-store';
 
-import type { EquitySearchResult, SyncEvent } from '@/client/types/equity-client';
+import type {
+  EquitySearchResult,
+  FindSimilarRequest,
+  PatternMatch,
+  SyncEvent,
+} from '@/client/types/equity-client';
 
 const STOCKS_KEY = ['equity', 'stocks'] as const;
 const SUMMARY_KEY = ['equity', 'summary'] as const;
@@ -159,6 +164,76 @@ export function useEquitySummary() {
   }, [data, setStocks]);
 
   return { stocks: data ?? cached, isLoading: isLoading && cached.length === 0, error };
+}
+
+export function usePatternSimilarity() {
+  const [loading, setLoading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState('');
+  const [matches, setMatches] = useState<PatternMatch[]>([]);
+  const abortRef = useRef<AbortController | null>(null);
+
+  const findSimilar = useCallback(async (req: FindSimilarRequest) => {
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
+
+    setLoading(true);
+    setStatusMsg('');
+    setMatches([]);
+
+    try {
+      const res = await fetch('/api/equity/similar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(req),
+        signal: ac.signal,
+      });
+
+      if (!res.body) return;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop() ?? '';
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+          try {
+            const event: Record<string, unknown> = JSON.parse(trimmed);
+            if (event.type === 'status' && typeof event.message === 'string') {
+              setStatusMsg(event.message);
+            } else if (event.type === 'match') {
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              const m = event as unknown as PatternMatch;
+              setMatches((prev) => {
+                const next = [...prev, m];
+                next.sort((a, b) => b.similarity - a.similarity);
+                return next;
+              });
+            } else if (event.type === 'done') {
+              setStatusMsg('');
+            }
+          } catch {
+            // ignore malformed lines
+          }
+        }
+      }
+    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      if ((err as Error).name !== 'AbortError') {
+        console.error('[usePatternSimilarity]', err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { findSimilar, loading, statusMsg, matches };
 }
 
 export function useSearchEquity(q: string) {

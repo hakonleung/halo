@@ -1,6 +1,7 @@
 import { spawn } from 'child_process';
 import path from 'path';
 
+import type { PatternMatch } from '@/client/types/equity-client';
 import type { Database } from '@/server/types/database';
 import type {
   AddStockRequest,
@@ -129,5 +130,16 @@ export const equityService = {
     if (!query.trim()) return [];
     console.log('[equity] searchStocks:', query);
     return runPythonSearch(query, accessToken);
+  },
+
+  /** Find stocks with similar price pattern using sliding-window Pearson correlation */
+  async findSimilarPatterns(
+    code: string,
+    startDate: string,
+    endDate: string,
+    accessToken = '',
+  ): Promise<PatternMatch[]> {
+    console.log('[equity] findSimilarPatterns:', code, startDate, endDate);
+    return runPython<PatternMatch[]>(['find_similar', code, startDate, endDate], accessToken);
   },
 };

@@ -95,6 +95,20 @@ export const DEFAULT_EQUITY_FILTER: EquityFilter = {
   excludeST: false,
 };
 
+export interface PatternMatch {
+  code: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  similarity: number;
+}
+
+export interface FindSimilarRequest {
+  code: string;
+  startDate: string;
+  endDate: string;
+}
+
 export type SyncEvent =
   | { type: 'status'; message: string }
   | { type: 'init_progress'; batch: number; total_batches: number }

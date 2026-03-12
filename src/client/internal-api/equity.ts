@@ -6,6 +6,8 @@ import type {
   EquitySearchResult,
   EquityStock,
   EquityStockSummary,
+  FindSimilarRequest,
+  PatternMatch,
 } from '@/client/types/equity-client';
 
 export const equityApi = {
@@ -53,6 +55,15 @@ export const equityApi = {
   async getSummary(): Promise<EquityStockSummary[]> {
     const res: ApiResponse<EquityStockSummary[]> =
       await BaseApiService.fetchApi('/api/equity/summary');
+    if ('error' in res) throw new Error(res.error);
+    return res.data;
+  },
+
+  async findSimilarPatterns(req: FindSimilarRequest): Promise<PatternMatch[]> {
+    const res: ApiResponse<PatternMatch[]> = await BaseApiService.fetchApi('/api/equity/similar', {
+      method: 'POST',
+      body: JSON.stringify(req),
+    });
     if ('error' in res) throw new Error(res.error);
     return res.data;
   },

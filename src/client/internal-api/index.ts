@@ -68,4 +68,5 @@ export const internalApiService = {
   getEquityDailyBars: equityApi.getDailyBars,
   searchEquityStocks: equityApi.searchStocks,
   getEquitySummary: equityApi.getSummary,
+  findSimilarPatterns: equityApi.findSimilarPatterns,
 };
