@@ -1,4 +1,4 @@
-import type { EquityDailyBar, EquityDailyBarWithMA } from '@/client/types/equity-client';
+import type { EquityDailyBar, EquityDailyBarWithMA } from '../types';
 
 export interface ChartBar extends EquityDailyBarWithMA {
   wickRange: [number, number];

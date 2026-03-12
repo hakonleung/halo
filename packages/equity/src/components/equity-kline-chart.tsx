@@ -15,7 +15,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import type { EquityDailyBar, EquityRange } from '@/client/types/equity-client';
+import type { EquityDailyBar, EquityRange } from '../types';
 import { CandlestickShape, VolumeBar } from './equity-kline-shapes';
 import { enrichBars } from './equity-kline-utils';
 import type { ChartBar } from './equity-kline-utils';

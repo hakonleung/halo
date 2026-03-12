@@ -3,9 +3,9 @@
 import { Box, Input, Text, VStack, Spinner } from '@chakra-ui/react';
 import { useState, useRef, useEffect } from 'react';
 
-import { useSearchEquity } from '@/client/hooks/use-equity';
+import { useSearchEquity } from '../hooks';
 
-import type { EquitySearchResult } from '@/client/types/equity-client';
+import type { EquitySearchResult } from '../types';
 
 interface Props {
   onSelect: (stock: EquitySearchResult) => void;

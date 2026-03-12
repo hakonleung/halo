@@ -4,7 +4,7 @@ import { Box, HStack, Text } from '@chakra-ui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef, useMemo, useState } from 'react';
 
-import { DEFAULT_EQUITY_FILTER } from '@/client/types/equity-client';
+import { DEFAULT_EQUITY_FILTER } from '../types';
 
 import { EquityFilterBar } from './equity-filter-bar';
 import { EquitySparkline } from './equity-sparkline';
@@ -15,7 +15,7 @@ import type {
   PctPeriod,
   SortDir,
   SortKey,
-} from '@/client/types/equity-client';
+} from '../types';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 

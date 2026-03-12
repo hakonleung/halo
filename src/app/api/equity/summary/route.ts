@@ -1,6 +1,6 @@
 import { createApiHandler } from '@/server/services/api-helpers';
 
-import type { EquityStockSummary } from '@/client/types/equity-client';
+import type { EquityStockSummary } from '@neo-log/equity';
 
 const PAGE = 1000;
 

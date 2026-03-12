@@ -3,7 +3,7 @@
 import { Box, Flex, HStack, Spinner, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import type { PatternMatch } from '@/client/types/equity-client';
+import type { PatternMatch } from '../types';
 import { EquityMatchCard } from './equity-match-card';
 
 interface Props {

@@ -4,13 +4,13 @@ import { Box, Drawer, HStack, Portal, Text, Spinner, Flex } from '@chakra-ui/rea
 import { ChevronUp, ChevronDown, GitCompare, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useEquityDailyBars, usePatternSimilarity } from '@/client/hooks/use-equity';
+import { useEquityDailyBars, usePatternSimilarity } from '../hooks';
 
 import { EquityKlineChart } from './equity-kline-chart';
 import type { KlineMode } from './equity-kline-chart';
 import { SimilarPatternsPanel } from './similar-patterns-panel';
 
-import type { EquityRange, EquityStockSummary } from '@/client/types/equity-client';
+import type { EquityRange, EquityStockSummary } from '../types';
 
 interface Props {
   stock: EquityStockSummary | null;

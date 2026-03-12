@@ -11,7 +11,6 @@ import { authApi } from './auth';
 import { behaviorsApi } from './behaviors';
 import { chatApi } from './chat';
 import { dashboardApi } from './dashboard';
-import { equityApi } from './equity';
 import { goalsApi } from './goals';
 import { notesApi } from './notes';
 import { settingsApi } from './settings';
@@ -61,12 +60,4 @@ export const internalApiService = {
   logout: authApi.logout,
   signup: authApi.signup,
 
-  // Equity API
-  getEquityStocks: equityApi.getStocks,
-  addEquityStock: equityApi.addStock,
-  deleteEquityStock: equityApi.deleteStock,
-  getEquityDailyBars: equityApi.getDailyBars,
-  searchEquityStocks: equityApi.searchStocks,
-  getEquitySummary: equityApi.getSummary,
-  findSimilarPatterns: equityApi.findSimilarPatterns,
 };

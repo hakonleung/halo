@@ -1,6 +1,3 @@
-import { BaseApiService } from './base';
-
-import type { ApiResponse } from './base';
 import type {
   EquityDailyBar,
   EquitySearchResult,
@@ -8,11 +5,28 @@ import type {
   EquityStockSummary,
   FindSimilarRequest,
   PatternMatch,
-} from '@/client/types/equity-client';
+} from '../types';
+
+type ApiResponse<T> = { data: T } | { error: string };
+
+async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: 'Request failed' }));
+    throw new Error(error.error || `Request failed with status ${res.status}`);
+  }
+  return res.json();
+}
 
 export const equityApi = {
   async getStocks(): Promise<EquityStock[]> {
-    const res: ApiResponse<EquityStock[]> = await BaseApiService.fetchApi('/api/equity/stocks');
+    const res: ApiResponse<EquityStock[]> = await fetchApi('/api/equity/stocks');
     if ('error' in res) throw new Error(res.error);
     return res.data;
   },
@@ -24,7 +38,7 @@ export const equityApi = {
     secid: string;
     industry?: string;
   }): Promise<EquityStock> {
-    const res: ApiResponse<EquityStock> = await BaseApiService.fetchApi('/api/equity/stocks', {
+    const res: ApiResponse<EquityStock> = await fetchApi('/api/equity/stocks', {
       method: 'POST',
       body: JSON.stringify(payload),
     });
@@ -33,11 +47,11 @@ export const equityApi = {
   },
 
   async deleteStock(code: string): Promise<void> {
-    await BaseApiService.fetchApi(`/api/equity/stocks/${code}`, { method: 'DELETE' });
+    await fetchApi(`/api/equity/stocks/${code}`, { method: 'DELETE' });
   },
 
   async getDailyBars(code: string, limit = 365): Promise<EquityDailyBar[]> {
-    const res: ApiResponse<EquityDailyBar[]> = await BaseApiService.fetchApi(
+    const res: ApiResponse<EquityDailyBar[]> = await fetchApi(
       `/api/equity/stocks/${code}?limit=${limit}`,
     );
     if ('error' in res) throw new Error(res.error);
@@ -45,7 +59,7 @@ export const equityApi = {
   },
 
   async searchStocks(q: string): Promise<EquitySearchResult[]> {
-    const res: ApiResponse<EquitySearchResult[]> = await BaseApiService.fetchApi(
+    const res: ApiResponse<EquitySearchResult[]> = await fetchApi(
       `/api/equity/search?q=${encodeURIComponent(q)}`,
     );
     if ('error' in res) throw new Error(res.error);
@@ -53,14 +67,13 @@ export const equityApi = {
   },
 
   async getSummary(): Promise<EquityStockSummary[]> {
-    const res: ApiResponse<EquityStockSummary[]> =
-      await BaseApiService.fetchApi('/api/equity/summary');
+    const res: ApiResponse<EquityStockSummary[]> = await fetchApi('/api/equity/summary');
     if ('error' in res) throw new Error(res.error);
     return res.data;
   },
 
   async findSimilarPatterns(req: FindSimilarRequest): Promise<PatternMatch[]> {
-    const res: ApiResponse<PatternMatch[]> = await BaseApiService.fetchApi('/api/equity/similar', {
+    const res: ApiResponse<PatternMatch[]> = await fetchApi('/api/equity/similar', {
       method: 'POST',
       body: JSON.stringify(req),
     });

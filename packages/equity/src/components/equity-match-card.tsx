@@ -3,8 +3,8 @@
 import { Box, Flex, HStack, Spinner, Text } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { useEquityDailyBars } from '@/client/hooks/use-equity';
-import type { PatternMatch } from '@/client/types/equity-client';
+import { useEquityDailyBars } from '../hooks';
+import type { PatternMatch } from '../types';
 import { EquityKlineMini } from './equity-kline-mini';
 
 interface Props {

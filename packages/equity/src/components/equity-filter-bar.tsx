@@ -2,7 +2,7 @@
 
 import { HStack, Input, Text } from '@chakra-ui/react';
 
-import type { EquityFilter, MarketFilter, PctPeriod } from '@/client/types/equity-client';
+import type { EquityFilter, MarketFilter, PctPeriod } from '../types';
 
 const PERIOD_COLS: { key: PctPeriod; label: string }[] = [
   { key: 'change_1d', label: '今日' },

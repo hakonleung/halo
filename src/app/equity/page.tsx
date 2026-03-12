@@ -5,15 +5,21 @@ import { RefreshCw, RotateCcw } from 'lucide-react';
 import { useState, useCallback } from 'react';
 
 import { withAuth } from '@/client/components/auth/with-auth';
-import { StockSearchBar, EquityList, EquityDrawer } from '@/client/components/equity';
 import { AuthenticatedLayout } from '@/client/components/layout/authenticated-layout';
-import { useAddEquityStock, useSyncEquity, useEquitySummary } from '@/client/hooks/use-equity';
+import {
+  StockSearchBar,
+  EquityList,
+  EquityDrawer,
+  useAddEquityStock,
+  useSyncEquity,
+  useEquitySummary,
+} from '@neo-log/equity';
 
 import type {
   EquitySearchResult,
   EquityStockSummary,
   SyncEvent,
-} from '@/client/types/equity-client';
+} from '@neo-log/equity';
 
 // ── Sync log ───────────────────────────────────────────────────────────────
 

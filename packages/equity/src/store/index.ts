@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { EquityStockSummary } from '@/client/types/equity-client';
+import type { EquityStockSummary } from '../types';
 
 interface EquityStore {
   stocks: EquityStockSummary[];

@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@neo-log/equity": ["./packages/equity/src/index.ts"]
     },
     "noImplicitAny": true,
     "noImplicitReturns": true,

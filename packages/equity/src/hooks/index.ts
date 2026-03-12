@@ -3,15 +3,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { internalApiService } from '@/client/internal-api';
-import { useEquityStore } from '@/client/store/equity-store';
+import { equityApi } from '../api';
+import { useEquityStore } from '../store';
 
 import type {
   EquitySearchResult,
   FindSimilarRequest,
   PatternMatch,
   SyncEvent,
-} from '@/client/types/equity-client';
+} from '../types';
 
 const STOCKS_KEY = ['equity', 'stocks'] as const;
 const SUMMARY_KEY = ['equity', 'summary'] as const;
@@ -20,7 +20,7 @@ const dailyKey = (code: string) => ['equity', 'daily', code] as const;
 export function useEquityStocks() {
   const { data, isLoading, error } = useQuery({
     queryKey: STOCKS_KEY,
-    queryFn: () => internalApiService.getEquityStocks(),
+    queryFn: () => equityApi.getStocks(),
   });
   return { stocks: data ?? [], isLoading, error };
 }
@@ -28,7 +28,7 @@ export function useEquityStocks() {
 export function useEquityDailyBars(code: string | null) {
   const { data, isLoading, error } = useQuery({
     queryKey: dailyKey(code ?? ''),
-    queryFn: () => internalApiService.getEquityDailyBars(code ?? '', 365),
+    queryFn: () => equityApi.getDailyBars(code ?? '', 365),
     enabled: !!code,
   });
   return { bars: data ?? [], isLoading, error };
@@ -38,7 +38,7 @@ export function useAddEquityStock() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (stock: EquitySearchResult) =>
-      internalApiService.addEquityStock({
+      equityApi.addStock({
         code: stock.code,
         name: stock.name,
         market: stock.market,
@@ -54,7 +54,7 @@ export function useAddEquityStock() {
 export function useDeleteEquityStock() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (code: string) => internalApiService.deleteEquityStock(code),
+    mutationFn: (code: string) => equityApi.deleteStock(code),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: STOCKS_KEY });
     },
@@ -154,7 +154,7 @@ export function useEquitySummary() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: SUMMARY_KEY,
-    queryFn: () => internalApiService.getEquitySummary(),
+    queryFn: () => equityApi.getSummary(),
     enabled: !cacheIsFresh,
     staleTime: Infinity,
   });
@@ -246,7 +246,7 @@ export function useSearchEquity(q: string) {
 
   const { data, isLoading } = useQuery({
     queryKey: ['equity', 'search', debounced],
-    queryFn: () => internalApiService.searchEquityStocks(debounced),
+    queryFn: () => equityApi.searchStocks(debounced),
     enabled: debounced.trim().length > 0,
     staleTime: 60_000,
   });

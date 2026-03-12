@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import path from 'path';
 
-import type { PatternMatch } from '@/client/types/equity-client';
+import type { PatternMatch } from '@neo-log/equity';
 import type { Database } from '@/server/types/database';
 import type {
   AddStockRequest,
