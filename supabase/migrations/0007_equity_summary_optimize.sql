@@ -1,5 +1,8 @@
--- get_equity_summary(): returns per-stock metrics (latest price, multi-period returns,
--- turnover rate, and a 50-day close sparkline) by pivoting neolog_equity_daily.
+-- Index to support the window function partition + order
+CREATE INDEX IF NOT EXISTS idx_equity_daily_code_date
+  ON neolog_equity_daily (code, trade_date DESC);
+
+-- Optimized get_equity_summary: limit scan to ~180 calendar days (covers 121 trading days)
 CREATE OR REPLACE FUNCTION get_equity_summary(p_limit INT DEFAULT 1000, p_offset INT DEFAULT 0)
 RETURNS TABLE (
   code          TEXT,
@@ -24,6 +27,8 @@ LANGUAGE sql STABLE SECURITY INVOKER AS $$
       d.turnover_rate,
       ROW_NUMBER() OVER (PARTITION BY d.code ORDER BY d.trade_date DESC) AS rn
     FROM neolog_equity_daily d
+    -- 121 trading days fit within ~180 calendar days
+    WHERE d.trade_date::date >= CURRENT_DATE - INTERVAL '180 days'
   ),
   agg AS (
     SELECT
@@ -36,7 +41,6 @@ LANGUAGE sql STABLE SECURITY INVOKER AS $$
       MAX(CASE WHEN rn = 121 THEN close END)         AS c121,
       MAX(CASE WHEN rn = 1   THEN change_pct END)    AS chg1,
       MAX(CASE WHEN rn = 1   THEN turnover_rate END) AS tr,
-      -- sparkline: oldest→newest (rn DESC = oldest first)
       ARRAY_AGG(close ORDER BY rn DESC)
         FILTER (WHERE rn <= 50)                      AS sparkline
     FROM recent

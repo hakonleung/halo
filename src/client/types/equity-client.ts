@@ -2,7 +2,7 @@ export interface EquityStock {
   id: string;
   code: string;
   name: string;
-  market: 'SH' | 'SZ';
+  market: 'SH' | 'SZ' | 'BJ';
   secid: string;
   industry: string | null;
   last_synced_at: string | null;
@@ -34,7 +34,7 @@ export interface EquitySearchResult {
   code: string;
   name: string;
   secid: string;
-  market: 'SH' | 'SZ';
+  market: 'SH' | 'SZ' | 'BJ';
   industry?: string;
 }
 
@@ -48,7 +48,7 @@ export type EquityRange = '1M' | '3M' | '6M' | '1Y';
 export interface EquityStockSummary {
   code: string;
   name: string;
-  market: 'SH' | 'SZ';
+  market: 'SH' | 'SZ' | 'BJ';
   close: number | null;
   change_pct_1d: number | null;
   change_pct_5d: number | null;
@@ -69,7 +69,31 @@ export type SortKey =
   | 'change_120d'
   | 'turnover';
 
+export type PctPeriod = Exclude<SortKey, 'turnover'>;
+
 export type SortDir = 'asc' | 'desc';
+
+export type MarketFilter = 'ALL' | 'SH' | 'SZ' | 'BJ';
+
+export interface EquityFilter {
+  pctPeriod: PctPeriod;
+  pctMin: string;
+  pctMax: string;
+  turnoverMin: string;
+  turnoverMax: string;
+  market: MarketFilter;
+  excludeST: boolean;
+}
+
+export const DEFAULT_EQUITY_FILTER: EquityFilter = {
+  pctPeriod: 'change_1d',
+  pctMin: '',
+  pctMax: '',
+  turnoverMin: '',
+  turnoverMax: '',
+  market: 'ALL',
+  excludeST: false,
+};
 
 export type SyncEvent =
   | { type: 'status'; message: string }

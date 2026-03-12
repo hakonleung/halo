@@ -162,7 +162,7 @@ def do_init_list(sb) -> int:
     records = []
     for _, row in df.iterrows():
         code = str(row["code"])
-        market = "SH" if code.startswith("6") else "SZ"
+        market = "SH" if code.startswith("6") else "BJ" if code.startswith("9") else "SZ"
         mkt_prefix = "1" if market == "SH" else "0"
         records.append({
             "code": code,
@@ -361,7 +361,7 @@ def cmd_search(query: str):
     results = []
     for _, row in matched.iterrows():
         code = str(row["code"])
-        market = "SH" if code.startswith("6") else "SZ"
+        market = "SH" if code.startswith("6") else "BJ" if code.startswith("9") else "SZ"
         mkt_prefix = "1" if market == "SH" else "0"
         results.append({
             "code": code,

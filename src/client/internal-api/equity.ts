@@ -18,7 +18,7 @@ export const equityApi = {
   async addStock(payload: {
     code: string;
     name: string;
-    market: 'SH' | 'SZ';
+    market: 'SH' | 'SZ' | 'BJ';
     secid: string;
     industry?: string;
   }): Promise<EquityStock> {

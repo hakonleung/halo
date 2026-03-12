@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { internalApiService } from '@/client/internal-api';
+import { useEquityStore } from '@/client/store/equity-store';
 
 import type { EquitySearchResult, SyncEvent } from '@/client/types/equity-client';
 
@@ -128,13 +129,36 @@ export function useSyncEquity() {
   return { startSync, syncing, lastEvent, progressCount, resumeFrom };
 }
 
+/**
+ * Returns the start-of-day timestamp of the most recent trading day (weekdays only).
+ * Sat → Fri, Sun → Fri, Mon–Fri → today.
+ */
+function getLastTradingDayStart(): number {
+  const d = new Date();
+  const dow = d.getDay(); // 0=Sun, 6=Sat
+  if (dow === 0) d.setDate(d.getDate() - 2);
+  else if (dow === 6) d.setDate(d.getDate() - 1);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
 export function useEquitySummary() {
+  const { stocks: cached, updatedAt, setStocks } = useEquityStore();
+  const cacheIsFresh =
+    updatedAt !== null && cached.length > 0 && updatedAt >= getLastTradingDayStart();
+
   const { data, isLoading, error } = useQuery({
     queryKey: SUMMARY_KEY,
     queryFn: () => internalApiService.getEquitySummary(),
-    staleTime: 5 * 60_000,
+    enabled: !cacheIsFresh,
+    staleTime: Infinity,
   });
-  return { stocks: data ?? [], isLoading, error };
+
+  useEffect(() => {
+    if (data && data.length > 0) setStocks(data);
+  }, [data, setStocks]);
+
+  return { stocks: data ?? cached, isLoading: isLoading && cached.length === 0, error };
 }
 
 export function useSearchEquity(q: string) {

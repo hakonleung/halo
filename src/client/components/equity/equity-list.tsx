@@ -4,9 +4,18 @@ import { Box, HStack, Text } from '@chakra-ui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef, useMemo, useState } from 'react';
 
+import { DEFAULT_EQUITY_FILTER } from '@/client/types/equity-client';
+
+import { EquityFilterBar } from './equity-filter-bar';
 import { EquitySparkline } from './equity-sparkline';
 
-import type { EquityStockSummary, SortDir, SortKey } from '@/client/types/equity-client';
+import type {
+  EquityFilter,
+  EquityStockSummary,
+  PctPeriod,
+  SortDir,
+  SortKey,
+} from '@/client/types/equity-client';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
@@ -20,6 +29,42 @@ function pctColor(v: number | null): string {
   if (v > 0) return '#FF4444';
   if (v < 0) return '#00FF41';
   return '#888';
+}
+
+function pctByPeriod(s: EquityStockSummary, period: PctPeriod): number | null {
+  const map: Record<PctPeriod, number | null> = {
+    change_1d: s.change_pct_1d,
+    change_5d: s.change_pct_5d,
+    change_10d: s.change_pct_10d,
+    change_20d: s.change_pct_20d,
+    change_50d: s.change_pct_50d,
+    change_120d: s.change_pct_120d,
+  };
+  return map[period];
+}
+
+function marketFromCode(code: string): 'SH' | 'SZ' | 'BJ' {
+  if (code.startsWith('6')) return 'SH';
+  if (code.startsWith('9')) return 'BJ';
+  return 'SZ';
+}
+
+function applyFilter(stocks: EquityStockSummary[], f: EquityFilter): EquityStockSummary[] {
+  const pctMin = f.pctMin !== '' ? parseFloat(f.pctMin) : null;
+  const pctMax = f.pctMax !== '' ? parseFloat(f.pctMax) : null;
+  const trMin = f.turnoverMin !== '' ? parseFloat(f.turnoverMin) : null;
+  const trMax = f.turnoverMax !== '' ? parseFloat(f.turnoverMax) : null;
+
+  return stocks.filter((s) => {
+    if (f.market !== 'ALL' && marketFromCode(s.code) !== f.market) return false;
+    if (f.excludeST && /st/i.test(s.name)) return false;
+    const pct = pctByPeriod(s, f.pctPeriod);
+    if (pctMin !== null && (pct === null || pct < pctMin)) return false;
+    if (pctMax !== null && (pct === null || pct > pctMax)) return false;
+    if (trMin !== null && (s.turnover_rate === null || s.turnover_rate < trMin)) return false;
+    if (trMax !== null && (s.turnover_rate === null || s.turnover_rate > trMax)) return false;
+    return true;
+  });
 }
 
 function sortValue(s: EquityStockSummary, key: SortKey): number {
@@ -85,11 +130,11 @@ function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
         {index + 1}
       </Text>
       {/* Code */}
-      <Text w="60px" color="brand.matrix" flexShrink={0}>
+      <Text w="68px" flexShrink={0} color="brand.matrix">
         {s.code}
       </Text>
       {/* Name */}
-      <Text flex="1" minW="80px" color="text.fog" overflow="hidden" whiteSpace="nowrap">
+      <Text w="110px" flexShrink={0} color="text.fog" overflow="hidden" whiteSpace="nowrap" pr={2}>
         {s.name}
       </Text>
       {/* Sortable cols */}
@@ -99,8 +144,9 @@ function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
           return (
             <Text
               key={key}
-              w="64px"
-              flexShrink={0}
+              flex="1"
+              minW="68px"
+              maxW="90px"
               textAlign="right"
               color={isActive ? 'brand.matrix' : '#888'}
               fontWeight={isActive ? 'bold' : 'normal'}
@@ -124,8 +170,9 @@ function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
         return (
           <Text
             key={key}
-            w="64px"
-            flexShrink={0}
+            flex="1"
+            minW="68px"
+            maxW="90px"
             textAlign="right"
             color={pctColor(val)}
             fontWeight={isActive ? 'bold' : 'normal'}
@@ -136,7 +183,7 @@ function StockRow({ index, stock: s, selected, sortKey, onClick }: RowProps) {
         );
       })}
       {/* Sparkline */}
-      <Box w="120px" flexShrink={0} display="flex" justifyContent="flex-end">
+      <Box w="130px" flexShrink={0} display="flex" justifyContent="flex-end">
         <EquitySparkline prices={s.sparkline} />
       </Box>
     </HStack>
@@ -170,17 +217,18 @@ function HeaderRow({ sortKey, sortDir, onSort }: HeaderProps) {
       <Text w="36px" color="#555" flexShrink={0} textAlign="right" pr={3}>
         #
       </Text>
-      <Text w="60px" color="#555" flexShrink={0}>
+      <Text w="68px" flexShrink={0} color="#555">
         代码
       </Text>
-      <Text flex="1" minW="80px" color="#555">
+      <Text w="110px" flexShrink={0} color="#555">
         名称
       </Text>
       {SORT_COLS.map(({ key, label }) => (
         <Text
           key={key}
-          w="64px"
-          flexShrink={0}
+          flex="1"
+          minW="68px"
+          maxW="90px"
           textAlign="right"
           cursor="pointer"
           color={sortKey === key ? 'brand.matrix' : '#555'}
@@ -192,7 +240,7 @@ function HeaderRow({ sortKey, sortDir, onSort }: HeaderProps) {
           {sortKey === key ? (sortDir === 'desc' ? ' ↓' : ' ↑') : ''}
         </Text>
       ))}
-      <Text w="120px" flexShrink={0} textAlign="right" color="#555">
+      <Text w="130px" flexShrink={0} textAlign="right" color="#555">
         近50日
       </Text>
     </HStack>
@@ -210,14 +258,16 @@ interface Props {
 export function EquityList({ stocks, selectedCode, onSelect }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>('change_1d');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
+  const [filter, setFilter] = useState<EquityFilter>(DEFAULT_EQUITY_FILTER);
 
   const sorted = useMemo(() => {
-    return [...stocks].sort((a, b) => {
+    const filtered = applyFilter(stocks, filter);
+    return filtered.sort((a, b) => {
       const av = sortValue(a, sortKey);
       const bv = sortValue(b, sortKey);
       return sortDir === 'desc' ? bv - av : av - bv;
     });
-  }, [stocks, sortKey, sortDir]);
+  }, [stocks, sortKey, sortDir, filter]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -235,6 +285,7 @@ export function EquityList({ stocks, selectedCode, onSelect }: Props) {
       setSortKey(key);
       setSortDir('desc');
     }
+    scrollRef.current?.scrollTo({ top: 0 });
   };
 
   return (
@@ -247,6 +298,13 @@ export function EquityList({ stocks, selectedCode, onSelect }: Props) {
       flexDir="column"
       overflow="hidden"
     >
+      <EquityFilterBar
+        filter={filter}
+        onChange={(f) => {
+          setFilter(f);
+          scrollRef.current?.scrollTo({ top: 0 });
+        }}
+      />
       <Box
         ref={scrollRef}
         flex="1"

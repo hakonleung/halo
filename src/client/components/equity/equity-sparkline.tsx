@@ -1,6 +1,6 @@
 'use client';
 
-const W = 116;
+const W = 126;
 const H = 28;
 
 interface Props {
