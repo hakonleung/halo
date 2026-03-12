@@ -1,4 +1,4 @@
-import { createApiHandler } from '@neo-log/be-core';
+import { createApiHandler } from '@neo-log/be-edge';
 import { behaviorService } from '@/server/services/behavior-service';
 
 export const PATCH = createApiHandler(

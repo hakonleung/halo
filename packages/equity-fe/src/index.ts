@@ -22,7 +22,6 @@ export { DEFAULT_EQUITY_FILTER } from './types';
 export {
   EquityKlineChart,
   EquityKlineMini,
-  StockSearchBar,
   EquitySparkline,
   EquityList,
   EquityDrawer,
@@ -35,7 +34,6 @@ export type { KlineMode } from './components';
 export {
   useEquityStocks,
   useEquityDailyBars,
-  useAddEquityStock,
   useDeleteEquityStock,
   useSyncEquity,
   useEquitySummary,

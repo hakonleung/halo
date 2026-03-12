@@ -31,21 +31,6 @@ export const equityApi = {
     return res.data;
   },
 
-  async addStock(payload: {
-    code: string;
-    name: string;
-    market: 'SH' | 'SZ' | 'BJ';
-    secid: string;
-    industry?: string;
-  }): Promise<EquityStock> {
-    const res: ApiResponse<EquityStock> = await fetchApi('/api/equity/stocks', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
-    if ('error' in res) throw new Error(res.error);
-    return res.data;
-  },
-
   async deleteStock(code: string): Promise<void> {
     await fetchApi(`/api/equity/stocks/${code}`, { method: 'DELETE' });
   },

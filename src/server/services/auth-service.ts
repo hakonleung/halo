@@ -1,5 +1,5 @@
 import type { AuthResponse } from '@/server/types/auth';
-import type { Database } from '@neo-log/be-core';
+import type { Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**

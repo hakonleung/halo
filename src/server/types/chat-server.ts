@@ -1,4 +1,4 @@
-import type { neologConversations, neologMessages } from '@neo-log/be-core';
+import type { neologConversations, neologMessages } from '@neo-log/be-edge';
 import type { InferSelectModel } from 'drizzle-orm';
 
 // Server-side types for chat (Inferred from Drizzle Entity)

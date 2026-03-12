@@ -1,4 +1,4 @@
-import { createApiHandler } from '@neo-log/be-core';
+import { createApiHandler } from '@neo-log/be-edge';
 import { settingsService } from '@/server/services/settings-service';
 
 export const GET = createApiHandler(async (_request, _params, supabase, user) => {

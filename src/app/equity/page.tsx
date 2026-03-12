@@ -1,25 +1,15 @@
 'use client';
 
-import { Box, Flex, HStack, Text, Button, Spinner } from '@chakra-ui/react';
+import { Box, Flex, HStack, Text, Button, Spinner, Input } from '@chakra-ui/react';
 import { RefreshCw, RotateCcw } from 'lucide-react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 
 import { withAuth } from '@/client/components/auth/with-auth';
 import { AuthenticatedLayout } from '@/client/components/layout/authenticated-layout';
-import {
-  StockSearchBar,
-  EquityList,
-  EquityDrawer,
-  useAddEquityStock,
-  useSyncEquity,
-  useEquitySummary,
-} from '@neo-log/equity';
 
-import type {
-  EquitySearchResult,
-  EquityStockSummary,
-  SyncEvent,
-} from '@neo-log/equity';
+import { EquityList, EquityDrawer, useSyncEquity, useEquitySummary } from '@neo-log/equity-fe';
+
+import type { EquityStockSummary, SyncEvent } from '@neo-log/equity-fe';
 
 // ── Sync log ───────────────────────────────────────────────────────────────
 
@@ -94,7 +84,6 @@ function SyncLog({ lastEvent, progressCount }: SyncLogProps) {
 
 function EquityPage() {
   const { stocks, isLoading: stocksLoading } = useEquitySummary();
-  const addStock = useAddEquityStock();
   const { startSync, syncing, lastEvent, progressCount, resumeFrom } = useSyncEquity();
 
   // Drawer state
@@ -102,7 +91,6 @@ function EquityPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // sorted stocks come from EquityList; we need to track them to support arrow nav
-  // We pass a stable ref down via onSelect which includes the sorted index
   const [sortedStocks, setSortedStocks] = useState<EquityStockSummary[]>([]);
 
   const selectedStock = selectedIndex !== null ? (sortedStocks[selectedIndex] ?? null) : null;
@@ -116,13 +104,54 @@ function EquityPage() {
     [],
   );
 
-  const handleSearchSelect = async (result: EquitySearchResult) => {
-    await addStock.mutateAsync(result);
-  };
-
   const handlePrev = () => setSelectedIndex((i) => (i != null && i > 0 ? i - 1 : i));
   const handleNext = () =>
     setSelectedIndex((i) => (i != null && i < sortedStocks.length - 1 ? i + 1 : i));
+
+  // Frontend search
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedQuery(searchQuery.trim().toLowerCase()), 150);
+    return () => clearTimeout(id);
+  }, [searchQuery]);
+
+  // Pre-build lowercase index once when stocks load (5000+ items)
+  const searchIndex = useMemo(
+    () => stocks.map((s) => ({ stock: s, nameLower: s.name.toLowerCase() })),
+    [stocks],
+  );
+
+  const searchResults = useMemo(() => {
+    if (!debouncedQuery) return [];
+    const results: EquityStockSummary[] = [];
+    for (const { stock, nameLower } of searchIndex) {
+      if (stock.code.includes(debouncedQuery) || nameLower.includes(debouncedQuery)) {
+        results.push(stock);
+        if (results.length === 10) break;
+      }
+    }
+    return results;
+  }, [debouncedQuery, searchIndex]);
+
+  const handleSearchSelect = useCallback(
+    (stock: EquityStockSummary) => {
+      setSearchQuery('');
+      setSearchFocused(false);
+      const idx = sortedStocks.findIndex((s) => s.code === stock.code);
+      if (idx >= 0) {
+        setSelectedIndex(idx);
+      } else {
+        setSortedStocks(stocks);
+        setSelectedIndex(stocks.indexOf(stock));
+      }
+      setDrawerOpen(true);
+    },
+    [sortedStocks, stocks],
+  );
 
   return (
     <AuthenticatedLayout>
@@ -146,7 +175,57 @@ function EquityPage() {
             EQUITY
           </Text>
           <HStack gap={3}>
-            <StockSearchBar onSelect={handleSearchSelect} />
+            {/* Frontend search */}
+            <Box ref={searchRef} position="relative" w="180px">
+              <Input
+                size="sm"
+                placeholder="搜索股票..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+                fontFamily="mono"
+                fontSize="xs"
+                bg="#0A0A0A"
+                borderColor="rgba(0,255,65,0.3)"
+                color="#E0E0E0"
+                _placeholder={{ color: '#555' }}
+                _focus={{ borderColor: 'brand.matrix', boxShadow: '0 0 0 1px #00FF41' }}
+              />
+              {searchFocused && searchResults.length > 0 && (
+                <Box
+                  position="absolute"
+                  top="100%"
+                  left={0}
+                  right={0}
+                  mt="2px"
+                  bg="#1A1A1A"
+                  border="1px solid rgba(0,255,65,0.3)"
+                  borderRadius="4px"
+                  zIndex={1000}
+                  maxH="240px"
+                  overflowY="auto"
+                >
+                  {searchResults.map((s) => (
+                    <Box
+                      key={s.code}
+                      px={3}
+                      py="6px"
+                      cursor="pointer"
+                      _hover={{ bg: 'rgba(0,255,65,0.08)' }}
+                      onMouseDown={() => handleSearchSelect(s)}
+                    >
+                      <Text fontFamily="mono" fontSize="xs" color="brand.matrix">
+                        {s.code}
+                      </Text>
+                      <Text fontFamily="mono" fontSize="10px" color="#888">
+                        {s.name}
+                      </Text>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
             {resumeFrom !== null && !syncing ? (
               <Button
                 size="sm"

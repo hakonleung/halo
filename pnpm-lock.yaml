@@ -56,9 +56,15 @@ importers:
       '@neo-log/be-core':
         specifier: workspace:*
         version: link:packages/be-core
-      '@neo-log/equity':
+      '@neo-log/be-edge':
         specifier: workspace:*
-        version: link:packages/equity
+        version: link:packages/be-edge
+      '@neo-log/equity-be':
+        specifier: workspace:*
+        version: link:packages/equity-be
+      '@neo-log/equity-fe':
+        specifier: workspace:*
+        version: link:packages/equity-fe
       '@supabase/ssr':
         specifier: ^0.8.0
         version: 0.8.0(@supabase/supabase-js@2.90.1)
@@ -272,7 +278,34 @@ importers:
         specifier: '*'
         version: 0.31.8
 
-  packages/equity:
+  packages/be-edge:
+    dependencies:
+      '@supabase/ssr':
+        specifier: '*'
+        version: 0.8.0(@supabase/supabase-js@2.90.1)
+      '@supabase/supabase-js':
+        specifier: '*'
+        version: 2.90.1
+      drizzle-orm:
+        specifier: '*'
+        version: 0.45.1(postgres@3.4.8)
+      next:
+        specifier: '*'
+        version: 16.1.4(@babel/core@7.28.6)(@playwright/test@1.58.2)(react-dom@19.2.3)(react@19.2.3)
+
+  packages/equity-be:
+    dependencies:
+      '@neo-log/be-core':
+        specifier: workspace:*
+        version: link:../be-core
+      '@neo-log/be-edge':
+        specifier: workspace:*
+        version: link:../be-edge
+      '@supabase/supabase-js':
+        specifier: '*'
+        version: 2.90.1
+
+  packages/equity-fe:
     dependencies:
       '@chakra-ui/react':
         specifier: '*'

@@ -1,4 +1,4 @@
-import { createApiHandler } from '@neo-log/be-core';
+import { createApiHandler } from '@neo-log/be-edge';
 import { goalProgressService } from '@/server/services/goal-progress-service';
 import { goalService } from '@/server/services/goal-service';
 

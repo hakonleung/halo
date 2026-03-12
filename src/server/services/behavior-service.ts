@@ -1,4 +1,4 @@
-import type { neologBehaviorDefinitions, neologBehaviorRecords } from '@neo-log/be-core';
+import type { neologBehaviorDefinitions, neologBehaviorRecords } from '@neo-log/be-edge';
 import type {
   BehaviorDefinition,
   BehaviorRecord,
@@ -6,7 +6,7 @@ import type {
   BehaviorDefinitionCreateRequest,
   BehaviorRecordCreateRequest,
 } from '@/server/types/behavior-server';
-import type { Database } from '@neo-log/be-core';
+import type { Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { InferSelectModel } from 'drizzle-orm';
 

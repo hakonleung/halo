@@ -13,7 +13,7 @@ import type {
   NoteCreateRequest as ServerNoteCreateRequest,
 } from '@/server/types/note-server';
 
-function convertNote(server: ServerNote): ClientNote {
+export function convertNote(server: ServerNote): ClientNote {
   return {
     id: server.id,
     userId: server.user_id,
@@ -24,9 +24,6 @@ function convertNote(server: ServerNote): ClientNote {
     updatedAt: server.updated_at ?? new Date().toISOString(),
   };
 }
-
-// Export converters for reuse in other modules
-export { convertNote };
 
 export const notesApi = {
   /**

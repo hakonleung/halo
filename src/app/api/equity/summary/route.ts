@@ -1,6 +1,6 @@
-import { createApiHandler } from '@neo-log/be-core';
+import { createApiHandler } from '@neo-log/be-edge';
 
-import type { EquityStockSummary } from '@neo-log/equity';
+import type { EquityStockSummary } from '@neo-log/equity-fe';
 
 const PAGE = 1000;
 

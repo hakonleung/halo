@@ -1,5 +1,5 @@
-import { createApiHandler } from '@neo-log/be-core';
-import { equityService } from '@/server/services/equity-service';
+import { createApiHandler } from '@neo-log/be-edge';
+import { equityService } from '@neo-log/equity-be';
 
 export const DELETE = createApiHandler(async (_req, params, supabase) => {
   if (!params) throw new Error('Missing params');

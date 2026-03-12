@@ -1,6 +1,6 @@
 import { profileService } from '@/server/services/profile-service';
 
-import type { Database } from '@neo-log/be-core';
+import type { Database } from '@neo-log/be-edge';
 import type {
   UserProfileModel,
   UserPortrait,

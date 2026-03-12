@@ -7,7 +7,7 @@ import type {
   GetTrendsParams,
   GetHeatmapParams,
 } from '@/server/types/dashboard-server';
-import type { Database } from '@neo-log/be-core';
+import type { Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 // Color palette for behavior types

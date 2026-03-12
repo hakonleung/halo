@@ -6,12 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { equityApi } from '../api';
 import { useEquityStore } from '../store';
 
-import type {
-  EquitySearchResult,
-  FindSimilarRequest,
-  PatternMatch,
-  SyncEvent,
-} from '../types';
+import type { FindSimilarRequest, PatternMatch, SyncEvent } from '../types';
 
 const STOCKS_KEY = ['equity', 'stocks'] as const;
 const SUMMARY_KEY = ['equity', 'summary'] as const;
@@ -32,23 +27,6 @@ export function useEquityDailyBars(code: string | null) {
     enabled: !!code,
   });
   return { bars: data ?? [], isLoading, error };
-}
-
-export function useAddEquityStock() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (stock: EquitySearchResult) =>
-      equityApi.addStock({
-        code: stock.code,
-        name: stock.name,
-        market: stock.market,
-        secid: stock.secid,
-        industry: stock.industry,
-      }),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: STOCKS_KEY });
-    },
-  });
 }
 
 export function useDeleteEquityStock() {

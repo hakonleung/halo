@@ -20,7 +20,9 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@neo-log/equity": ["./packages/equity/src/index.ts"],
+      "@neo-log/equity-fe": ["./packages/equity-fe/src/index.ts"],
+      "@neo-log/equity-be": ["./packages/equity-be/src/index.ts"],
+      "@neo-log/be-edge": ["./packages/be-edge/src/index.ts"],
       "@neo-log/be-core": ["./packages/be-core/src/index.ts"]
     },
     "noImplicitAny": true,
