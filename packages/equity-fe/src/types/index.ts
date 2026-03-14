@@ -101,6 +101,8 @@ export interface PatternMatch {
   startDate: string;
   endDate: string;
   similarity: number;
+  totalReturn: number;
+  queryTotalReturn: number;
 }
 
 export interface FindSimilarRequest {

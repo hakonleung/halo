@@ -56,16 +56,21 @@ export async function processNdjsonLines(
   });
 
   const rl = createInterface({ input: py.stdout, crlfDelay: Infinity });
-  for await (const line of rl) {
-    if (!line.trim()) continue;
-    try {
+  try {
+    for await (const line of rl) {
+      if (!line.trim()) continue;
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       await onLine(JSON.parse(line) as Record<string, unknown>);
-    } catch (e) {
-      console.error('[python] processNdjsonLines line error:', e);
     }
+    // Readline ended normally — check process exit code
+    await closePromise;
+  } catch (e) {
+    // Either onLine threw or closePromise rejected (non-zero exit).
+    // Kill the process if still running, silence the dangling closePromise.
+    py.kill();
+    closePromise.catch(() => {});
+    throw e;
   }
-  await closePromise;
 }
 
 /** Wrap a ReadableStream as an NDJSON streaming Response */
