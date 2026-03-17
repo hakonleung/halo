@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Drawer, HStack, Portal, Text, Spinner, Flex } from '@chakra-ui/react';
+import { Box, Drawer, HStack, Portal, Text, Spinner, Flex, SegmentGroup } from '@chakra-ui/react';
 import { ChevronUp, ChevronDown, GitCompare, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -9,8 +9,10 @@ import { useEquityDailyBars, usePatternSimilarity } from '../hooks';
 import { EquityKlineChart } from './equity-kline-chart';
 import type { KlineMode } from './equity-kline-chart';
 import { SimilarPatternsPanel } from './similar-patterns-panel';
+import { ScanResultsPanel } from './scan-results-panel';
 
 import type { EquityRange, EquityStockSummary } from '../types';
+import { StrategyType, STRATEGY_META } from '../types';
 
 interface Props {
   stock: EquityStockSummary | null;
@@ -27,9 +29,11 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
   const [chartMode, setChartMode] = useState<KlineMode>('view');
   const [selectedRange, setSelectedRange] = useState<{ start: string; end: string } | null>(null);
   const [showSimilar, setShowSimilar] = useState(false);
+  const [strategy, setStrategy] = useState<StrategyType>(StrategyType.FindSimilar);
 
   const { bars, isLoading } = useEquityDailyBars(stock?.code ?? null);
-  const { findSimilar, loading: similarLoading, statusMsg, matches } = usePatternSimilarity();
+  const { findSimilar, loading: similarLoading, statusMsg, matches, scanMatches, activeStrategy } =
+    usePatternSimilarity();
 
   // Reset when stock changes
   useEffect(() => {
@@ -55,25 +59,44 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
   function handleFindSimilarClick() {
     if (!stock) return;
     if (chartMode === 'select') {
-      // Cancel selection
       setChartMode('view');
       return;
     }
     setShowSimilar(true);
-    setChartMode('select');
+    if (STRATEGY_META[strategy].needsRange) {
+      setChartMode('select');
+    } else {
+      void findSimilar({ strategy, code: stock.code });
+    }
   }
 
   function handleRangeSelected(start: string, end: string) {
     if (!stock) return;
     setSelectedRange({ start, end });
     setChartMode('highlight');
-    void findSimilar({ code: stock.code, startDate: start, endDate: end });
+    void findSimilar({ strategy, code: stock.code, startDate: start, endDate: end });
   }
 
   function handleCloseSimilar() {
     setShowSimilar(false);
     setChartMode('view');
     setSelectedRange(null);
+  }
+
+  function handleStrategyChange(s: StrategyType) {
+    setStrategy(s);
+    setSelectedRange(null);
+    // If panel already open, switch strategy and re-run
+    if (showSimilar && stock) {
+      if (STRATEGY_META[s].needsRange) {
+        setChartMode('select');
+      } else {
+        setChartMode('view');
+        void findSimilar({ strategy: s, code: stock.code });
+      }
+    } else {
+      setChartMode('view');
+    }
   }
 
   const findBtnActive = chartMode === 'select' || showSimilar;
@@ -166,22 +189,64 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
                     highlightStart={selectedRange?.start}
                     highlightEnd={selectedRange?.end}
                   />
-                  {showSimilar && (
-                    <Box mt={4} pt={4} borderTop="1px solid rgba(0,255,65,0.1)">
-                      <HStack justify="space-between" mb={2}>
-                        <Box />
+
+                  {/* Strategy selector — always visible below chart */}
+                  <Box mt={4} pt={4} borderTop="1px solid rgba(0,255,65,0.1)">
+                    <HStack justify="space-between" mb={3}>
+                      <SegmentGroup.Root
+                        value={strategy}
+                        onValueChange={(e) => handleStrategyChange(e.value as StrategyType)}
+                        size="sm"
+                        bg="rgba(255,255,255,0.03)"
+                        borderRadius="4px"
+                        border="1px solid rgba(255,255,255,0.08)"
+                      >
+                        <SegmentGroup.Indicator bg="rgba(0,255,65,0.12)" borderRadius="3px" />
+                        {Object.values(StrategyType).map((s) => (
+                          <SegmentGroup.Item
+                            key={s}
+                            value={s}
+                            title={STRATEGY_META[s].description}
+                            color={strategy === s ? 'brand.matrix' : '#555'}
+                            _hover={{ color: 'brand.matrix' }}
+                            cursor="pointer"
+                            px={2}
+                            py={0.5}
+                          >
+                            <SegmentGroup.ItemText fontFamily="mono" fontSize="10px">
+                              {STRATEGY_META[s].label}
+                            </SegmentGroup.ItemText>
+                            <SegmentGroup.ItemHiddenInput />
+                          </SegmentGroup.Item>
+                        ))}
+                      </SegmentGroup.Root>
+
+                      {showSimilar && (
                         <Box as="button" p={1} color="#555" cursor="pointer"
                           _hover={{ color: '#888' }} onClick={handleCloseSimilar} title="关闭">
                           <X size={14} />
                         </Box>
-                      </HStack>
-                      <SimilarPatternsPanel
-                        matches={matches}
-                        isLoading={similarLoading}
-                        statusMsg={statusMsg}
-                      />
-                    </Box>
-                  )}
+                      )}
+                    </HStack>
+
+                    {/* Results */}
+                    {showSimilar && (
+                      activeStrategy === StrategyType.FindSimilar ? (
+                        <SimilarPatternsPanel
+                          matches={matches}
+                          isLoading={similarLoading}
+                          statusMsg={statusMsg}
+                        />
+                      ) : (
+                        <ScanResultsPanel
+                          strategy={activeStrategy}
+                          matches={scanMatches}
+                          isLoading={similarLoading}
+                          statusMsg={statusMsg}
+                        />
+                      )
+                    )}
+                  </Box>
                 </>
               )}
             </Drawer.Body>

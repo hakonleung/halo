@@ -6,7 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { equityApi } from '../api';
 import { useEquityStore } from '../store';
 
-import type { FindSimilarRequest, PatternMatch, SyncEvent } from '../types';
+import type { FindSimilarRequest, PatternMatch, ScanMatch, SyncEvent } from '../types';
+import { StrategyType } from '../types';
 
 const STOCKS_KEY = ['equity', 'stocks'] as const;
 const SUMMARY_KEY = ['equity', 'summary'] as const;
@@ -59,44 +60,24 @@ export function useSyncEquity() {
       setResumeFrom(null);
 
       try {
-        const res = await fetch('/api/equity/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(offset > 0 ? { offset } : {}),
-          signal: ac.signal,
-        });
-
-        if (!res.body) return;
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buf = '';
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buf += decoder.decode(value, { stream: true });
-          const lines = buf.split('\n');
-          buf = lines.pop() ?? '';
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed) continue;
-            try {
-              const event: SyncEvent = JSON.parse(trimmed);
-              setLastEvent(event);
-              if (event.type === 'progress') {
-                setProgressCount({ index: event.index, total: event.total });
-              }
-              if (event.type === 'error') {
-                setResumeFrom(event.resume_from);
-              }
-              if (event.type === 'done') {
-                void qc.invalidateQueries({ queryKey: ['equity'] });
-              }
-            } catch {
-              // ignore malformed lines
+        await equityApi.streamSync(
+          offset > 0 ? { offset } : {},
+          (raw) => {
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            const event = raw as unknown as SyncEvent;
+            setLastEvent(event);
+            if (event.type === 'progress') {
+              setProgressCount({ index: event.index, total: event.total });
             }
-          }
-        }
+            if (event.type === 'error') {
+              setResumeFrom(event.resume_from);
+            }
+            if (event.type === 'done') {
+              void qc.invalidateQueries({ queryKey: ['equity'] });
+            }
+          },
+          ac.signal,
+        );
       } catch (err) {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         if ((err as Error).name !== 'AbortError') {
@@ -148,6 +129,8 @@ export function usePatternSimilarity() {
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
   const [matches, setMatches] = useState<PatternMatch[]>([]);
+  const [scanMatches, setScanMatches] = useState<ScanMatch[]>([]);
+  const [activeStrategy, setActiveStrategy] = useState<StrategyType>(StrategyType.FindSimilar);
   const abortRef = useRef<AbortController | null>(null);
 
   const findSimilar = useCallback(async (req: FindSimilarRequest) => {
@@ -158,34 +141,19 @@ export function usePatternSimilarity() {
     setLoading(true);
     setStatusMsg('');
     setMatches([]);
+    setScanMatches([]);
+    setActiveStrategy(req.strategy);
+
+    const isSimilar = req.strategy === StrategyType.FindSimilar;
 
     try {
-      const res = await fetch('/api/equity/similar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(req),
-        signal: ac.signal,
-      });
-
-      if (!res.body) return;
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop() ?? '';
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) continue;
-          try {
-            const event: Record<string, unknown> = JSON.parse(trimmed);
-            if (event.type === 'status' && typeof event.message === 'string') {
-              setStatusMsg(event.message);
-            } else if (event.type === 'match') {
+      await equityApi.streamSimilar(
+        req,
+        (event) => {
+          if (event.type === 'status' && typeof event.message === 'string') {
+            setStatusMsg(event.message);
+          } else if (event.type === 'match') {
+            if (isSimilar) {
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               const m = event as unknown as PatternMatch;
               setMatches((prev) => {
@@ -193,14 +161,16 @@ export function usePatternSimilarity() {
                 next.sort((a, b) => b.similarity - a.similarity);
                 return next;
               });
-            } else if (event.type === 'done') {
-              setStatusMsg('');
+            } else {
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              setScanMatches((prev) => [...prev, event as unknown as ScanMatch]);
             }
-          } catch {
-            // ignore malformed lines
+          } else if (event.type === 'done') {
+            setStatusMsg('');
           }
-        }
-      }
+        },
+        ac.signal,
+      );
     } catch (err) {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       if ((err as Error).name !== 'AbortError') {
@@ -211,7 +181,7 @@ export function usePatternSimilarity() {
     }
   }, []);
 
-  return { findSimilar, loading, statusMsg, matches };
+  return { findSimilar, loading, statusMsg, matches, scanMatches, activeStrategy };
 }
 
 export function useSearchEquity(q: string) {

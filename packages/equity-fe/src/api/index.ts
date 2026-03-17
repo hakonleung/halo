@@ -4,7 +4,6 @@ import type {
   EquityStock,
   EquityStockSummary,
   FindSimilarRequest,
-  PatternMatch,
 } from '../types';
 
 type ApiResponse<T> = { data: T } | { error: string };
@@ -22,6 +21,43 @@ async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {
     throw new Error(error.error || `Request failed with status ${res.status}`);
   }
   return res.json();
+}
+
+/** Read a streaming NDJSON response line by line, calling `onLine` for each parsed object. */
+async function streamNdjson(
+  url: string,
+  body: object,
+  onLine: (event: Record<string, unknown>) => void,
+  signal?: AbortSignal,
+): Promise<void> {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal,
+  });
+  if (!res.body) return;
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const lines = buf.split('\n');
+    buf = lines.pop() ?? '';
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      try {
+        onLine(JSON.parse(trimmed));
+      } catch {
+        // ignore malformed lines
+      }
+    }
+  }
 }
 
 export const equityApi = {
@@ -57,12 +93,19 @@ export const equityApi = {
     return res.data;
   },
 
-  async findSimilarPatterns(req: FindSimilarRequest): Promise<PatternMatch[]> {
-    const res: ApiResponse<PatternMatch[]> = await fetchApi('/api/equity/similar', {
-      method: 'POST',
-      body: JSON.stringify(req),
-    });
-    if ('error' in res) throw new Error(res.error);
-    return res.data;
+  streamSync(
+    body: object,
+    onLine: (event: Record<string, unknown>) => void,
+    signal?: AbortSignal,
+  ): Promise<void> {
+    return streamNdjson('/api/equity/sync', body, onLine, signal);
+  },
+
+  streamSimilar(
+    req: FindSimilarRequest,
+    onLine: (event: Record<string, unknown>) => void,
+    signal?: AbortSignal,
+  ): Promise<void> {
+    return streamNdjson('/api/equity/similar', req, onLine, signal);
   },
 };

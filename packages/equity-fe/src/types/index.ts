@@ -95,6 +95,54 @@ export const DEFAULT_EQUITY_FILTER: EquityFilter = {
   excludeST: false,
 };
 
+export enum StrategyType {
+  FindSimilar = 'find_similar',
+  FindBreakout = 'find_breakout',
+  FindVolumePriceDivergence = 'find_volume_price_divergence',
+  FindMultiTimeframe = 'find_multi_timeframe',
+  FindMomentumReversal = 'find_momentum_reversal',
+  FindChartPattern = 'find_chart_pattern',
+}
+
+export interface StrategyMeta {
+  label: string;
+  needsRange: boolean; // true = requires K-line date range selection
+  description: string;
+}
+
+export const STRATEGY_META: Record<StrategyType, StrategyMeta> = {
+  [StrategyType.FindSimilar]: {
+    label: '形态相似',
+    needsRange: true,
+    description: '找历史相似走势',
+  },
+  [StrategyType.FindBreakout]: {
+    label: '布林突破',
+    needsRange: false,
+    description: '布林带压缩后突破',
+  },
+  [StrategyType.FindVolumePriceDivergence]: {
+    label: '量价背离',
+    needsRange: false,
+    description: 'OBV 与价格背离',
+  },
+  [StrategyType.FindMultiTimeframe]: {
+    label: '多周期共振',
+    needsRange: false,
+    description: '日/周/月指标同向',
+  },
+  [StrategyType.FindMomentumReversal]: {
+    label: '动量反转',
+    needsRange: false,
+    description: '趋势疲软反转信号',
+  },
+  [StrategyType.FindChartPattern]: {
+    label: '图形形态',
+    needsRange: false,
+    description: '头肩/双顶/三角形',
+  },
+};
+
 export interface PatternMatch {
   code: string;
   name: string;
@@ -105,10 +153,29 @@ export interface PatternMatch {
   queryTotalReturn: number;
 }
 
-export interface FindSimilarRequest {
+// Generic match for scan-type strategies
+export interface ScanMatch {
   code: string;
-  startDate: string;
-  endDate: string;
+  name: string;
+  latestDate?: string;
+  confidence?: string | number;
+  direction?: string;
+  breakoutDirection?: string;
+  divergenceType?: string;
+  divergenceStrength?: number;
+  resonanceScore?: number;
+  trendScore?: number;
+  signalCount?: number;
+  pattern?: string;
+  squeezeDays?: number;
+  signals?: string[];
+}
+
+export interface FindSimilarRequest {
+  strategy: StrategyType;
+  code: string;
+  startDate?: string; // required for find_similar
+  endDate?: string;   // required for find_similar
 }
 
 export type SyncEvent =

@@ -13,12 +13,20 @@ export async function POST(req: NextRequest) {
     return new Response('Not authenticated', { status: 401 });
   }
 
-  const body: { code?: string; startDate?: string; endDate?: string } = await req
-    .json()
-    .catch(() => ({}));
-  if (!body.code || !body.startDate || !body.endDate) {
-    return new Response('code, startDate, endDate are required', { status: 400 });
+  const body: { strategy?: string; code?: string; startDate?: string; endDate?: string } =
+    await req.json().catch(() => ({}));
+  if (!body.code) {
+    return new Response('code is required', { status: 400 });
   }
 
-  return equityService.findSimilarStream(supabase, body.code, body.startDate, body.endDate);
+  const strategy = body.strategy ?? 'find_similar';
+
+  if (strategy === 'find_similar') {
+    if (!body.startDate || !body.endDate) {
+      return new Response('startDate and endDate are required for find_similar', { status: 400 });
+    }
+    return equityService.findSimilarStream(supabase, body.code, body.startDate, body.endDate);
+  }
+
+  return equityService.findScanStream(supabase, strategy, body.code);
 }

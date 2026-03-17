@@ -5,19 +5,9 @@ import { createNdjsonResponse, processNdjsonLines, runPython } from '@neo-log/be
 import type { Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import {
-  dbDeleteStock,
-  dbFetchAllStocks,
-  dbGetDailyBars,
-  dbGetNameMap,
-  dbGetQueryBars,
-  dbGetRecentBars,
-  dbGetUpToDateCodes,
-  dbMarkSynced,
-  dbUpsertBars,
-  dbUpsertStockList,
-  type DailyBarRecord,
-} from './equity-db';
+import type { DailyBarRecord } from './equity-db';
+import { EquityDb } from './equity-db';
+import { defaultCache, withCache } from './equity-cache';
 
 const SCRIPT = path.resolve(process.cwd(), 'packages/equity-be/scripts/equity_bridge.py');
 
@@ -36,13 +26,13 @@ function subtractDays(dateStr: string, days: number): string {
 // ── service ────────────────────────────────────────────────────────────────
 
 export const equityService = {
-  getStocks: (supabase: SupabaseClient<Database>) => dbFetchAllStocks(supabase),
+  getStocks: (supabase: SupabaseClient<Database>) => new EquityDb(supabase).fetchAllStocks(),
 
   deleteStock: (supabase: SupabaseClient<Database>, code: string) =>
-    dbDeleteStock(supabase, code),
+    new EquityDb(supabase).deleteStock(code),
 
   getDailyBars: (supabase: SupabaseClient<Database>, code: string, limit = 365) =>
-    dbGetDailyBars(supabase, code, limit),
+    new EquityDb(supabase).getDailyBars(code, limit),
 
   /** Sync all stocks: DB reads → Python concurrent fetch → batched DB writes, stream progress */
   async syncAllStream(supabase: SupabaseClient<Database>): Promise<Response> {
@@ -50,9 +40,10 @@ export const equityService = {
       async start(controller) {
         const enc = new TextEncoder();
         const emit = (obj: object) => controller.enqueue(enc.encode(JSON.stringify(obj) + '\n'));
+        const db = withCache(new EquityDb(supabase), defaultCache);
         let errorHandled = false;
         try {
-          const allStocks = await dbFetchAllStocks(supabase);
+          const allStocks = await db.fetchAllStocks();
 
           // ── init flow: stock list is empty, seed it first ──────────────────
           if (allStocks.length === 0) {
@@ -70,7 +61,7 @@ export const equityService = {
             const CHUNK = 500;
             const totalBatches = Math.ceil(validStocks.length / CHUNK);
             for (let i = 0; i < validStocks.length; i += CHUNK) {
-              await dbUpsertStockList(supabase, validStocks.slice(i, i + CHUNK));
+              await db.upsertStockList(validStocks.slice(i, i + CHUNK));
               emit({ type: 'init_progress', batch: i / CHUNK + 1, total_batches: totalBatches });
             }
             emit({ type: 'init_done', total: validStocks.length });
@@ -90,7 +81,7 @@ export const equityService = {
           let upToDate = new Set<string>();
           if (latestDay) {
             emit({ type: 'status', message: `最近交易日: ${latestDay}，查询已同步股票...` });
-            upToDate = await dbGetUpToDateCodes(supabase, latestDay);
+            upToDate = await db.getUpToDateCodes(latestDay);
           }
 
           const candidates = allStocks.filter((s) => !upToDate.has(s.code));
@@ -121,9 +112,10 @@ export const equityService = {
           const batchCodes: string[] = [];
 
           const flushBatch = async () => {
-            await dbUpsertBars(supabase, batchBars);
+            // upsertBars also appends to the cache (write-through via withCache)
+            await db.upsertBars(batchBars);
+            await db.markSynced(batchCodes);
             batchBars.length = 0;
-            await dbMarkSynced(supabase, batchCodes);
             batchCodes.length = 0;
           };
 
@@ -137,7 +129,11 @@ export const equityService = {
             async (obj) => {
               if (obj['type'] === 'result') {
                 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                const { code, bars } = obj as { type: 'result'; code: string; bars: DailyBarRecord[] };
+                const { code, bars } = obj as {
+                  type: 'result';
+                  code: string;
+                  bars: DailyBarRecord[];
+                };
                 if (bars.length > 0) {
                   batchBars.push(...bars);
                   batchCodes.push(code);
@@ -159,7 +155,11 @@ export const equityService = {
                 await flushBatch();
                 // Forward structured error to frontend before stopping
                 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                emit({ type: 'error', message: obj['message'] as string, resume_from: obj['resume_from'] as number });
+                emit({
+                  type: 'error',
+                  message: obj['message'] as string,
+                  resume_from: obj['resume_from'] as number,
+                });
                 errorHandled = true;
                 throw new Error('sync_aborted');
               }
@@ -194,19 +194,25 @@ export const equityService = {
       async start(controller) {
         const enc = new TextEncoder();
         const emit = (obj: object) => controller.enqueue(enc.encode(JSON.stringify(obj) + '\n'));
+        const db = withCache(new EquityDb(supabase), defaultCache);
         try {
-          const queryBars = await dbGetQueryBars(supabase, code, startDate, endDate);
+          const queryBars = await db.getQueryBars(code, startDate, endDate);
           if (queryBars.length < 2) {
             emit({ type: 'done', total: 0, topMatches: [] });
             controller.close();
             return;
           }
           const queryCloses = queryBars.map((r) => r.close);
-          const nameMap = await dbGetNameMap(supabase);
 
-          emit({ type: 'status', message: '正在加载全量股票近6个月数据...' });
-          const sinceDate = subtractDays(formatDate(new Date()), 180);
-          const allBars = await dbGetRecentBars(supabase, sinceDate, code);
+          emit({ type: 'status', message: '正在加载股票名称...' });
+          const nameMap = await db.getNameMap();
+
+          const sinceDate = subtractDays(formatDate(new Date()), 90);
+          emit({ type: 'status', message: '正在加载全量股票数据...' });
+          const rawBars = await db.getRecentBars(sinceDate);
+
+          // Filter and exclude query stock in memory
+          const allBars = rawBars.filter((b) => b.trade_date >= sinceDate && b.code !== code);
 
           // Group bars by stock code
           const stockMap: Record<string, { dates: string[]; closes: number[] }> = {};
@@ -272,6 +278,66 @@ export const equityService = {
               }
             },
           );
+
+          controller.close();
+        } catch (err) {
+          controller.error(err);
+        }
+      },
+    });
+    return createNdjsonResponse(stream);
+  },
+
+  /** Scan all stocks with a non-range strategy (breakout, divergence, multi-tf, etc.) */
+  async findScanStream(
+    supabase: SupabaseClient<Database>,
+    strategy: string,
+    excludeCode: string,
+  ): Promise<Response> {
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        const enc = new TextEncoder();
+        const emit = (obj: object) => controller.enqueue(enc.encode(JSON.stringify(obj) + '\n'));
+        const db = withCache(new EquityDb(supabase), defaultCache);
+        try {
+          emit({ type: 'status', message: '正在加载股票名称...' });
+          const nameMap = await db.getNameMap();
+
+          const sinceDate = subtractDays(formatDate(new Date()), 90);
+          emit({ type: 'status', message: `正在加载全量 OHLCV 数据...` });
+          const allBars = await db.getRecentBarsOHLCV(sinceDate);
+
+          // Group by stock code
+          const stockMap: Record<
+            string,
+            { dates: string[]; opens: number[]; highs: number[]; lows: number[]; closes: number[]; volumes: number[] }
+          > = {};
+          for (const bar of allBars) {
+            if (bar.code === excludeCode) continue;
+            if (!stockMap[bar.code]) {
+              stockMap[bar.code] = { dates: [], opens: [], highs: [], lows: [], closes: [], volumes: [] };
+            }
+            stockMap[bar.code].dates.push(bar.trade_date);
+            stockMap[bar.code].opens.push(bar.open);
+            stockMap[bar.code].highs.push(bar.high);
+            stockMap[bar.code].lows.push(bar.low);
+            stockMap[bar.code].closes.push(bar.close);
+            stockMap[bar.code].volumes.push(bar.volume);
+          }
+          const stocks = Object.entries(stockMap).map(([c, v]) => ({ code: c, ...v }));
+
+          emit({ type: 'status', message: `正在扫描 ${stocks.length} 只股票...` });
+          const pythonInput = { stocks };
+
+          await processNdjsonLines(SCRIPT, [strategy], JSON.stringify(pythonInput), async (obj) => {
+            if (obj['type'] === 'match') {
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              const matchCode = obj['code'] as string;
+              emit({ ...obj, name: nameMap[matchCode] ?? '' });
+            } else if (obj['type'] === 'done') {
+              emit(obj);
+            }
+          });
 
           controller.close();
         } catch (err) {

@@ -57,15 +57,17 @@ export function useKlineInteraction({
     priceRangeRef.current = { min: priceMin, max: priceMax };
   }, [priceMin, priceMax]);
 
-  // ── Drag selection ─────────────────────────────────────────────────────────
-  const isDraggingRef = useRef(false);
+  // ── Click-based selection ──────────────────────────────────────────────────
+  // First click sets the anchor; second click confirms the range.
   const selStartRef = useRef<string | null>(null);
+  const [selStartDate, setSelStartDate] = useState<string | null>(null);
   const [selRange, setSelRange] = useState<[string, string] | null>(null);
 
   useEffect(() => {
     if (mode !== 'select') {
       setSelRange(null);
-      isDraggingRef.current = false;
+      setSelStartDate(null);
+      selStartRef.current = null;
     }
   }, [mode]);
 
@@ -77,29 +79,31 @@ export function useKlineInteraction({
   }, []);
 
   // ── Container-level handlers ───────────────────────────────────────────────
-  const handleContainerMouseDown = useCallback(() => {
+  const handleContainerClick = useCallback(() => {
     if (mode !== 'select' || !hoveredBarRef.current) return;
-    isDraggingRef.current = true;
-    selStartRef.current = hoveredBarRef.current.trade_date;
-    setSelRange([hoveredBarRef.current.trade_date, hoveredBarRef.current.trade_date]);
-  }, [mode]);
-
-  const handleContainerMouseUp = useCallback(() => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
-    if (selStartRef.current && hoveredBarRef.current) {
+    if (!selStartRef.current) {
+      // First click: set anchor
+      selStartRef.current = hoveredBarRef.current.trade_date;
+      setSelStartDate(hoveredBarRef.current.trade_date);
+      setSelRange([hoveredBarRef.current.trade_date, hoveredBarRef.current.trade_date]);
+    } else {
+      // Second click: confirm range
       const sorted = [selStartRef.current, hoveredBarRef.current.trade_date].sort() as [
         string,
         string,
       ];
-      setSelRange(null);
       selStartRef.current = null;
+      setSelStartDate(null);
+      setSelRange(null);
       onSelectRange?.(sorted[0], sorted[1]);
     }
-  }, [onSelectRange]);
+  }, [mode, onSelectRange]);
 
   const handleContainerMouseLeave = useCallback(() => {
-    handleContainerMouseUp();
+    // Keep the anchor on mouse leave (user may re-enter) but collapse preview to anchor point
+    if (selStartRef.current) {
+      setSelRange([selStartRef.current, selStartRef.current]);
+    }
     hideCrosshair();
     if (hoveredBarRef.current !== null) {
       hoveredBarRef.current = null;
@@ -109,7 +113,7 @@ export function useKlineInteraction({
         setHoveredIndex(null);
       });
     }
-  }, [handleContainerMouseUp, hideCrosshair]);
+  }, [hideCrosshair]);
 
   // Single native onMouseMove handles EVERYTHING — no Recharts onMouseMove needed.
   // This prevents Recharts from calling setState on every pixel → no SVG re-render.
@@ -146,8 +150,8 @@ export function useKlineInteraction({
           });
         }
 
-        // Drag selection
-        if (mode === 'select' && isDraggingRef.current && selStartRef.current && bar) {
+        // Live preview: update range end as user hovers after setting anchor
+        if (mode === 'select' && selStartRef.current && bar) {
           setSelRange([selStartRef.current, bar.trade_date].sort() as [string, string]);
         }
 
@@ -191,12 +195,12 @@ export function useKlineInteraction({
     hoveredBar,
     hoveredIndex,
     selRange,
+    selStartDate,
     crosshairHLineRef,
     crosshairVLineRef,
     crosshairLabelRef,
     crosshairPriceTextRef,
-    handleContainerMouseDown,
-    handleContainerMouseUp,
+    handleContainerClick,
     handleContainerMouseLeave,
     handleContainerMouseMove,
   };

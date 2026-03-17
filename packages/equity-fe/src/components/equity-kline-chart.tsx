@@ -72,12 +72,12 @@ export function EquityKlineChart({
     hoveredBar,
     hoveredIndex,
     selRange,
+    selStartDate,
     crosshairHLineRef,
     crosshairVLineRef,
     crosshairLabelRef,
     crosshairPriceTextRef,
-    handleContainerMouseDown,
-    handleContainerMouseUp,
+    handleContainerClick,
     handleContainerMouseLeave,
     handleContainerMouseMove,
   } = useKlineInteraction({ visible, priceMin, priceMax, mode, onSelectRange });
@@ -99,9 +99,9 @@ export function EquityKlineChart({
         <Box mb={2} px={3} py={1.5} bg="rgba(0,212,255,0.05)"
           border="1px solid rgba(0,212,255,0.2)" borderRadius="4px">
           <Text fontFamily="mono" fontSize="xs" color="#00D4FF">
-            {selRange
-              ? `已选区间：${selRange[0]} → ${selRange[1]}，松开鼠标确认`
-              : '在K线图上按住并拖拽选择区间'}
+            {selStartDate
+              ? `已选起点：${selStartDate}，再次点击确认终点`
+              : '点击K线选择区间起点'}
           </Text>
         </Box>
       )}
@@ -129,8 +129,7 @@ export function EquityKlineChart({
 
       {/* Price chart — no onMouseMove on ComposedChart to avoid Recharts internal setState */}
       <Box position="relative"
-        onMouseDown={handleContainerMouseDown}
-        onMouseUp={handleContainerMouseUp}
+        onClick={handleContainerClick}
         onMouseLeave={handleContainerMouseLeave}
         onMouseMove={handleContainerMouseMove}
         style={mode === 'select' ? { cursor: 'crosshair', userSelect: 'none' } : {}}>
