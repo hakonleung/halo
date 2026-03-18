@@ -1,11 +1,10 @@
-import type { neologUserProfiles } from '@/server/db/schema';
-import type { Database } from '@/server/types/database';
 import type {
   UserProfileModel,
   UserPortrait,
   EmotionEntry,
   BehaviorSummary,
 } from '@/server/types/profile-server';
+import type { neologUserProfiles, Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { InferSelectModel } from 'drizzle-orm';
 

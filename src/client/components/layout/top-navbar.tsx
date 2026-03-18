@@ -20,6 +20,7 @@ export function TopNavbar() {
   const navLinks = [
     { label: 'LOG', path: '/log' },
     { label: 'DASHBOARD', path: '/dashboard' },
+    { label: 'EQUITY', path: '/equity' },
     { label: 'SETTINGS', path: '/settings' },
   ];
 

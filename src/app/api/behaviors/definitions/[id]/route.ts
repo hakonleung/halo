@@ -1,5 +1,6 @@
-import { createApiHandler } from '@/server/services/api-helpers';
 import { behaviorService } from '@/server/services/behavior-service';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 export const PATCH = createApiHandler(
   async (request, params = Promise.resolve({ id: '' }), supabase, user) => {

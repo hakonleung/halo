@@ -1,5 +1,6 @@
-import { createApiHandler } from '@/server/services/api-helpers';
 import { chatService } from '@/server/services/chat-service';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 /**
  * GET /api/chat/conversation/[id]/messages

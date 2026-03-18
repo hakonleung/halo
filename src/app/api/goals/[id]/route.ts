@@ -1,6 +1,7 @@
-import { createApiHandler } from '@/server/services/api-helpers';
 import { goalProgressService } from '@/server/services/goal-progress-service';
 import { goalService } from '@/server/services/goal-service';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 import type { GoalProgress as ClientGoalProgress } from '@/client/types/goal-client';
 

@@ -1,6 +1,7 @@
-import { createApiHandler } from '@/server/services/api-helpers';
 import { dashboardService } from '@/server/services/dashboard-service';
 import { DashboardRange } from '@/server/types/dashboard-server';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 export const GET = createApiHandler(async (request, _params, supabase, user) => {
   // Parse query parameters

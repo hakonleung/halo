@@ -1,5 +1,6 @@
-import { createApiHandler } from '@/server/services/api-helpers';
 import { noteService } from '@/server/services/note-service';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 export const GET = createApiHandler(async (_request, _params, supabase, user) => {
   const data = await noteService.getNotes(supabase, user.id);

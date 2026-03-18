@@ -1,6 +1,5 @@
 import { profileService } from '@/server/services/profile-service';
 
-import type { Database } from '@/server/types/database';
 import type {
   UserProfileModel,
   UserPortrait,
@@ -8,6 +7,7 @@ import type {
   BehaviorSummary,
 } from '@/server/types/profile-server';
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import type { Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**

@@ -1,5 +1,6 @@
-import { createApiHandler } from '@/server/services/api-helpers';
 import { behaviorService } from '@/server/services/behavior-service';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 export const GET = createApiHandler(async (_request, _params, supabase, user) => {
   const data = await behaviorService.getDefinitions(supabase, user.id);

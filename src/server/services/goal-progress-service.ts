@@ -1,5 +1,5 @@
-import type { Database } from '@/server/types/database';
 import type { Goal, GoalProgress } from '@/server/types/goal-server';
+import type { Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**

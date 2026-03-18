@@ -1,4 +1,4 @@
-import type { neologBehaviorDefinitions, neologBehaviorRecords } from '@/server/db/schema';
+import type { neologBehaviorDefinitions, neologBehaviorRecords } from '@neo-log/be-edge';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 // Server-side types for behaviors (Inferred from Drizzle Entity)

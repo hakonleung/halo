@@ -1,4 +1,4 @@
-import type { neologNotes } from '@/server/db/schema';
+import type { neologNotes } from '@neo-log/be-edge';
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 // Server-side types for notes (Inferred from Drizzle Entity)

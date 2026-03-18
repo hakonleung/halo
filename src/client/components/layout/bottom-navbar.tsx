@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, HStack, Text, Link } from '@chakra-ui/react';
-import { LayoutDashboard, BarChart3, Settings } from 'lucide-react';
+import { LayoutDashboard, BarChart3, TrendingUp, Settings } from 'lucide-react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -14,6 +14,7 @@ export function BottomNavbar() {
   const navItems = [
     { label: 'Log', path: '/log', icon: LayoutDashboard },
     { label: 'Dashboard', path: '/dashboard', icon: BarChart3 },
+    { label: 'Equity', path: '/equity', icon: TrendingUp },
     { label: 'Settings', path: '/settings', icon: Settings },
   ];
 
