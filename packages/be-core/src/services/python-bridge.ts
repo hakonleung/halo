@@ -20,14 +20,16 @@ export function runPython<T>(scriptPath: string, args: string[], stdinData?: str
     py.on('close', (code) => {
       if (stderr) console.error('[python] stderr:', stderr);
       if (code !== 0) {
-        reject(new Error(`Python exited ${code}: ${stderr || stdout}`));
+        // Do not forward raw stderr/stdout to callers — it may contain internal
+        // file paths or stack traces. Log internally and surface a generic message.
+        reject(new Error(`Python process exited with code ${code}`));
         return;
       }
       try {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         resolve(JSON.parse(stdout) as T);
       } catch {
-        reject(new Error(`Python stdout not valid JSON: ${stdout}`));
+        reject(new Error('Python process returned unexpected output'));
       }
     });
     py.on('error', reject);
@@ -38,11 +40,11 @@ export function runPython<T>(scriptPath: string, args: string[], stdinData?: str
  * Spawn a Python script and process each NDJSON line with an async callback.
  * Awaits each onLine call before processing the next line (backpressure).
  */
-export async function processNdjsonLines(
+export async function processNdjsonLines<T = Record<string, unknown>>(
   scriptPath: string,
   args: string[],
   stdinData: string,
-  onLine: (obj: Record<string, unknown>) => Promise<void>,
+  onLine: (obj: T) => Promise<void>,
 ): Promise<void> {
   const py = spawn('python3', [scriptPath, ...args]);
   py.stdin.write(stdinData);
@@ -60,7 +62,7 @@ export async function processNdjsonLines(
     for await (const line of rl) {
       if (!line.trim()) continue;
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      await onLine(JSON.parse(line) as Record<string, unknown>);
+      await onLine(JSON.parse(line) as T);
     }
     // Readline ended normally — check process exit code
     await closePromise;

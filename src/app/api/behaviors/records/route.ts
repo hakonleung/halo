@@ -1,5 +1,6 @@
-import { createApiHandler } from '@neo-log/be-edge';
 import { behaviorService } from '@/server/services/behavior-service';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 export const GET = createApiHandler(async (request, _params, supabase, user) => {
   const { searchParams } = new URL(request.url);

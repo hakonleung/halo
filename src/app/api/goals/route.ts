@@ -1,5 +1,6 @@
-import { createApiHandler } from '@neo-log/be-edge';
 import { goalService, type GetGoalsParams } from '@/server/services/goal-service';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 export const GET = createApiHandler(async (request, _params, supabase, user) => {
   // Parse query parameters

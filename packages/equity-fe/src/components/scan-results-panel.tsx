@@ -2,8 +2,9 @@
 
 import { Box, HStack, Text, Spinner } from '@chakra-ui/react';
 
-import type { ScanMatch } from '../types';
 import { StrategyType, STRATEGY_META } from '../types';
+
+import type { ScanMatch } from '../types';
 
 interface Props {
   strategy: StrategyType;
@@ -74,7 +75,15 @@ export function ScanResultsPanel({ strategy, matches, isLoading, statusMsg }: Pr
           )}
         </HStack>
         {statusMsg && (
-          <Text fontFamily="mono" fontSize="10px" color="#555" maxW="60%" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+          <Text
+            fontFamily="mono"
+            fontSize="10px"
+            color="#555"
+            maxW="60%"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            whiteSpace="nowrap"
+          >
             {statusMsg}
           </Text>
         )}
@@ -89,13 +98,17 @@ export function ScanResultsPanel({ strategy, matches, isLoading, statusMsg }: Pr
       )}
 
       {matches.map((m, i) => (
-        <Box key={`${m.code}-${i}`}
-          px={3} py={2} mb={1}
+        <Box
+          key={`${m.code}-${i}`}
+          px={3}
+          py={2}
+          mb={1}
           bg="rgba(255,255,255,0.02)"
           border="1px solid rgba(255,255,255,0.06)"
           borderRadius="4px"
           _hover={{ borderColor: 'rgba(0,255,65,0.2)', bg: 'rgba(0,255,65,0.03)' }}
-          transition="all 0.1s">
+          transition="all 0.1s"
+        >
           <HStack justify="space-between">
             <HStack gap={2}>
               <Text fontFamily="mono" fontSize="xs" color="brand.matrix">
@@ -122,9 +135,16 @@ export function ScanResultsPanel({ strategy, matches, isLoading, statusMsg }: Pr
           {m.signals && m.signals.length > 0 && (
             <HStack gap={1} mt={1} flexWrap="wrap">
               {m.signals.map((s) => (
-                <Text key={s} fontFamily="mono" fontSize="9px" px={1.5} py={0.5}
+                <Text
+                  key={s}
+                  fontFamily="mono"
+                  fontSize="9px"
+                  px={1.5}
+                  py={0.5}
                   border="1px solid rgba(255,107,53,0.3)"
-                  color="#FF6B35" borderRadius="2px">
+                  color="#FF6B35"
+                  borderRadius="2px"
+                >
                   {s.replace(/_/g, ' ')}
                 </Text>
               ))}
@@ -135,7 +155,9 @@ export function ScanResultsPanel({ strategy, matches, isLoading, statusMsg }: Pr
 
       {!isLoading && matches.length === 0 && (
         <Box py={4} textAlign="center">
-          <Text fontFamily="mono" fontSize="xs" color="#444">无符合条件的股票</Text>
+          <Text fontFamily="mono" fontSize="xs" color="#444">
+            无符合条件的股票
+          </Text>
         </Box>
       )}
     </Box>

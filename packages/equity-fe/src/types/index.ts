@@ -175,7 +175,7 @@ export interface FindSimilarRequest {
   strategy: StrategyType;
   code: string;
   startDate?: string; // required for find_similar
-  endDate?: string;   // required for find_similar
+  endDate?: string; // required for find_similar
 }
 
 export type SyncEvent =

@@ -11,9 +11,10 @@ import {
   YAxis,
 } from 'recharts';
 
-import type { EquityDailyBar } from '../types';
 import { CandlestickShape } from './equity-kline-shapes';
 import { enrichBars } from './equity-kline-utils';
+
+import type { EquityDailyBar } from '../types';
 
 interface Props {
   bars: EquityDailyBar[];
@@ -64,9 +65,13 @@ export function EquityKlineMini({ bars, highlightStart, highlightEnd, similarity
           width={45}
           tickFormatter={(v: number) => v.toFixed(2)}
         />
-        {/* eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any */}
-        <Bar dataKey="wickRange" shape={(<CandlestickShape />) as any}
-          isAnimationActive={false} legendType="none" />
+        {}
+        <Bar
+          dataKey="wickRange"
+          shape={(<CandlestickShape />) as any}
+          isAnimationActive={false}
+          legendType="none"
+        />
         <ReferenceArea
           x1={highlightStart}
           x2={highlightEnd}

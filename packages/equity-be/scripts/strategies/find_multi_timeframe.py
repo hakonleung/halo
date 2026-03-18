@@ -7,7 +7,8 @@ single-timeframe noise.
 
 stdin:
   {
-    "stocks": [{"code": str, "dates": [str], "closes": [float], "volumes": [float]}],
+    "stocks": [{"code": str, "bars": [{"trade_date": str, "open": float, "high": float,
+                                       "low": float, "close": float, "volume": float, ...}]}],
     "signal_direction": "bullish"|"bearish"|"both",  // default "both"
     "required_timeframes": int,   // timeframes that must agree, default 3 (all)
     "indicators": ["ma_cross", "macd", "rsi"]  // default all three
@@ -124,8 +125,9 @@ def _resonance_score(signals: dict[str, str], direction: str) -> float:
 
 def _analyze(stock: dict, signal_direction: str, required_timeframes: int,
              indicators: list[str]) -> dict | None:
-    closes = np.array(stock["closes"], dtype=float)
-    n = len(closes)
+    bars = stock["bars"]
+    closes = np.array([b["close"] for b in bars], dtype=float)
+    n = len(bars)
     if n < 30:
         return None
 
@@ -177,7 +179,7 @@ def _analyze(stock: dict, signal_direction: str, required_timeframes: int,
         "resonanceScore": round(best_total_score, 3),
         "timeframeScores": best_tf_scores,
         "signals": best_signals,
-        "latestDate": stock["dates"][-1],
+        "latestDate": bars[-1]["trade_date"],
     }
 
 

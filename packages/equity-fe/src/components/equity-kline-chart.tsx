@@ -14,11 +14,12 @@ import {
   YAxis,
 } from 'recharts';
 
-import type { EquityDailyBar, EquityRange } from '../types';
 import { KlineInfoPanel } from './equity-kline-info-panel';
 import { CandlestickShape, VolumeBar } from './equity-kline-shapes';
 import { enrichBars } from './equity-kline-utils';
 import { useKlineInteraction } from './use-kline-interaction';
+
+import type { EquityDailyBar, EquityRange } from '../types';
 
 const RANGES: EquityRange[] = ['1M', '3M', '6M', '1Y'];
 const RANGE_DAYS: Record<EquityRange, number> = { '1M': 30, '3M': 90, '6M': 180, '1Y': 365 };
@@ -82,8 +83,7 @@ export function EquityKlineChart({
     handleContainerMouseMove,
   } = useKlineInteraction({ visible, priceMin, priceMax, mode, onSelectRange });
 
-  const tradingDaysToLatest =
-    hoveredIndex != null ? visible.length - 1 - hoveredIndex : null;
+  const tradingDaysToLatest = hoveredIndex != null ? visible.length - 1 - hoveredIndex : null;
 
   const activeHighlight =
     mode === 'select'
@@ -96,12 +96,16 @@ export function EquityKlineChart({
     <Box>
       {/* Select mode hint */}
       {mode === 'select' && (
-        <Box mb={2} px={3} py={1.5} bg="rgba(0,212,255,0.05)"
-          border="1px solid rgba(0,212,255,0.2)" borderRadius="4px">
+        <Box
+          mb={2}
+          px={3}
+          py={1.5}
+          bg="rgba(0,212,255,0.05)"
+          border="1px solid rgba(0,212,255,0.2)"
+          borderRadius="4px"
+        >
           <Text fontFamily="mono" fontSize="xs" color="#00D4FF">
-            {selStartDate
-              ? `已选起点：${selStartDate}，再次点击确认终点`
-              : '点击K线选择区间起点'}
+            {selStartDate ? `已选起点：${selStartDate}，再次点击确认终点` : '点击K线选择区间起点'}
           </Text>
         </Box>
       )}
@@ -109,12 +113,21 @@ export function EquityKlineChart({
       {/* Range selector */}
       <HStack gap={2} mb={2} justify="flex-end">
         {RANGES.map((r) => (
-          <Box key={r} px={3} py={1} cursor="pointer" borderRadius="4px" border="1px solid"
+          <Box
+            key={r}
+            px={3}
+            py={1}
+            cursor="pointer"
+            borderRadius="4px"
+            border="1px solid"
             borderColor={range === r ? 'brand.matrix' : 'whiteAlpha.200'}
-            color={range === r ? 'brand.matrix' : 'text.mist'} fontSize="xs" fontFamily="mono"
+            color={range === r ? 'brand.matrix' : 'text.mist'}
+            fontSize="xs"
+            fontFamily="mono"
             onClick={() => onRangeChange(r)}
             _hover={{ borderColor: 'brand.matrix', color: 'brand.matrix' }}
-            transition="all 0.15s">
+            transition="all 0.15s"
+          >
             {r}
           </Box>
         ))}
@@ -128,82 +141,135 @@ export function EquityKlineChart({
       />
 
       {/* Price chart — no onMouseMove on ComposedChart to avoid Recharts internal setState */}
-      <Box position="relative"
+      <Box
+        position="relative"
         onClick={handleContainerClick}
         onMouseLeave={handleContainerMouseLeave}
         onMouseMove={handleContainerMouseMove}
-        style={mode === 'select' ? { cursor: 'crosshair', userSelect: 'none' } : {}}>
-
+        style={mode === 'select' ? { cursor: 'crosshair', userSelect: 'none' } : {}}
+      >
         {/* Horizontal crosshair line */}
-        <div ref={crosshairHLineRef} style={{
-          display: 'none',
-          position: 'absolute',
-          left: '55px',
-          right: '8px',
-          top: 0,
-          height: 0,
-          borderTop: '1px dashed rgba(255,255,255,0.22)',
-          zIndex: 9,
-          pointerEvents: 'none',
-        }} />
+        <div
+          ref={crosshairHLineRef}
+          style={{
+            display: 'none',
+            position: 'absolute',
+            left: '55px',
+            right: '8px',
+            top: 0,
+            height: 0,
+            borderTop: '1px dashed rgba(255,255,255,0.22)',
+            zIndex: 9,
+            pointerEvents: 'none',
+          }}
+        />
         {/* Vertical crosshair line */}
-        <div ref={crosshairVLineRef} style={{
-          display: 'none',
-          position: 'absolute',
-          top: `${PLOT_TOP}px`,
-          bottom: '30px', // approximate XAxis height
-          width: 0,
-          borderLeft: '1px dashed rgba(255,255,255,0.22)',
-          zIndex: 9,
-          pointerEvents: 'none',
-        }} />
+        <div
+          ref={crosshairVLineRef}
+          style={{
+            display: 'none',
+            position: 'absolute',
+            top: `${PLOT_TOP}px`,
+            bottom: '30px', // approximate XAxis height
+            width: 0,
+            borderLeft: '1px dashed rgba(255,255,255,0.22)',
+            zIndex: 9,
+            pointerEvents: 'none',
+          }}
+        />
         {/* Price label on y-axis */}
-        <div ref={crosshairLabelRef} style={{
-          display: 'none',
-          position: 'absolute',
-          left: '1px',
-          top: 0,
-          zIndex: 9,
-          pointerEvents: 'none',
-          width: '53px',
-          height: '16px',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          paddingRight: '4px',
-          background: 'rgba(18,18,18,0.95)',
-          border: '1px solid rgba(255,255,255,0.18)',
-          borderRadius: '2px',
-        }}>
-          <span ref={crosshairPriceTextRef} style={{
-            fontFamily: 'monospace', fontSize: '9px', color: '#ddd', lineHeight: '1',
-          }} />
+        <div
+          ref={crosshairLabelRef}
+          style={{
+            display: 'none',
+            position: 'absolute',
+            left: '1px',
+            top: 0,
+            zIndex: 9,
+            pointerEvents: 'none',
+            width: '53px',
+            height: '16px',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            paddingRight: '4px',
+            background: 'rgba(18,18,18,0.95)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: '2px',
+          }}
+        >
+          <span
+            ref={crosshairPriceTextRef}
+            style={{
+              fontFamily: 'monospace',
+              fontSize: '9px',
+              color: '#ddd',
+              lineHeight: '1',
+            }}
+          />
         </div>
 
         <ResponsiveContainer width="100%" height={360}>
           {/* No onMouseMove — Recharts never updates internal state on hover → no SVG re-render */}
           <ComposedChart data={visible} margin={{ top: PLOT_TOP, right: 8, bottom: 0, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-            <XAxis dataKey="trade_date" ticks={xTicks}
+            <XAxis
+              dataKey="trade_date"
+              ticks={xTicks}
               tick={{ fill: '#888', fontSize: 10, fontFamily: 'monospace' }}
-              axisLine={{ stroke: 'rgba(255,255,255,0.1)' }} tickLine={false} />
-            <YAxis domain={[priceMin, priceMax]}
+              axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+              tickLine={false}
+            />
+            <YAxis
+              domain={[priceMin, priceMax]}
               tick={{ fill: '#888', fontSize: 10, fontFamily: 'monospace' }}
-              axisLine={false} tickLine={false} width={55}
-              tickFormatter={(v: number) => v.toFixed(2)} />
-            <Legend wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace' }}
-              formatter={(value) => <span style={{ color: '#888' }}>{value}</span>} />
-            {/* eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any */}
-            <Bar dataKey="wickRange" shape={(<CandlestickShape />) as any}
-              isAnimationActive={false} legendType="none" />
-            <Line dataKey="ma5" dot={false} stroke="rgba(255,215,0,0.55)" strokeWidth={1}
-              name="MA5" isAnimationActive={false} />
-            <Line dataKey="ma10" dot={false} stroke="rgba(255,107,53,0.55)" strokeWidth={1}
-              name="MA10" isAnimationActive={false} />
-            <Line dataKey="ma20" dot={false} stroke="rgba(0,212,255,0.55)" strokeWidth={1}
-              name="MA20" isAnimationActive={false} />
+              axisLine={false}
+              tickLine={false}
+              width={55}
+              tickFormatter={(v: number) => v.toFixed(2)}
+            />
+            <Legend
+              wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace' }}
+              formatter={(value) => <span style={{ color: '#888' }}>{value}</span>}
+            />
+            {}
+            <Bar
+              dataKey="wickRange"
+              shape={(<CandlestickShape />) as any}
+              isAnimationActive={false}
+              legendType="none"
+            />
+            <Line
+              dataKey="ma5"
+              dot={false}
+              stroke="rgba(255,215,0,0.55)"
+              strokeWidth={1}
+              name="MA5"
+              isAnimationActive={false}
+            />
+            <Line
+              dataKey="ma10"
+              dot={false}
+              stroke="rgba(255,107,53,0.55)"
+              strokeWidth={1}
+              name="MA10"
+              isAnimationActive={false}
+            />
+            <Line
+              dataKey="ma20"
+              dot={false}
+              stroke="rgba(0,212,255,0.55)"
+              strokeWidth={1}
+              name="MA20"
+              isAnimationActive={false}
+            />
             {activeHighlight && (
-              <ReferenceArea x1={activeHighlight[0]} x2={activeHighlight[1]}
-                fill="rgba(0,212,255,0.12)" stroke="rgba(0,212,255,0.5)" strokeOpacity={1} />
+              <ReferenceArea
+                x1={activeHighlight[0]}
+                x2={activeHighlight[1]}
+                fill="rgba(0,212,255,0.12)"
+                stroke="rgba(0,212,255,0.5)"
+                strokeOpacity={1}
+              />
             )}
           </ComposedChart>
         </ResponsiveContainer>
@@ -213,19 +279,46 @@ export function EquityKlineChart({
       <ResponsiveContainer width="100%" height={120}>
         <ComposedChart data={visible} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-          <XAxis dataKey="trade_date" ticks={xTicks}
+          <XAxis
+            dataKey="trade_date"
+            ticks={xTicks}
             tick={{ fill: '#888', fontSize: 9, fontFamily: 'monospace' }}
-            axisLine={{ stroke: 'rgba(255,255,255,0.1)' }} tickLine={false} />
-          <YAxis yAxisId="vol" tick={{ fill: '#888', fontSize: 9, fontFamily: 'monospace' }}
-            axisLine={false} tickLine={false} width={55} tickFormatter={fmtVol} />
-          <YAxis yAxisId="tr" orientation="right"
+            axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+            tickLine={false}
+          />
+          <YAxis
+            yAxisId="vol"
+            tick={{ fill: '#888', fontSize: 9, fontFamily: 'monospace' }}
+            axisLine={false}
+            tickLine={false}
+            width={55}
+            tickFormatter={fmtVol}
+          />
+          <YAxis
+            yAxisId="tr"
+            orientation="right"
             tick={{ fill: '#00D4FF', fontSize: 9, fontFamily: 'monospace' }}
-            axisLine={false} tickLine={false} width={40}
-            tickFormatter={(v: number) => `${v.toFixed(1)}%`} />
-          <Bar yAxisId="vol" dataKey="volume" shape={<VolumeBar />}
-            isAnimationActive={false} name="成交量" />
-          <Line yAxisId="tr" dataKey="turnover_rate" dot={false} stroke="#00D4FF"
-            strokeWidth={1} name="换手率" isAnimationActive={false} />
+            axisLine={false}
+            tickLine={false}
+            width={40}
+            tickFormatter={(v: number) => `${v.toFixed(1)}%`}
+          />
+          <Bar
+            yAxisId="vol"
+            dataKey="volume"
+            shape={<VolumeBar />}
+            isAnimationActive={false}
+            name="成交量"
+          />
+          <Line
+            yAxisId="tr"
+            dataKey="turnover_rate"
+            dot={false}
+            stroke="#00D4FF"
+            strokeWidth={1}
+            name="换手率"
+            isAnimationActive={false}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </Box>

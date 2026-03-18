@@ -4,8 +4,10 @@ import { Box, Flex, HStack, Spinner, Text } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import { useEquityDailyBars } from '../hooks';
-import type { PatternMatch } from '../types';
+
 import { EquityKlineMini } from './equity-kline-mini';
+
+import type { PatternMatch } from '../types';
 
 interface Props {
   match: PatternMatch;
@@ -52,7 +54,12 @@ export function EquityMatchCard({ match, rank }: Props) {
           </Text>
         </HStack>
         <HStack gap={3}>
-          <Text fontFamily="mono" fontSize="sm" color={simColor(match.similarity)} fontWeight="bold">
+          <Text
+            fontFamily="mono"
+            fontSize="sm"
+            color={simColor(match.similarity)}
+            fontWeight="bold"
+          >
             {(match.similarity * 100).toFixed(1)}%
           </Text>
           <Text fontFamily="mono" fontSize="10px" color="#555">

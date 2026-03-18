@@ -120,9 +120,9 @@ export function CharacterModel({
     group.add(modelClone);
 
     // Apply customization only if not in keepOriginalMaterials list
-    const shouldKeepOriginal = (CHARACTER_CONFIG.keepOriginalMaterials as readonly string[]).includes(
-      preset,
-    );
+    const shouldKeepOriginal = (
+      CHARACTER_CONFIG.keepOriginalMaterials as readonly string[]
+    ).includes(preset);
     if (shouldKeepOriginal) {
       console.log('[CharacterModel] Keeping original materials for:', preset);
       // Just ensure materials are visible

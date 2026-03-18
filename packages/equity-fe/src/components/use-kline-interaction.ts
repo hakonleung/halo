@@ -1,7 +1,7 @@
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
 
-import type { ChartBar } from './equity-kline-utils';
 import type { KlineMode } from './equity-kline-chart';
+import type { ChartBar } from './equity-kline-utils';
 
 // Must match ComposedChart margin + YAxis width in equity-kline-chart.tsx
 const YAXIS_WIDTH = 55;

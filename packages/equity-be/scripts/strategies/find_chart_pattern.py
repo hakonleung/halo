@@ -7,9 +7,8 @@ detection and geometric constraint validation. Pure numpy, no scipy.
 
 stdin:
   {
-    "stocks": [{"code": str, "dates": [str],
-                "closes": [float], "highs": [float], "lows": [float],
-                "volumes": [float]}],  // optional, enables volume score
+    "stocks": [{"code": str, "bars": [{"trade_date": str, "open": float, "high": float,
+                                       "low": float, "close": float, "volume": float, ...}]}],
     "patterns": ["head_shoulders_top", "head_shoulders_bottom",
                  "double_top", "double_bottom",
                  "ascending_triangle", "descending_triangle",
@@ -250,14 +249,13 @@ def _volume_bonus(volumes: np.ndarray, pattern_end_idx: int) -> int:
 
 def _analyze_stock(stock: dict, patterns: list[str], lookback: int,
                    tolerance: float) -> list[dict]:
-    closes = np.array(stock["closes"], dtype=float)
-    highs_raw = stock.get("highs", stock["closes"])
-    lows_raw = stock.get("lows", stock["closes"])
-    highs = np.array(highs_raw, dtype=float)[-lookback:]
-    lows = np.array(lows_raw, dtype=float)[-lookback:]
+    bars = stock["bars"]
+    closes = np.array([b["close"] for b in bars], dtype=float)
+    highs = np.array([b["high"] for b in bars], dtype=float)[-lookback:]
+    lows = np.array([b["low"] for b in bars], dtype=float)[-lookback:]
     closes_w = closes[-lookback:]
-    dates_w = stock["dates"][-lookback:]
-    volumes = np.array(stock.get("volumes", []), dtype=float)
+    dates_w = [b["trade_date"] for b in bars][-lookback:]
+    volumes = np.array([b["volume"] for b in bars], dtype=float)
 
     if len(closes_w) < 20:
         return []

@@ -19,8 +19,6 @@ Subcommands:
                {"type": "done"}
   fetch_list
       → JSON array of {"code", "name", "market", "secid"}
-  latest_trading_day
-      → JSON {"date": str | null}
   find_similar
       stdin: {"window_len": int, "query_closes": [float],
               "stocks": [{"code": str, "dates": [str], "closes": [float]}]}
@@ -33,7 +31,7 @@ import json
 import sys
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import akshare as ak
 
@@ -117,24 +115,6 @@ def cmd_fetch_list():
     print(json.dumps(records, ensure_ascii=False), flush=True)
 
 
-# ── latest_trading_day ─────────────────────────────────────────────────────
-
-def cmd_latest_trading_day():
-    try:
-        today = datetime.today()
-        week_ago = (today - timedelta(days=7)).strftime("%Y%m%d")
-        df = ak.stock_zh_a_hist(
-            symbol="000001", period="daily",
-            start_date=week_ago, end_date=today.strftime("%Y%m%d"), adjust="",
-        )
-        if df is not None and not df.empty:
-            print(json.dumps({"date": str(df["日期"].iloc[-1])}, ensure_ascii=False), flush=True)
-            return
-    except Exception as e:
-        print(f"[bridge] latest_trading_day error: {e}", file=sys.stderr)
-    print(json.dumps({"date": None}, ensure_ascii=False), flush=True)
-
-
 # ── entry point ────────────────────────────────────────────────────────────
 
 def main():
@@ -155,8 +135,6 @@ def main():
             cmd_fetch_all_klines()
         elif cmd == "fetch_list":
             cmd_fetch_list()
-        elif cmd == "latest_trading_day":
-            cmd_latest_trading_day()
         elif cmd == "find_similar":
             from strategies.find_similar import run as find_similar_run
             find_similar_run()

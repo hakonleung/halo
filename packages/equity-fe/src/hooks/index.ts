@@ -5,9 +5,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { equityApi } from '../api';
 import { useEquityStore } from '../store';
+import { StrategyType } from '../types';
 
 import type { FindSimilarRequest, PatternMatch, ScanMatch, SyncEvent } from '../types';
-import { StrategyType } from '../types';
 
 const STOCKS_KEY = ['equity', 'stocks'] as const;
 const SUMMARY_KEY = ['equity', 'summary'] as const;

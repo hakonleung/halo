@@ -1,5 +1,5 @@
-import type { Database } from '@neo-log/be-edge';
 import type { NoteCreateRequest } from '@/server/types/note-server';
+import type { Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**

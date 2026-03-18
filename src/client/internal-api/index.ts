@@ -59,5 +59,4 @@ export const internalApiService = {
   login: authApi.login,
   logout: authApi.logout,
   signup: authApi.signup,
-
 };

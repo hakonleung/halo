@@ -1,5 +1,5 @@
-import type { Database } from '@neo-log/be-edge';
 import type { SettingsUpdateRequest } from '@/server/types/settings-server';
+import type { Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**

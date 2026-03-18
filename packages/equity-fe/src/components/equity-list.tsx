@@ -9,13 +9,7 @@ import { DEFAULT_EQUITY_FILTER } from '../types';
 import { EquityFilterBar } from './equity-filter-bar';
 import { EquitySparkline } from './equity-sparkline';
 
-import type {
-  EquityFilter,
-  EquityStockSummary,
-  PctPeriod,
-  SortDir,
-  SortKey,
-} from '../types';
+import type { EquityFilter, EquityStockSummary, PctPeriod, SortDir, SortKey } from '../types';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 

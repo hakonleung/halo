@@ -7,9 +7,8 @@ price divergence, close retreat).
 
 stdin:
   {
-    "stocks": [{"code": str, "dates": [str],
-                "opens": [float], "highs": [float], "lows": [float],
-                "closes": [float], "volumes": [float]}],
+    "stocks": [{"code": str, "bars": [{"trade_date": str, "open": float, "high": float,
+                                       "low": float, "close": float, "volume": float, ...}]}],
     "lookback_days": int,        // trend observation window, default 20
     "momentum_threshold": float, // min |trend_score| to qualify, default 0.3
     "reversal_window": int       // days to scan for reversal signals, default 3
@@ -59,51 +58,47 @@ def _rsi(closes: np.ndarray, period: int = 14) -> float:
     return float(100 - 100 / (1 + gains / losses))
 
 
-def _detect_signals(opens: np.ndarray, highs: np.ndarray, lows: np.ndarray,
-                    closes: np.ndarray, volumes: np.ndarray,
-                    lookback: int, reversal_window: int,
+def _detect_signals(bars: list, lookback: int, reversal_window: int,
                     direction: str) -> list[str]:
     """Return list of triggered reversal signal names."""
-    n = len(closes)
     signals: list[str] = []
 
-    trend_closes = closes[-lookback:]
-    trend_vols = volumes[-lookback:]
-    rev_closes = closes[-reversal_window:]
-    rev_highs = highs[-reversal_window:]
-    rev_lows = lows[-reversal_window:]
-    rev_opens = opens[-reversal_window:]
+    trend_bars = bars[-lookback:]
+    rev_bars = bars[-reversal_window:]
 
-    # 1. RSI extreme
+    # 1. RSI extreme — needs numpy
+    closes = np.array([b["close"] for b in bars], dtype=float)
     rsi = _rsi(closes, 14)
     if direction == "top" and rsi > 75:
         signals.append("rsi_overbought")
     elif direction == "bottom" and rsi < 25:
         signals.append("rsi_oversold")
 
-    # 2. Volume shrink: recent 3-day avg < trend avg * 0.6
+    # 2. Volume shrink: recent 3-day avg < trend avg * 0.6 — needs numpy
+    trend_vols = np.array([b["volume"] for b in trend_bars], dtype=float)
     avg_trend_vol = trend_vols.mean() if trend_vols.mean() > 0 else 1.0
-    avg_rev_vol = volumes[-3:].mean()
+    avg_rev_vol = np.array([b["volume"] for b in bars[-3:]], dtype=float).mean()
     if avg_rev_vol < avg_trend_vol * 0.6:
         signals.append("volume_shrink")
 
-    # 3. Long shadow candle in reversal window
-    for i in range(len(rev_closes)):
-        amplitude = rev_highs[i] - rev_lows[i]
+    # 3. Long shadow candle in reversal window — direct field access
+    for bar in rev_bars:
+        amplitude = bar["high"] - bar["low"]
         if amplitude <= 0:
             continue
         if direction == "top":
-            upper_shadow = rev_highs[i] - max(rev_opens[i], rev_closes[i])
+            upper_shadow = bar["high"] - max(bar["open"], bar["close"])
             if upper_shadow > amplitude * 0.6:
                 signals.append("long_upper_shadow")
                 break
         else:
-            lower_shadow = min(rev_opens[i], rev_closes[i]) - rev_lows[i]
+            lower_shadow = min(bar["open"], bar["close"]) - bar["low"]
             if lower_shadow > amplitude * 0.6:
                 signals.append("long_lower_shadow")
                 break
 
-    # 4. Price divergence: new extreme but with diminished momentum
+    # 4. Price divergence: new extreme but with diminished momentum — needs numpy
+    trend_closes = np.array([b["close"] for b in trend_bars], dtype=float)
     if len(trend_closes) >= 4:
         half = len(trend_closes) // 2
         if direction == "top":
@@ -123,14 +118,14 @@ def _detect_signals(opens: np.ndarray, highs: np.ndarray, lows: np.ndarray,
                 if curr_drop < prev_drop * 0.5:
                     signals.append("price_divergence")
 
-    # 5. Close retreat from intraday extreme
-    for i in range(len(rev_closes)):
+    # 5. Close retreat from intraday extreme — direct field access
+    for bar in rev_bars:
         if direction == "top":
-            if rev_highs[i] > 0 and (rev_highs[i] - rev_closes[i]) / rev_highs[i] > 0.015:
+            if bar["high"] > 0 and (bar["high"] - bar["close"]) / bar["high"] > 0.015:
                 signals.append("close_retreat")
                 break
         else:
-            if rev_closes[i] > 0 and (rev_closes[i] - rev_lows[i]) / rev_closes[i] > 0.015:
+            if bar["close"] > 0 and (bar["close"] - bar["low"]) / bar["close"] > 0.015:
                 signals.append("close_retreat")
                 break
 
@@ -139,32 +134,19 @@ def _detect_signals(opens: np.ndarray, highs: np.ndarray, lows: np.ndarray,
 
 def _analyze(stock: dict, lookback: int, threshold: float,
              reversal_window: int) -> dict | None:
-    closes = np.array(stock.get("closes", []), dtype=float)
-    opens = np.array(stock.get("opens", []), dtype=float)
-    highs = np.array(stock.get("highs", []), dtype=float)
-    lows = np.array(stock.get("lows", []), dtype=float)
-    volumes = np.array(stock.get("volumes", []), dtype=float)
-    dates = stock["dates"]
-    n = len(closes)
+    bars = stock["bars"]
+    n = len(bars)
 
     if n < lookback + reversal_window:
         return None
-    # Require OHLCV — gracefully degrade to closes-only if missing
-    has_ohlcv = (len(opens) == n and len(highs) == n and
-                 len(lows) == n and len(volumes) == n)
-    if not has_ohlcv:
-        opens = closes.copy()
-        highs = closes.copy()
-        lows = closes.copy()
-        volumes = np.ones(n)
 
-    score = _trend_score(closes[-lookback:])
+    closes = np.array([b["close"] for b in bars[-lookback:]], dtype=float)
+    score = _trend_score(closes)
     if abs(score) < threshold:
         return None
 
     direction = "top" if score > 0 else "bottom"
-    signals = _detect_signals(opens, highs, lows, closes, volumes,
-                               lookback, reversal_window, direction)
+    signals = _detect_signals(bars, lookback, reversal_window, direction)
 
     if len(signals) < 3:
         return None
@@ -174,7 +156,7 @@ def _analyze(stock: dict, lookback: int, threshold: float,
         "trendScore": round(score, 6),
         "signalCount": len(signals),
         "signals": signals,
-        "latestDate": dates[-1],
+        "latestDate": bars[-1]["trade_date"],
     }
 
 

@@ -6,7 +6,8 @@ and are now breaking out (or about to) in a direction confirmed by volume.
 
 stdin:
   {
-    "stocks": [{"code": str, "dates": [str], "closes": [float], "volumes": [float]}],
+    "stocks": [{"code": str, "bars": [{"trade_date": str, "open": float, "high": float,
+                                       "low": float, "close": float, "volume": float, ...}]}],
     "bb_period": int,             // default 20
     "squeeze_percentile": float,  // bandwidth must be ≤ this historical percentile, default 10
     "squeeze_min_days": int,      // consecutive squeeze days required, default 5
@@ -48,10 +49,11 @@ def _rolling_stats(arr: np.ndarray, period: int):
 
 def _analyze(stock: dict, bb_period: int, squeeze_percentile: float,
              squeeze_min_days: int) -> dict | None:
-    closes = np.array(stock["closes"], dtype=float)
-    volumes = np.array(stock.get("volumes", []), dtype=float)
-    dates = stock["dates"]
-    n = len(closes)
+    bars = stock["bars"]
+    closes = np.array([b["close"] for b in bars], dtype=float)
+    volumes = np.array([b["volume"] for b in bars], dtype=float)
+    dates = [b["trade_date"] for b in bars]
+    n = len(bars)
     has_volumes = len(volumes) == n
 
     if n < bb_period + squeeze_min_days + 1:

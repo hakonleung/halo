@@ -9,8 +9,9 @@ import { createChatTools } from '@/server/agents/tools';
 import { chatService } from '@/server/services/chat-service';
 import { profileService } from '@/server/services/profile-service';
 import { settingsService } from '@/server/services/settings-service';
-import { getSupabaseClient } from '@neo-log/be-edge';
 import { ChatRole } from '@/server/types/chat-server';
+
+import { getSupabaseClient } from '@neo-log/be-edge';
 
 interface ChatRequestBody {
   messages: UIMessage[];

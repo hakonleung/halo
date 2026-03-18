@@ -1,6 +1,5 @@
-import type { neologGoals } from '@neo-log/be-edge';
-import type { Database } from '@neo-log/be-edge';
 import type { Goal, GoalCreateRequest } from '@/server/types/goal-server';
+import type { neologGoals, Database } from '@neo-log/be-edge';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { InferSelectModel } from 'drizzle-orm';
 

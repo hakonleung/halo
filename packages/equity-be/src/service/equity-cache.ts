@@ -3,42 +3,47 @@ import path from 'path';
 import { create as createFlatCache } from 'flat-cache';
 
 import type {
+  BarQueryOptions,
   DailyBarRecord,
   IEquityDb,
-  OHLCVBar,
-  RecentBar,
   StockListEntry,
   StockRecord,
 } from './equity-db';
 
-// ── BarsCache ─────────────────────────────────────────────────────────────────
+// ── cache store interfaces ────────────────────────────────────────────────────
+
+interface StockListStore {
+  get(): Promise<StockRecord[] | undefined>;
+  set(stocks: StockRecord[]): Promise<void>;
+  upsert(entries: StockListEntry[]): Promise<void>;
+  delete(code: string): Promise<void>;
+  markSynced(codes: string[]): Promise<void>;
+}
 
 interface BarsCache {
-  /** Earliest trade_date stored in this cache. Used to validate coverage. */
-  earliestDate: string;
-  bars: RecentBar[];
-  /** Per-stock latest cached trade_date. Used for incremental append after sync. */
-  watermarks: Record<string, string>;
+  byCode: Record<string, DailyBarRecord[]>;
 }
 
-// ── CacheLayer ────────────────────────────────────────────────────────────────
-// Hierarchical cache — one sub-store per cacheable DB resource.
-
-interface NameMapStore {
-  get(): Promise<Record<string, string> | null>;
-  set(map: Record<string, string>): Promise<void>;
-}
-
-interface RecentBarsStore {
-  get(): Promise<BarsCache | null>;
+interface BarsStore {
+  get(): Promise<BarsCache | undefined>;
   set(cache: BarsCache): Promise<void>;
-  /** Append new bars and update per-stock watermarks without a full rewrite. */
-  append(newBars: RecentBar[], watermarks: Record<string, string>): Promise<void>;
+  append(newBars: DailyBarRecord[]): Promise<void>;
+  deleteCode(code: string): Promise<void>;
 }
 
 interface CacheLayer {
-  nameMap: NameMapStore;
-  recentBars: RecentBarsStore;
+  stocks: StockListStore;
+  bars: BarsStore;
+}
+
+// ── helpers ───────────────────────────────────────────────────────────────────
+
+function groupByCode(bars: DailyBarRecord[]): Record<string, DailyBarRecord[]> {
+  const byCode: Record<string, DailyBarRecord[]> = {};
+  for (const bar of bars) {
+    (byCode[bar.code] ??= []).push(bar);
+  }
+  return byCode;
 }
 
 // ── FlatCacheLayer ────────────────────────────────────────────────────────────
@@ -46,48 +51,80 @@ interface CacheLayer {
 const CACHE_DIR = path.resolve(process.cwd(), '.cache/equity');
 
 class FlatCacheLayer implements CacheLayer {
-  private nameMapFlat = createFlatCache({ cacheId: 'name-map', cacheDir: CACHE_DIR });
+  private stockFlat = createFlatCache({ cacheId: 'stock-list', cacheDir: CACHE_DIR });
   private barsFlat = createFlatCache({ cacheId: 'bars-cache', cacheDir: CACHE_DIR });
 
-  nameMap: NameMapStore = {
-    get: async (): Promise<Record<string, string> | null> => {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      return (this.nameMapFlat.getKey('data') as Record<string, string> | undefined) ?? null;
+  stocks: StockListStore = {
+    get: async (): Promise<StockRecord[] | undefined> => {
+      return this.stockFlat.getKey('data') ?? undefined;
     },
-    set: async (map: Record<string, string>): Promise<void> => {
-      this.nameMapFlat.setKey('data', map);
-      this.nameMapFlat.save(true);
+    set: async (stocks: StockRecord[]): Promise<void> => {
+      this.stockFlat.setKey('data', stocks);
+      this.stockFlat.save(true);
+    },
+    upsert: async (entries: StockListEntry[]): Promise<void> => {
+      const existing: StockRecord[] = this.stockFlat.getKey('data') ?? [];
+      const map = new Map(existing.map((s) => [s.code, s]));
+      for (const e of entries) {
+        const prev = map.get(e.code);
+        map.set(e.code, {
+          code: e.code,
+          name: e.name,
+          secid: e.secid,
+          last_synced_at: prev?.last_synced_at ?? null,
+        });
+      }
+      this.stockFlat.setKey('data', Array.from(map.values()));
+      this.stockFlat.save(true);
+    },
+    delete: async (code: string): Promise<void> => {
+      const existing: StockRecord[] = this.stockFlat.getKey('data') ?? [];
+      this.stockFlat.setKey('data', existing.filter((s) => s.code !== code));
+      this.stockFlat.save(true);
+    },
+    markSynced: async (codes: string[]): Promise<void> => {
+      const existing: StockRecord[] | undefined = this.stockFlat.getKey('data');
+      if (!existing) return;
+      const codeSet = new Set(codes);
+      const now = new Date().toISOString();
+      this.stockFlat.setKey(
+        'data',
+        existing.map((s) => (codeSet.has(s.code) ? { ...s, last_synced_at: now } : s)),
+      );
+      this.stockFlat.save(true);
     },
   };
 
-  recentBars: RecentBarsStore = {
-    get: async (): Promise<BarsCache | null> => {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      return (this.barsFlat.getKey('data') as BarsCache | undefined) ?? null;
+  bars: BarsStore = {
+    get: async (): Promise<BarsCache | undefined> => {
+      return this.barsFlat.getKey('data') ?? undefined;
     },
     set: async (cache: BarsCache): Promise<void> => {
       this.barsFlat.setKey('data', cache);
       this.barsFlat.save(true);
     },
-    append: async (
-      newBars: RecentBar[],
-      updatedWatermarks: Record<string, string>,
-    ): Promise<void> => {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const existing = (this.barsFlat.getKey('data') as BarsCache | undefined) ?? null;
+    append: async (newBars: DailyBarRecord[]): Promise<void> => {
+      const existing: BarsCache | undefined = this.barsFlat.getKey('data');
       if (!existing) return;
-      const updated: BarsCache = {
-        earliestDate: existing.earliestDate,
-        bars: [...existing.bars, ...newBars],
-        watermarks: { ...existing.watermarks, ...updatedWatermarks },
-      };
-      this.barsFlat.setKey('data', updated);
+      const byCode = { ...existing.byCode };
+      for (const bar of newBars) {
+        (byCode[bar.code] ??= []).push(bar);
+      }
+      this.barsFlat.setKey('data', { byCode });
+      this.barsFlat.save(true);
+    },
+    deleteCode: async (code: string): Promise<void> => {
+      const existing: BarsCache | undefined = this.barsFlat.getKey('data');
+      if (!existing) return;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [code]: _removed, ...byCode } = existing.byCode;
+      this.barsFlat.setKey('data', { byCode });
       this.barsFlat.save(true);
     },
   };
 }
 
-// ── withCache ─────────────────────────────────────────────────────────────────
+// ── CachedEquityDb ────────────────────────────────────────────────────────────
 
 class CachedEquityDb implements IEquityDb {
   constructor(
@@ -95,81 +132,94 @@ class CachedEquityDb implements IEquityDb {
     private cache: CacheLayer,
   ) {}
 
-  // ── pass-through ────────────────────────────────────────────────────────────
-  fetchAllStocks(): Promise<StockRecord[]> {
-    return this.db.fetchAllStocks();
-  }
-  getUpToDateCodes(tradeDate: string): Promise<Set<string>> {
-    return this.db.getUpToDateCodes(tradeDate);
-  }
-  getDailyBars(code: string, limit?: number): Promise<DailyBarRecord[]> {
-    return this.db.getDailyBars(code, limit);
-  }
-  getQueryBars(
-    code: string,
-    startDate: string,
-    endDate: string,
-  ): Promise<Array<{ trade_date: string; close: number }>> {
-    return this.db.getQueryBars(code, startDate, endDate);
-  }
-  getRecentBarsOHLCV(sinceDate: string): Promise<OHLCVBar[]> {
-    return this.db.getRecentBarsOHLCV(sinceDate);
-  }
-  upsertStockList(stocks: StockListEntry[]): Promise<void> {
-    return this.db.upsertStockList(stocks);
-  }
-  markSynced(codes: string[]): Promise<void> {
-    return this.db.markSynced(codes);
-  }
-  deleteStock(code: string): Promise<void> {
-    return this.db.deleteStock(code);
-  }
-
   // ── cached reads ────────────────────────────────────────────────────────────
-  async getNameMap(): Promise<Record<string, string>> {
-    const cached = await this.cache.nameMap.get();
+
+  async getStockInfos(): Promise<StockRecord[]> {
+    const cached = await this.cache.stocks.get();
     if (cached) return cached;
-    const fresh = await this.db.getNameMap();
-    await this.cache.nameMap.set(fresh);
+    const fresh = await this.db.getStockInfos();
+    await this.cache.stocks.set(fresh);
     return fresh;
   }
 
-  async getRecentBars(sinceDate: string): Promise<RecentBar[]> {
-    const cached = await this.cache.recentBars.get();
-    if (cached && cached.earliestDate <= sinceDate) {
-      return cached.bars.filter((b) => b.trade_date >= sinceDate);
+  async getBars(codes: string[], options?: BarQueryOptions): Promise<DailyBarRecord[]> {
+    const { startDate, endDate, limit } = options ?? {};
+    const cached = await this.cache.bars.get();
+
+    // Determine full set of requested codes.
+    // When codes=[] and the bar cache already exists, derive the target set
+    // directly from the cache keys — avoids an unnecessary getStockInfos() call.
+    const targetCodes =
+      codes.length === 0
+        ? cached
+          ? Object.keys(cached.byCode)
+          : (await this.getStockInfos()).map((s) => s.code)
+        : codes;
+
+    // Split into cached hits vs DB misses
+    const cachedCodes: string[] = [];
+    const missingCodes: string[] = [];
+    for (const code of targetCodes) {
+      const codeBars = cached?.byCode[code];
+      const hit = !!codeBars?.length &&
+        (startDate ? codeBars[0].trade_date <= startDate : !limit || codeBars.length >= limit);
+      (hit ? cachedCodes : missingCodes).push(code);
     }
-    const fresh = await this.db.getRecentBars(sinceDate);
-    const watermarks: Record<string, string> = {};
-    for (const bar of fresh) {
-      const cur = watermarks[bar.code];
-      if (!cur || bar.trade_date > cur) watermarks[bar.code] = bar.trade_date;
+
+    // Fetch missing codes from DB and write to cache
+    const freshBars =
+      missingCodes.length > 0 ? await this.db.getBars(missingCodes, options) : [];
+    if (freshBars.length > 0) {
+      if (cached) {
+        await this.cache.bars.append(freshBars);
+      } else {
+        await this.cache.bars.set({ byCode: groupByCode(freshBars) });
+      }
     }
-    await this.cache.recentBars.set({ earliestDate: sinceDate, bars: fresh, watermarks });
-    return fresh;
+
+    // Collect cached bars with options applied.
+    // cachedCodes only contains codes that had a cache hit, so cached is non-null here.
+    const cachedByCode = cached?.byCode ?? {};
+    const result: DailyBarRecord[] = [];
+    for (const code of cachedCodes) {
+      let bars = cachedByCode[code] ?? [];
+      if (startDate) bars = bars.filter((b) => b.trade_date >= startDate);
+      if (endDate) bars = bars.filter((b) => b.trade_date <= endDate);
+      if (limit && !startDate) bars = bars.slice(-limit);
+      result.push(...bars);
+    }
+    result.push(...freshBars);
+    return result;
   }
 
-  // ── write-through ───────────────────────────────────────────────────────────
+  // ── write-through ────────────────────────────────────────────────────────────
+
   async upsertBars(bars: DailyBarRecord[]): Promise<void> {
     await this.db.upsertBars(bars);
-    const recentBars: RecentBar[] = bars.map((b) => ({
-      code: b.code,
-      trade_date: b.trade_date,
-      close: b.close,
-    }));
-    const watermarks: Record<string, string> = {};
-    for (const bar of bars) {
-      const cur = watermarks[bar.code];
-      if (!cur || bar.trade_date > cur) watermarks[bar.code] = bar.trade_date;
-    }
-    await this.cache.recentBars.append(recentBars, watermarks);
+    await this.cache.bars.append(bars);
+  }
+
+  async upsertStockList(stocks: StockListEntry[]): Promise<void> {
+    await this.db.upsertStockList(stocks);
+    await this.cache.stocks.upsert(stocks);
+  }
+
+  async markSynced(codes: string[]): Promise<void> {
+    await this.db.markSynced(codes);
+    await this.cache.stocks.markSynced(codes);
+  }
+
+  async deleteStock(code: string): Promise<void> {
+    await this.db.deleteStock(code);
+    await this.cache.stocks.delete(code);
+    await this.cache.bars.deleteCode(code);
   }
 }
 
-/** Wrap an EquityDb instance with a transparent cache layer. */
+// ── exports ───────────────────────────────────────────────────────────────────
+
 export function withCache(db: IEquityDb, cache: CacheLayer): IEquityDb {
   return new CachedEquityDb(db, cache);
 }
 
-/** Singleton flat-file cache for dev and prod (until Redis is introduced). */
 export const defaultCache: CacheLayer = new FlatCacheLayer();

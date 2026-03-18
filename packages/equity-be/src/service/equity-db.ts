@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 const PAGE = 1000;
 const UPSERT_CHUNK = 500;
+const CODES_CHUNK = 200;
 
 // ── shared types ────────────────────────────────────────────────────────────
 
@@ -28,22 +29,6 @@ export interface StockRecord {
   last_synced_at: string | null;
 }
 
-export interface RecentBar {
-  code: string;
-  trade_date: string;
-  close: number;
-}
-
-export interface OHLCVBar {
-  code: string;
-  trade_date: string;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-}
-
 export interface StockListEntry {
   code: string;
   name: string;
@@ -51,16 +36,21 @@ export interface StockListEntry {
   secid: string;
 }
 
+export interface BarQueryOptions {
+  /** Inclusive lower bound on trade_date. */
+  startDate?: string;
+  /** Inclusive upper bound on trade_date. */
+  endDate?: string;
+  /** Max number of rows returned. */
+  limit?: number;
+}
+
 // ── interface ────────────────────────────────────────────────────────────────
 
 export interface IEquityDb {
-  fetchAllStocks(): Promise<StockRecord[]>;
-  getUpToDateCodes(tradeDate: string): Promise<Set<string>>;
-  getDailyBars(code: string, limit?: number): Promise<DailyBarRecord[]>;
-  getQueryBars(code: string, startDate: string, endDate: string): Promise<Array<{ trade_date: string; close: number }>>;
-  getNameMap(): Promise<Record<string, string>>;
-  getRecentBars(sinceDate: string): Promise<RecentBar[]>;
-  getRecentBarsOHLCV(sinceDate: string): Promise<OHLCVBar[]>;
+  getStockInfos(): Promise<StockRecord[]>;
+  /** Fetch bars: [] = all codes, [...] = filter by codes (chunked). */
+  getBars(codes: string[], options?: BarQueryOptions): Promise<DailyBarRecord[]>;
   upsertBars(bars: DailyBarRecord[]): Promise<void>;
   upsertStockList(stocks: StockListEntry[]): Promise<void>;
   markSynced(codes: string[]): Promise<void>;
@@ -72,7 +62,7 @@ export interface IEquityDb {
 export class EquityDb implements IEquityDb {
   constructor(private supabase: SupabaseClient<Database>) {}
 
-  async fetchAllStocks(): Promise<StockRecord[]> {
+  async getStockInfos(): Promise<StockRecord[]> {
     const all: StockRecord[] = [];
     let offset = 0;
     while (true) {
@@ -89,91 +79,38 @@ export class EquityDb implements IEquityDb {
     return all;
   }
 
-  async getUpToDateCodes(tradeDate: string): Promise<Set<string>> {
-    const codes = new Set<string>();
-    let offset = 0;
-    while (true) {
-      const { data } = await this.supabase
-        .from('neolog_equity_daily')
-        .select('code')
-        .eq('trade_date', tradeDate)
-        .range(offset, offset + PAGE - 1);
-      const batch = data ?? [];
-      for (const r of batch) codes.add(r.code);
-      if (batch.length < PAGE) break;
-      offset += PAGE;
-    }
-    return codes;
-  }
+  async getBars(codes: string[], options?: BarQueryOptions): Promise<DailyBarRecord[]> {
+    const { startDate, endDate, limit } = options ?? {};
 
-  async getDailyBars(code: string, limit = 365): Promise<DailyBarRecord[]> {
-    const { data, error } = await this.supabase
-      .from('neolog_equity_daily')
-      .select('*')
-      .eq('code', code)
-      .order('trade_date', { ascending: true })
-      .limit(limit);
-    if (error) throw new Error(error.message);
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return (data ?? []) as DailyBarRecord[];
-  }
+    // [] = all codes (no filter), [...] = filter by chunk
+    const query = async (codeChunk: string[]): Promise<DailyBarRecord[]> => {
+      const result: DailyBarRecord[] = [];
+      let offset = 0;
+      while (true) {
+        let q = this.supabase
+          .from('neolog_equity_daily')
+          .select('*')
+          .order('code')
+          .order('trade_date')
+          .range(offset, offset + PAGE - 1);
+        if (codeChunk.length > 0) q = q.in('code', codeChunk);
+        if (startDate) q = q.gte('trade_date', startDate);
+        if (endDate) q = q.lte('trade_date', endDate);
+        if (limit !== undefined) q = q.limit(limit);
+        const { data } = await q;
+        const batch = data ?? [];
+        result.push(...batch);
+        if (batch.length < PAGE) break;
+        offset += PAGE;
+      }
+      return result;
+    };
 
-  async getQueryBars(
-    code: string,
-    startDate: string,
-    endDate: string,
-  ): Promise<Array<{ trade_date: string; close: number }>> {
-    const { data } = await this.supabase
-      .from('neolog_equity_daily')
-      .select('trade_date,close')
-      .eq('code', code)
-      .gte('trade_date', startDate)
-      .lte('trade_date', endDate)
-      .order('trade_date');
-    return data ?? [];
-  }
+    if (codes.length === 0) return query([]);
 
-  async getNameMap(): Promise<Record<string, string>> {
-    const { data } = await this.supabase.from('neolog_equity_list').select('code,name');
-    const map: Record<string, string> = {};
-    for (const r of data ?? []) map[r.code] = r.name;
-    return map;
-  }
-
-  async getRecentBars(sinceDate: string): Promise<RecentBar[]> {
-    const all: RecentBar[] = [];
-    let offset = 0;
-    while (true) {
-      const { data } = await this.supabase
-        .from('neolog_equity_daily')
-        .select('code,trade_date,close')
-        .gte('trade_date', sinceDate)
-        .order('code')
-        .order('trade_date')
-        .range(offset, offset + PAGE - 1);
-      const batch = data ?? [];
-      all.push(...batch);
-      if (batch.length < PAGE) break;
-      offset += PAGE;
-    }
-    return all;
-  }
-
-  async getRecentBarsOHLCV(sinceDate: string): Promise<OHLCVBar[]> {
-    const all: OHLCVBar[] = [];
-    let offset = 0;
-    while (true) {
-      const { data } = await this.supabase
-        .from('neolog_equity_daily')
-        .select('code,trade_date,open,high,low,close,volume')
-        .gte('trade_date', sinceDate)
-        .order('code')
-        .order('trade_date')
-        .range(offset, offset + PAGE - 1);
-      const batch = data ?? [];
-      all.push(...batch);
-      if (batch.length < PAGE) break;
-      offset += PAGE;
+    const all: DailyBarRecord[] = [];
+    for (let i = 0; i < codes.length; i += CODES_CHUNK) {
+      all.push(...(await query(codes.slice(i, i + CODES_CHUNK))));
     }
     return all;
   }

@@ -77,13 +77,25 @@ export function ComputerScreen({ scene, messages, isMobile = false }: ComputerSc
       emissiveIntensity: 1.8,
       roughness: 0.1,
     });
-    const frameTop = new THREE.Mesh(new THREE.BoxGeometry(ss.width + 0.12, 0.06, 0.05), neonFrameMat);
+    const frameTop = new THREE.Mesh(
+      new THREE.BoxGeometry(ss.width + 0.12, 0.06, 0.05),
+      neonFrameMat,
+    );
     frameTop.position.set(sp.x, sp.y + ss.height / 2, fz);
-    const frameBot = new THREE.Mesh(new THREE.BoxGeometry(ss.width + 0.12, 0.06, 0.05), neonFrameMat);
+    const frameBot = new THREE.Mesh(
+      new THREE.BoxGeometry(ss.width + 0.12, 0.06, 0.05),
+      neonFrameMat,
+    );
     frameBot.position.set(sp.x, sp.y - ss.height / 2, fz);
-    const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(0.06, ss.height + 0.12, 0.05), neonFrameMat);
+    const frameLeft = new THREE.Mesh(
+      new THREE.BoxGeometry(0.06, ss.height + 0.12, 0.05),
+      neonFrameMat,
+    );
     frameLeft.position.set(sp.x - ss.width / 2, sp.y, fz);
-    const frameRight = new THREE.Mesh(new THREE.BoxGeometry(0.06, ss.height + 0.12, 0.05), neonFrameMat);
+    const frameRight = new THREE.Mesh(
+      new THREE.BoxGeometry(0.06, ss.height + 0.12, 0.05),
+      neonFrameMat,
+    );
     frameRight.position.set(sp.x + ss.width / 2, sp.y, fz);
     objects.push(frameTop, frameBot, frameLeft, frameRight);
 

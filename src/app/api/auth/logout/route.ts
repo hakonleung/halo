@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { authService } from '@/server/services/auth-service';
+
 import { getSupabaseClient } from '@neo-log/be-edge';
 
 export async function POST() {

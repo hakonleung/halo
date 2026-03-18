@@ -22,10 +22,7 @@ const NEON = {
   orange: 0xff6b35,
 } as const;
 
-function makNeonMat(
-  color: number,
-  intensity: number,
-): THREE.MeshStandardMaterial {
+function makNeonMat(color: number, intensity: number): THREE.MeshStandardMaterial {
   return new THREE.MeshStandardMaterial({
     color,
     emissive: new THREE.Color(color),
@@ -198,10 +195,30 @@ export function CyberpunkRoom({ scene }: CyberpunkRoomProps) {
     const fx = winPos.x;
     const fy = winPos.y;
     const fz = winPos.z + 0.06;
-    addWinFrame(winSize.width + 0.1, 0.06, new THREE.Vector3(fx, fy + winSize.height / 2, fz), NEON.cyan);
-    addWinFrame(winSize.width + 0.1, 0.06, new THREE.Vector3(fx, fy - winSize.height / 2, fz), NEON.cyan);
-    addWinFrame(0.06, winSize.height + 0.1, new THREE.Vector3(fx - winSize.width / 2, fy, fz), NEON.cyan);
-    addWinFrame(0.06, winSize.height + 0.1, new THREE.Vector3(fx + winSize.width / 2, fy, fz), NEON.cyan);
+    addWinFrame(
+      winSize.width + 0.1,
+      0.06,
+      new THREE.Vector3(fx, fy + winSize.height / 2, fz),
+      NEON.cyan,
+    );
+    addWinFrame(
+      winSize.width + 0.1,
+      0.06,
+      new THREE.Vector3(fx, fy - winSize.height / 2, fz),
+      NEON.cyan,
+    );
+    addWinFrame(
+      0.06,
+      winSize.height + 0.1,
+      new THREE.Vector3(fx - winSize.width / 2, fy, fz),
+      NEON.cyan,
+    );
+    addWinFrame(
+      0.06,
+      winSize.height + 0.1,
+      new THREE.Vector3(fx + winSize.width / 2, fy, fz),
+      NEON.cyan,
+    );
 
     roomObjects.forEach((obj) => scene.add(obj));
     neonRef.current = neonItems;

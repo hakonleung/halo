@@ -10,7 +10,8 @@ stdin:
   {
     "window_len": int,
     "query_closes": [float],
-    "stocks": [{"code": str, "dates": [str], "closes": [float]}]
+    "stocks": [{"code": str, "bars": [{"trade_date": str, "open": float, "high": float,
+                                       "low": float, "close": float, "volume": float, ...}]}]
   }
 
 NDJSON output:
@@ -81,11 +82,12 @@ def run():
     # ── Phase 1: shape similarity (Pearson on z-score windows) ────────────────
     candidates = []
     for stock in stocks:
-        closes = np.array(stock["closes"], dtype=float)
+        bars = stock["bars"]
+        closes = np.array([b["close"] for b in bars], dtype=float)
         best_idx, best_r = _sliding_pearson(closes, query_norm, window_len)
         if best_idx < 0:
             continue
-        candidates.append((best_r, stock["code"], best_idx, stock["dates"], closes))
+        candidates.append((best_r, stock["code"], best_idx, [b["trade_date"] for b in bars], closes))
 
     candidates.sort(key=lambda x: -x[0])
     top_shape = candidates[:SHAPE_CANDIDATES]

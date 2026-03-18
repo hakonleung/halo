@@ -3,8 +3,9 @@
 import { Box, Flex, HStack, Spinner, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import type { PatternMatch } from '../types';
 import { EquityMatchCard } from './equity-match-card';
+
+import type { PatternMatch } from '../types';
 
 interface Props {
   matches: PatternMatch[];

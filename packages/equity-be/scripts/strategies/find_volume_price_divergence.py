@@ -7,9 +7,8 @@ OBV signals accumulation.
 
 stdin:
   {
-    "stocks": [{"code": str, "dates": [str], "closes": [float], "volumes": [float],
-                "highs": [float],  // optional, enables MFI
-                "lows":  [float]}],  // optional, enables MFI
+    "stocks": [{"code": str, "bars": [{"trade_date": str, "open": float, "high": float,
+                                       "low": float, "close": float, "volume": float, ...}]}],
     "scan_window": int,          // default 20
     "divergence_min_gap": int,   // min days between pivot comparison points, default 5
   }
@@ -61,12 +60,12 @@ def _compute_mfi(closes: np.ndarray, highs: np.ndarray, lows: np.ndarray,
 
 
 def _analyze(stock: dict, scan_window: int) -> dict | None:
-    closes = np.array(stock["closes"], dtype=float)
-    n = len(closes)
-    volumes_raw = stock.get("volumes", [])
-    if len(volumes_raw) != n or n < scan_window + 5:
+    bars = stock["bars"]
+    closes = np.array([b["close"] for b in bars], dtype=float)
+    volumes = np.array([b["volume"] for b in bars], dtype=float)
+    n = len(bars)
+    if n < scan_window + 5:
         return None
-    volumes = np.array(volumes_raw, dtype=float)
 
     obv = _compute_obv(closes, volumes)
 
@@ -116,13 +115,10 @@ def _analyze(stock: dict, scan_window: int) -> dict | None:
         else:
             break
 
-    # MFI (optional — requires highs and lows)
-    mfi: float | None = None
-    highs_raw = stock.get("highs")
-    lows_raw = stock.get("lows")
-    if highs_raw and lows_raw and len(highs_raw) == n and len(lows_raw) == n:
-        mfi = _compute_mfi(closes, np.array(highs_raw, dtype=float),
-                           np.array(lows_raw, dtype=float), volumes)
+    # MFI — highs and lows always present in DailyBarRecord
+    highs = np.array([b["high"] for b in bars], dtype=float)
+    lows = np.array([b["low"] for b in bars], dtype=float)
+    mfi: float | None = _compute_mfi(closes, highs, lows, volumes)
 
     result: dict = {
         "divergenceType": divergence_type,
@@ -130,7 +126,7 @@ def _analyze(stock: dict, scan_window: int) -> dict | None:
         "obvChange": round(obv_change_pct, 2),
         "divergenceStrength": divergence_strength,
         "consecutiveShrinkDays": consecutive_shrink,
-        "latestDate": stock["dates"][-1],
+        "latestDate": bars[-1]["trade_date"],
     }
     if mfi is not None:
         result["mfi"] = round(mfi, 1)

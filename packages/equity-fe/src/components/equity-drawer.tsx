@@ -5,14 +5,14 @@ import { ChevronUp, ChevronDown, GitCompare, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useEquityDailyBars, usePatternSimilarity } from '../hooks';
+import { StrategyType, STRATEGY_META } from '../types';
 
 import { EquityKlineChart } from './equity-kline-chart';
-import type { KlineMode } from './equity-kline-chart';
-import { SimilarPatternsPanel } from './similar-patterns-panel';
 import { ScanResultsPanel } from './scan-results-panel';
+import { SimilarPatternsPanel } from './similar-patterns-panel';
 
+import type { KlineMode } from './equity-kline-chart';
 import type { EquityRange, EquityStockSummary } from '../types';
-import { StrategyType, STRATEGY_META } from '../types';
 
 interface Props {
   stock: EquityStockSummary | null;
@@ -32,8 +32,14 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
   const [strategy, setStrategy] = useState<StrategyType>(StrategyType.FindSimilar);
 
   const { bars, isLoading } = useEquityDailyBars(stock?.code ?? null);
-  const { findSimilar, loading: similarLoading, statusMsg, matches, scanMatches, activeStrategy } =
-    usePatternSimilarity();
+  const {
+    findSimilar,
+    loading: similarLoading,
+    statusMsg,
+    matches,
+    scanMatches,
+    activeStrategy,
+  } = usePatternSimilarity();
 
   // Reset when stock changes
   useEffect(() => {
@@ -46,8 +52,14 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowUp') { e.preventDefault(); if (hasPrev) onPrev(); }
-      if (e.key === 'ArrowDown') { e.preventDefault(); if (hasNext) onNext(); }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (hasPrev) onPrev();
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (hasNext) onNext();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -104,7 +116,9 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
   return (
     <Drawer.Root
       open={isOpen}
-      onOpenChange={(e) => { if (!e.open) onClose(); }}
+      onOpenChange={(e) => {
+        if (!e.open) onClose();
+      }}
       placement="end"
       size="xl"
     >
@@ -119,9 +133,19 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
                     <Text fontFamily="mono" fontSize="lg" color="brand.matrix" fontWeight="bold">
                       {stock.code}
                     </Text>
-                    <Text fontFamily="mono" fontSize="sm" color="#888">{stock.name}</Text>
-                    <Text fontFamily="mono" fontSize="10px" px={2} py={0.5} border="1px solid"
-                      borderColor="whiteAlpha.200" borderRadius="2px" color="#666">
+                    <Text fontFamily="mono" fontSize="sm" color="#888">
+                      {stock.name}
+                    </Text>
+                    <Text
+                      fontFamily="mono"
+                      fontSize="10px"
+                      px={2}
+                      py={0.5}
+                      border="1px solid"
+                      borderColor="whiteAlpha.200"
+                      borderRadius="2px"
+                      color="#666"
+                    >
                       {stock.market}
                     </Text>
                   </HStack>
@@ -133,34 +157,70 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
                     )}
                     {stock.change_pct_1d != null && (
                       <Text fontFamily="mono" fontSize="sm" color={priceColor}>
-                        {stock.change_pct_1d >= 0 ? '+' : ''}{stock.change_pct_1d.toFixed(2)}%
+                        {stock.change_pct_1d >= 0 ? '+' : ''}
+                        {stock.change_pct_1d.toFixed(2)}%
                       </Text>
                     )}
                     {/* Find similar button */}
-                    <Box as="button" px={2} py={1} borderRadius="2px" border="1px solid"
-                      borderColor={findBtnActive ? (chartMode === 'select' ? '#FF6B35' : 'brand.matrix') : 'rgba(0,255,65,0.2)'}
-                      color={findBtnActive ? (chartMode === 'select' ? '#FF6B35' : 'brand.matrix') : '#666'}
+                    <Box
+                      as="button"
+                      px={2}
+                      py={1}
+                      borderRadius="2px"
+                      border="1px solid"
+                      borderColor={
+                        findBtnActive
+                          ? chartMode === 'select'
+                            ? '#FF6B35'
+                            : 'brand.matrix'
+                          : 'rgba(0,255,65,0.2)'
+                      }
+                      color={
+                        findBtnActive
+                          ? chartMode === 'select'
+                            ? '#FF6B35'
+                            : 'brand.matrix'
+                          : '#666'
+                      }
                       cursor="pointer"
-                      _hover={{ borderColor: chartMode === 'select' ? '#FF6B35' : 'brand.matrix', color: chartMode === 'select' ? '#FF6B35' : 'brand.matrix' }}
+                      _hover={{
+                        borderColor: chartMode === 'select' ? '#FF6B35' : 'brand.matrix',
+                        color: chartMode === 'select' ? '#FF6B35' : 'brand.matrix',
+                      }}
                       onClick={handleFindSimilarClick}
                       title={chartMode === 'select' ? '取消选择' : '查找相似走势'}
-                      display="flex" alignItems="center" gap={1}>
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                    >
                       <GitCompare size={12} />
                       <Text fontFamily="mono" fontSize="10px">
                         {chartMode === 'select' ? '取消' : '查找相似'}
                       </Text>
                     </Box>
                     <HStack gap={0}>
-                      <Box as="button" p={1} borderRadius="2px"
-                        color={hasPrev ? '#888' : '#333'} cursor={hasPrev ? 'pointer' : 'not-allowed'}
+                      <Box
+                        as="button"
+                        p={1}
+                        borderRadius="2px"
+                        color={hasPrev ? '#888' : '#333'}
+                        cursor={hasPrev ? 'pointer' : 'not-allowed'}
                         _hover={hasPrev ? { color: 'brand.matrix' } : {}}
-                        onClick={hasPrev ? onPrev : undefined} title="上一只 ↑">
+                        onClick={hasPrev ? onPrev : undefined}
+                        title="上一只 ↑"
+                      >
                         <ChevronUp size={16} />
                       </Box>
-                      <Box as="button" p={1} borderRadius="2px"
-                        color={hasNext ? '#888' : '#333'} cursor={hasNext ? 'pointer' : 'not-allowed'}
+                      <Box
+                        as="button"
+                        p={1}
+                        borderRadius="2px"
+                        color={hasNext ? '#888' : '#333'}
+                        cursor={hasNext ? 'pointer' : 'not-allowed'}
                         _hover={hasNext ? { color: 'brand.matrix' } : {}}
-                        onClick={hasNext ? onNext : undefined} title="下一只 ↓">
+                        onClick={hasNext ? onNext : undefined}
+                        title="下一只 ↓"
+                      >
                         <ChevronDown size={16} />
                       </Box>
                     </HStack>
@@ -176,7 +236,9 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
                 </Flex>
               ) : bars.length === 0 ? (
                 <Flex justify="center" align="center" h="200px">
-                  <Text color="#555" fontFamily="mono" fontSize="sm">暂无 K 线数据</Text>
+                  <Text color="#555" fontFamily="mono" fontSize="sm">
+                    暂无 K 线数据
+                  </Text>
                 </Flex>
               ) : (
                 <>
@@ -222,16 +284,23 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
                       </SegmentGroup.Root>
 
                       {showSimilar && (
-                        <Box as="button" p={1} color="#555" cursor="pointer"
-                          _hover={{ color: '#888' }} onClick={handleCloseSimilar} title="关闭">
+                        <Box
+                          as="button"
+                          p={1}
+                          color="#555"
+                          cursor="pointer"
+                          _hover={{ color: '#888' }}
+                          onClick={handleCloseSimilar}
+                          title="关闭"
+                        >
                           <X size={14} />
                         </Box>
                       )}
                     </HStack>
 
                     {/* Results */}
-                    {showSimilar && (
-                      activeStrategy === StrategyType.FindSimilar ? (
+                    {showSimilar &&
+                      (activeStrategy === StrategyType.FindSimilar ? (
                         <SimilarPatternsPanel
                           matches={matches}
                           isLoading={similarLoading}
@@ -244,15 +313,19 @@ export function EquityDrawer({ stock, isOpen, onClose, onPrev, onNext, hasPrev, 
                           isLoading={similarLoading}
                           statusMsg={statusMsg}
                         />
-                      )
-                    )}
+                      ))}
                   </Box>
                 </>
               )}
             </Drawer.Body>
 
-            <Drawer.CloseTrigger position="absolute" top={3} right={3}
-              color="#666" _hover={{ color: '#fff' }} />
+            <Drawer.CloseTrigger
+              position="absolute"
+              top={3}
+              right={3}
+              color="#666"
+              _hover={{ color: '#fff' }}
+            />
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>

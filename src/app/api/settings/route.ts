@@ -1,5 +1,6 @@
-import { createApiHandler } from '@neo-log/be-edge';
 import { settingsService } from '@/server/services/settings-service';
+
+import { createApiHandler } from '@neo-log/be-edge';
 
 export const GET = createApiHandler(async (_request, _params, supabase, user) => {
   const data = await settingsService.getSettings(supabase, user.id);

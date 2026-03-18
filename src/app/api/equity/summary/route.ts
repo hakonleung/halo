@@ -18,7 +18,9 @@ export const GET = createApiHandler(async (_req, _params, supabase) => {
         p_limit: PAGE,
         p_offset: offset,
       });
-      console.log(`[equity/summary] offset=${offset} attempt=${attempt} rows=${res.data?.length ?? 0} error=${JSON.stringify(res.error)}`);
+      console.log(
+        `[equity/summary] offset=${offset} attempt=${attempt} rows=${res.data?.length ?? 0} error=${JSON.stringify(res.error)}`,
+      );
       if (!res.error) {
         data = res.data;
         lastError = null;
