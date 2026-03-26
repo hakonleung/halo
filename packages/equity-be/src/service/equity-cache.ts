@@ -38,6 +38,10 @@ interface CacheLayer {
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
+function isBJCode(code: string): boolean {
+  return code.startsWith('8') || code.startsWith('9');
+}
+
 function groupByCode(bars: DailyBarRecord[]): Record<string, DailyBarRecord[]> {
   const byCode: Record<string, DailyBarRecord[]> = {};
   for (const bar of bars) {
@@ -136,7 +140,7 @@ class CachedEquityDb implements IEquityDb {
 
   async getStockInfos(): Promise<StockRecord[]> {
     const cached = await this.cache.stocks.get();
-    if (cached) return cached;
+    if (cached) return cached.filter((s) => !isBJCode(s.code));
     const fresh = await this.db.getStockInfos();
     await this.cache.stocks.set(fresh);
     return fresh;
@@ -149,12 +153,13 @@ class CachedEquityDb implements IEquityDb {
     // Determine full set of requested codes.
     // When codes=[] and the bar cache already exists, derive the target set
     // directly from the cache keys — avoids an unnecessary getStockInfos() call.
-    const targetCodes =
+    const targetCodes = (
       codes.length === 0
         ? cached
           ? Object.keys(cached.byCode)
           : (await this.getStockInfos()).map((s) => s.code)
-        : codes;
+        : codes
+    ).filter((c) => !isBJCode(c));
 
     // Split into cached hits vs DB misses
     const cachedCodes: string[] = [];

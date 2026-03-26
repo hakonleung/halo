@@ -69,6 +69,8 @@ export class EquityDb implements IEquityDb {
       const { data } = await this.supabase
         .from('neolog_equity_list')
         .select('code,name,secid,last_synced_at')
+        .not('code', 'like', '8%')
+        .not('code', 'like', '9%')
         .order('created_at', { ascending: false })
         .range(offset, offset + PAGE - 1);
       const batch = data ?? [];

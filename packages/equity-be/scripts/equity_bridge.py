@@ -104,7 +104,9 @@ def cmd_fetch_list():
     records = []
     for _, row in df.iterrows():
         code = str(row["code"])
-        market = "SH" if code.startswith("6") else "BJ" if code.startswith("9") else "SZ"
+        if code.startswith("9") or code.startswith("8"):
+            continue  # 跳过北交所
+        market = "SH" if code.startswith("6") else "SZ"
         mkt_prefix = "1" if market == "SH" else "0"
         records.append({
             "code": code,

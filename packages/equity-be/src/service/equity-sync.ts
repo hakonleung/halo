@@ -91,6 +91,7 @@ export async function syncAllStream(supabase: SupabaseClient<Database>): Promise
         async (obj) => {
           if (obj.type === 'result') {
             const { code, bars } = obj;
+            console.log(`[sync] fetched ${code} (${nameMap[code] ?? ''}) → ${bars.length} bars`);
             if (bars.length > 0) {
               batchBars.push(...bars);
               batchCodes.push(code);

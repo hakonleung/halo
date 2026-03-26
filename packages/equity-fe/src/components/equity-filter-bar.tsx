@@ -17,7 +17,6 @@ const MARKET_COLS: { key: MarketFilter; label: string }[] = [
   { key: 'ALL', label: '全部' },
   { key: 'SH', label: '上海' },
   { key: 'SZ', label: '深圳' },
-  { key: 'BJ', label: '北京' },
 ];
 
 const inputStyle = {

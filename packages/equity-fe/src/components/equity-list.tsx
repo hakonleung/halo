@@ -37,9 +37,8 @@ function pctByPeriod(s: EquityStockSummary, period: PctPeriod): number | null {
   return map[period];
 }
 
-function marketFromCode(code: string): 'SH' | 'SZ' | 'BJ' {
+function marketFromCode(code: string): 'SH' | 'SZ' {
   if (code.startsWith('6')) return 'SH';
-  if (code.startsWith('9')) return 'BJ';
   return 'SZ';
 }
 

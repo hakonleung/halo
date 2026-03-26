@@ -62,7 +62,15 @@ export async function processNdjsonLines<T = Record<string, unknown>>(
     for await (const line of rl) {
       if (!line.trim()) continue;
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      await onLine(JSON.parse(line) as T);
+      let parsed: T;
+      try {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        parsed = JSON.parse(line) as T;
+      } catch {
+        // Skip non-JSON lines (e.g. baostock prints "login success!" to stdout)
+        continue;
+      }
+      await onLine(parsed);
     }
     // Readline ended normally — check process exit code
     await closePromise;
